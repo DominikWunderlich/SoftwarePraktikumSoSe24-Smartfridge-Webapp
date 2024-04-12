@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restx import Api, Resource, fields
 from flask_cors import CORS, cross_origin
 
+from server.Administration import Administration
 from server.bo.BusinessObject import BusinessObject
 from server.bo.WG import WG
 
@@ -39,15 +40,16 @@ wg = api.inherit('WG', bo, {
 @smartapi.route('/wg')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class WgOperations(Resource):
-    def get(self):
-        """ Auslesen aller WG-Objekte. """
-        # TODO: Implement get-method
-        pass
-
     def post(self):
         """ Anlegen eines neuen WG-Objekts. """
-        # TODO: Implement post-method
-        pass
+        adm = Administration()
+        proposal = WG.from_dict(api.payload)
+
+        if proposal is not None:
+            result = adm.create_wg(proposal)
+            return result, 200
+        else:
+            return 'Fehler in WG-Operations post methode', 500
 
 
 if __name__ == '__main__':

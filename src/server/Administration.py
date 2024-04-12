@@ -1,4 +1,5 @@
 from server.bo.WG import WG
+from server.db.WGMapper import WGMapper
 
 class Administration(object):
     def __init__(self):
@@ -14,5 +15,5 @@ class Administration(object):
         w.set_wg_ersteller(wg_ersteller)
         w.set_id(1)
 
-       # with WgMapper() as mapper:
+       # with WGMapper() as mapper:
        #     return mapper.insert(w)
