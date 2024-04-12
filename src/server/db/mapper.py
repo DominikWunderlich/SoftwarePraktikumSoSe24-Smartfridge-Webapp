@@ -10,13 +10,7 @@ class mapper(AbstractContextManager, ABC):
         self._connector = None
 
     def __enter__(self):
-
-        if os.getenv('GAE_ENV', '').startswith('standard'):
-
-            self._connector = connector.connect(user='root', passwort='demo', unix_spcket='/cloudsql/', database='main')
-
-        else:
-            self._connector = connector.connect(user='root', passwort='demo', host='127.0.0.1', database='main')
+        self._connector = connector.connect(user='root', password='Michi2110,', host='localhost', database='datenbank')
 
         return self
 

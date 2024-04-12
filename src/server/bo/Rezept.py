@@ -1,12 +1,12 @@
 from BusinessObject import BusinessObject as bo
 
-class rezept(bo):
+
+class Rezept(bo):
     def __init__(self):
         super().__init__()
         self.rezeptname = None
         self.owner = None
         self.personenanzahl = None
-
 
     def set_rezeptname(self, rezeptname):
         self.rezeptname = rezeptname
@@ -31,7 +31,7 @@ class rezept(bo):
 
     @staticmethod
     def from_dict(dictionary=dict()):
-        rz = rezept()
+        rz = Rezept()
         rz.set_id(dictionary['id'])
         rz.set_rezeptname(dictionary['wg_name'])
         rz.set_owner(dictionary['wg_bewohner'])

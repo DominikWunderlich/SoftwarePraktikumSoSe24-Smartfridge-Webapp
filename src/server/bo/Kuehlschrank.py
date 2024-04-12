@@ -1,5 +1,6 @@
 from BusinessObject import BusinessObject as bo
 
+
 class Kuehlschrank(bo):
     def __init__(self):
         super().__init__()
