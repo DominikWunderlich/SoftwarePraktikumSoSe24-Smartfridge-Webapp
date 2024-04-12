@@ -40,6 +40,7 @@ wg = api.inherit('WG', bo, {
 @smartapi.route('/wg')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class WgOperations(Resource):
+    @smartapi.expect(wg)
     def post(self):
         """ Anlegen eines neuen WG-Objekts. """
         adm = Administration()
