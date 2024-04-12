@@ -1,4 +1,4 @@
-from BusinessObject import BusinessObject as bo
+from server.bo.BusinessObject import BusinessObject as bo
 
 class WG(bo):
     def __init__(self):
