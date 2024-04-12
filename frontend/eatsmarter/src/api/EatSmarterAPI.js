@@ -7,11 +7,26 @@ export default class EatSmarterAPI{
     static #api = null;
 
     // Local python backend
-    // TODO: REPLACE "/" with local python backend
-    #EatSmarterServerBaseUR = "/";
+    #EatSmarterServerBaseUR = "/system";
 
     // Wg related URLS
-    // TODO: Add Wg related URLS e.g. for post, update & get
+    #addWgURL = () => `${this.#EatSmarterServerBaseUR}/wg`;
+
+    addWg(wgBO){
+        return this.#fetchAdvanced(this.#addWgURL(), {
+            method: "POST",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(wgBO)
+        }).then((responseJSON) => {
+            let responseWgBO = WgBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseWgBO);
+            })
+        })
+    }
 
 
     /**
@@ -38,7 +53,6 @@ export default class EatSmarterAPI{
             return res.json()
         })
 
-    // TODO: Add POST method for WG
 
 
 

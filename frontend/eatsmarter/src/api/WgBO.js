@@ -30,6 +30,9 @@ export default class WgBO extends BusinessObject{
     setWgAdmin(aWgAdmin){
         this.wgAdmin = aWgAdmin;
     }
+    getWgAdmin(){
+        return this.wgAdmin;
+    }
 
     // Methode gibt Array mit den WgBOs aus der JSON Struktur zurück
     static fromJSON(wgs){
