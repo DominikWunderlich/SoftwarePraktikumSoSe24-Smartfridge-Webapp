@@ -1,4 +1,4 @@
-from server.bo.User import User
+from server.bo.User import Person
 from server.db.Mapper import Mapper
 
 
@@ -26,6 +26,7 @@ class PersonMapper (Mapper):
 
         for (id, benutzername, vorname, nachname, email) in tuples:
             user.set_id(id)
+            user.set_benutzername(benutzername)
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_email(email)
@@ -49,8 +50,9 @@ class PersonMapper (Mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, vorname, nachname,  email) in tuples:
+        for (id, benutzername, vorname, nachname,  email) in tuples:
             user.set_id(id)
+            user.set_benutzername(benutzername)
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_email(email)
@@ -115,7 +117,7 @@ class PersonMapper (Mapper):
             user.set_id(id)
             user.set_name(name)
             user.set_email(email)
-            user.set_user_id(user_id)
+            user.set_benutzername(benutzername)
             result = user
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
@@ -143,13 +145,14 @@ class PersonMapper (Mapper):
         tuples = cursor.fetchall()
 
         try:
-            (id, name, email, google_user_id) = tuples[0]
-            u = User()
-            u.set_id(id)
-            u.set_name(name)
-            u.set_email(email)
-            u.set_user_id(google_user_id)
-            result = u
+            (id, name, email,benutzername, google_user_id) = tuples[0]
+            user = User()
+            user.set_id(id)
+            user.set_name(name)
+            user.set_benutzername(benutzername)
+            user.set_email(email)   u.set_user_id(google_user_id)
+
+            result = user
         except IndexError:
             """Der IndexError wird oben beim Zugriff auf tuples[0] auftreten, wenn der vorherige SELECT-Aufruf
             keine Tupel liefert, sondern tuples = cursor.fetchall() eine leere Sequenz zurück gibt."""

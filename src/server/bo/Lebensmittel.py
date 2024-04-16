@@ -36,14 +36,14 @@ class Lebensmittel (bo.BusinessObject):
         pass
 
     def __str__(self):
-            """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
+        """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
         return "Lebensmittel: {}, {}".format(self.lebensmittelname, self.aggregatszustand)
 
     @staticmethod
     def from_dict(dictionary=dict()):
-            """Umwandeln eines Python dict() in ein Lebensmittel-Objekt."""
+        """Umwandeln eines Python dict() in ein Lebensmittel-Objekt."""
         lm = Lebensmittel()
         lm.set_id(dictionary["id"])
         lm.set_lebensmittlename(dictionary["lebensmittelname"])
         lm.set_aggregatszustand(dictionary["aggregatszustand"])
-        return lebensmittel
+        return lm
