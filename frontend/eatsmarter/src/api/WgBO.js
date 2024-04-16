@@ -42,7 +42,7 @@ export default class WgBO extends BusinessObject{
         if (Array.isArray(wgs)){
             wgs.forEach((w) => {
                 Object.setPrototypeOf(w, WgBO.prototype);
-                result.push(p);
+                result.push(w);
             })
             // Nur ein einzelnes Objekt
         } else {
