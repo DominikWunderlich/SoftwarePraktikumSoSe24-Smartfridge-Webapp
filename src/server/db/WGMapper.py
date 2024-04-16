@@ -1,5 +1,5 @@
-from mapper import mapper
-from WG import WG
+from server.db.mapper import mapper
+from server.bo.WG import WG
 
 class WGMapper(mapper):
     def __init__(self):

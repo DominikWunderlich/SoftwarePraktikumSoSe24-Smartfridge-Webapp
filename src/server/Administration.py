@@ -15,5 +15,5 @@ class Administration(object):
         w.set_wg_ersteller(wg_ersteller)
         w.set_id(1)
 
-       # with WGMapper() as mapper:
-       #     return mapper.insert(w)
+        with WGMapper() as mapper:
+            return mapper.insert(w)

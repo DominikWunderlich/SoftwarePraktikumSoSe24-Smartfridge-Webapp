@@ -3,9 +3,9 @@ from server.bo.BusinessObject import BusinessObject as bo
 class WG(bo):
     def __init__(self):
         super().__init__()
-        self.wg_name = None
-        self.wg_bewohner = None
-        self.wg_ersteller = None
+        self.wg_name = ""
+        self.wg_bewohner = ""
+        self.wg_ersteller = ""
 
 
     def set_wg_name(self, wg_name):

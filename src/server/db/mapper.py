@@ -2,6 +2,7 @@ import mysql.connector as connector
 import os
 from contextlib import AbstractContextManager
 from abc import ABC, abstractmethod
+from credentials import credentials
 
 
 class mapper(AbstractContextManager, ABC):
@@ -10,7 +11,7 @@ class mapper(AbstractContextManager, ABC):
         self._connector = None
 
     def __enter__(self):
-        self._connector = connector.connect(user='root', password='Michi2110,', host='localhost', database='datenbank')
+        self._connector = connector.connect(user='root', password=credentials["db_password"], host='localhost', database='datenbank')
 
         return self
 
