@@ -3,7 +3,7 @@ body {
     flex-direction: column;
     min-height: 100vh; 
     font-family: Arial, sans-serif;
-    background-image: linear-gradient(#000000, #393838); 
+    background-image: linear-gradient(170deg, #000000 0%, #000333 50%, #0000cf 100%); 
     color: #333; 
 }
 
@@ -16,7 +16,7 @@ h2 {
 
 .container {
     padding: 30px; /* Inneres Padding */
-    background-color: white; /* Hintergrundfarbe */
+    background-color: rgb(254, 254, 255); /* Hintergrundfarbe */
     border-radius: 30px; /* Abgerundete Ecken */
     box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optionaler Schatten für etwas Tiefe */
     margin-top: 40px; /* Abstand von oben */
