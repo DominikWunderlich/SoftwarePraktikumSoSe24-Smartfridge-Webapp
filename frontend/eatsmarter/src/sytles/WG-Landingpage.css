@@ -24,3 +24,24 @@ h2 {
     margin-left: auto; /* Zentriert das div */
     margin-right: auto; /* Zentriert das div */
 }
+
+.formitem {
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+}
+
+
+button[type="submit"], input[type="submit"] {
+    background-color: #031544; /* Hintergrundfarbe des Buttons */
+    color: white;
+    font-size: medium;
+    padding: 15px 3%;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #0000cf; /* Dunklere Farbe beim Hover */
+}

@@ -53,7 +53,7 @@ function WGLandingpage() {
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
+                    <div class='formitem'>
                         <label>Füge einen Mitbewohner deiner WG hinzu: </label>
                         <input
                             type={"text"}
@@ -62,7 +62,7 @@ function WGLandingpage() {
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
+                    <div class='formitem'>
                         <label>Füge einen Admin deiner WG hinzu:</label>
                         <input
                             type={"text"}
