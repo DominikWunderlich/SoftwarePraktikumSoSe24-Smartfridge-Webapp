@@ -40,11 +40,11 @@ function WGLandingpage() {
 
     return (
         <div>
-            <p>Diese Seite wird die zukünftigte WG Landingpage.</p>
+            <p>Platzhalter für Navigationsleiste</p>
             <div class='container'>
                 <form onSubmit={handleSubmit}>
                     <h2>Erstelle eine WG!</h2>
-                    <div>
+                    <div class='formitem'>
                         <label>Name deiner WG: </label>
                         <input
                             type={"text"}
@@ -54,7 +54,7 @@ function WGLandingpage() {
                         />
                     </div>
                     <div class='formitem'>
-                        <label>Füge einen Mitbewohner deiner WG hinzu: </label>
+                        <label>Füge einen Mitbewohner hinzu: </label>
                         <input
                             type={"text"}
                             name={"wgbewohner"}
@@ -63,7 +63,7 @@ function WGLandingpage() {
                         />
                     </div>
                     <div class='formitem'>
-                        <label>Füge einen Admin deiner WG hinzu:</label>
+                        <label>Füge einen Admin hinzu:</label>
                         <input
                             type={"text"}
                             name={"wgadmin"}
