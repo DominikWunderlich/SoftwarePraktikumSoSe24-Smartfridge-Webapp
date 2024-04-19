@@ -7,10 +7,11 @@ export default class EatSmarterAPI{
     static #api = null;
 
     // Local python backend
-    #EatSmarterServerBaseUR = "/system";
+    #EatSmarterServerBaseURL = "/system";
 
     // Wg related URLS
-    #addWgURL = () => `${this.#EatSmarterServerBaseUR}/wg`;
+    #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
+    #deleteWgURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_name>`;
 
     addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
@@ -24,6 +25,22 @@ export default class EatSmarterAPI{
             let responseWgBO = WgBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
                 resolve(responseWgBO);
+            })
+        })
+    }
+
+    deleteWgByName(wgName){
+        return this.#fetchAdvanced(this.#deleteWgURL(),{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(wgName)
+        }).then((responseJSON) => {
+            let removedWgBO = WgBO.fromJSON(responseJSON)[0];
+            return new Promise( function(resolve) {
+                resolve(responseJSON);
             })
         })
     }
