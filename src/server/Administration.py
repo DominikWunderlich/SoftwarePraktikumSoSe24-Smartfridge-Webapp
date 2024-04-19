@@ -17,3 +17,12 @@ class Administration(object):
 
         with WGMapper() as mapper:
             return mapper.insert(w)
+
+    def get_wg_by_name(self, key):
+        """ Auslesen einer WG Instanz nach Name """
+        with WGMapper() as mapper:
+            return mapper.find_by_key(key)
+
+    def delete_wg_by_name(self, key):
+        with WGMapper() as mapper:
+            return mapper.delete(key)

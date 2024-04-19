@@ -28,7 +28,7 @@ class WGMapper(mapper):
         result =[]
 
         cursor = self._connector.cursor()
-        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_id='{key}' "
+        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_name='{key}' "
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -77,11 +77,11 @@ class WGMapper(mapper):
         self._connector(command, data)
         cursor.close()
 
-    def delete(self, wg_id):
+    def delete(self, key):
         cursor = self._connector.cursor()
 
-        command = f"DELETE FROM datenbank.wg WHERE wg_id='{wg_id[0].get.wg_id()}'"
-        cursor.execute()
+        command = f"DELETE FROM datenbank.wg WHERE wg_name='{key}'"
+        cursor.execute(command)
 
         self._connector.commit()
         cursor.close()

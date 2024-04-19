@@ -60,5 +60,28 @@ class WgOperations(Resource):
             return 'Fehler in WG-Operations post methode', 500
 
 
+@smartapi.route('/wg/<wg_name>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('wg_name', 'Die Name der WG')
+class WgGetOperations(Resource):
+    #@secured
+    def get(self, wg_name):
+        """ Auslesen eines BlockNote-Objekts """
+
+        adm = Administration()
+        wg_page = adm.get_wg_by_name(wg_name)
+        print(wg_page)
+
+        if wg_page is not None:
+            return wg_page
+        else:
+            return '', 500
+
+    def delete(self, wg_name):
+        adm = Administration()
+        adm.get_wg_by_name(wg_name)
+        return "", 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -2,12 +2,13 @@ import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
-import WGLandingpage from "./pages/WG-Landingpage";
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import firebaseConfig from "./firebaseconfig";
 import {Avatar, Menu, MenuItem} from '@mui/material';
 import SignIn from "./components/SignIn";
+import RegisterWG from "./pages/registerWG";
+import Homepage from "./pages/Homepage";
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -119,7 +120,8 @@ function App(props) {
 				<Router>
 					<Routes>
 						<Route path="/" element={<Navigate to="/wg" />} />
-						<Route path="wg" element={<WGLandingpage />} />
+                        <Route path="wg" element={<RegisterWG />} />
+                        <Route path="/home" element={<Homepage />} />
 					</Routes>
 				</Router>
 		   </div>
