@@ -77,6 +77,11 @@ class WgGetOperations(Resource):
         else:
             return '', 500
 
+    def delete(self, wg_name):
+        adm = Administration()
+        adm.get_wg_by_name(wg_name)
+        return "", 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
