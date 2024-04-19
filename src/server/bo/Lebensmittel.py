@@ -9,35 +9,35 @@ class Lebensmittel (bo.BusinessObject):
     def __init__(self):
         super().__init__()
         self.lebensmittelname = ""
-        self.aggregatszustand =""
+        self.aggregatszustand = ""
 
     def get_lebensmittlename(self):
-            """Auslesen des Lebensmittelnamens."""
-         return self.lebensmittelname
+        """Auslesen des Lebensmittelnamens."""
+        return self.lebensmittelname
 
     def set_lebensmittlename(self, name):
-            """Setzen des Lebensmittelnamens."""
+        """Setzen des Lebensmittelnamens."""
         self.lebensmittelname = name
 
     def get_aggregatszustand(self):
-            """Auslesen des Aggregatszustands."""
-         return self.aggregatszustand
+        """Auslesen des Aggregatszustands."""
+        return self.aggregatszustand
 
     def set_aggregatszustand(self, zustand):
-            """Setzen des Aggregatszustands."""
-         self.aggregatszustand = zustand
+        """Setzen des Aggregatszustands."""
+        self.aggregatszustand = zustand
 
     def add_lebensmittel(self):
-            """Hinzufügen eines Lebensmittels."""
+        """Hinzufügen eines Lebensmittels."""
         pass
 
     def remove_lebensmittel(self):
-            """Entfernen eines Lebensmittels."""
+        """Entfernen eines Lebensmittels."""
         pass
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "Lebensmittel: {}, {}".format(self.lebensmittelname, self.aggregatszustand)
+        return "Lebensmittel: {}, {}, {}".format(self.get_id(), self.lebensmittelname, self.aggregatszustand)
 
     @staticmethod
     def from_dict(dictionary=dict()):
