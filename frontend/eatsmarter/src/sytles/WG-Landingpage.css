@@ -42,7 +42,7 @@ input[type="text"], input[type="email"], input[type="password"] {
     background: #f1f1f1;
 }
 
-button[type="submit"], input[type="submit"] {
+button[type="submit"], button[type="button"], input[type="submit"] {
     background-color: #031544; /* Hintergrundfarbe des Buttons */
     color: white;
     font-size: medium;
@@ -52,6 +52,7 @@ button[type="submit"], input[type="submit"] {
     cursor: pointer;
     width: 100%;
 }
+
 
 button[type="submit"]:hover {
     background-color: #0000cf; /* Dunklere Farbe beim Hover */
