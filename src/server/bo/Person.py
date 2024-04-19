@@ -1,7 +1,7 @@
 from server.bo import BusinessObject as bo
 
 
-class Person(bo.BusinessObject):
+class Person(bo):
     """Realisierung einer exemplarischen Benutzerklasse.
 
     Aus Gründen der Vereinfachung besitzt der Kunden in diesem Demonstrator
@@ -15,6 +15,7 @@ class Person(bo.BusinessObject):
         self.vorname = ""  # Der Name des Benutzers.
         self.nachname = ""  # Der Name des Benutzers.
         self.email = ""  # Die E-Mail-Adresse des Benutzers.
+        self.google_id = ""
 
     def get_benutzername(self):
         """Auslesen des Benutzernamens."""
@@ -48,10 +49,16 @@ class Person(bo.BusinessObject):
         """Setzen der E-Mail-Adresse."""
         self.email = value
 
+    def get_google_id(self):
+        return self.google_id
+
+    def set_google_id(self, google_id):
+        self.google_id = google_id
+
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "User: {}, {}, {}, {}, {}".format(self.get_id(), self.benutzername, self.vorname, self.nachname,
-                                                 self.email)
+        return "User: {}, {}, {}, {}, {}, {}".format(self.get_id(), self.benutzername, self.vorname, self.nachname,
+                                                 self.email, self.google_id)
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -62,4 +69,5 @@ class Person(bo.BusinessObject):
         pe.set_vorname(dictionary["vorname"])
         pe.set_nachname(dictionary["nachname"])
         pe.set_email(dictionary["email"])
+        pe.set_google_id(dictionary["google_id"])
         return pe
