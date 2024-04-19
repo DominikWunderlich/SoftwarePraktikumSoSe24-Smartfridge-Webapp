@@ -1,16 +1,16 @@
 import React from "react";
 
-function loginPerson() {
+function Homepage() {
     return (
         <div>
             <p>Platzhalter für Navigationsleiste</p>
             <div className='container'>
                 
-                    <h2>Logge dich ein!</h2>
+                    <h2>Erstelle eine WG!</h2>
                 
             </div>
         </div>
     );
 }
 
-export default loginPerson;
+export default Homepage;
