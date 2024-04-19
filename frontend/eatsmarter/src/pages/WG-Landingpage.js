@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import WgBO from "../api/WgBO";
 import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
+import '../sytles/WG-Landingpage.css';
 
 function WGLandingpage() {
     const [formData, setFormData] = useState({
@@ -39,41 +40,42 @@ function WGLandingpage() {
 
     return (
         <div>
-            <p>Diese Seite wird die zukünftigte WG Landingpage.</p>
-            <form onSubmit={handleSubmit}>
-                <h2>Erstelle eine WG!</h2>
-                <div>
-                    <label>Name deiner WG: </label>
-                    <input
-                        type={"text"}
-                        name={"wgname"}
-                        value={formData.wgname}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <label>Füge einen Mitbewohner deiner WG hinzu: </label>
-                    <input
-                        type={"text"}
-                        name={"wgbewohner"}
-                        value={formData.wgbewohner}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <label>Füge einen Admin deiner WG hinzu:</label>
-                    <input
-                        type={"text"}
-                        name={"wgadmin"}
-                        value={formData.wgadmin}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <button type={"submit"}>Bestätigen</button>
-                </div>
-
-            </form>
+            <p>Platzhalter für Navigationsleiste</p>
+            <div className='container'>
+                <form onSubmit={handleSubmit}>
+                    <h2>Erstelle eine WG!</h2>
+                    <div className='formitem'>
+                        <label>Name deiner WG: </label>
+                        <input
+                            type={"text"}
+                            name={"wgname"}
+                            value={formData.wgname}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className='formitem'>
+                        <label>Füge einen Mitbewohner hinzu: </label>
+                        <input
+                            type={"text"}
+                            name={"wgbewohner"}
+                            value={formData.wgbewohner}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className='formitem'>
+                        <label>Füge einen Admin hinzu:</label>
+                        <input
+                            type={"text"}
+                            name={"wgadmin"}
+                            value={formData.wgadmin}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <button type={"submit"}>Bestätigen</button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

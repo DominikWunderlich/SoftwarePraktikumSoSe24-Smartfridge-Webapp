@@ -33,6 +33,7 @@ class WG(bo):
     def from_dict(dictionary=dict()):
         wg = WG()
         wg.set_id(dictionary['id'])
-        wg.set_wg_name(dictionary['wg_name'])
-        wg.set_wg_bewohner(dictionary['wg_bewohner'])
-        wg.set_wg_ersteller(dictionary['wg_ersteller'])
+        wg.set_wg_name(dictionary['wgName'])
+        wg.set_wg_bewohner(dictionary['wgBewohner'])
+        wg.set_wg_ersteller(dictionary['wgAdmin'])
+        return wg

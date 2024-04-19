@@ -1,43 +1,31 @@
 from server.bo import BusinessObject as bo
-class Lebensmittel (bo.BusinessObject):
-    """Realisierung einer exemplarischen Benutzerklasse.
 
-    Aus Gründen der Vereinfachung besitzt der Kunden in diesem Demonstrator
-    lediglich einen einfachen Namen, eine E_Mail-Adresse sowie eine außerhalb
-    unseres Systems verwaltete User ID (z.B. die Google ID).
-    """
+
+class Lebensmittel(bo.BusinessObject):
     def __init__(self):
         super().__init__()
         self.lebensmittelname = ""
-        self.aggregatszustand =""
+        self.aggregatszustand = ""
 
     def get_lebensmittlename(self):
-            """Auslesen des Lebensmittelnamens."""
-         return self.lebensmittelname
+        """Auslesen des Lebensmittelnamens."""
+        return self.lebensmittelname
 
     def set_lebensmittlename(self, name):
-            """Setzen des Lebensmittelnamens."""
+        """Setzen des Lebensmittelnamens."""
         self.lebensmittelname = name
 
     def get_aggregatszustand(self):
-            """Auslesen des Aggregatszustands."""
-         return self.aggregatszustand
+        """Auslesen des Aggregatszustands."""
+        return self.aggregatszustand
 
     def set_aggregatszustand(self, zustand):
-            """Setzen des Aggregatszustands."""
-         self.aggregatszustand = zustand
-
-    def add_lebensmittel(self):
-            """Hinzufügen eines Lebensmittels."""
-        pass
-
-    def remove_lebensmittel(self):
-            """Entfernen eines Lebensmittels."""
-        pass
+        """Setzen des Aggregatszustands."""
+        self.aggregatszustand = zustand
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "Lebensmittel: {}, {}".format(self.lebensmittelname, self.aggregatszustand)
+        return "Lebensmittel: {}, {}, {}".format(self.get_id(), self.lebensmittelname, self.aggregatszustand)
 
     @staticmethod
     def from_dict(dictionary=dict()):
