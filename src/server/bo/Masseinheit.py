@@ -1,5 +1,5 @@
 from server.bo import BusinessObject as bo
-class Maßeinheit (bo.BusinessObject):
+class Masseinheit (bo.BusinessObject):
     """Realisierung einer exemplarischen Benutzerklasse.
 
     Aus Gründen der Vereinfachung besitzt der Kunden in diesem Demonstrator
@@ -8,49 +8,37 @@ class Maßeinheit (bo.BusinessObject):
     """
     def __init__(self):
         super().__init__()
-        self.maßeinheitsname= ""
+        self.masseinheitsname = ""
         self.menge = ""
-        self.id = ""
 
-
-    def get_maßeinheit(self):
+    def get_masseinheit(self):
         """Auslesen des maßeinheit."""
-        return self.maßeinheit
+        return self.masseinheitsname
 
-    def set_maßeinheit(neweinheit: id):
+    def set_masseinheit(self, masseinheitsname):
         """Setzen des maßeinheit."""
-        self.maßeinheit = id
+        self.masseinheitsname = masseinheitsname
 
     def get_menge(self):
         """Auslesen des menge."""
         return self.menge
 
-    def set_menge(neweinheit, value):
+    def set_menge(self, menge):
         """Setzen des menge."""
-        self.menge = value
+        self.menge = menge
 
-    def create_maßeinheit(self):
-        """Erstellen einer neuen Maßeinheit."""
-        pass
 
-    def remove_maßeinheit(self):
-        """Entfernen einer Maßeinheit."""
-        pass
-
-    def update_maßeinheit(self):
-        """Aktualisieren einer Maßeinheit."""
-        pass
 
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "User: {}, {}, {}".format(self._id, self.maßeinheit, self.menge)
+        return "User: {}, {}, {}".format(self.get_id(), self.masseinheitsname, self.menge)
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in einen User()."""
-        ma = maßeinheit()
+        ma = Masseinheit()
         ma.set_id(dictionary["id"])
-        ma.set_name(dictionary["maßeinheit"])
-        ma.set_email(dictionary["menge"])
-        return obj
+        ma.set_masseinheit(dictionary["maßeinheit"])
+        ma.set_menge(dictionary["menge"])
+        return ma
