@@ -1,3 +1,3 @@
 credentials = dict(
-    db_password="Yozgat66"
+    db_password="Michi2110,"
 )
