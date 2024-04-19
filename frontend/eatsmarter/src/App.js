@@ -1,7 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
-import WGLandingpage from "./pages/WG-Landingpage";
+import RegisterWG from "./pages/registerWG";
+
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
           <Router>
             <Routes>
               <Route path="/" element={<Navigate to="/wg" />} />
-              <Route path="wg" element={<WGLandingpage />} />
+              <Route path="wg" element={<RegisterWG />} />
             </Routes>
           </Router>
       </div>
