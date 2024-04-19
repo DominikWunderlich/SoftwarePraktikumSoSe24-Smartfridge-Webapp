@@ -41,15 +41,22 @@ wg = api.inherit('WG', bo, {
 @smartapi.response(500, 'Serverseitiger Fehler')
 class WgOperations(Resource):
     @smartapi.expect(wg)
+    @smartapi.marshal_with(wg)
     def post(self):
         """ Anlegen eines neuen WG-Objekts. """
         adm = Administration()
         proposal = WG.from_dict(api.payload)
+        print(api.payload)
 
         if proposal is not None:
-            result = adm.create_wg(proposal)
+            result = adm.create_wg(
+                proposal.get_wg_name(),
+                proposal.get_wg_ersteller(),
+                proposal.get_wg_bewohner())
+            print(result, "hi")
             return result, 200
         else:
+            print("Else Pfad")
             return 'Fehler in WG-Operations post methode', 500
 
 

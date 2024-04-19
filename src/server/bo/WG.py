@@ -36,3 +36,4 @@ class WG(bo):
         wg.set_wg_name(dictionary['wgName'])
         wg.set_wg_bewohner(dictionary['wgBewohner'])
         wg.set_wg_ersteller(dictionary['wgAdmin'])
+        return wg
