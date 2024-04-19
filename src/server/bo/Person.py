@@ -1,16 +1,10 @@
 from server.bo import BusinessObject as bo
 class Person (bo.BusinessObject):
-    """Realisierung einer exemplarischen Benutzerklasse.
-
-    Aus Gründen der Vereinfachung besitzt der Kunden in diesem Demonstrator
-    lediglich einen einfachen Namen, eine E_Mail-Adresse sowie eine außerhalb
-    unseres Systems verwaltete User ID (z.B. die Google ID).
-    """
     def __init__(self):
         super().__init__()
         self.benutzername = ""  # Die extern verwaltete User ID.
-        self.vorname = ""  # Der Name des Benutzers.
-        self.nachname = ""  # Der Name des Benutzers.
+        self.vorname = ""  # Der vorname des Benutzers.
+        self.nachname = ""  # Der Nachname des Benutzers.
         self.email = ""  # Die E-Mail-Adresse des Benutzers.
     def get_benutzername(self):
         """Auslesen des Benutzernamens."""
@@ -45,12 +39,10 @@ class Person (bo.BusinessObject):
 
 
     def __str__(self):
-        """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
         return "User: {}, {}, {}, {}, {}".format(self._id, self.benutzername, self.vorname, self.nachname, self.email)
 
     @staticmethod
     def from_dict(dictionary=dict()):
-        """Umwandeln eines Python dict() in einen User()."""
         pe = person()
         pe.set_id(dictionary["id"])
         pe.set_benutzername(dictionary["benutzername"])  # eigentlich Teil von BusinessObject !

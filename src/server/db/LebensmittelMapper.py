@@ -1,7 +1,8 @@
+from server.db.mapper import mapper
 from server.bo.Lebensmittel import Lebensmittel
-from server.db.Mapper import Mapper
 
-class AccountMapper(Mapper):
+
+class AccountMapper(mapper):
 
     def __init__(self):
         super().__init__()
@@ -9,7 +10,7 @@ class AccountMapper(Mapper):
     def find_all(self):
         result = []
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT * from lebensmittel")
+        cursor.execute("SELECT * from datenbank.lebensmittel")
         tuples = cursor.fetchall()
 
         for (id, lebensmittelname, aggregatszustand) in tuples:
@@ -27,7 +28,7 @@ class AccountMapper(Mapper):
     def find_by_lebensmittelname(self, lebensmittelname):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, lebensmittelname, aggregatszustand FROM lebensmittel WHERE lebensmittelname LIKE %s"
+        command = "SELECT id, lebensmittelname, aggregatszustand FROM datenbank.lebensmittel WHERE lebensmittelname LIKE %s"
         cursor.execute(command, (lebensmittelname,))
         tuples = cursor.fetchall()
 
@@ -45,7 +46,7 @@ class AccountMapper(Mapper):
 
     def insert(self, lebensmittel):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM lebensmittel")
+        cursor.execute("SELECT MAX(id) AS maxid FROM datenbank.lebensmittel")
         tuples = cursor.fetchall()
 
         for (maxid,) in tuples:
@@ -66,7 +67,7 @@ class AccountMapper(Mapper):
     def update(self, lebensmittel):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE lebensmittel SET lebensmittelname=%s, aggregatszustand=%s WHERE id=%s"
+        command = "UPDATE datenbank.lebensmittel SET lebensmittelname=%s, aggregatszustand=%s WHERE id=%s"
         data = (lebensmittel.get_lebensmittlename(), lebensmittel.get_aggregatszustand(), lebensmittel.get_id())
         cursor.execute(command, data)
 
@@ -76,7 +77,7 @@ class AccountMapper(Mapper):
     def delete(self, lebensmittel):
         cursor = self._cnx.cursor()
 
-        command = "DELETE FROM lebensmittel WHERE id=%s"
+        command = "DELETE FROM datenbank.lebensmittel WHERE id=%s"
         data = (lebensmittel.get_id(),)
         cursor.execute(command, data)
 
