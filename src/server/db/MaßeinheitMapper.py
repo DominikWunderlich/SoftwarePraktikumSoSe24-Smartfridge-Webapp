@@ -1,162 +1,61 @@
-from server.bo.Transaction import Transaction
+from server.bo.Masseinheit import Masseinheit
 from server.db.mapper import mapper
 
-
-class MaßeinheitMapper (mapper):
-
-    def __init__(self):
-        super().__init__()
+class MasseinheitMapper(mapper):
 
     def find_all(self):
-
         result = []
         cursor = self._cnx.cursor()
-
-        cursor.execute("SELECT id, sourceAccount, targetAccount, amount from datenbank.transactions")
-        tuples = cursor.fetchall()
-
-        for (id, sourceAccount, targetAccount, amount) in tuples:
-            transaction = Transaction()
-            transaction.set_id(id)
-            transaction.set_source_account(sourceAccount)
-            transaction.set_target_account(targetAccount)
-            transaction.set_amount(amount)
-            result.append(transaction)
-
-        self._cnx.commit()
+        cursor.execute("SELECT * FROM datenbank.masseinheit")
+        for (id, maßeinheit, menge) in cursor.fetchall():
+            masseinheit_instance = Masseinheit()
+            masseinheit_instance.set_id(id)
+            masseinheit_instance.set_masseinheitname(maßeinheit)
+            masseinheit_instance.set_menge(menge)
+            result.append(masseinheit_instance)
         cursor.close()
-
         return result
 
-    def find_by_source_account_id(self, account_id):
-
-
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, sourceAccount, targetAccount, amount FROM datenbank.transactions WHERE sourceAccount={} ORDER BY id".format(account_id)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, sourceAccount, targetAccount, amount) in tuples:
-            transaction = Transaction()
-            transaction.set_id(id)
-            transaction.set_source_account(sourceAccount)
-            transaction.set_target_account(targetAccount)
-            transaction.set_amount(amount)
-            result.append(transaction)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_target_account_id(self, account_id):
-        """Auslesen aller Buchungen eines durch Fremdschlüssel (Kontonr.) gegebenen Ziel-Kontos.
-
-        :param account_id Schlüssel des zugehörigen Kontos.
-        :return Eine Sammlung mit Transaction-Objekten.
-        """
-        result = []
-        cursor = self._cnx.cursor()
-        command = "SELECT id, sourceAccount, targetAccount, amount FROM datenbank.transactions WHERE targetAccount={} ORDER BY id".format(account_id)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (id, sourceAccount, targetAccount, amount) in tuples:
-            transaction = Transaction()
-            transaction.set_id(id)
-            transaction.set_source_account(sourceAccount)
-            transaction.set_target_account(targetAccount)
-            transaction.set_amount(amount)
-            result.append(transaction)
-
-        self._cnx.commit()
-        cursor.close()
-
-        return result
-
-    def find_by_key(self, key):
-
+    def find_by_name(self, name):
         result = None
-
         cursor = self._cnx.cursor()
-        command = "SELECT id, sourceAccount, targetAccount, amount FROM datenbank.transactions WHERE id={}".format(key)
-        cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        if tuples is not None \
-                and len(tuples) > 0 \
-                and tuples[0] is not None:
-            (id, sourceAccount, targetAccount, amount) = tuples[0]
-            transaction = Transaction()
-            transaction.set_id(id)
-            transaction.set_source_account(sourceAccount)
-            transaction.set_target_account(targetAccount)
-            transaction.set_amount(amount)
-
-            result = transaction
-        else:
-            result = None
-
-        self._cnx.commit()
+        command = "SELECT id, maßeinheit, menge FROM datenbank.Masseinheit WHERE maßeinheit = %s"
+        cursor.execute(command, (mname,))
+        tuple = cursor.fetchone()
         cursor.close()
-
+        if tuple:
+            (id, maßeinheit, menge) = tuple
+            result = Masseinheit()
+            result.set_id(id)
+            result.set_masseinheit(maßeinheit)
+            result.set_menge(menge)
         return result
 
-    def insert(self, transaction):
-
+    def insert(self, Masseinheit):
         cursor = self._cnx.cursor()
-        cursor.execute("SELECT MAX(id) AS maxid FROM datenbank.transactions ")
-        tuples = cursor.fetchall()
-
-        for (maxid) in tuples:
-            transaction.set_id(maxid[0] + 1)
-
-        command = "INSERT INTO datenbank.transactions (id, sourceAccount, targetAccount, amount) VALUES (%s,%s,%s,%s)"
-        data = (transaction.get_id(),
-                transaction.get_source_account(),
-                transaction.get_target_account(),
-                transaction.get_amount())
+        command = "INSERT INTO datenbank.masseinheit (id, maßeinhei, menge) VALUES (%s, %s, %s)"
+        data = (Masseinheit.get_id(), Masseinheit.get_masseinheitname(), Masseinheit.get_menge())
         cursor.execute(command, data)
-
         self._cnx.commit()
         cursor.close()
 
-        return transaction
-
-    def update(self, transaction):
-
+    def update(self, Masseinheit):
         cursor = self._cnx.cursor()
-
-        command = "UPDATE transactions " + "SET sourceAccount=%s, targetAccount=%s, amount=%s WHERE id=%s"
-        data = (transaction.get_source_account(),
-                transaction.get_target_account(),
-                transaction.get_amount(),
-                transaction.get_id())
+        command = "UPDATE datenbank.masseinheit SET maßeinheit=%s, menge=%s WHERE id=%s"
+        data = (Masseinheit.get_masseinheitname(), Masseinheit.get_menge(), Masseinheit.get_id())
         cursor.execute(command, data)
-
         self._cnx.commit()
         cursor.close()
 
-    def delete(self, transaction):
-
+    def delete(self, Masseinheit):
         cursor = self._cnx.cursor()
-
-        command = "DELETE FROM datenbank.transactions WHERE id={}".format(transaction.get_id())
-        cursor.execute(command)
-
+        command = "DELETE FROM datenbank.masseinheit WHERE id=%s"
+        cursor.execute(command, (Masseinheit.get_id(),))
         self._cnx.commit()
         cursor.close()
 
-
-if (__name__ == "__main__"):
+if __name__ == "__main__":
     with MasseinheitMapper() as mapper:
         result = mapper.find_all()
-        for transaction in result:
-            print(Masseinheit)
-
-if (__name__ == "__main__"):
-    with AccountMapper() as mapper:
-        result = mapper.find_all()
-        for lebensmittel in result:
-            print(lebensmittel)
+        for masseinheit_instance in result:
+            print(masseinheit_instance)

@@ -13,7 +13,7 @@ class PersonMapper(mapper):
         cursor.execute("SELECT * from datenbank.person")
         tuples = cursor.fetchall()
 
-        for (id, benutzername, vorname, nachname email) in tuples:
+        for (id, benutzername, vorname, nachname, email) in tuples:
             user = Person
             user.set_id(id)
             user.set_benutzername(benutzername)
@@ -31,7 +31,7 @@ class PersonMapper(mapper):
 
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, vorname, nachname,  email, google_user_id FROM datenbank.person WHERE name LIKE '{}' ORDER BY name".format(name)
+        command = "SELECT id, vorname, nachname,  email, google_user_id FROM datenbank.person WHERE name LIKE '{}' ORDER BY name".format(benutzername)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -42,7 +42,7 @@ class PersonMapper(mapper):
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_email(email)
-            u.set_user_id(google_user_id)
+            user.set_user_id(google_user_id)
             result.append(user)
 
 
@@ -68,7 +68,7 @@ class PersonMapper(mapper):
             user.set_benutzername(benutzername)
             user.set_vorname(vorname)
             user.set_nachname(nachname)
-            user.set_email(email) u.set_user_id(google_user_id)
+            user.set_email(email)
         except IndexError:
 
             result = None
@@ -83,7 +83,7 @@ class PersonMapper(mapper):
         result = None
 
         cursor = self._cnx.cursor()
-        command = "SELECT id, benutzername, vorname, nachname, email, google_user_id FROM datenbank.person WHERE email={}".format(mail_address)
+        command = "SELECT id, benutzername, vorname, nachname, email, google_user_id FROM datenbank.person WHERE email={}".format(email)
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -94,7 +94,7 @@ class PersonMapper(mapper):
             user.set_benutzername(benutzername)
             user.set_vorname(vorname)
             user.set_nachname(nachname)
-            user.set_email(email)   u.set_user_id(google_user_id)
+            user.set_email(email)
         except IndexError:
 
             result = None
@@ -119,7 +119,7 @@ class PersonMapper(mapper):
             user.set_benutzername(benutzername)
             user.set_vorname(vorname)
             user.set_nachname(nachname)
-            user.set_email(email) u.set_user_id(google_user_id)
+            user.set_email(email)
 
             result = user
         except IndexError:
@@ -177,7 +177,6 @@ class PersonMapper(mapper):
 
 
 
-Anmerkung: Nicht professionell aber hilfreich..."""
 if (__name__ == "__main__"):
     with PersonMapper() as mapper:
         result = mapper.find_all()
