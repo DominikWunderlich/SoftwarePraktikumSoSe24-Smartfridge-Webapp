@@ -1,17 +1,21 @@
 from server.bo import BusinessObject as bo
-class Person (bo.BusinessObject):
+
+
+class Person(bo.BusinessObject):
     """Realisierung einer exemplarischen Benutzerklasse.
 
     Aus Gründen der Vereinfachung besitzt der Kunden in diesem Demonstrator
     lediglich einen einfachen Namen, eine E_Mail-Adresse sowie eine außerhalb
     unseres Systems verwaltete User ID (z.B. die Google ID).
     """
+
     def __init__(self):
         super().__init__()
         self.benutzername = ""  # Die extern verwaltete User ID.
         self.vorname = ""  # Der Name des Benutzers.
         self.nachname = ""  # Der Name des Benutzers.
         self.email = ""  # Die E-Mail-Adresse des Benutzers.
+
     def get_benutzername(self):
         """Auslesen des Benutzernamens."""
         return self.benutzername
@@ -19,6 +23,7 @@ class Person (bo.BusinessObject):
     def set_benutzername(self, value):
         """Setzen des Benutzernamens."""
         self.benutzername = value
+
     def get_vorname(self):
         """Auslesen vorname."""
         return self.vorname
@@ -43,18 +48,18 @@ class Person (bo.BusinessObject):
         """Setzen der E-Mail-Adresse."""
         self.email = value
 
-
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "User: {}, {}, {}, {}, {}".format(self._id, self.benutzername, self.vorname, self.nachname, self.email)
+        return "User: {}, {}, {}, {}, {}".format(self.get_id(), self.benutzername, self.vorname, self.nachname,
+                                                 self.email)
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in einen User()."""
-        pe = person()
+        pe = Person()
         pe.set_id(dictionary["id"])
-        pe.set_benutzername(dictionary["benutzername"])  # eigentlich Teil von BusinessObject !
-        pe.set_name(dictionary["vorname"])
-        pe.set_name(dictionary["nachname"])
+        pe.set_benutzername(dictionary["benutzername"])
+        pe.set_vorname(dictionary["vorname"])
+        pe.set_nachname(dictionary["nachname"])
         pe.set_email(dictionary["email"])
-        return obj
+        return pe
