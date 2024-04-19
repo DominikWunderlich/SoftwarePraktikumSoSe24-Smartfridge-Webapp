@@ -28,7 +28,7 @@ class WGMapper(mapper):
         result =[]
 
         cursor = self._connector.cursor()
-        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_id='{key}' "
+        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_name='{key}' "
         cursor.execute(command)
         tuples = cursor.fetchall()
 
