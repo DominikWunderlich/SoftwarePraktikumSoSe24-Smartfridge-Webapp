@@ -13,7 +13,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/wg" />} />
               <Route path="wg" element={<RegisterWG />} />
-              <Route path="/home" element={<Homepage />} />
+              <Route path="/wg/<wg_name>" element={<Homepage />} />
               <Route path="/login" element={<LoginPerson />} />
             </Routes>
           </Router>
