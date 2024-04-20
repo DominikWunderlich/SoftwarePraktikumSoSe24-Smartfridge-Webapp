@@ -9,6 +9,8 @@ import {Avatar, Menu, MenuItem} from '@mui/material';
 import SignIn from "./components/SignIn";
 import RegisterWG from "./pages/registerWG";
 import Homepage from "./pages/Homepage";
+import LoginPerson from "./pages/loginPerson";
+import Lebensmittelverwaltung from "./pages/Lebensmittel-Verwaltung";
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -113,22 +115,24 @@ function App(props) {
     }, []); //Empty dependency array to only run once. Equivalent to componentDidMount
 
 
-  return (
-   <div className="App">
-	   {state.currentUser ? (
-           <div className="content">
-				<Router>
-					<Routes>
-						<Route path="/" element={<Navigate to="/wg" />} />
-                        <Route path="wg" element={<RegisterWG />} />
-                        <Route path="/home" element={<Homepage />} />
-					</Routes>
-				</Router>
-		   </div>
-		  	) : (
-		  <SignIn onSignIn={handleSignIn}></SignIn>
-		   )}
-   </div>
-  );
-}
-export default App;
+    return (
+      <div className="App">
+        {state.currentUser ? (
+              <div className="content">
+           <Router>
+             <Routes>
+               <Route path="/" element={<Navigate to="/wg" />} />
+                          <Route path="wg" element={<RegisterWG />} />
+                           <Route path="/home" element={<Homepage />} />
+                           <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
+
+             </Routes>
+           </Router>
+          </div>
+           ) : (
+         <SignIn onSignIn={handleSignIn}></SignIn>
+          )}
+      </div>
+     );
+   }
+   export default App;

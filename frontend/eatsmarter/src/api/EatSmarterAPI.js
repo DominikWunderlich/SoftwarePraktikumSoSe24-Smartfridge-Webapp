@@ -29,6 +29,24 @@ export default class EatSmarterAPI{
         })
     }
 
+    #getWgbyURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_name>`;
+
+    getWGbyName(name) {
+        return this.#fetchAdvanced(this.#getWgbyURL(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(name)
+        }).then((responseJSON) => {
+            let responseWgBO = WgBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseWgBO);
+            })
+        })
+    }
+
     deleteWgByName(wgName){
         return this.#fetchAdvanced(this.#deleteWgURL(),{
             method: "DELETE",
