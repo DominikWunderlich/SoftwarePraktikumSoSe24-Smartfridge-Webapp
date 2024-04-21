@@ -121,10 +121,10 @@ function App(props) {
               <div className="content">
            <Router>
              <Routes>
-               <Route path="/" element={<Navigate to="/wg" />} />
-                          <Route path="wg" element={<RegisterWG />} />
-                           <Route path="/home" element={<Homepage />} />
-                           <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
+				 <Route path="/" element={<Navigate to="/wg" />} />
+                 <Route path="wg" element={<RegisterWG />} />
+                 <Route path="/home" element={<Homepage />} />
+                 <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
              </Routes>
            </Router>
           </div>
