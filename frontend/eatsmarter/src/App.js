@@ -11,6 +11,7 @@ import RegisterWG from "./pages/registerWG";
 import Homepage from "./pages/Homepage";
 import LoginPerson from "./pages/loginPerson";
 import Lebensmittelverwaltung from "./pages/Lebensmittel-Verwaltung";
+import DeineRezepte from "./pages/DeineRezepte";
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -125,6 +126,7 @@ function App(props) {
                  <Route path="wg" element={<RegisterWG />} />
                  <Route path="/home" element={<Homepage />} />
                  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
+				 <Route path="/deineRezepte" element={<DeineRezepte />} />
              </Routes>
            </Router>
           </div>
