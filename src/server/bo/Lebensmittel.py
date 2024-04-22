@@ -1,7 +1,7 @@
-from server.bo import BusinessObject as bo
+from BusinessObject import BusinessObject as bo
 
 
-class Lebensmittel(bo.BusinessObject):
+class Lebensmittel(bo):
     def __init__(self):
         super().__init__()
         self.lebensmittelname = ""
@@ -25,7 +25,7 @@ class Lebensmittel(bo.BusinessObject):
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "Lebensmittel: {}, {}, {}".format(self.get_id(), self.lebensmittelname, self.aggregatszustand)
+        return "Lebensmittel: {}, {}, {}".format(self.get_id(), self.get_lebensmittlename(), self.get_aggregatszustand())
 
     @staticmethod
     def from_dict(dictionary=dict()):

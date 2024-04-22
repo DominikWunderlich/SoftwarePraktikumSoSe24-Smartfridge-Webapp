@@ -137,7 +137,7 @@ class PersonMapper(mapper):
             else:
                 person.set_id(1)
 
-        command = "INSERT INTO datenbank.person (person_id, emai, benutzername, vorname, nachname, google_id) VALUES (%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO datenbank.person (person_id, email, benutzername, vorname, nachname, google_id) VALUES (%s,%s,%s,%s,%s,%s)"
         data = (
             person.get_id(), person.get_email(), person.get_benutzername(), person.get_vorname(), person.get_nachname(),
             person.get_google_id())
