@@ -55,17 +55,14 @@ class WgOperations(Resource):
         """ Anlegen eines neuen WG-Objekts. """
         adm = Administration()
         proposal = WG.from_dict(api.payload)
-        print(api.payload)
 
         if proposal is not None:
             result = adm.create_wg(
                 proposal.get_wg_name(),
                 proposal.get_wg_ersteller(),
                 proposal.get_wg_bewohner())
-            print(result, "hi")
             return result, 200
         else:
-            print("Else Pfad")
             return 'Fehler in WG-Operations post methode', 500
 
 
@@ -100,9 +97,7 @@ class UserOperations(Resource):
     def post(self):
         """ Anlegen eines neuen User-Objekts. """
         adm = Administration()
-        print(f"This is the api.payload arrived in the backend (BEFORE proposal bein created): {api.payload}")
         proposal = Person.from_dict(api.payload)
-        print(f"This is the Proposal created in the backend: {proposal}")
 
         if proposal is not None:
             result = adm.create_user(
@@ -112,10 +107,8 @@ class UserOperations(Resource):
                 proposal.get_nachname(),
                 proposal.get_google_id()
             )
-            print(f"Übergebenes result-objekt zu Administration: {result}")
             return result, 200
         else:
-            print("Else Pfad")
             return 'Fehler in User-Operations post methode', 500
 
 
