@@ -24,10 +24,6 @@ function LoginPerson(props) {
                 formData.lastName,
                 props.user.uid
             );
-            console.log("newPerson created: " + newPerson)
-            console.log("Submitbutton gedrückt")
-            console.log("Account erstellen mit folgenden Daten: " +newPerson)
-            console.log(".... starting to create a API-Call (EatSmarterAPI)")
             EatSmarterAPI.getAPI()
                 .addUser(newPerson)
         }
@@ -54,7 +50,6 @@ function LoginPerson(props) {
                             name={"firstName"}
                             value={formData.firstName}
                             onChange={handleChange}
-                            // TODO: Define handleChange
                         />
                         <label>Nachname:</label>
                         <input
@@ -62,7 +57,6 @@ function LoginPerson(props) {
                             name={"lastName"}
                             value={formData.lastName}
                             onChange={handleChange}
-                            // TODO: Define handleChange
                         />
                         <button className="button" type="submit" >Bestätigen</button>
                     </div>
