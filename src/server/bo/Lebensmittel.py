@@ -1,7 +1,7 @@
-from server.bo import BusinessObject as bo
+from BusinessObject import BusinessObject as bo
 
 
-class Lebensmittel(bo.BusinessObject):
+class Lebensmittel(bo):
     def __init__(self):
         super().__init__()
         self.lebensmittelname = ""
