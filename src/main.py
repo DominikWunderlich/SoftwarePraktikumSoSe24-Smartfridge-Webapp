@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 from server.Administration import Administration
 from server.bo.BusinessObject import BusinessObject
 from server.bo.WG import WG
+from server.bo.Person import Person
 
 app = Flask(__name__)
 
@@ -36,6 +37,14 @@ wg = api.inherit('WG', bo, {
     'wg_ersteller': fields.String(attribute='wg_ersteller', description='Admin einer WG')
 })
 
+person = api.inherit('Person', bo, {
+    'email': fields.String(attribute='email', description='E-Mail-Adresse eines Users'),
+    'benutzername': fields.String(attribute='benutername', description='Username eines Users'),
+    'vorname': fields.String(attribute='vorname', description='Vorname eines Users'),
+    'nachname': fields.String(attribute='nachname', description='Nachname eines Users'),
+    'google_id': fields.String(attribute='google_id', description='Google-ID eines Users')
+})
+
 rezept = api.inherit('Rezept', bo, {
     'rezept_name': fields.String(attribute='rezept_name', description='Name einer Rezeptes'),
     'anzahl_portionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
@@ -59,10 +68,8 @@ class WgOperations(Resource):
                 proposal.get_wg_name(),
                 proposal.get_wg_ersteller(),
                 proposal.get_wg_bewohner())
-            print(result, "hi")
             return result, 200
         else:
-            print("Else Pfad")
             return 'Fehler in WG-Operations post methode', 500
 
 
@@ -87,6 +94,29 @@ class WgGetOperations(Resource):
         adm = Administration()
         adm.get_wg_by_name(wg_name)
         return "", 200
+
+""" User related API Endpoints """
+@smartapi.route('/login')
+@smartapi.response(500, 'Serverseitiger Fehler')
+class UserOperations(Resource):
+    @smartapi.expect(person)
+    @smartapi.marshal_with(person)
+    def post(self):
+        """ Anlegen eines neuen User-Objekts. """
+        adm = Administration()
+        proposal = Person.from_dict(api.payload)
+
+        if proposal is not None:
+            result = adm.create_user(
+                proposal.get_email(),
+                proposal.get_benutzername(),
+                proposal.get_vorname(),
+                proposal.get_nachname(),
+                proposal.get_google_id()
+            )
+            return result, 200
+        else:
+            return 'Fehler in User-Operations post methode', 500
 
 
 @smartapi.route('/rezept')

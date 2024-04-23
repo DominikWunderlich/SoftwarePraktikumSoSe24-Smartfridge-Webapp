@@ -1,5 +1,6 @@
 import BusinessObject from "./BusinessObject";
 import WgBO from "./WgBO";
+import PersonBO from "./PersonBO";
 import RezeptBO from "./RezeptBO";
 
 export default class EatSmarterAPI{
@@ -109,9 +110,23 @@ export default class EatSmarterAPI{
             return res.json()
         })
 
-
-
-
+    // User related API-Calls:
+    #addUserURL = () => `${this.#EatSmarterServerBaseURL}/login`;
+    addUser(personBO){
+        return this.#fetchAdvanced(this.#addUserURL(), {
+            method: "POST",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(personBO)
+        }).then((responseJSON) => {
+            let response = PersonBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(response);
+            })
+        })
+    }
 
 
 

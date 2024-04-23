@@ -1,5 +1,6 @@
 from server.bo.WG import WG
 from server.db.WGMapper import WGMapper
+from server.db.PersonMapper import PersonMapper
 from server.bo.Rezept import Rezept
 from server.db.RezeptMapper import RezeptMapper
 
@@ -28,6 +29,20 @@ class Administration(object):
     def delete_wg_by_name(self, key):
         with WGMapper() as mapper:
             return mapper.delete(key)
+
+    """ User Methoden """
+    def create_user(self, email, username, firstname, lastname, googleid):
+        """ Erstellen des Objektes. """
+        p = Person()
+        p.set_email(email),
+        p.set_benutzername(username),
+        p.set_vorname(firstname),
+        p.set_nachname(lastname),
+        p.set_google_id(googleid)
+
+        with PersonMapper() as mapper:
+            return mapper.insert(p)
+
 
     """ Rezept-spezifische Methoden """
 

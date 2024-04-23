@@ -1,4 +1,4 @@
-from server.bo import BusinessObject as bo
+from server.bo.BusinessObject import BusinessObject as bo
 
 
 class Person(bo):
@@ -65,9 +65,9 @@ class Person(bo):
         """Umwandeln eines Python dict() in einen User()."""
         pe = Person()
         pe.set_id(dictionary["id"])
-        pe.set_benutzername(dictionary["benutzername"])
-        pe.set_vorname(dictionary["vorname"])
-        pe.set_nachname(dictionary["nachname"])
+        pe.set_benutzername(dictionary["userName"])
+        pe.set_vorname(dictionary["firstName"])
+        pe.set_nachname(dictionary["lastName"])
         pe.set_email(dictionary["email"])
-        pe.set_google_id(dictionary["google_id"])
+        pe.set_google_id(dictionary["googleId"])
         return pe

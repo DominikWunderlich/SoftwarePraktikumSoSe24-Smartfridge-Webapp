@@ -123,7 +123,8 @@ function App(props) {
               <div className="content">
            <Router>
              <Routes>
-				 <Route path="/" element={<Navigate to="/wg" />} />
+				 <Route path="/" element={<Navigate to="/login" />} />
+				 <Route path="/login" element={<LoginPerson user={state.currentUser} />} />
                  <Route path="wg" element={<RegisterWG />} />
                  <Route path="/home" element={<Homepage />} />
                  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
