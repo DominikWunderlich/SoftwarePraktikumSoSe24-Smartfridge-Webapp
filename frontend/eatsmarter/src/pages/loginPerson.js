@@ -1,24 +1,72 @@
-import React from "react";
+import React, {useState} from "react";
 import '../sytles/WG-Landingpage.css';
+import PersonBO from "../api/PersonBO";
 
-function loginPerson() {
+function LoginPerson(props) {
+    const [email, setEmail] = useState()
+    const [formData, setFormData] = useState({
+        email: props.user.email,
+        userName: props.user.displayName,
+        firstName: "",
+        lastName: "",
+        googleId: props.user.uid,
+    })
+    const [errors, setErrors] = useState({});
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (!Object.keys(errors).length) {
+            const newPerson = new PersonBO(
+                props.user.email,
+                props.user.displayName,
+                formData.firstName,
+                formData.lastName,
+                props.user.uid
+            );
+            console.log("newPerson created: " + newPerson)
+            console.log("Submitbutton gedrückt")
+            console.log("Account erstellen mit folgenden Daten: " +newPerson)
+            // TODO: Define API-Call to create a Person
+        }
+    };
+
+    const handleChange = (event) => {
+        if (event.target.name === 'isAccepted') {
+            setFormData({...formData, [event.target.name]: event.target.checked});
+        } else {
+            setFormData({...formData, [event.target.name]: event.target.value });
+        }
+    };
+
     return (
         <div>
             <p>Platzhalter für Navigationsleiste</p>
             <div className='container'>
-                
-                    <h2>Logge dich ein!</h2>
+                <form onSubmit={handleSubmit}>
+                    <h2>Account erstellen</h2>
                     <div className='formitem'>
-                        <label>Username:</label>
-                        <input type="text" class="eingabe"></input>
-                        
-                        
-                        <button className="button"
-                         type="button" onclick="alert('Danke für deine Anmeldung!')">Mit Google anmelden</button>
+                        <label>Vorname:</label>
+                        <input
+                            type="text"
+                            name={"firstName"}
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            // TODO: Define handleChange
+                        />
+                        <label>Nachname:</label>
+                        <input
+                            type="text"
+                            name={"lastName"}
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            // TODO: Define handleChange
+                        />
+                        <button className="button" type="submit" >Bestätigen</button>
                     </div>
+                </form>
             </div>
         </div>
     );
 }
 
-export default loginPerson;
+export default LoginPerson;

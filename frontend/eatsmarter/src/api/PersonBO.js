@@ -3,12 +3,12 @@ import BusinessObject from "./BusinessObject";
 export default class PersonBO extends BusinessObject{
 
     // Jedes erstellte BusinessObjekt wird mit folgenden Attributen erstellt
-    constructor(email, userName, lastName, firstName, googleId){
+    constructor(email, userName, firstName, lastName, googleId){
         super();
         this.email = email;
         this.userName = userName;
-        this.lastName = lastName;
         this.firstName = firstName;
+        this.lastName = lastName;
         this.googleId = googleId;
     }
 
