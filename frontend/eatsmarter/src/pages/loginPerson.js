@@ -1,18 +1,19 @@
 import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
 import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 
 function LoginPerson(props) {
-    const [email, setEmail] = useState()
     const [formData, setFormData] = useState({
         email: props.user.email,
         userName: props.user.displayName,
         firstName: "",
         lastName: "",
         googleId: props.user.uid,
-    })
+    });
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate();
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -27,6 +28,8 @@ function LoginPerson(props) {
             EatSmarterAPI.getAPI()
                 .addUser(newPerson)
         }
+        // TODO: Implement a way to redirect to "/wg" if user is not already in a wg, else route to "/homepage"
+        navigate("/wg");
     };
 
     const handleChange = (event) => {
