@@ -25,7 +25,7 @@ class Lebensmittel(bo):
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "Lebensmittel: {}, {}, {}".format(self.get_id(), self.get_lebensmittlename(), self.get_aggregatszustand())
+        return "Lebensmittel: {}, {}, {}".format(self.get_id(), self.lebensmittelname, self.aggregatszustand)
 
     @staticmethod
     def from_dict(dictionary=dict()):
