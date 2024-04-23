@@ -36,6 +36,12 @@ wg = api.inherit('WG', bo, {
     'wg_ersteller': fields.String(attribute='wg_ersteller', description='Admin einer WG')
 })
 
+rezept = api.inherit('Rezept', bo, {
+    'rezept_name': fields.String(attribute='rezept_name', description='Name einer Rezeptes'),
+    'anzahl_portionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
+    'rezept_ersteller': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts')
+})
+
 
 @smartapi.route('/wg')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -82,6 +88,28 @@ class WgGetOperations(Resource):
         adm.get_wg_by_name(wg_name)
         return "", 200
 
+
+@smartapi.route('/rezept')
+@smartapi.response(500, 'Serverseitiger Fehler')
+class RezeptOperations(Resource):
+    @smartapi.expect(rezept)
+    @smartapi.marshal_with(rezept)
+    def post(self):
+        """ Anlegen eines neuen Rezept-Objekts. """
+        adm = Administration()
+        proposal = Rezept.from_dict(api.payload)
+        print(api.payload)
+
+        if proposal is not None:
+            result = adm.create_rezept(
+                proposal.get_rezept_name(),
+                proposal.get_rezept_ersteller(),
+                proposal.get_anzahl_portionen())
+            print(result, "hi")
+            return result, 200
+        else:
+            print("Else Pfad")
+            return 'Fehler in Rezept-Operations post methode', 500
 
 if __name__ == '__main__':
     app.run(debug=True)

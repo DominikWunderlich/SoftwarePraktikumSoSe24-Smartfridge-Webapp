@@ -11,7 +11,7 @@ function deineRezepte() {
             <p>Platzhalter für Navigationsleiste</p>
             <div className='container'>
                 <h2>Hier werden deine Rezepte angezeigt</h2>
-                <div>
+                <div className='rezepteAnzeigenDiv'>
                     <p>Hier sollen die bisher erstellten Rezepte des Benutzers angezeigt werden</p>
                 </div>
                 <div>

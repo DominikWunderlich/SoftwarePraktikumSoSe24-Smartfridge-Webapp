@@ -1,38 +1,39 @@
-from BusinessObject import BusinessObject as bo
-
+from server.bo.BusinessObject import BusinessObject as bo
+#Frage: ohne server.bo. sind 2 probleme weg??!!
 
 class Rezept(bo):
     def __init__(self):
         super().__init__()
-        self.rezeptname = None
-        self.owner = None
-        self.personenanzahl = None
+        self.rezept_name = ""
+        self.anzahl_portionen = ""
+        self.rezept_ersteller = ""
 
-    def set_rezeptname(self, rezeptname):
-        self.rezeptname = rezeptname
+    def set_rezept_name(self, rezept_name):
+        self.rezept_name = rezept_name
 
-    def set_owner(self, owner):
-        self.owner = owner
+    def set_rezept_ersteller(self, rezept_ersteller):
+        self.rezept_ersteller = rezept_ersteller
 
-    def set_personenanzahl(self, personenanzahl):
-        self.personenanzahl = personenanzahl
+    def set_anzahl_portionen(self, anzahl_portionen):
+        self.anzahl_portionen = anzahl_portionen
 
-    def get_rezeptname(self):
-        return self.rezeptname
+    def get_rezept_name(self):
+        return self.rezept_name
 
-    def get_owner(self):
-        return self.owner
+    def get_rezept_ersteller(self):
+        return self.rezept_ersteller
 
-    def get_personenanzahl(self):
-        return self.personenanzahl
+    def get_anzahl_portionen(self):
+        return self.anzahl_portionen
 
     def __str__(self):
-        return "WG: {}, {}, {}, {}".format(self.get_id(), self.rezeptname, self.owner, self.personenanzahl)
+        return "Rezept: {}, {}, {}, {}".format(self.get_id(), self.rezept_name, self.anzahl_portionen, self.rezept_ersteller)
 
     @staticmethod
     def from_dict(dictionary=dict()):
         rz = Rezept()
         rz.set_id(dictionary['id'])
-        rz.set_rezeptname(dictionary['wg_name'])
-        rz.set_owner(dictionary['wg_bewohner'])
-        rz.set_personenanzahl(dictionary['wg_ersteller'])
+        rz.set_rezept_name(dictionary['rezept_name'])
+        rz.set_anzahl_portionen(dictionary['anzahl_portionen'])
+        rz.set_rezept_ersteller(dictionary['rezept_ersteller'])
+        return rz

@@ -1,5 +1,6 @@
 import BusinessObject from "./BusinessObject";
 import WgBO from "./WgBO";
+import RezeptBO from "./RezeptBO";
 
 export default class EatSmarterAPI{
 
@@ -8,6 +9,26 @@ export default class EatSmarterAPI{
 
     // Local python backend
     #EatSmarterServerBaseURL = "/system";
+
+    // Rezept related URLS
+    #addRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
+    #deleteRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept/<rezept_name>`;
+
+    addRezept(rezeptBO){
+        return this.#fetchAdvanced(this.#addRezeptURL(), {
+            method: "POST",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(rezeptBO)
+        }).then((responseJSON) => {
+            let responseRezeptBO = RezeptBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseRezeptBO);
+            })
+        })
+    }
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;

@@ -1,5 +1,7 @@
 from server.bo.WG import WG
 from server.db.WGMapper import WGMapper
+from server.bo.Rezept import Rezept
+from server.db.RezeptMapper import RezeptMapper
 
 class Administration(object):
     def __init__(self):
@@ -26,3 +28,16 @@ class Administration(object):
     def delete_wg_by_name(self, key):
         with WGMapper() as mapper:
             return mapper.delete(key)
+
+    """ Rezept-spezifische Methoden """
+
+    def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller):
+        """ Erstellen einer Rezept-Instanz. """
+        r = Rezept()
+        r.set_rezept_name(rezept_name)
+        r.set_anzahl_portionen(anzahl_portionen)
+        r.set_rezept_ersteller(rezept_ersteller)
+        r.set_id(1)
+
+        with RezeptMapper() as mapper:
+            return mapper.insert(r)
