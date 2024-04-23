@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 from server.Administration import Administration
 from server.bo.BusinessObject import BusinessObject
 from server.bo.WG import WG
+from server.bo.Person import Person
 
 app = Flask(__name__)
 
@@ -34,6 +35,14 @@ wg = api.inherit('WG', bo, {
     'wg_name': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
     'wg_bewohner': fields.String(attribute='wg_bewohner', description='Teilnehmerliste einer WG'),
     'wg_ersteller': fields.String(attribute='wg_ersteller', description='Admin einer WG')
+})
+
+person = api.inherit('Person', bo, {
+    'email': fields.String(attribute='email', description='E-Mail-Adresse eines Users'),
+    'benutzername': fields.String(attribute='benutername', description='Username eines Users'),
+    'vorname': fields.String(attribute='vorname', description='Vorname eines Users'),
+    'nachname': fields.String(attribute='nachname', description='Nachname eines Users'),
+    'google_id': fields.String(attribute='google_id', description='Google-ID eines Users')
 })
 
 
@@ -81,6 +90,33 @@ class WgGetOperations(Resource):
         adm = Administration()
         adm.get_wg_by_name(wg_name)
         return "", 200
+
+""" User related API Endpoints """
+@smartapi.route('/login')
+@smartapi.response(500, 'Serverseitiger Fehler')
+class UserOperations(Resource):
+    @smartapi.expect(person)
+    @smartapi.marshal_with(person)
+    def post(self):
+        """ Anlegen eines neuen User-Objekts. """
+        adm = Administration()
+        print(f"This is the api.payload arrived in the backend (BEFORE proposal bein created): {api.payload}")
+        proposal = Person.from_dict(api.payload)
+        print(f"This is the Proposal created in the backend: {proposal}")
+
+        if proposal is not None:
+            result = adm.create_user(
+                proposal.get_email(),
+                proposal.get_benutzername(),
+                proposal.get_vorname(),
+                proposal.get_nachname(),
+                proposal.get_google_id()
+            )
+            print(f"Übergebenes result-objekt zu Administration: {result}")
+            return result, 200
+        else:
+            print("Else Pfad")
+            return 'Fehler in User-Operations post methode', 500
 
 
 if __name__ == '__main__':

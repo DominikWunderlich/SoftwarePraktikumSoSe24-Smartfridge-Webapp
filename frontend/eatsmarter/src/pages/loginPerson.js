@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
+import EatSmarterAPI from "../api/EatSmarterAPI";
 
 function LoginPerson(props) {
     const [email, setEmail] = useState()
@@ -26,7 +27,9 @@ function LoginPerson(props) {
             console.log("newPerson created: " + newPerson)
             console.log("Submitbutton gedrückt")
             console.log("Account erstellen mit folgenden Daten: " +newPerson)
-            // TODO: Define API-Call to create a Person
+            console.log(".... starting to create a API-Call (EatSmarterAPI)")
+            EatSmarterAPI.getAPI()
+                .addUser(newPerson)
         }
     };
 
