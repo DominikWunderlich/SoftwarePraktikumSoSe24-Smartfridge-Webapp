@@ -10,7 +10,14 @@ function deineRezepte() {
         <div>
             <p>Platzhalter für Navigationsleiste</p>
             <div className='container'>
-                <p>Hallo??</p>
+                <h2>Hier werden deine Rezepte angezeigt</h2>
+                <div>
+                    <p>Hier sollen die bisher erstellten Rezepte des Benutzers angezeigt werden</p>
+                </div>
+                <div>
+                    <button type={"submit"}>Rezept erstellen</button>
+                    {/* <!-- Link zur Rezept erstellen Seite muss hier noch hinzugefügt werden --> */}
+                </div>
 
             </div>
         </div>
