@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 from server.Administration import Administration
 from server.bo.BusinessObject import BusinessObject
 from server.bo.WG import WG
+from server.bo.Rezept import Rezept
 from server.bo.Person import Person
 
 app = Flask(__name__)

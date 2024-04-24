@@ -1,5 +1,6 @@
 from server.bo.WG import WG
 from server.db.WGMapper import WGMapper
+from server.bo.Person import Person
 from server.db.PersonMapper import PersonMapper
 from server.bo.Rezept import Rezept
 from server.db.RezeptMapper import RezeptMapper

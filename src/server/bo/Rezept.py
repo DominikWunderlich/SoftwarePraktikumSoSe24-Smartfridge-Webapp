@@ -32,8 +32,13 @@ class Rezept(bo):
     @staticmethod
     def from_dict(dictionary=dict()):
         rz = Rezept()
-        rz.set_id(dictionary['id'])
-        rz.set_rezept_name(dictionary['rezept_name'])
-        rz.set_anzahl_portionen(dictionary['anzahl_portionen'])
-        rz.set_rezept_ersteller(dictionary['rezept_ersteller'])
+        if 'id' in dictionary:
+            rz.set_id(dictionary['id'])
+        if 'rezept_name' in dictionary:
+            rz.set_rezept_name(dictionary['rezept_name'])
+        if 'anzahl_portionen' in dictionary:
+            rz.set_anzahl_portionen(dictionary['anzahl_portionen'])
+        if 'rezept_ersteller' in dictionary:
+            rz.set_rezept_ersteller(dictionary['rezept_ersteller'])
         return rz
+
