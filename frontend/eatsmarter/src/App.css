@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+/*Put the avatar to the right side*/
+.avatarMenu{
+  display: flex;
+  justify-content: flex-end;
+  padding: 25px;
+}
+
+
+

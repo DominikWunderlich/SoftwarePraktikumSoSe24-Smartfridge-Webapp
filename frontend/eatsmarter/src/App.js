@@ -5,7 +5,7 @@ import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import firebaseConfig from "./firebaseconfig";
-import {Avatar, Menu, MenuItem} from '@mui/material';
+import {AccordionActions, Avatar, Menu, MenuItem} from '@mui/material';
 import SignIn from "./components/SignIn";
 import RegisterWG from "./pages/registerWG";
 import Homepage from "./pages/Homepage";
@@ -21,7 +21,8 @@ function App(props) {
         currentUser: null,
         appError: null,
         authError: null,
-        authLoading: false
+        authLoading: false,
+		menuAnchor: null, // Use for the Menu Item
     })
 
     /**
@@ -43,15 +44,23 @@ function App(props) {
 		signInWithPopup(auth, provider)
 			.then((result) => {
 				const user = result.user;
-				setState({...state, currentUser: user });
+				setState({...state, currentUser: user, menuAnchor: null });
         })
         .catch((error) => {
           console.log(error);
         });
 	}
 
+	// Handler Funktionen für das Öffnen und Schließen des Abmeldemenüs
+	const handleOpen = (event) =>{
+		setState({...state, menuAnchor: event.currentTarget})
+	}
+	const handleClose = () => {
+		setState({...state, menuAnchor: null})
+	}
+
 	/** Handler-Funktion, die beim Klicken auf den "Abmelden"-Button aufgerufen wird */
-  	const handleLogOut = () => {
+  	const handleSignOut = () => {
 		/** Firebase-App initialisieren und Authentifizierungs-Objekt erstellen */
 		const app = initializeApp(firebaseConfig);
 		const auth = getAuth(app);
@@ -59,12 +68,13 @@ function App(props) {
 		 * *  wird dieser dementsprechend in der Konsole ausgegeben. */
 		auth.signOut()
 			.then(() => {
-				setState({ ...state, currentUser: null});
+				setState({ ...state, currentUser: null, menuAnchor: null});
 			})
 			.catch((error) => {
 			  console.log(error);
 			});
 	  }
+
 
     useEffect(() => {
         // This is equivalent to componentDidMount in class components. Code in this block will run after
@@ -121,6 +131,20 @@ function App(props) {
       <div className="App">
         {state.currentUser ? (
               <div className="content">
+				  <div className="avatarMenu">
+					  <Avatar src={state.currentUser.photoURL} // Use the current Users google picture
+							  alt={state.currentUser.displayName} // Alternative use the current Users displayName
+							  onClick={handleOpen}
+					          className="avatar">
+					  </Avatar>
+					  <Menu anchorEl={state.menuAnchor}
+							open={Boolean(state.menuAnchor)} // Menu displayed or not
+							onClose={handleClose}>
+						  {/*Menu items are username and signout button*/}
+						  <MenuItem>{state.currentUser.displayName}</MenuItem>
+						  <MenuItem onClick={handleSignOut}>Abmelden</MenuItem>
+					  </Menu>
+				  </div>
            <Router>
              <Routes>
 				 <Route path="/" element={<Navigate to="/login" />} />

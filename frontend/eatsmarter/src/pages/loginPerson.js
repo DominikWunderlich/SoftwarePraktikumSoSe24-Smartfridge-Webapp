@@ -28,6 +28,7 @@ function LoginPerson(props) {
             EatSmarterAPI.getAPI()
                 .addUser(newPerson)
         }
+        // TODO: Error Handling when the user has already created an account with the email -> currently error 500
         // TODO: Implement a way to redirect to "/wg" if user is not already in a wg, else route to "/homepage"
         navigate("/wg");
     };
