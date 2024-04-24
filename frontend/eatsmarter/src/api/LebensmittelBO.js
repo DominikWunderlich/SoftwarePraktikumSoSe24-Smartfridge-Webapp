@@ -7,7 +7,7 @@ export default class LebensmittelBO extends BusinessObject{
         this.aggregatszustand = aggregatszustand;
     }
 
-    setId(id) {
+    setId(id){
         this.id = id;
 
     }
