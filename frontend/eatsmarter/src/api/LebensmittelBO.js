@@ -1,6 +1,6 @@
 import BusinessObject from "./BusinessObject";
 export default class LebensmittelBO extends BusinessObject{
-    constructor(id, lebensmittelname, aggregatszustand);{
+    constructor(id, lebensmittelname, aggregatszustand) {
         super();
         this.id = id;
         this.lebensmittelname = lebensmittelname;
@@ -15,7 +15,7 @@ export default class LebensmittelBO extends BusinessObject{
         return this.id;
     }
 
-    setLebensmittel(lebensmittelname);{
+    setLebensmittel(lebensmittelname){
         this.lebensmittelname = lebensmittelname;
     }
     getLebensmittelname() {
