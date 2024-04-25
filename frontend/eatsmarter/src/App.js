@@ -147,6 +147,7 @@ function App(props) {
 				  </div>
            <Router>
              <Routes>
+<<<<<<< Updated upstream
 				 <Route path="/" element={<Navigate to="/login" />} />
 				 <Route path="/login" element={<LoginPerson user={state.currentUser} />} />
                  <Route path="wg" element={<RegisterWG />} />
@@ -154,6 +155,12 @@ function App(props) {
                  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
 				 <Route path="/deineRezepte" element={<DeineRezepte />} />
 				 <Route path="/rezeptErstellen" element={<RezeptErstellen />} />
+=======
+               <Route path="/" element={<Navigate to="/wg" />} />
+                          <Route path="wg" element={<RegisterWG />} />
+                           <Route path="/home" element={<Homepage />} />
+                           <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
+>>>>>>> Stashed changes
              </Routes>
            </Router>
           </div>
