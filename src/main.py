@@ -11,12 +11,6 @@ from server.bo.Person import Person
 app = Flask(__name__)
 
 
-@app.route("/")
-def index():
-    print("HELLO")
-    return app.send_static_file("index.html")
-
-
 # Calls with /system/* are allowed.
 CORS(app, resources=r'/system/*')
 
@@ -33,24 +27,29 @@ bo = api.model('BusinessObject', {
 })
 
 wg = api.inherit('WG', bo, {
-    'wg_name': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
-    'wg_bewohner': fields.String(attribute='wg_bewohner', description='Teilnehmerliste einer WG'),
-    'wg_ersteller': fields.String(attribute='wg_ersteller', description='Admin einer WG')
+    'wgName': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
+    'wgBewohner': fields.String(attribute='wg_bewohner', description='Teilnehmerliste einer WG'),
+    'wgAdmin': fields.String(attribute='wg_ersteller', description='Admin einer WG')
 })
 
 person = api.inherit('Person', bo, {
     'email': fields.String(attribute='email', description='E-Mail-Adresse eines Users'),
-    'benutzername': fields.String(attribute='benutername', description='Username eines Users'),
-    'vorname': fields.String(attribute='vorname', description='Vorname eines Users'),
-    'nachname': fields.String(attribute='nachname', description='Nachname eines Users'),
-    'google_id': fields.String(attribute='google_id', description='Google-ID eines Users')
+    'userName': fields.String(attribute='benutzername', description='Username eines Users'),
+    'firstName': fields.String(attribute='vorname', description='Vorname eines Users'),
+    'lastName': fields.String(attribute='nachname', description='Nachname eines Users'),
+    'googleId': fields.String(attribute='google_id', description='Google-ID eines Users')
 })
 
 rezept = api.inherit('Rezept', bo, {
-    'rezept_name': fields.String(attribute='rezept_name', description='Name einer Rezeptes'),
-    'anzahl_portionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
-    'rezept_ersteller': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts')
+    'rezeptName': fields.String(attribute='rezept_name', description='Name einer Rezeptes'),
+    'anzahlPortionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
+    'rezeptAdmin': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts')
 })
+
+@app.route("/")
+def index():
+    print("HELLO")
+    return app.send_static_file("index.html")
 
 
 @smartapi.route('/wg')
@@ -79,8 +78,9 @@ class WgOperations(Resource):
 @smartapi.param('wg_name', 'Die Name der WG')
 class WgGetOperations(Resource):
     #@secured
+    @smartapi.marshal_with(wg)
     def get(self, wg_name):
-        """ Auslesen eines BlockNote-Objekts """
+        """ Auslesen eines WG-Objekts """
 
         adm = Administration()
         wg_page = adm.get_wg_by_name(wg_name)
@@ -91,9 +91,11 @@ class WgGetOperations(Resource):
         else:
             return '', 500
 
+    """Wg über den Namen löschen"""
     def delete(self, wg_name):
         adm = Administration()
         adm.get_wg_by_name(wg_name)
+        adm.delete_wg_by_name(wg_name)
         return "", 200
 
 """ User related API Endpoints """
