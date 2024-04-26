@@ -57,3 +57,14 @@ class Administration(object):
 
         with RezeptMapper() as mapper:
             return mapper.insert(r)
+
+"""Lebensmittel Methode"""
+def create_lebenmittel(self, lebensmittelname, aggregatszustand):
+    lm=lebensmittelname()
+    lm.set_lebensmittelname(lebensmittelname)
+    lm.set_aggregatszustand(aggregatszustand)
+    lm.set_id(1)
+
+    with LebensmittelMapper() as mapper:
+        return mapper.insert(r)
+    
