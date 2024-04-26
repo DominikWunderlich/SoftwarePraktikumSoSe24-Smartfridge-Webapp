@@ -75,4 +75,4 @@ class Administration(object):
         lm.set_id(1)
 
         with LebensmittelMapper() as mapper:
-            return mapper.insert(r)
+            return mapper.insert(lm)
