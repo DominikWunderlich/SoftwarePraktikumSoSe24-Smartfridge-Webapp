@@ -43,7 +43,11 @@ class Administration(object):
         p.set_google_id(googleid)
 
         with PersonMapper() as mapper:
-            return mapper.insert(p)
+            if mapper.find_by_email(email):
+                # Wenn es bereits ein Objekt in der DB gibt
+                return
+            else:
+                return mapper.insert(p)
 
 
     """ Rezept-spezifische Methoden """

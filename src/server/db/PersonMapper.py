@@ -84,9 +84,9 @@ class PersonMapper(mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (person_id, email, benutzername, vorname, nachname, google_id) in tuples:
+        for (id, email, benutzername, vorname, nachname, google_id) in tuples:
             user = Person()
-            user.set_id(person_id)
+            user.set_id(id)
             user.set_email(email)
             user.set_benutzername(benutzername)
             user.set_vorname(vorname)
