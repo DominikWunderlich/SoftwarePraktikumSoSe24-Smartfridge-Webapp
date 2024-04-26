@@ -4,6 +4,7 @@ from server.bo.Person import Person
 from server.db.PersonMapper import PersonMapper
 from server.bo.Rezept import Rezept
 from server.db.RezeptMapper import RezeptMapper
+from server.db.LebensmittelMapper import LebensmittelMapper
 
 class Administration(object):
     def __init__(self):

@@ -2,7 +2,7 @@ from server.db.mapper import mapper
 from server.bo.Lebensmittel import Lebensmittel
 
 
-class AccountMapper(mapper):
+class LebensmittelMapper(mapper):
 
     def __init__(self):
         super().__init__()
