@@ -4,6 +4,7 @@ from server.bo.Person import Person
 from server.db.PersonMapper import PersonMapper
 from server.bo.Rezept import Rezept
 from server.db.RezeptMapper import RezeptMapper
+from server.db.LebensmittelMapper import LebensmittelMapper
 
 class Administration(object):
     def __init__(self):
@@ -56,4 +57,16 @@ class Administration(object):
         r.set_id(1)
 
         with RezeptMapper() as mapper:
+            return mapper.insert(r)
+    """ Rezept-spezifische Methoden """
+
+
+    def create_lebensmittel(self, lebensmittelname, aggregatszustand):
+        """ Lebensmittel hitnerlegen mit Masseinheit """
+        lm = lebensmittelname()
+        lm.set_lebensmittelname(lebensmittelname)
+        lm.set_aggregatszustand(aggregatszustand)
+        lm.set_id(1)
+
+        with LebensmittelMapper() as mapper:
             return mapper.insert(r)
