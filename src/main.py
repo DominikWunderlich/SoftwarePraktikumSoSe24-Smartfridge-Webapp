@@ -34,7 +34,7 @@ wg = api.inherit('WG', bo, {
 
 person = api.inherit('Person', bo, {
     'email': fields.String(attribute='email', description='E-Mail-Adresse eines Users'),
-    'userName': fields.String(attribute='benutername', description='Username eines Users'),
+    'userName': fields.String(attribute='benutzername', description='Username eines Users'),
     'firstName': fields.String(attribute='vorname', description='Vorname eines Users'),
     'lastName': fields.String(attribute='nachname', description='Nachname eines Users'),
     'googleId': fields.String(attribute='google_id', description='Google-ID eines Users')
