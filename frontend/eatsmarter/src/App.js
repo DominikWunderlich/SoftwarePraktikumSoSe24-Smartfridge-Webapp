@@ -1,11 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import firebaseConfig from "./firebaseconfig";
-import {AccordionActions, Avatar, Menu, MenuItem} from '@mui/material';
 import SignIn from "./components/SignIn";
 import RegisterWG from "./pages/registerWG";
 import Homepage from "./pages/Homepage";
@@ -13,6 +11,7 @@ import LoginPerson from "./pages/loginPerson";
 import Lebensmittelverwaltung from "./pages/Lebensmittel-Verwaltung";
 import DeineRezepte from "./pages/DeineRezepte";
 import RezeptErstellen from "./pages/RezeptErstellen";
+import NavBar from "./components/NavBar";
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -22,7 +21,6 @@ function App(props) {
         appError: null,
         authError: null,
         authLoading: false,
-		menuAnchor: null, // Use for the Menu Item
     })
 
     /**
@@ -51,16 +49,9 @@ function App(props) {
         });
 	}
 
-	// Handler Funktionen für das Öffnen und Schließen des Abmeldemenüs
-	const handleOpen = (event) =>{
-		setState({...state, menuAnchor: event.currentTarget})
-	}
-	const handleClose = () => {
-		setState({...state, menuAnchor: null})
-	}
 
-	/** Handler-Funktion, die beim Klicken auf den "Abmelden"-Button aufgerufen wird */
-  	const handleSignOut = () => {
+/** Handler-Funktion, die beim Klicken auf den "Abmelden"-Button aufgerufen wird */
+  	 const handleSignOut = (setState, state) => {
 		/** Firebase-App initialisieren und Authentifizierungs-Objekt erstellen */
 		const app = initializeApp(firebaseConfig);
 		const auth = getAuth(app);
@@ -131,32 +122,20 @@ function App(props) {
       <div className="App">
         {state.currentUser ? (
               <div className="content">
-				  <div className="avatarMenu">
-					  <Avatar src={state.currentUser.photoURL} // Use the current Users google picture
-							  alt={state.currentUser.displayName} // Alternative use the current Users displayName
-							  onClick={handleOpen}
-					          className="avatar">
-					  </Avatar>
-					  <Menu anchorEl={state.menuAnchor}
-							open={Boolean(state.menuAnchor)} // Menu displayed or not
-							onClose={handleClose}>
-						  {/*Menu items are username and signout button*/}
-						  <MenuItem>{state.currentUser.displayName}</MenuItem>
-						  <MenuItem onClick={handleSignOut}>Abmelden</MenuItem>
-					  </Menu>
-				  </div>
-           <Router>
-             <Routes>
-				 <Route path="/" element={<Navigate to="/login" />} />
-				 <Route path="/login" element={<LoginPerson user={state.currentUser} />} />
-                 <Route path="wg" element={<RegisterWG />} />
-                 <Route path="/home" element={<Homepage />} />
-                 <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
-				 <Route path="/deineRezepte" element={<DeineRezepte />} />
-				 <Route path="/rezeptErstellen" element={<RezeptErstellen />} />
-             </Routes>
-           </Router>
-          </div>
+				  <Router>
+					  //TODO: Remove placeholder for navbar in other components
+					  <NavBar currentUser={state.currentUser} onSignOut={handleSignOut}></NavBar> <br></br> <br></br>
+					  <Routes>
+						  <Route path="/" element={<Navigate to="/login"/>}/>
+						  <Route path="/login" element={<LoginPerson user={state.currentUser}/>}/>
+						  <Route path="wg" element={<RegisterWG/>}/>
+						  <Route path="/home" element={<Homepage/>}/>
+						  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung/>}/>
+						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
+						  <Route path="/rezeptErstellen" element={<RezeptErstellen/>}/>
+					  </Routes>
+				  </Router>
+			  </div>
            ) : (
          <SignIn onSignIn={handleSignIn}></SignIn>
           )}
