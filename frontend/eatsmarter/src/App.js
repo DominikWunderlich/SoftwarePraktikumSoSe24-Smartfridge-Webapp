@@ -13,6 +13,7 @@ import LoginPerson from "./pages/loginPerson";
 import Lebensmittelverwaltung from "./pages/Lebensmittel-Verwaltung";
 import DeineRezepte from "./pages/DeineRezepte";
 import RezeptErstellen from "./pages/RezeptErstellen";
+import RezeptAnzeigen from "./pages/RezepteAnzeigen";
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -154,6 +155,7 @@ function App(props) {
                  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung />} />
 				 <Route path="/deineRezepte" element={<DeineRezepte />} />
 				 <Route path="/rezeptErstellen" element={<RezeptErstellen />} />
+				 <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen />} />
              </Routes>
            </Router>
           </div>

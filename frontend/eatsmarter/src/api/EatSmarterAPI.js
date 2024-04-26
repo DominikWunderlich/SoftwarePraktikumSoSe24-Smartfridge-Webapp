@@ -14,6 +14,7 @@ export default class EatSmarterAPI{
     // Rezept related URLS
     #addRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
     #deleteRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept/<rezept_name>`;
+    #getRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
 
     addRezept(rezeptBO){
         return this.#fetchAdvanced(this.#addRezeptURL(), {
@@ -30,6 +31,26 @@ export default class EatSmarterAPI{
             })
         })
     }
+
+    getRezept() {
+
+    return this.#fetchAdvanced(this.#getRezeptURL(), {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+        }
+    }).then((responseJSON) => {
+        console.log(responseJSON);
+        // Hier die empfangenen Daten in das gewünschte Format konvertieren
+        let rezeptList = responseJSON.map(rezeptData => RezeptBO.fromJSON(rezeptData));
+        console.log(rezeptList)
+        return rezeptList;
+    }).catch((error) => {
+        console.error("Fehler beim Abrufen der Rezepte:", error);
+        throw error; // Fehler weitergeben
+    });
+}
+
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;

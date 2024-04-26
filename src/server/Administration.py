@@ -58,6 +58,12 @@ class Administration(object):
 
         with RezeptMapper() as mapper:
             return mapper.insert(r)
+
+    def get_all_rezepte(self):
+        with RezeptMapper() as mapper:
+            return mapper.find_all()
+
+
     """ Rezept-spezifische Methoden """
 
 

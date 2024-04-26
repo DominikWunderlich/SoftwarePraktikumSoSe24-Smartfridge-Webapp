@@ -144,5 +144,20 @@ class RezeptOperations(Resource):
             print("Else Pfad")
             return 'Fehler in Rezept-Operations post methode', 500
 
+
+#Notiz: Hier bin ich mir seeeehr unsicher ob das richtig gecodet ist
+    @smartapi.marshal_with(rezept)
+    def get(self):
+        """ Auslesen aller Rezept-Objekte"""
+
+        adm = Administration()
+        rezepte = adm.get_all_rezepte()  # Methode, um alle Rezepte abzurufen
+        print(rezepte)
+
+        if rezepte is not None:
+            return rezepte
+        else:
+            return '', 500
+
 if __name__ == '__main__':
     app.run(debug=True)
