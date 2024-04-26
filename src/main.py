@@ -67,8 +67,8 @@ class WgOperations(Resource):
         if proposal is not None:
             result = adm.create_wg(
                 proposal.get_wg_name(),
-                proposal.get_wg_ersteller(),
-                proposal.get_wg_bewohner())
+                proposal.get_wg_bewohner(),
+                proposal.get_wg_ersteller())
             return result, 200
         else:
             return 'Fehler in WG-Operations post methode', 500
