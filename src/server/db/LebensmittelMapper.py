@@ -85,7 +85,7 @@ class LebensmittelMapper(mapper):
         cursor.close()
 
 if (__name__ == "__main__"):
-    with AccountMapper() as mapper:
+    with LebensmittelMapper() as mapper:
         result = mapper.find_all()
         for lebensmittel in result:
             print(lebensmittel)

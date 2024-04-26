@@ -62,7 +62,7 @@ class Administration(object):
 
 
     def create_lebensmittel(self, lebensmittelname, aggregatszustand):
-        """ Lebensmittel hitnerlegen mit Masseinheit """
+        """ Lebensmittel hinterlegen """
         lm = lebensmittelname()
         lm.set_lebensmittelname(lebensmittelname)
         lm.set_aggregatszustand(aggregatszustand)

@@ -2,6 +2,7 @@ import BusinessObject from "./BusinessObject";
 import WgBO from "./WgBO";
 import PersonBO from "./PersonBO";
 import RezeptBO from "./RezeptBO";
+import LebensmittelBO from "./LebensmittelBO";
 
 export default class EatSmarterAPI{
 
@@ -27,6 +28,59 @@ export default class EatSmarterAPI{
             let responseRezeptBO = RezeptBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
                 resolve(responseRezeptBO);
+            })
+        })
+    }
+    // Lebensmittel related URLS
+    #addLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
+    #deleteLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
+
+    addLebensmittel(LebensmittelBO){
+        return this.#fetchAdvanced(this.#addLebensmittelURL(), {
+            method: "POST",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(LebensmittelBO)
+        }).then((responseJSON) => {
+            let responseLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseLebensmittelBO);
+            })
+        })
+    }
+
+    #getLebensmittebyURL =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
+
+    getLebensmittelbyName(lebensmittelname) {
+        return this.#fetchAdvanced(this.#getLebensmittebyURL(),{
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(lebensmittelname)
+        }).then((responseJSON)=> {
+            let responseLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseLebensmittelBO);
+            })
+        })
+    }
+
+    deleteLebensmittelByName(lebensmittelname){
+        return this.#fetchAdvanced(this.#deleteLebensmittelURL(),{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(lebensmittelname)
+        }).then((responseJSON) => {
+            let removedLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
+            return new Promise( function(resolve) {
+                resolve(responseJSON);
             })
         })
     }
