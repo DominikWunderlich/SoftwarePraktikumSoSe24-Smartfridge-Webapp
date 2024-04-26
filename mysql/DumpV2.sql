@@ -25,8 +25,7 @@ DROP TABLE IF EXISTS `kühlschrank`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kühlschrank` (
-  `kühlschrank_id` int NOT NULL,
-  PRIMARY KEY (`kühlschrank_id`)
+  `kühlschrank_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -47,9 +46,9 @@ DROP TABLE IF EXISTS `lebensmittel`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `lebensmittel` (
-  `lebensmittel_name` varchar(45) NOT NULL,
+  `lebensmittel_name` varchar(45) DEFAULT NULL,
   `aggregatzustand` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`lebensmittel_name`)
+  `lebensmittel_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -70,9 +69,9 @@ DROP TABLE IF EXISTS `maßeinheit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `maßeinheit` (
-  `maßeinheit_name` int NOT NULL,
-  `menge` varchar(45) NOT NULL,
-  PRIMARY KEY (`maßeinheit_name`,`menge`)
+  `masseinheit_name` varchar(45) DEFAULT NULL,
+  `menge` varchar(45) DEFAULT NULL,
+  `masseinheit_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -93,11 +92,13 @@ DROP TABLE IF EXISTS `person`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `person` (
-  `email` varchar(45) NOT NULL,
+  `email` varchar(45) DEFAULT NULL,
   `bernutzername` varchar(45) DEFAULT NULL,
   `nachname` varchar(45) DEFAULT NULL,
   `vorname` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`email`)
+  `id` int NOT NULL,
+  `google_id` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -118,11 +119,12 @@ DROP TABLE IF EXISTS `rezept`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rezept` (
-  `rezeptname` varchar(45) NOT NULL,
-  `rezeptowner` varchar(45) DEFAULT NULL,
-  `anzahl_für_personen` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`rezeptname`),
-  KEY `rezeptowner_idx` (`rezeptowner`)
+  `rezept_name` varchar(45) DEFAULT NULL,
+  `anzahl_portionen` varchar(45) DEFAULT NULL,
+  `rezept_ersteller` varchar(45) DEFAULT NULL,
+  `rezept_id` int NOT NULL,
+  PRIMARY KEY (`rezept_id`),
+  KEY `rezeptowner_idx` (`anzahl_portionen`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -145,10 +147,7 @@ DROP TABLE IF EXISTS `rezept_enthaelt_lebensmittel`;
 CREATE TABLE `rezept_enthaelt_lebensmittel` (
   `rezept_name_fk` varchar(45) NOT NULL,
   `lebensmittel_name_fk` varchar(45) NOT NULL,
-  PRIMARY KEY (`rezept_name_fk`,`lebensmittel_name_fk`),
-  KEY `lebensmittel_name_fk_idx` (`lebensmittel_name_fk`),
-  CONSTRAINT `lebensmittel_name_fk` FOREIGN KEY (`lebensmittel_name_fk`) REFERENCES `lebensmittel` (`lebensmittel_name`),
-  CONSTRAINT `rezept_name_fk` FOREIGN KEY (`rezept_name_fk`) REFERENCES `rezept` (`rezeptowner`)
+  PRIMARY KEY (`rezept_name_fk`,`lebensmittel_name_fk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -169,7 +168,7 @@ DROP TABLE IF EXISTS `wg`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `wg` (
-  `wg_name` varchar(45) NOT NULL,
+  `wg_name` varchar(45) DEFAULT NULL,
   `wg_bewohner` varchar(45) DEFAULT NULL,
   `wg_ersteller` varchar(45) DEFAULT NULL,
   `wg_id` int NOT NULL,
@@ -183,7 +182,6 @@ CREATE TABLE `wg` (
 
 LOCK TABLES `wg` WRITE;
 /*!40000 ALTER TABLE `wg` DISABLE KEYS */;
-INSERT INTO `wg` VALUES ('Blubland','50','Michael',2),('Test WG','55','Test Ersteller',3);
 /*!40000 ALTER TABLE `wg` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -200,4 +198,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-12 16:13:47
+-- Dump completed on 2024-04-26 10:49:02
