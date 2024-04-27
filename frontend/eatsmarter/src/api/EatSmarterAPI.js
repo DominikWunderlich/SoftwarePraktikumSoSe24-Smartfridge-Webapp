@@ -32,6 +32,30 @@ export default class EatSmarterAPI{
         })
     }
 
+    //Ich füge hier jetzt eine getAllRezepte Methode ein, die soll eigentlich genau das gleiche machen
+    //wie die getRezept Methode, nämlich alle Rezepte die wir in der DB haben im Frontend anzeigen
+    //die getRezept Methode funktioniert nur leider nicht und mit der getAllRezepte Methode geht es
+    //seltsamerweise. Eine von beiden muss noch rausgelöscht werden
+    //Ich verstehe nicht ganz wie die getAllRezepte Methode und die getRezept Methode sich
+    //unterscheiden und wieso die eine funktioniert und die andere nicht.
+    //Ich habe mich beim erstellen an einem älteren Projekt inspirieren lassen und das einfach ein bisschen
+    //umgebaut.
+
+    async getAllRezepte() {
+        try {
+            const responseJSON = await this.#fetchAdvanced(this.#getRezeptURL(), {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                }
+            });
+            return responseJSON; // Gib die Rezepte direkt zurück, ohne sie zu verarbeiten
+        } catch (error) {
+            console.error("Fehler beim Abrufen der Rezepte:", error);
+            throw error;
+        }
+    }
+
     getRezept() {
 
     return this.#fetchAdvanced(this.#getRezeptURL(), {
