@@ -58,6 +58,12 @@ class Administration(object):
 
         with RezeptMapper() as mapper:
             return mapper.insert(r)
+
+    def get_all_rezepte(self):
+        with RezeptMapper() as mapper:
+            return mapper.find_all()
+
+
     """ Rezept-spezifische Methoden """
 
 
@@ -69,4 +75,4 @@ class Administration(object):
         lm.set_id(1)
 
         with LebensmittelMapper() as mapper:
-            return mapper.insert(r)
+            return mapper.insert(lm)

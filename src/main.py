@@ -35,7 +35,7 @@ wg = api.inherit('WG', bo, {
 
 person = api.inherit('Person', bo, {
     'email': fields.String(attribute='email', description='E-Mail-Adresse eines Users'),
-    'userName': fields.String(attribute='benutername', description='Username eines Users'),
+    'userName': fields.String(attribute='benutzername', description='Username eines Users'),
     'firstName': fields.String(attribute='vorname', description='Vorname eines Users'),
     'lastName': fields.String(attribute='nachname', description='Nachname eines Users'),
     'googleId': fields.String(attribute='google_id', description='Google-ID eines Users')
@@ -73,8 +73,8 @@ class WgOperations(Resource):
         if proposal is not None:
             result = adm.create_wg(
                 proposal.get_wg_name(),
-                proposal.get_wg_ersteller(),
-                proposal.get_wg_bewohner())
+                proposal.get_wg_bewohner(),
+                proposal.get_wg_ersteller())
             return result, 200
         else:
             return 'Fehler in WG-Operations post methode', 500
@@ -173,6 +173,21 @@ class LebensmittelOperation(Resource):
             print("Lebensmitte bereits angelegt")  
             return 'Fehler in LebensmittelOperation post methode', 500
               
+
+
+#Notiz: Hier bin ich mir seeeehr unsicher ob das richtig gecodet ist
+    @smartapi.marshal_with(rezept)
+    def get(self):
+        """ Auslesen aller Rezept-Objekte"""
+
+        adm = Administration()
+        rezepte = adm.get_all_rezepte()  # Methode, um alle Rezepte abzurufen
+        print(rezepte)
+
+        if rezepte is not None:
+            return rezepte
+        else:
+            return '', 500
 
 if __name__ == '__main__':
     app.run(debug=True)
