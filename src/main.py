@@ -7,6 +7,7 @@ from server.bo.BusinessObject import BusinessObject
 from server.bo.WG import WG
 from server.bo.Rezept import Rezept
 from server.bo.Person import Person
+from server.bo.Lebensmittel import Lebensmittel
 
 app = Flask(__name__)
 
@@ -44,6 +45,12 @@ rezept = api.inherit('Rezept', bo, {
     'rezeptName': fields.String(attribute='rezept_name', description='Name einer Rezeptes'),
     'anzahlPortionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
     'rezeptAdmin': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts')
+})
+
+lebensmittel = api.inherit('Lebensmittel', bo, {
+    'lebensmittelName': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
+    'aggregatszustand': fields.String(attribute='aggregatszustand', description='Aggregatszustand'),
+
 })
 
 @app.route("/")
@@ -107,6 +114,7 @@ class UserOperations(Resource):
         adm = Administration()
         proposal = Person.from_dict(api.payload)
 
+
         if proposal is not None:
             result = adm.create_user(
                 proposal.get_email(),
@@ -151,6 +159,43 @@ class RezeptOperations(Resource):
         else:
             print("Else Pfad")
             return 'Fehler in Rezept-Operations post methode', 500
+        
+@smartapi.route('/lebensmittelverwaltung')
+@smartapi.response(500, 'Serverseitiger Fehler')
+class LebensmittelOperation(Resource):
+    @smartapi.expect(lebensmittel)
+    @smartapi.marshal_with(lebensmittel)
+    def post(self):
+        '''Anlegen eines neuen Lebensmittel-Objekt'''
+        adm=Administration()
+        proposal = lebensmittel.from_dict(api.payload)
+        print(api.payload)
+
+        if proposal is not None:
+            result = adm.create_lebensmittel(
+                proposal.getLebensmittelname(),
+                proposal.getAggregatszustand())
+            print(result, "Lebensmitte hinzugefügt")
+            return result, 200
+        else:
+            print("Lebensmitte bereits angelegt")  
+            return 'Fehler in LebensmittelOperation post methode', 500
+              
+
+
+#Notiz: Hier bin ich mir seeeehr unsicher ob das richtig gecodet ist
+    @smartapi.marshal_with(rezept)
+    def get(self):
+        """ Auslesen aller Rezept-Objekte"""
+
+        adm = Administration()
+        rezepte = adm.get_all_rezepte()  # Methode, um alle Rezepte abzurufen
+        print(rezepte)
+
+        if rezepte is not None:
+            return rezepte
+        else:
+            return '', 500
 
 if __name__ == '__main__':
     app.run(debug=True)

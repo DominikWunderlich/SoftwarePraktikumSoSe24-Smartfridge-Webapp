@@ -36,8 +36,23 @@ class RezeptMapper(mapper):
         pass
 
     def find_all(self):
-        # Implementierung der Methode find_all
-        pass
+        result = []
+        cursor = self._connector.cursor()
+        cursor.execute("SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller FROM datenbank.rezept")
+        tuples = cursor.fetchall()
+
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller) in tuples:
+            rezept = Rezept()
+            rezept.set_id(rezept_id)
+            rezept.set_rezept_name(rezept_name)
+            rezept.set_anzahl_portionen(anzahl_portionen)
+            rezept.set_rezept_ersteller(rezept_ersteller)
+            result.append(rezept)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
 
     def update(self, object):
         # Implementierung der Methode update

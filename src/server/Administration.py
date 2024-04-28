@@ -79,11 +79,17 @@ class Administration(object):
 
         with RezeptMapper() as mapper:
             return mapper.insert(r)
+
+    def get_all_rezepte(self):
+        with RezeptMapper() as mapper:
+            return mapper.find_all()
+
+
     """ Rezept-spezifische Methoden """
 
 
     def create_lebensmittel(self, lebensmittelname, aggregatszustand):
-        """ Lebensmittel hitnerlegen mit Masseinheit """
+        """ Lebensmittel hinterlegen """
         lm = lebensmittelname()
         lm.set_lebensmittelname(lebensmittelname)
         lm.set_aggregatszustand(aggregatszustand)

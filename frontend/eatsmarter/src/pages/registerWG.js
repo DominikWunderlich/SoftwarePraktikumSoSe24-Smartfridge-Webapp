@@ -4,11 +4,11 @@ import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 
-function WGLandingpage() {
+function WGLandingpage(props) {
     const [formData, setFormData] = useState({
         wgname: "",
         wgbewohner: "",
-        wgadmin: ""
+        wgadmin: props.user.email
     })
 
     const [errors, setErrors] = useState({});
@@ -53,20 +53,11 @@ function WGLandingpage() {
                         />
                     </div>
                     <div className='formitem'>
-                        <label>Füge die E-Mail-Adresse deines Mitbewohners hinzu: </label>
+                        <label>Füge die E-Mail-Adresse deines Mitbewohners hinzu:</label>
                         <input
                             type={"text"}
                             name={"wgbewohner"}
                             value={formData.wgbewohner}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className='formitem'>
-                        <label>Füge einen Admin hinzu:</label>
-                        <input
-                            type={"text"}
-                            name={"wgadmin"}
-                            value={formData.wgadmin}
                             onChange={handleChange}
                         />
                     </div>
