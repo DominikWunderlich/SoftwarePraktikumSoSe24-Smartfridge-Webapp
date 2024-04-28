@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import '../sytles/WG-Landingpage.css';
 
 function Lebensmittelverwaltung() {
-    const [Masseinheit, set_menge] = useState("");
+    const [masseinheit, setMasseinheit] = useState("");
+    const [menge, setMenge] = useState("");
 
-    const handleMaßeinheitChange = (event) => {
-        set_masseinheit(event.target.value);
+    const handleMasseinheitChange = (event) => {
+        setMasseinheit(event.target.value);
     };
 
     const handleMengeChange = (event) => {
-        set_menge(event.target.value);
+        setMenge(event.target.value);
     };
 
     return (
@@ -20,11 +21,19 @@ function Lebensmittelverwaltung() {
                 <div className='formitem'>
                     <label>Lebensmittelname</label>
                     <input type="text" className="eingabe"></input>
-                    <label>Maßeinheit</label>
+                    
+                    <label>Menge</label>
+                    <input
+                        type="number"
+                        value={menge}
+                        onChange={handleMengeChange}
+                        className="eingabe"
+                     />
+                     <label>Maßeinheit</label>
                     <input
                         list="masseinheit"
-                        value={Maßeinheit}
-                        onChange={handleMaßeinheitChange}
+                        value={masseinheit}
+                        onChange={handleMasseinheitChange}
                         className="eingabe"
                     />
                     <datalist id="masseinheit">
@@ -32,14 +41,8 @@ function Lebensmittelverwaltung() {
                         <option value="Kilogramm" />
                         <option value="Liter" />
                         {/*weitere Maßeinheiten können hier hinzugefügt werden*/}
-                    </datalist>
-                    <label>Menge</label>
-                    <input
-                        type="nuber"
-                        value={menge}
-                        onChange={handleMengeChange}
-                        className="eingabe"
-                     />   
+                    </datalist>   
+                    
                     <button className="button" type="button" onClick={() => alert('Lebensmittel wurde hinzugefügt')}>hinzufügen</button>
                 </div>
             </div>
@@ -47,4 +50,4 @@ function Lebensmittelverwaltung() {
     );
 }
 
-export default Lebensmittelverwaltung; 
+export default Lebensmittelverwaltung;
