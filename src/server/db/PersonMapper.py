@@ -100,28 +100,29 @@ class PersonMapper(mapper):
         return result
 
     def find_by_google_id(self, GoogleID):
-
-        result = []
-
         cursor = self._connector.cursor()
         command = f"SELECT * FROM datenbank.person WHERE google_id='{GoogleID}'"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (person_id, email, benutzername, vorname, nachname, google_id) in tuples:
+        for (email, benutzername, nachname, vorname, id, google_id) in tuples:
             user = Person()
-            user.set_id(person_id)
+            user.set_id(id)
             user.set_email(email)
             user.set_benutzername(benutzername)
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_google_id(google_id)
-            result.append(user)
+            print(f'DEBUG im mapper: das ist die id: {user.get_id()}')
+            print(f'DEBUG im mapper: das ist die email: {user.get_email()}')
+            print(f'DEBUG im mapper: das ist die benutzername: {user.get_benutzername()}')
+            print(f'DEBUG im mapper: das ist die vorname: {user.get_vorname()}')
+            print(f'DEBUG im mapper: das ist die nachname: {user.get_nachname()}')
+            print(f'DEBUG im mapper: das ist die google_id: {user.get_google_id()}')
+            return user
 
         self._connector.commit()
         cursor.close()
-
-        return result
 
     def insert(self, person):
 

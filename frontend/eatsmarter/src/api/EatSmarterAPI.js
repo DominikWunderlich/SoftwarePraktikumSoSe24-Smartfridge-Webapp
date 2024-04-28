@@ -112,6 +112,7 @@ export default class EatSmarterAPI{
 
     // User related API-Calls:
     #addUserURL = () => `${this.#EatSmarterServerBaseURL}/login`;
+    #getUserURL = (google_id) => `${this.#EatSmarterServerBaseURL}/login/${google_id}`;
     addUser(personBO){
         return this.#fetchAdvanced(this.#addUserURL(), {
             method: "POST",
@@ -127,6 +128,21 @@ export default class EatSmarterAPI{
             })
         })
     }
+
+     /**
+     * API-Aufruf um einen User auszulesen
+     * @param google_id = GoogleID eines Users.
+     */
+    getUserByGID(google_id) {
+        return this.#fetchAdvanced(this.#getUserURL(google_id))
+            .then((responseJSON) => {
+            let response = PersonBO.fromJSON(responseJSON);
+            return new Promise(function (resolve) {
+                resolve(response);
+            })
+        })
+    }
+
 
 
 

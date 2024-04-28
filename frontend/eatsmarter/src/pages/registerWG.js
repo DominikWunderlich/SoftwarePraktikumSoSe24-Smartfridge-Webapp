@@ -12,7 +12,6 @@ function WGLandingpage() {
     })
 
     const [errors, setErrors] = useState({});
-    const [touched, setTouched] = useState({});
 
     const handleChange = (event) => {
         if (event.target.name === 'isAccepted') {
@@ -54,7 +53,7 @@ function WGLandingpage() {
                         />
                     </div>
                     <div className='formitem'>
-                        <label>Füge einen Mitbewohner hinzu: </label>
+                        <label>Füge die E-Mail-Adresse deines Mitbewohners hinzu: </label>
                         <input
                             type={"text"}
                             name={"wgbewohner"}
