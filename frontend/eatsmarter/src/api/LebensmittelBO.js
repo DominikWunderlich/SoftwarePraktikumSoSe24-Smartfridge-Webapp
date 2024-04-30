@@ -15,7 +15,7 @@ export default class LebensmittelBO extends BusinessObject{
         return this.id;
     }
 
-    setLebensmittel(lebensmittelname){
+    setLebensmittelname(lebensmittelname){
         this.lebensmittelname = lebensmittelname;
     }
     getLebensmittelname() {
