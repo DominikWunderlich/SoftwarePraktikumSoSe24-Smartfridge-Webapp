@@ -113,12 +113,6 @@ class PersonMapper(mapper):
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_google_id(google_id)
-            print(f'DEBUG im mapper: das ist die id: {user.get_id()}')
-            print(f'DEBUG im mapper: das ist die email: {user.get_email()}')
-            print(f'DEBUG im mapper: das ist die benutzername: {user.get_benutzername()}')
-            print(f'DEBUG im mapper: das ist die vorname: {user.get_vorname()}')
-            print(f'DEBUG im mapper: das ist die nachname: {user.get_nachname()}')
-            print(f'DEBUG im mapper: das ist die google_id: {user.get_google_id()}')
             return user
 
         self._connector.commit()

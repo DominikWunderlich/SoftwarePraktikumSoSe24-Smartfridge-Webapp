@@ -14,7 +14,7 @@ function LoginPerson(props) {
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!Object.keys(errors).length) {
@@ -25,19 +25,16 @@ function LoginPerson(props) {
                 formData.lastName,
                 props.user.uid
             );
-            EatSmarterAPI.getAPI()
+            await EatSmarterAPI.getAPI()
                 .addUser(newPerson)
         }
         // Checking if a user is already in a wg:
         EatSmarterAPI.getAPI().getUserByGID(props.user.uid)
             .then((UserInWg) => {
-                console.log("THIS IS USERINWG VARIABLE:" + UserInWg)
                 // Redirect user based on wether the user is in a wg or not.
                 if (UserInWg.length > 0) {
-                    console.log("IN IF STATEMTNT")
                     navigate("/home");
                 } else {
-                    console.log("IN Else STATEMTNT")
                     navigate("/wg")
                 }
             })
