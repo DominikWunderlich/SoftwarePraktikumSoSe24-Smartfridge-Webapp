@@ -68,7 +68,6 @@ class WgOperations(Resource):
         """ Anlegen eines neuen WG-Objekts. """
         adm = Administration()
         proposal = WG.from_dict(api.payload)
-        print(api.payload)
 
         if proposal is not None:
             result = adm.create_wg(
@@ -91,7 +90,6 @@ class WgGetOperations(Resource):
 
         adm = Administration()
         wg_page = adm.get_wg_by_name(wg_name)
-        print(wg_page)
 
         if wg_page is not None:
             return wg_page
@@ -129,6 +127,16 @@ class UserOperations(Resource):
         else:
             return 'Fehler in User-Operations post methode', 500
 
+@smartapi.route('/login/<string:google_id>')
+@smartapi.response(500, 'Serverseitiger-Fehler')
+@smartapi.param("google_id", 'Die Google-ID des Profil-Objekts')
+class ProfileOperations(Resource):
+    @smartapi.marshal_with(person)
+    def get(self, google_id):
+        """ Auslesen eines bestimmten Profil-Objekts. """
+        adm = Administration()
+        p = adm.redirect_user(google_id)
+        return p
 
 @smartapi.route('/rezept')
 @smartapi.response(500, 'Serverseitiger Fehler')

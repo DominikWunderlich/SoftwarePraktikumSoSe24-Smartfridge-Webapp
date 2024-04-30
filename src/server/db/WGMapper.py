@@ -45,6 +45,27 @@ class WGMapper(mapper):
 
         return result
 
+    def find_by_email(self, email):
+        result = []
+
+        cursor = self._connector.cursor()
+        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_bewohner='{email}' "
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (wg_id, wg_name, wg_bewohner, wg_ersteller) in tuples:
+            wg = WG()
+            wg.set_id(wg_id)
+            wg.set_wg_name(wg_name)
+            wg.set_wg_bewohner(wg_bewohner)
+            wg.set_wg_ersteller(wg_ersteller)
+            result.append(wg)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
+
     def insert(self, wg):
         cursor = self._connector.cursor()
         cursor.execute("SELECT MAX(wg_id) AS maxid FROM datenbank.wg")
@@ -57,8 +78,8 @@ class WGMapper(mapper):
             else:
                 wg.set_id(1)
 
-        command = "INSERT INTO datenbank.wg (wg_id, wg_name, wg_bewohner, wg_ersteller) VALUES (%s, %s, %s, %s)"
-        data = (wg.get_id(), wg.get_wg_name(), wg.get_wg_bewohner(), wg.get_wg_ersteller())
+        command = "INSERT INTO datenbank.wg (wg_name, wg_bewohner, wg_ersteller, wg_id) VALUES (%s, %s, %s, %s)"
+        data = (wg.get_wg_name(), wg.get_wg_bewohner(), wg.get_wg_ersteller(), wg.get_id())
         cursor.execute(command, data)
 
         self._connector.commit()

@@ -14,6 +14,7 @@ class Administration(object):
 
     def create_wg(self, wg_name, wg_bewohner, wg_ersteller):
         """ Erstellen einer WG-Instanz. """
+        print(f"DEBUG IN create_wg in admin.py wg_name = {wg_name}, wg_bewohner={wg_bewohner}, wg_ersteller={wg_ersteller}")
         w = WG()
         w.set_wg_name(wg_name)
         w.set_wg_bewohner(wg_bewohner)
@@ -43,7 +44,27 @@ class Administration(object):
         p.set_google_id(googleid)
 
         with PersonMapper() as mapper:
-            return mapper.insert(p)
+            if mapper.find_by_email(email):
+                # Wenn es bereits ein Objekt in der DB gibt
+                return
+            else:
+                return mapper.insert(p)
+
+    def redirect_user(self, googleid):
+        """ Auslesen einer Person-Instanz anhand der Google ID. """
+        with PersonMapper() as mapper:
+            p = mapper.find_by_google_id(googleid)
+        p_email = p.get_email()
+
+        """ Check ob die Person bereits in einer WG ist. """
+        with WGMapper() as wgmapper:
+            res = wgmapper.find_by_email(p_email)
+            if res is not None:
+                return res
+            else:
+                return
+
+
 
 
     """ Rezept-spezifische Methoden """

@@ -28,9 +28,20 @@ function LoginPerson(props) {
             EatSmarterAPI.getAPI()
                 .addUser(newPerson)
         }
-        // TODO: Error Handling when the user has already created an account with the email -> currently error 500
-        // TODO: Implement a way to redirect to "/wg" if user is not already in a wg, else route to "/homepage"
-        navigate("/wg");
+        // Checking if a user is already in a wg:
+        EatSmarterAPI.getAPI().getUserByGID(props.user.uid)
+            .then((UserInWg) => {
+                console.log("THIS IS USERINWG VARIABLE:" + UserInWg)
+                // Redirect user based on wether the user is in a wg or not.
+                if (UserInWg.length > 0) {
+                    console.log("IN IF STATEMTNT")
+                    navigate("/home");
+                } else {
+                    console.log("IN Else STATEMTNT")
+                    navigate("/wg")
+                }
+            })
+
     };
 
     const handleChange = (event) => {
