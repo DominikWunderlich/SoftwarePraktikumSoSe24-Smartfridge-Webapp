@@ -150,23 +150,23 @@ export default class EatSmarterAPI{
         })
     }
 
-    #getWgbyURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_name>`;
+    #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
 
-    getWGbyName(name) {
-        return this.#fetchAdvanced(this.#getWgbyURL(), {
+    getWGbyName(wgName) {
+        return this.#fetchAdvanced(this.#getWgbyURL(wgName), {
             method: "GET",
             headers: {
-                "Accept": "application/json, text/plain",
-                "Content-type": "application/json",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(name)
         }).then((responseJSON) => {
             let responseWgBO = WgBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
                 resolve(responseWgBO);
-            })
-        })
+            });
+        });
     }
+    
 
     deleteWgByName(wgName){
         return this.#fetchAdvanced(this.#deleteWgURL(),{

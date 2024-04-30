@@ -24,7 +24,7 @@ function NavBar({ currentUser, onSignOut }) {
     return (
         <AppBar>
             <Toolbar>
-                <Button color="inherit" component={Link} to="/home">
+                <Button color="inherit" component={Link} to="/wg/:wgName">
                     Home
                 </Button>
                 <Button color="inherit" component={Link} to="/deineRezepte">
