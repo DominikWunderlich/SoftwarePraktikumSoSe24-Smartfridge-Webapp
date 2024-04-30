@@ -79,6 +79,18 @@ class WgOperations(Resource):
             return 'Fehler in WG-Operations post methode', 500
 
 
+@smartapi.route('/wg/<wg_bewohner>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('wg_bewohner', 'Die E-mail des wg-bewohners')
+class WgGetWgOperations(Resource):
+    @smartapi.marshal_with(wg)
+    def get(self, wg_bewohner):
+        adm = Administration()
+        wg_p = adm.getWGByEmail(wg_bewohner)
+
+        return wg_p
+
+
 @smartapi.route('/wg/<wg_name>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('wg_name', 'Die Name der WG')

@@ -49,7 +49,8 @@ class WGMapper(mapper):
         result = []
 
         cursor = self._connector.cursor()
-        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_bewohner='{email}' "
+        # TODO: passt das LIKE auch für den Gebrauch von Domi? Wenn nicht Funktion 2mal (WHERE wg_bewohner LIKE '%{email}%'"" & (WHERE wg_bewohner='{email}')
+        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_bewohner LIKE '%{email}%'"
         cursor.execute(command)
         tuples = cursor.fetchall()
 

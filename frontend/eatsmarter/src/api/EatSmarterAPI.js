@@ -133,6 +133,7 @@ export default class EatSmarterAPI{
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
     #deleteWgURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_name>`;
+    #getWgByUserURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_bewohner>`;
 
     addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
@@ -162,6 +163,22 @@ export default class EatSmarterAPI{
         }).then((responseJSON) => {
             let responseWgBO = WgBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
+                resolve(responseWgBO);
+            });
+        });
+    }
+
+    // TODO: irgendwas stimmt mit dem response aus dem fetch nicht
+    getWgByUser(email){
+        return this.#fetchAdvanced(this.#getWgByUserURL(email), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+        }).then((response) => {
+            let responseWgBO = WgBO.fromJSON(response)[0];
+            return new Promise(function (resolve){
                 resolve(responseWgBO);
             });
         });

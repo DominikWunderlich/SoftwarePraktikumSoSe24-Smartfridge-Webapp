@@ -29,6 +29,10 @@ class Administration(object):
         with WGMapper() as mapper:
             return mapper.find_by_key(key)
 
+    def getWGByEmail(self, email):
+        with WGMapper() as mapper:
+            return mapper.find_by_email(email)
+
     def delete_wg_by_name(self, key):
         with WGMapper() as mapper:
             return mapper.delete(key)
