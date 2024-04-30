@@ -9,13 +9,13 @@ function Homepage() {
 
     const getWGbyName = async () => {
         try {
-            const wgName = "WG BeispielName"; 
             const wg = await EatSmarterAPI.getAPI().getWGbyName(wgName);
             setWgData(wg);
         } catch (e) {
             setError(e);
         }
     };
+    
 
     useEffect(() => {
         getWGbyName();
@@ -30,8 +30,9 @@ function Homepage() {
         <div>
             <p>Header</p>
             <div className='container'>
-                <h2>Name der WG: {wgData ? wgData.name : "Loading..."}</h2>
-            
+                <h2>Name der WG: {wgData ? wgData.getWgName() : "Loading..."}</h2>
+                <p>Bewohner: {wgData ? wgData.getWGBewohner() : "Loading..."}</p>
+                <p>Ersteller: {wgData ? wgData.getWgAdmin() : "Loading..."}</p>
             </div>
         </div>
     );

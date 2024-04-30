@@ -130,7 +130,7 @@ function App(props) {
 						  <Route path="/" element={<Navigate to="/login"/>}/>
 						  <Route path="/login" element={<LoginPerson user={state.currentUser}/>}/>
 						  <Route path="wg" element={<RegisterWG user={state.currentUser}/>}/>
-						  <Route path="/home" element={<Homepage/>}/>
+						  <Route path="/wg/:wgName" element={<Homepage/>}/>
 						  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung/>}/>
 						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
 						  <Route path="/rezeptErstellen" element={<RezeptErstellen/>}/>
