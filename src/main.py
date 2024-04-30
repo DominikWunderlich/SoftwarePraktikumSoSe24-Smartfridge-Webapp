@@ -152,8 +152,8 @@ class RezeptOperations(Resource):
         if proposal is not None:
             result = adm.create_rezept(
                 proposal.get_rezept_name(),
-                proposal.get_rezept_ersteller(),
-                proposal.get_anzahl_portionen())
+                proposal.get_anzahl_portionen(),
+                proposal.get_rezept_ersteller())
             print(result, "hi")
             return result, 200
         else:
