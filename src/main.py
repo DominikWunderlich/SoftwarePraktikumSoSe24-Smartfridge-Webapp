@@ -84,11 +84,9 @@ class WgOperations(Resource):
     def put(self):
         adm = Administration()
         proposal = WG.from_dict(api.payload)
-        print("Mein Proposal im main.py:",proposal)
 
         if proposal is not None:
             result = adm.update_wg_by_email(proposal)
-            print("mein result im main.py:",result)
             return result
 
 

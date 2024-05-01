@@ -27,7 +27,7 @@ function NavBar({ currentUser, onSignOut }) {
                 <Button color="inherit" component={Link} to="/wg/:wgName">
                     Home
                 </Button>
-                <Button color="inherit" component={Link} to="/deineRezepte">
+                <Button color="inherit" component={Link} to="/RezeptAnzeigen">
                     Recipes
                 </Button>
                 <Button color="inherit" component={Link} to="/lebensmittelverwaltung">
@@ -35,6 +35,10 @@ function NavBar({ currentUser, onSignOut }) {
                 </Button>
                 <Button color="inherit" component={Link} to="/wg">
                     WG
+                </Button>
+                {/*//TODO: Remove Navbar registerWg after completing the registerWg page*/}
+                <Button color="inherit" component={Link} to="/registerWg">
+                    TEMPORARY: WG erstellen
                 </Button>
                 {currentUser && (
                     <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>

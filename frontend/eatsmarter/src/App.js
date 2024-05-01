@@ -130,14 +130,13 @@ function App(props) {
 					  <Routes>
 						  <Route path="/" element={<Navigate to="/login"/>}/>
 						  <Route path="/login" element={<LoginPerson user={state.currentUser}/>}/>
-						  <Route path="wg" element={<RegisterWG user={state.currentUser}/>}/>
-						  <Route path="/TestWg" element={<WGPage user={state.currentUser}/>}/>
+						  <Route path="registerWg" element={<RegisterWG user={state.currentUser}/>}/>
+						  <Route path="/wg" element={<WGPage user={state.currentUser}/>}/>
 						  <Route path="/wg/:wgName" element={<Homepage/>}/>
 						  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung/>}/>
 						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
 						  <Route path="/rezeptErstellen" element={<RezeptErstellen/>}/>
                           <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen />} />
-
 					  </Routes>
 				  </Router>
 			  </div>

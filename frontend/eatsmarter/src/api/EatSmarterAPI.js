@@ -9,6 +9,30 @@ export default class EatSmarterAPI{
     // Singleton instance
     static #api = null;
 
+    /**
+     * Get the singleton instance
+     */
+    static getAPI(){
+        if (this.#api == null){
+            this.#api = new EatSmarterAPI();
+        }
+        return this.#api;
+    }
+
+    /**
+     * Returns a Promise which resolves to a json object.
+     * The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
+     * fetchAdvanced throws an Error also an server status errors
+     */
+    #fetchAdvanced = (url, init) => fetch(url, init)
+        .then(res => {
+            // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
+            if (!res.ok){
+                throw Error(`${res.status} ${res.statusText}`);
+            }
+            return res.json()
+        })
+
     // Local python backend
     #EatSmarterServerBaseURL = "/system";
 
@@ -129,31 +153,14 @@ export default class EatSmarterAPI{
     });
 }
 
-
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
     #deleteWgURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_name>`;
+    #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
     #updateWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg`;
 
-updateWg(wgBO){
-    return this.#fetchAdvanced(this.#updateWgURL(wgBO.wgBewohner), {
-        method: "PUT",
-        headers: {
-            "Accept": "application/json, text/plain",
-            "Content-type": "application/json",
-        },
-        body: JSON.stringify(wgBO)
-    }).then((responseJSON) => {
-        let responseWgBO = WgBO.fromJSON(responseJSON)[0];
-        return new Promise(function(resolve){
-            resolve(responseWgBO);
-        })
-    })
-}
-
-
-    addWg(wgBO){
+     addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
             method: "POST",
             headers: {
@@ -169,8 +176,21 @@ updateWg(wgBO){
         })
     }
 
-    #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
-
+    updateWg(wgBO){
+    return this.#fetchAdvanced(this.#updateWgURL(wgBO.wgBewohner), {
+        method: "PUT",
+        headers: {
+            "Accept": "application/json, text/plain",
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(wgBO)
+    }).then((responseJSON) => {
+        let responseWgBO = WgBO.fromJSON(responseJSON)[0];
+        return new Promise(function(resolve){
+            resolve(responseWgBO);
+        })
+    })
+}
     getWGbyName(wgName) {
         return this.#fetchAdvanced(this.#getWgbyURL(wgName), {
             method: "GET",
@@ -217,30 +237,6 @@ updateWg(wgBO){
         })
     }
 
-
-    /**
-     * Get the singleton instance
-     */
-    static getAPI(){
-        if (this.#api == null){
-            this.#api = new EatSmarterAPI();
-        }
-        return this.#api;
-    }
-
-    /**
-     * Returns a Promise which resolves to a json object.
-     * The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
-     * fetchAdvanced throws an Error also an server status errors
-     */
-    #fetchAdvanced = (url, init) => fetch(url, init)
-        .then(res => {
-            // The Promise returned from fetch() won’t reject on HTTP error status even if the response is an HTTP 404 or 500.
-            if (!res.ok){
-                throw Error(`${res.status} ${res.statusText}`);
-            }
-            return res.json()
-        })
 
     // User related API-Calls:
     #addUserURL = () => `${this.#EatSmarterServerBaseURL}/login`;

@@ -9,7 +9,6 @@ function WGPage(props) {
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
             .then(response => {
-                console.log("Das ist die atuelle Wg des Nutzer: ", response)
                 setWg(response);
             })
             .catch(error => {
@@ -25,8 +24,6 @@ function WGPage(props) {
         // wgDaten mit neuer Mail aktualiesiern
         const updatedWg = {...wg};
         updatedWg.wgBewohner += `,${newMemberEmail}`;
-        // das ist die Email im Input Feld
-        console.log("Neue email adresse im Frontend: ", newMemberEmail)
 
         try{
             await EatSmarterAPI.getAPI().updateWg(updatedWg);
@@ -60,8 +57,7 @@ function WGPage(props) {
                     <input
                         type="email"
                         value={newMemberEmail}
-                        onChange={ (event) => {
-                            setNewMemberEmail(event.target.value)}}
+                        onChange={ (event) => {setNewMemberEmail(event.target.value)}}
                     />
                     <button type="button" onClick={handleAddMember}>+</button>
                     <div className='formitem'>

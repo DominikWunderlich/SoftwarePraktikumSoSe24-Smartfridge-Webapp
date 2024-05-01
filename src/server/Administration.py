@@ -38,7 +38,6 @@ class Administration(object):
     def update_wg_by_email(self, new_wg):
         with WGMapper() as mapper:
             mapper.update(new_wg)
-            print("admin new",new_wg)
             return new_wg
 
     def delete_wg_by_name(self, key):
