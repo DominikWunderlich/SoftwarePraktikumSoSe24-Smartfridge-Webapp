@@ -33,6 +33,14 @@ class Administration(object):
         with WGMapper() as mapper:
             return mapper.find_by_email(email)
 
+    """ Diese Methode updated die Wg auf der wgPage"""
+    """ Die Wg muss nicht nochmal anhand der email ausgegeben werden, da sie bereits in der anderen Methode"""
+    def update_wg_by_email(self, new_wg):
+        with WGMapper() as mapper:
+            mapper.update(new_wg)
+            print("admin new",new_wg)
+            return new_wg
+
     def delete_wg_by_name(self, key):
         with WGMapper() as mapper:
             return mapper.delete(key)

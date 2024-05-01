@@ -133,7 +133,25 @@ export default class EatSmarterAPI{
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
     #deleteWgURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_name>`;
-    #getWgByUserURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_bewohner>`;
+    #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
+    #updateWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg`;
+
+updateWg(wgBO){
+    return this.#fetchAdvanced(this.#updateWgURL(wgBO.wgBewohner), {
+        method: "PUT",
+        headers: {
+            "Accept": "application/json, text/plain",
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(wgBO)
+    }).then((responseJSON) => {
+        let responseWgBO = WgBO.fromJSON(responseJSON)[0];
+        return new Promise(function(resolve){
+            resolve(responseWgBO);
+        })
+    })
+}
+
 
     addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
@@ -168,7 +186,6 @@ export default class EatSmarterAPI{
         });
     }
 
-    // TODO: irgendwas stimmt mit dem response aus dem fetch nicht
     getWgByUser(email){
         return this.#fetchAdvanced(this.#getWgByUserURL(email), {
             method: "GET",
@@ -183,7 +200,6 @@ export default class EatSmarterAPI{
             });
         });
     }
-    
 
     deleteWgByName(wgName){
         return this.#fetchAdvanced(this.#deleteWgURL(),{
