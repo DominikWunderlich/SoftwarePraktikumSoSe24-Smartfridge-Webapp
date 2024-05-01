@@ -1,10 +1,10 @@
 import BusinessObject from "./BusinessObject";
 export default class LebensmittelBO extends BusinessObject{
-    constructor(id, lebensmittelname, aggregatszustand){
+    constructor(id, lebensmittel_name, aggregatzustand){
         super();
         this.id = id;
-        this.lebensmittelname = lebensmittelname;
-        this.aggregatszustand = aggregatszustand;
+        this.lebensmittel_name = lebensmittel_name;
+        this.aggregatzustand = aggregatzustand;
     }
 
     setId(id){
@@ -15,30 +15,30 @@ export default class LebensmittelBO extends BusinessObject{
         return this.id;
     }
 
-    setLebensmittelname(lebensmittelname){
-        this.lebensmittelname = lebensmittelname;
+    setLebensmittelname(lebensmittel_name){
+        this.lebensmittel_name = lebensmittel_name;
     }
     getLebensmittelname() {
-        return this.lebensmittelname;
+        return this.lebensmittel_name;
     }
 
-    setAggregatszustand(aggregatszustand){
-        this.aggregatszustand = aggregatszustand;
+    setAggregatszustand(aggregatzustand){
+        this.aggregatzustand = aggregatzustand;
     }
     getAggregatszustand(){
-        return this.aggregatszustand;
+        return this.aggregatzustand;
     }
 
-    static fromJSON(lebensmittelname){
+    static fromJSON(lebensmittel_name){
         let result = [];
 
-        if(Array.isArray(lebensmittelname)){
-            lebensmittelname.foreach((lm)=> {
+        if(Array.isArray(lebensmittel_name)){
+            lebensmittel_name.foreach((lm)=> {
                 Object.setPrototypeOf(lm, LebensmittelBO.prototype);
                 result.push(lm);
             });
         }else{
-            let lm = lebensmittelname;
+            let lm = lebensmittel_name;
             Object.setPrototypeOf(lm, LebensmittelBO.prototype);
             result.push(lm);
         }

@@ -34,7 +34,7 @@ export default class EatSmarterAPI{
     }
     // Lebensmittel related URLS
     #addLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
-    #deleteLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
+    #deleteLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<Lebensmittel_name>`;
 
     addLebensmittel(LebensmittelBO){
         return this.#fetchAdvanced(this.#addLebensmittelURL(), {
@@ -54,14 +54,14 @@ export default class EatSmarterAPI{
 
     #getLebensmittebyURL =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
 
-    getLebensmittelbyName(lebensmittelname) {
+    getLebensmittelbyName(lebensmittel_name) {
         return this.#fetchAdvanced(this.#getLebensmittebyURL(),{
             method: "GET",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(lebensmittelname)
+            body: JSON.stringify(lebensmittel_name)
         }).then((responseJSON)=> {
             let responseLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
@@ -70,14 +70,14 @@ export default class EatSmarterAPI{
         })
     }
 
-    deleteLebensmittelByName(lebensmittelname){
+    deleteLebensmittelByName(lebensmittel_name){
         return this.#fetchAdvanced(this.#deleteLebensmittelURL(),{
             method: "DELETE",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(lebensmittelname)
+            body: JSON.stringify(lebensmittel_name)
         }).then((responseJSON) => {
             let removedLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
             return new Promise( function(resolve) {
