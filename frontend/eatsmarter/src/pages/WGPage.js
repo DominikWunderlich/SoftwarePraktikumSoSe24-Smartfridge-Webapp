@@ -110,6 +110,8 @@ function WGPage(props) {
 
     return (
         <div>
+            {/*TODO: Mit Navbar ersetzen*/}
+            <p>Platzhalter für NavBar</p>
             <div className='container'>
                 {/*Abfrage, ob wg nicht null*/}
                 {wg && (
@@ -150,7 +152,7 @@ function WGPage(props) {
                             setDeleteNewMemberEmail(event.target.value)
                         }}
                     />
-                    <button type="button" onClick={handleDeleteMember}>+</button>
+                    <button type="button" onClick={handleDeleteMember}>-</button>
                     <div className='formitem'>
                     </div>
 
