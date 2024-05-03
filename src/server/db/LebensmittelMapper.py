@@ -54,7 +54,7 @@ class LebensmittelMapper(mapper):
                 l.set_id(1)
 
         command = "INSERT INTO lebensmittel (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id) VALUES (%s, %s, %s, %s)"
-        data = (l.get_id(), l.get_lebensmittlename(), l.get_masseinheit(), l.get_mengenanzahl())
+        data = (l.get_id(), l.get_lebensmittelname(), l.get_masseinheit(), l.get_mengenanzahl())
         cursor.execute(command, data)
 
         self._connector.commit()

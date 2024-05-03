@@ -8,11 +8,11 @@ class Lebensmittel(bo):
         self.masseinheit = 0
         self.mengenanzahl = 0
 
-    def get_lebensmittlename(self):
+    def get_lebensmittelname(self):
         """Auslesen des Lebensmittelnamens."""
         return self.lebensmittelname
 
-    def set_lebensmittlename(self, name):
+    def set_lebensmittelname(self, name):
         """Setzen des Lebensmittelnamens."""
         self.lebensmittelname = name
 
@@ -32,7 +32,7 @@ class Lebensmittel(bo):
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return f"LebensmittelObjekt: Name={self.get_lebensmittlename()}, " \
+        return f"LebensmittelObjekt: Name={self.get_lebensmittelname()}, " \
                f"Maßeinheit={self.get_masseinheit()}, Anzahl={self.get_mengenanzahl()}"
 
     @staticmethod
@@ -40,5 +40,7 @@ class Lebensmittel(bo):
         """Umwandeln eines Python dict() in ein Lebensmittel-Objekt."""
         lm = Lebensmittel()
         lm.set_id(dictionary["id"])
-        lm.set_lebensmittlename(dictionary["lebensmittelname"])
+        lm.set_lebensmittelname(dictionary["lebensmittelName"])
+        lm.set_masseinheit(dictionary["masseinheit"])
+        lm.set_mengenanzahl(dictionary["mengenanzahl"])
         return lm

@@ -85,13 +85,14 @@ class Administration(object):
 
     """ Rezept-spezifische Methoden """
 
-    def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller):
+    def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller, wg_name):
         """ Erstellen einer Rezept-Instanz. """
         r = Rezept()
         r.set_rezept_name(rezept_name)
         r.set_anzahl_portionen(anzahl_portionen)
         r.set_rezept_ersteller(rezept_ersteller)
         r.set_id(1)
+        r.set_wg_name(wg_name)
 
         with RezeptMapper() as mapper:
             return mapper.insert(r)
@@ -100,7 +101,9 @@ class Administration(object):
         with RezeptMapper() as mapper:
             return mapper.find_all()
 
-
+    def get_all_rezepte_by_wg_name(self, wg_name):
+        with RezeptMapper() as mapper:
+            return mapper.find_all_by_wg_name(wg_name)
     """ Lebensmittel-spezifische Methoden """
 
     def create_menge(self, menge):
@@ -122,13 +125,24 @@ class Administration(object):
         with MasseinheitMapper() as mapper:
             return mapper.insert(m)
 
-    def create_lebensmittel(self, name, masseinhiet_id, menge_id):
-        """ Lebensmittel hinterlegen """
+    def create_lebensmittel(self, name, meinheit, menge):
+        # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
+        # des Users dar (gr, kg, l, ...).
+        with MasseinheitMapper() as mapper:
+            m_id = mapper.find_by_name(meinheit)
+            masseinheit_id = m_id.get_id()
+
+        # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
+        with MengenanzahlMapper() as mmapper:
+            mengen_id = mmapper.find_by_menge(menge)
+            menge_id = mengen_id.get_id()
+
+        # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
         food = Lebensmittel()
         food.set_id(1)
-        food.set_lebensmittlename(name)
-        food.set_masseinheit(masseinhiet_id)
+        food.set_lebensmittelname(name)
+        food.set_masseinheit(masseinheit_id)
         food.set_mengenanzahl(menge_id)
 
-        with LebensmittelMapper() as mapper:
-            return mapper.insert(food)
+        with LebensmittelMapper() as lmapper:
+            return lmapper.insert(food)

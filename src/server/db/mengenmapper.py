@@ -24,6 +24,25 @@ class MengenanzahlMapper(mapper):
         self._connector.commit()
         cursor.close()
 
+    def find_by_menge(self, m):
+        result = None
+
+        cursor = self._connector.cursor()
+
+        command = "SELECT id, menge FROM datenbank.mengenanzahl WHERE menge = %s"
+
+        cursor.execute(command, (m,))
+        tuple = cursor.fetchone()
+
+        cursor.close()
+
+        if tuple:
+            (id, menge) = tuple
+            result = Mengenanzahl()
+            result.set_id(id)
+            result.set_menge(menge)
+        return result
+
     def find_all(self):
         pass
 

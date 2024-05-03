@@ -46,11 +46,14 @@ person = api.inherit('Person', bo, {
 rezept = api.inherit('Rezept', bo, {
     'rezeptName': fields.String(attribute='rezept_name', description='Name einer Rezeptes'),
     'anzahlPortionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
-    'rezeptAdmin': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts')
+    'rezeptAdmin': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts'),
+    'wgName': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
 })
 
 lebensmittel = api.inherit('Lebensmittel', bo, {
-    'lebensmittelName': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
+    'lebensmittel_name': fields.String(attribute='lebensmittelName', description='Name des Lebensmittels'),
+    'masseinheit': fields.String(attribute='masseinheit', description='Maßeinheit des Lebenmittels'),
+    'mengenanzahl': fields.Integer(attribute='mengenanzahl', description='Menge des Lebensmittels'),
 })
 
 menge = api.inherit('Menge', bo, {
@@ -58,8 +61,8 @@ menge = api.inherit('Menge', bo, {
 })
 
 masseinheit = api.inherit('Masseinheit', bo, {
-    'masseinheitsname': fields.String(attribute='maßeinheit', description='Name einer Maßeinheit'),
-    'umrechnungsfaktor': fields.Float(attribute='faktor', description='Umrechnungsfaktor einer Maßeinheit')
+    'masseinheitsname': fields.String(attribute='masseinheitsname', description='Name einer Maßeinheit'),
+    'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
 @app.route("/")
@@ -189,7 +192,8 @@ class RezeptOperations(Resource):
             result = adm.create_rezept(
                 proposal.get_rezept_name(),
                 proposal.get_anzahl_portionen(),
-                proposal.get_rezept_ersteller())
+                proposal.get_rezept_ersteller(),
+                proposal.get_wg_name())
             print(result, "hi")
             return result, 200
         else:
@@ -210,6 +214,22 @@ class RezeptOperations(Resource):
         else:
             return '', 500
 
+@smartapi.route('/rezept/<wg_name>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('wg_name', 'Name der WG')
+class getRezeptOperations(Resource):
+    @smartapi.marshal_with(rezept)
+    def get(self, wg_name):
+        """ Auslesen aller Rezepte einer WG """
+
+        adm = Administration()
+        wg_page = adm.get_all_rezepte_by_wg_name(wg_name)
+
+        if wg_page is not None:
+            return wg_page
+        else:
+            return '', 500
+
 """ Lebensmittel Calls """
 
 @smartapi.route('/lebensmittelverwaltung')
@@ -218,15 +238,17 @@ class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
     def post(self):
-        # TODO:
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
+        print(f"Lebensmittel payload im Backend (Flask): {api.payload}")
         proposal = Lebensmittel.from_dict(api.payload)
         print(f"Lebensmittel payload im Backend (Flask): {api.payload}")
 
         if proposal is not None:
             result = adm.create_lebensmittel(
-                proposal.getLebensmittelname()
+                proposal.get_lebensmittelname(),
+                proposal.get_masseinheit(),
+                proposal.get_mengenanzahl()
             )
             return result, 200
         else:
@@ -267,6 +289,7 @@ class MasseinheitOperation(Resource):
         Menge, Maßeinheit und Lebensmittel). Das ist der call für das Anlegen einer Maßeinheit.
         """
         adm = Administration()
+        print(f"Masseinheit payload im Backend (Flask): {api.payload}")
         proposal = Masseinheit.from_dict(api.payload)
         print(f"Masseinheit payload im Backend (Flask): {api.payload}")
 
