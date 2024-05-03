@@ -1,19 +1,10 @@
 import BusinessObject from "./BusinessObject";
 export default class LebensmittelBO extends BusinessObject{
-    constructor(id, lebensmittel_name, aggregatzustand){
+    constructor(lebensmittel_name){
         super();
-        this.id = id;
         this.lebensmittel_name = lebensmittel_name;
-        this.aggregatzustand = aggregatzustand;
     }
 
-    setId(id){
-        this.id = id;
-
-    }
-    getId() {
-        return this.id;
-    }
 
     setLebensmittelname(lebensmittel_name){
         this.lebensmittel_name = lebensmittel_name;
@@ -22,12 +13,6 @@ export default class LebensmittelBO extends BusinessObject{
         return this.lebensmittel_name;
     }
 
-    setAggregatszustand(aggregatzustand){
-        this.aggregatzustand = aggregatzustand;
-    }
-    getAggregatszustand(){
-        return this.aggregatzustand;
-    }
 
     static fromJSON(lebensmittel_name){
         let result = [];

@@ -4,34 +4,42 @@ from server.bo.BusinessObject import BusinessObject as bo
 class Lebensmittel(bo):
     def __init__(self):
         super().__init__()
-        self.lebensmittel_name = ""
-        self.aggregatzustand = ""
+        self.lebensmittelname = ""
+        self.masseinheit = ""
+        self.mengenanzahl = 0.0
 
-    def get_lebensmittel_name(self):
+    def get_lebensmittlename(self):
         """Auslesen des Lebensmittelnamens."""
-        return self.lebensmittel_name
+        return self.lebensmittelname
 
-    def set_lebensmittel_name(self, name):
+    def set_lebensmittlename(self, name):
         """Setzen des Lebensmittelnamens."""
-        self.lebensmittel_name = name
+        self.lebensmittelname = name
 
-    def get_aggregatzustand(self):
-        """Auslesen des Aggregatszustands."""
-        return self.aggregatzustand
+    def get_masseinheit(self):
+        """Auslesen des maßeinheit."""
+        return self.masseinheit
 
-    def set_aggregatzustand(self, zustand):
-        """Setzen des Aggregatzustands."""
-        self.aggregatzustand = zustand
+    def set_masseinheit(self, m):
+        """Setzen des maßeinheit."""
+        self.masseinheit = m
+
+    def set_mengenanzahl(self, m):
+        self.mengenanzahl = m
+
+    def get_mengenanzahl(self):
+        return self.mengenanzahl
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "Lebensmittel: {}, {}, {}".format(self.get_id(), self.lebensmittel_name, self.aggregatzustand)
+        return f"LebensmittelObjekt: Name={self.get_lebensmittlename()}, " \
+               f"Maßeinheit={self.get_masseinheit()}, Anzahl={self.get_mengenanzahl()}"
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Lebensmittel-Objekt."""
         lm = Lebensmittel()
         lm.set_id(dictionary["id"])
-        lm.set_lebensmittel_name(dictionary["lebensmittel_name"])
-        lm.set_aggregatzustand(dictionary["aggregatzustand"])
+        lm.set_lebensmittlename(dictionary["lebensmittelname"])
+        lm.set_kategorie(dictionary["kategorie"])
         return lm

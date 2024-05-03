@@ -13,11 +13,10 @@ class LebensmittelMapper(mapper):
         cursor.execute("SELECT * from datenbank.lebensmittel")
         tuples = cursor.fetchall()
 
-        for (id, lebensmittel_name, aggregatzustand) in tuples:
+        for (id, lebensmittelname) in tuples:
             lebensmittel = Lebensmittel()
-            lebensmittel.set_lebensmittel_id(id)
-            lebensmittel.set_lebensmittel_name(lebensmittel_name)
-            lebensmittel.set_aggregatzustand(aggregatzustand)
+            lebensmittel.set_id(id)
+            lebensmittel.set_lebensmittlename(lebensmittelname)
             result.append(lebensmittel)
 
         self._cnx.commit()
@@ -25,18 +24,17 @@ class LebensmittelMapper(mapper):
 
         return result
 
-    def find_by_lebensmittelname(self, lebensmittel_name):
+    def find_by_lebensmittelname(self, lebensmittelname):
         result = []
         cursor = self._cnx.cursor()
-        command = "SELECT id, lebensmittel_name, aggregatzustand FROM datenbank.lebensmittel WHERE lebensmittel_name LIKE %s"
-        cursor.execute(command, (lebensmittel_name,))
+        command = "SELECT id, lebensmittelname FROM datenbank.lebensmittel WHERE lebensmittelname LIKE %s"
+        cursor.execute(command, (lebensmittelname,))
         tuples = cursor.fetchall()
 
-        for (id, lebensmittel_name, aggregatzustand) in tuples:
+        for (id, lebensmittelname) in tuples:
             lebensmittel = Lebensmittel()
-            lebensmittel.set_lebensmittel_id(id)
-            lebensmittel.set_lebensmittel_name(lebensmittel_name)
-            lebensmittel.set_aggregatzustand(aggregatzustand)
+            lebensmittel.set_id(id)
+            lebensmittel.set_lebensmittlename(lebensmittelname)
             result.append(lebensmittel)
 
         self._cnx.commit()
@@ -55,8 +53,8 @@ class LebensmittelMapper(mapper):
             else:
                 lebensmittel.set_id(1)
 
-        command = "INSERT INTO lebensmittel (id, lebensmittel_name, aggregatzustand) VALUES (%s, %s, %s)"
-        data = (lebensmittel.get_id(), lebensmittel.get_lebensmittel_name(), lebensmittel.get_aggregatzustand())
+        command = "INSERT INTO lebensmittel (id, lebensmittelname) VALUES (%s, %s, %s)"
+        data = (lebensmittel.get_id(), lebensmittel.get_lebensmittlename())
         cursor.execute(command, data)
 
         self._cnx.commit()
@@ -67,8 +65,8 @@ class LebensmittelMapper(mapper):
     def update(self, lebensmittel):
         cursor = self._cnx.cursor()
 
-        command = "UPDATE datenbank.lebensmittel SET lebensmittel_name=%s, aggregatzustand=%s WHERE id=%s"
-        data = (lebensmittel.get_lebensmittel_name(), lebensmittel.get_aggregatzustand(), lebensmittel.get_id())
+        command = "UPDATE datenbank.lebensmittel SET lebensmittelname=%s=%s WHERE id=%s"
+        data = (lebensmittel.get_lebensmittlename(), lebensmittel.get_id())
         cursor.execute(command, data)
 
         self._cnx.commit()

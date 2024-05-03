@@ -9,7 +9,8 @@ class Masseinheit (bo.BusinessObject):
     def __init__(self):
         super().__init__()
         self.masseinheitsname = ""
-        self.menge = ""
+        self.kuerzel = ""
+        self.umrechnungsfaktor = 0.0
 
     def get_masseinheit(self):
         """Auslesen des maßeinheit."""
@@ -19,20 +20,29 @@ class Masseinheit (bo.BusinessObject):
         """Setzen des maßeinheit."""
         self.masseinheitsname = masseinheitsname
 
-    def get_menge(self):
-        """Auslesen des menge."""
-        return self.menge
+    def get_kuerzel(self):
+        """Auslesen des Kürzels."""
+        return self.kuerzel
 
-    def set_menge(self, menge):
-        """Setzen des menge."""
-        self.menge = menge
+    def set_kuerzel(self, k):
+        """Setzen des Kürzels."""
+        self.kuerzel = k
+
+    def get_umrechnungsfaktor(self):
+        """Auslesen des umrechnungsfaktors."""
+        return self.umrechnungsfaktor
+
+    def set_umrechnungsfaktor(self, faktor):
+        """Setzen des umrechnungsfaktors."""
+        self.umrechnungsfaktor = faktor
 
 
 
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "User: {}, {}, {}".format(self.get_id(), self.masseinheitsname, self.menge)
+        return f"MaßeinheitObjekt: masseinheitsname={self.get_masseinheit()}, kuerzel={self.get_kuerzel()}," \
+               f"umrechnungsfaktor={self.get_umrechnungsfaktor()}"
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -40,6 +50,6 @@ class Masseinheit (bo.BusinessObject):
         ma = Masseinheit()
         ma.set_id(dictionary["id"])
         ma.set_masseinheit(dictionary["maßeinheit"])
-        ma.set_menge(dictionary["menge"])
+        ma.set_kuerzel(dictionary["kuerzel"])
+        ma.set_umrechnungsfaktor(dictionary["faktor"])
         return ma
-
