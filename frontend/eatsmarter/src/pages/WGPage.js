@@ -20,17 +20,34 @@ function WGPage(props) {
         renderCurrentUsersWg()
     }, []);
 
+    // Handle Methode um Wg-Bewohner hinzuzufügen
     const handleAddMember = async () => {
         // wgDaten mit neuer Mail aktualiesiern
-        const updatedWg = {...wg};
-        updatedWg.wgBewohner += `,${newMemberEmail}`;
 
-        try{
-            await EatSmarterAPI.getAPI().updateWg(updatedWg);
-            setWg(updatedWg);
+        // E-Mail des eingeloggten Users
+        let currentUser = props.user.email
+        // E-Mail des wgAdmins
+        let wgAdmin = wg.wgAdmin
+
+        // Wenn der currentUser der wgAdmin ist, dann WgBewohner hinzufügen
+        if(currentUser === wgAdmin){
+             const updatedWg = {...wg};
+             updatedWg.wgBewohner += `,${newMemberEmail}`;
+
+             try{
+                 await EatSmarterAPI.getAPI().updateWg(updatedWg);
+                 setWg(updatedWg);
+             }
+             catch(error){
+                 console.error(error);
+             }
         }
-        catch(error){
-            console.error(error);
+
+
+        // Alert ausgeben, dass nur der Ersteller die Wg bearbeiten darf
+        // TODO: Bei Bedarf, Alert durch was schöneres ersetzen
+        else{
+            alert("Nur der Ersteller kann die Wg bearbeiten")
         }
     };
 
