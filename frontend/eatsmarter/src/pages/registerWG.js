@@ -33,7 +33,6 @@ function WGLandingpage(props) {
                 formData.wgadmin,
             );
             console.log(newWG)
-            console.log(".... starting to create a API-Call (EatSmarterAPI)")
             EatSmarterAPI.getAPI()
                 .addWg(newWG)
             navigate("/wg")
@@ -42,6 +41,7 @@ function WGLandingpage(props) {
 
     return (
         <div>
+            {/*TODO: neue Navbar einfügen, in welcher nur die registerWg Seite anklickbar ist*/}
             <p>Platzhalter für Navigationsleiste</p>
             <div className='container'>
                 <form onSubmit={handleSubmit}>
