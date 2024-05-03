@@ -151,75 +151,75 @@ export default class EatSmarterAPI{
             })
         }
     
-        deleteMengeByName(menge){
-            return this.#fetchAdvanced(this.#deleteMengeURL(),{
-                method: "DELETE",
-                headers: {
-                    "Accept": "application/json, text/plain",
-                    "Content-type": "application/json",
-                },
-                body: JSON.stringify(menge)
-            }).then((responseJSON) => {
-                let removedmengenanzahlBO = mengenanzahlBO.fromJSON(responseJSON)[0];
-                return new Promise( function(resolve) {
-                    resolve(responseJSON);
-                })
+    deleteMengeByName(menge){
+        return this.#fetchAdvanced(this.#deleteMengeURL(),{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(menge)
+        }).then((responseJSON) => {
+            let removedmengenanzahlBO = mengenanzahlBO.fromJSON(responseJSON)[0];
+            return new Promise( function(resolve) {
+                resolve(responseJSON);
             })
-        }
+        })
+    }
 
-              // Masseinheit related API Calls
-              #addMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit`;
-              #deleteMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit/<masseinheit>`;
-          
-              addMasseinheit(MasseinheitBO){
-                  return this.#fetchAdvanced(this.#addMasseinheitURL(), {
-                      method: "POST",
-                      headers: {
-                          "Accept": "application/json, text/plain",
-                          "Content-type": "application/json",
-                      },
-                      body: JSON.stringify(MasseinheitBO)
-                  }).then((responseJSON) => {
-                      let responseMasseinheitBO= MasseinheitBO.fromJSON(responseJSON)[0];
-                      return new Promise(function(resolve){
-                          resolve(responseMasseinheitBO);
-                      })
-                  })
-              }
-          
-              #getMasseinheitbyURL =()=> `${this.#EatSmarterServerBaseURL}/masseinheit/<masseinheit>`;
-          
-              getMasseinheitbyName(masseinheit) {
-                  return this.#fetchAdvanced(this.#getMasseinheitbyURL(),{
-                      method: "GET",
-                      headers: {
-                          "Accept": "application/json, text/plain",
-                          "Content-type": "application/json",
-                      },
-                      body: JSON.stringify(masseinheit)
-                  }).then((responseJSON)=> {
-                      let responseMasseinheitBO = MasseinheitBO.fromJSON(responseJSON)[0];
-                      return new Promise(function(resolve){
-                          resolve(responseMasseinheitBO);
-                      })
-                  })
-              }
-          
-              deleteMasseinheiteByName(masseinheit){
-                  return this.#fetchAdvanced(this.#deleteLebensmittelURL(),{
-                      method: "DELETE",
-                      headers: {
-                          "Accept": "application/json, text/plain",
-                          "Content-type": "application/json",
-                      },
-                      body: JSON.stringify(masseinheit)
-                  }).then((responseJSON) => {
-                      let removedMasseinheitBO = MasseinheitBO.fromJSON(responseJSON)[0];
-                      return new Promise( function(resolve) {
-                          resolve(responseJSON);
-                      })
-                  })
-              }
+// Masseinheit related API Calls
+    #addMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit`;
+    #deleteMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit/<masseinheit>`;
+
+    addMasseinheit(MasseinheitBO){
+        return this.#fetchAdvanced(this.#addMasseinheitURL(), {
+            method: "POST",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(MasseinheitBO)
+        }).then((responseJSON) => {
+            let responseMasseinheitBO= MasseinheitBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseMasseinheitBO);
+            })
+        })
+    }
+
+    #getMasseinheitbyURL =()=> `${this.#EatSmarterServerBaseURL}/masseinheit/<masseinheit>`;
+
+    getMasseinheitbyName(masseinheit) {
+        return this.#fetchAdvanced(this.#getMasseinheitbyURL(),{
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(masseinheit)
+        }).then((responseJSON)=> {
+            let responseMasseinheitBO = MasseinheitBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseMasseinheitBO);
+            })
+        })
+    }
+
+    deleteMasseinheitByName(masseinheit){
+        return this.#fetchAdvanced(this.#deleteMasseinheitURL(),{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(masseinheit)
+        }).then((responseJSON) => {
+            let removedMasseinheitBO = MasseinheitBO.fromJSON(responseJSON)[0];
+            return new Promise( function(resolve) {
+                resolve(responseJSON);
+            })
+        })
+    }
 
 
     //Ich füge hier jetzt eine getAllRezepte Methode ein, die soll eigentlich genau das gleiche machen
