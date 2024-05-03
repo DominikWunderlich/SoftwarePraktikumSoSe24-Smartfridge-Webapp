@@ -101,7 +101,9 @@ class Administration(object):
         with RezeptMapper() as mapper:
             return mapper.find_all()
 
-
+    def get_all_rezepte_by_wg_name(self, wg_name):
+        with RezeptMapper() as mapper:
+            return mapper.find_all_by_wg_name(wg_name)
     """ Lebensmittel-spezifische Methoden """
 
     def create_menge(self, menge):

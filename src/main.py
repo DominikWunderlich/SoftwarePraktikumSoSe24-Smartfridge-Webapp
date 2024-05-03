@@ -214,6 +214,22 @@ class RezeptOperations(Resource):
         else:
             return '', 500
 
+@smartapi.route('/rezept/<wg_name>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('wg_name', 'Name der WG')
+class getRezeptOperations(Resource):
+    @smartapi.marshal_with(rezept)
+    def get(self, wg_name):
+        """ Auslesen aller Rezepte einer WG """
+
+        adm = Administration()
+        wg_page = adm.get_all_rezepte_by_wg_name(wg_name)
+
+        if wg_page is not None:
+            return wg_page
+        else:
+            return '', 500
+
 """ Lebensmittel Calls """
 
 @smartapi.route('/lebensmittelverwaltung')
