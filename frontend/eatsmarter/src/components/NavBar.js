@@ -27,7 +27,7 @@ function NavBar({ currentUser, onSignOut }) {
                 <Button color="inherit" component={Link} to="/wg/:wgName">
                     Home
                 </Button>
-                <Button color="inherit" component={Link} to="/deineRezepte">
+                <Button color="inherit" component={Link} to="/RezeptAnzeigen">
                     Recipes
                 </Button>
                 <Button color="inherit" component={Link} to="/lebensmittelverwaltung">

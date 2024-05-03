@@ -3,6 +3,7 @@ import WgBO from "../api/WgBO";
 import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
+import {useNavigate} from "react-router-dom";
 
 function WGLandingpage(props) {
     const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ function WGLandingpage(props) {
     })
 
     const [errors, setErrors] = useState({});
+    const navigate = useNavigate()
 
     const handleChange = (event) => {
         if (event.target.name === 'isAccepted') {
@@ -34,6 +36,7 @@ function WGLandingpage(props) {
             console.log(".... starting to create a API-Call (EatSmarterAPI)")
             EatSmarterAPI.getAPI()
                 .addWg(newWG)
+            navigate("/wg")
         }
     };
 
