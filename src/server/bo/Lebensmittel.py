@@ -41,5 +41,4 @@ class Lebensmittel(bo):
         lm = Lebensmittel()
         lm.set_id(dictionary["id"])
         lm.set_lebensmittlename(dictionary["lebensmittelname"])
-        lm.set_kategorie(dictionary["kategorie"])
         return lm

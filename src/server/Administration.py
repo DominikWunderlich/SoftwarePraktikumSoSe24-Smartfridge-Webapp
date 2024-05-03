@@ -121,4 +121,3 @@ class Administration(object):
 
         with LebensmittelMapper() as mapper:
             return mapper.insert(food)
-

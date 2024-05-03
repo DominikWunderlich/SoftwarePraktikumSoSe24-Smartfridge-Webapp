@@ -1,5 +1,7 @@
-from src.server.bo import BusinessObject as bo
-class Masseinheit (bo.BusinessObject):
+from src.server.bo.BusinessObject import BusinessObject as bo
+
+
+class Masseinheit(bo):
     def __init__(self):
         super().__init__()
         self.masseinheitsname = ""
@@ -21,9 +23,6 @@ class Masseinheit (bo.BusinessObject):
         """Setzen des umrechnungsfaktors."""
         self.umrechnungsfaktor = faktor
 
-
-
-
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
         return f"MaßeinheitObjekt: masseinheitsname={self.get_masseinheit()}, umrechnungsfaktor={self.get_umrechnungsfaktor()}"
@@ -36,4 +35,3 @@ class Masseinheit (bo.BusinessObject):
         ma.set_masseinheit(dictionary["maßeinheit"])
         ma.set_umrechnungsfaktor(dictionary["faktor"])
         return ma
-
