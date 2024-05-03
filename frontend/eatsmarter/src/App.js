@@ -135,7 +135,7 @@ function App(props) {
 						  <Route path="/wg/:wgName" element={<Homepage/>}/>
 						  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung/>}/>
 						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
-						  <Route path="/rezeptErstellen" element={<RezeptErstellen/>}/>
+						  <Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser}/>}/>
                           <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen />} />
 					  </Routes>
 				  </Router>

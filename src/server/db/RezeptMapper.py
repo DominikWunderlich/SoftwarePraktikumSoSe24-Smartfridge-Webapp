@@ -22,8 +22,8 @@ class RezeptMapper(mapper):
         #else:
         #    rezept.set_id(1)
 
-        command = "INSERT INTO datenbank.rezept (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller) VALUES (%s, %s, %s, %s)"
-        data = (rezept.get_id(), rezept.get_rezept_name(), rezept.get_anzahl_portionen(), rezept.get_rezept_ersteller())
+        command = "INSERT INTO datenbank.rezept (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name) VALUES (%s, %s, %s, %s, %s)"
+        data = (rezept.get_id(), rezept.get_rezept_name(), rezept.get_anzahl_portionen(), rezept.get_rezept_ersteller(), rezept.get_wg_name())
         cursor.execute(command, data)
 
         self._connector.commit()
@@ -38,15 +38,16 @@ class RezeptMapper(mapper):
     def find_all(self):
         result = []
         cursor = self._connector.cursor()
-        cursor.execute("SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller FROM datenbank.rezept")
+        cursor.execute("SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name FROM datenbank.rezept")
         tuples = cursor.fetchall()
 
-        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller) in tuples:
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name) in tuples:
             rezept = Rezept()
             rezept.set_id(rezept_id)
             rezept.set_rezept_name(rezept_name)
             rezept.set_anzahl_portionen(anzahl_portionen)
             rezept.set_rezept_ersteller(rezept_ersteller)
+            rezept.set_wg_name(wg_name)
             result.append(rezept)
 
         self._connector.commit()
