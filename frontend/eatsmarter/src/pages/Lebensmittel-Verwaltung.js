@@ -73,7 +73,7 @@ function Lebensmittelverwaltung() {
 
                     <label>Menge</label>
                     <input
-                        type="text"
+                        type="number"
                         name="mengenanzahl"
                         value={formData.mengenanzahl}
                         onChange={handleChange}
