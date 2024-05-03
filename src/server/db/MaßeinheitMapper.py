@@ -5,54 +5,70 @@ class MasseinheitMapper(mapper):
 
     def find_all(self):
         result = []
-        cursor = self._cnx.cursor()
-        cursor.execute("SELECT * FROM datenbank.masseinheit")
-        for (id, maßeinheit, menge) in cursor.fetchall():
+        cursor = self._connector.cursor()
+        cursor.execute("SELECT * FROM datenbank.maßeinheit")
+        for (id, maßeinheit, faktor) in cursor.fetchall():
             masseinheit_instance = Masseinheit()
             masseinheit_instance.set_id(id)
-            masseinheit_instance.set_masseinheitname(maßeinheit)
-            masseinheit_instance.set_menge(menge)
+            masseinheit_instance.set_masseinheit(maßeinheit)
+            masseinheit_instance.set_umrechnungsfaktor(faktor)
             result.append(masseinheit_instance)
         cursor.close()
         return result
 
     def find_by_name(self, name):
         result = None
-        cursor = self._cnx.cursor()
-        command = "SELECT id, maßeinheit, menge FROM datenbank.Masseinheit WHERE maßeinheit = %s"
-        cursor.execute(command, (mname,))
+        cursor = self._connector.cursor()
+        command = "SELECT masseinheit_id, masseinheit_name, umrechnungsfaktor FROM datenbank.maßeinheit WHERE maßeinheit = %s"
+        cursor.execute(command, (name,))
         tuple = cursor.fetchone()
         cursor.close()
         if tuple:
-            (id, maßeinheit, menge) = tuple
+            (id, maßeinheit, faktor) = tuple
             result = Masseinheit()
             result.set_id(id)
             result.set_masseinheit(maßeinheit)
-            result.set_menge(menge)
+            result.set_umrechnungsfaktor(faktor)
         return result
 
     def insert(self, Masseinheit):
-        cursor = self._cnx.cursor()
-        command = "INSERT INTO datenbank.masseinheit (id, maßeinhei, menge) VALUES (%s, %s, %s)"
-        data = (Masseinheit.get_id(), Masseinheit.get_masseinheitname(), Masseinheit.get_menge())
+        cursor = self._connector.cursor()
+
+        cursor.execute(f'SELECT MAX(masseinheit_id) AS maxid FROM datenbank.maßeinheit')
+        tuples = cursor.fetchall()
+
+        for (maxid) in tuples:
+            if maxid[0] is not None:
+
+                Masseinheit.set_id(maxid[0] + 1)
+
+            else:
+                Masseinheit.set_id(1)
+
+        command = "INSERT INTO datenbank.maßeinheit (masseinheit_id, masseinheit_name, umrechnungsfaktor) VALUES (%s, %s, %s)"
+        data = (Masseinheit.get_id(), Masseinheit.get_masseinheit(), Masseinheit.get_umrechnungsfaktor())
         cursor.execute(command, data)
-        self._cnx.commit()
+
+        self._connector.commit()
         cursor.close()
 
     def update(self, Masseinheit):
-        cursor = self._cnx.cursor()
-        command = "UPDATE datenbank.masseinheit SET maßeinheit=%s, menge=%s WHERE id=%s"
+        cursor = self._connector.cursor()
+        command = "UPDATE datenbank.maßeinheit SET maßeinheit=%s, menge=%s WHERE id=%s"
         data = (Masseinheit.get_masseinheitname(), Masseinheit.get_menge(), Masseinheit.get_id())
         cursor.execute(command, data)
-        self._cnx.commit()
+        self._connector.commit()
         cursor.close()
 
     def delete(self, Masseinheit):
-        cursor = self._cnx.cursor()
-        command = "DELETE FROM datenbank.masseinheit WHERE id=%s"
+        cursor = self._connector.cursor()
+        command = "DELETE FROM datenbank.maßeinheit WHERE id=%s"
         cursor.execute(command, (Masseinheit.get_id(),))
-        self._cnx.commit()
+        self._connector.commit()
         cursor.close()
+
+    def find_by_key(self, key):
+        pass
 
 if __name__ == "__main__":
     with MasseinheitMapper() as mapper:
