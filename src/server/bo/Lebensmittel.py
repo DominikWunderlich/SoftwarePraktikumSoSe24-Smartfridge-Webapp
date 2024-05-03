@@ -5,8 +5,8 @@ class Lebensmittel(bo):
     def __init__(self):
         super().__init__()
         self.lebensmittelname = ""
-        self.masseinheit = ""
-        self.mengenanzahl = 0.0
+        self.masseinheit = 0
+        self.mengenanzahl = 0
 
     def get_lebensmittlename(self):
         """Auslesen des Lebensmittelnamens."""
