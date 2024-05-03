@@ -155,7 +155,7 @@ export default class EatSmarterAPI{
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
-    #deleteWgURL = () => `${this.#EatSmarterServerBaseURL}/wg/<wg_name>`;
+    #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
     #updateWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg`;
@@ -222,7 +222,7 @@ export default class EatSmarterAPI{
     }
 
     deleteWgByName(wgName){
-        return this.#fetchAdvanced(this.#deleteWgURL(),{
+        return this.#fetchAdvanced(this.#deleteWgURL(wgName),{
             method: "DELETE",
             headers: {
                 "Accept": "application/json, text/plain",
