@@ -13,6 +13,7 @@ import DeineRezepte from "./pages/DeineRezepte";
 import RezeptErstellen from "./pages/RezeptErstellen";
 import NavBar from "./components/NavBar";
 import RezeptAnzeigen from "./pages/RezepteAnzeigen";
+import WGPage from "./pages/WGPage";
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -129,13 +130,13 @@ function App(props) {
 					  <Routes>
 						  <Route path="/" element={<Navigate to="/login"/>}/>
 						  <Route path="/login" element={<LoginPerson user={state.currentUser}/>}/>
-						  <Route path="wg" element={<RegisterWG user={state.currentUser}/>}/>
-						  <Route path="/home" element={<Homepage/>}/>
+						  <Route path="registerWg" element={<RegisterWG user={state.currentUser}/>}/>
+						  <Route path="/wg" element={<WGPage user={state.currentUser}/>}/>
+						  <Route path="/wg/:wgName" element={<Homepage/>}/>
 						  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung/>}/>
 						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
 						  <Route path="/rezeptErstellen" element={<RezeptErstellen/>}/>
                           <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen />} />
-
 					  </Routes>
 				  </Router>
 			  </div>

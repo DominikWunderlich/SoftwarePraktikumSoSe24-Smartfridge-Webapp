@@ -45,11 +45,13 @@ class WGMapper(mapper):
 
         return result
 
+    """ Die wg wird anhand der email Adresse des wg_bewohners oder wg_erstellers ausgegeben"""
     def find_by_email(self, email):
         result = []
 
         cursor = self._connector.cursor()
-        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_bewohner='{email}' "
+        # TODO: passt das LIKE auch für den Gebrauch von Domi? Wenn nicht Funktion 2mal (WHERE wg_bewohner LIKE '%{email}%'"" & (WHERE wg_bewohner='{email}')
+        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_bewohner LIKE '%{email}%' OR wg_ersteller LIKE '%{email}%' "
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -87,16 +89,18 @@ class WGMapper(mapper):
 
         return wg
 
+    """ Diese Methode updated eine WG basierend auf der wg_id"""
     def update(self, wg):
         cursor = self._connector.cursor()
 
-        command = "UPDATE datenbank.wg SET wg_id=%s, wg_name=%s, wg_bewohner=%s, wg_ersteller=%s"
-        data = (wg.get_id(), wg.get_wg_name(), wg.get_wg_bewohner(), wg.get_wg_ersteller())
+        command = "UPDATE datenbank.wg SET wg_id=%s, wg_name=%s, wg_bewohner=%s, wg_ersteller=%s WHERE wg_id=%s"
+        data = (wg.get_id(), wg.get_wg_name(), wg.get_wg_bewohner(), wg.get_wg_ersteller(), wg.get_id())
 
         cursor.execute(command, data)
-
-        self._connector(command, data)
+        self._connector.commit()
         cursor.close()
+
+
 
     def delete(self, key):
         cursor = self._connector.cursor()

@@ -35,7 +35,7 @@ function LoginPerson(props) {
                 if (UserInWg.length > 0) {
                     navigate("/home");
                 } else {
-                    navigate("/wg")
+                    navigate("/registerWg")
                 }
             })
 

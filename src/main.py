@@ -87,6 +87,33 @@ class WgOperations(Resource):
         else:
             return 'Fehler in WG-Operations post methode', 500
 
+    # Update wg on wgPage
+    @smartapi.expect(wg)
+    @smartapi.marshal_with(wg)
+    def put(self):
+        adm = Administration()
+        proposal = WG.from_dict(api.payload)
+
+        if proposal is not None:
+            result = adm.update_wg_by_email(proposal)
+            return result
+
+
+@smartapi.route('/wg/user/<email>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('email', 'Die E-mail der aktuellen person')
+class WgGetWgOperations(Resource):
+    @smartapi.marshal_with(wg)
+    def get(self, email):
+        adm = Administration()
+        wg_p = adm.getWGByEmail(email)
+
+        if wg_p is not None:
+            return wg_p
+        else:
+            return '', 500
+
+
 
 @smartapi.route('/wg/<wg_name>')
 @smartapi.response(500, 'Serverseitiger Fehler')
