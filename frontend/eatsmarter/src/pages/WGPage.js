@@ -90,6 +90,21 @@ function WGPage(props) {
             setDeleteNewMemberEmail("");
     };
 
+    const handleDeleteWG = () => {
+
+        let currentUser = props.user.email
+        let wgAdmin = wg.wgAdmin
+        let wgName = wg.wgName
+
+        if(currentUser===wgAdmin){
+            EatSmarterAPI.getAPI().deleteWgByName(wgName)
+
+        }
+        else{
+            alert("Nur der Ersteller kann die WG löschen")
+        }
+    }
+
     return (
         <div>
             <div className='container'>
@@ -135,6 +150,8 @@ function WGPage(props) {
                     <button type="button" onClick={handleDeleteMember}>+</button>
                     <div className='formitem'>
                     </div>
+
+                    <button type="button" onClick={handleDeleteWG}>WG löschen</button>
                 </form>
             </div>
         </div>
