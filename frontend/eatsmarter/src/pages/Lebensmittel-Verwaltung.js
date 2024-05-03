@@ -31,7 +31,11 @@ function Lebensmittelverwaltung() {
             return;
         }
 
-        const newLebensmittel = new LebensmittelBO(formData.lebensmittelname);
+        const newLebensmittel = new LebensmittelBO(
+            formData.lebensmittelname,
+            formData.mengenanzahl,
+            formData.masseinheit
+        );
         const newMengenanzahl = new mengenanzahlBO(formData.mengenanzahl);
         const newMasseinheit = new MasseinheitBO(formData.masseinheit);
 

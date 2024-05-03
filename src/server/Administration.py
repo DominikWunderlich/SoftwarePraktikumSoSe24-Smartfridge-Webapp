@@ -122,12 +122,12 @@ class Administration(object):
         with MasseinheitMapper() as mapper:
             return mapper.insert(m)
 
-    def create_lebensmittel(self, name, masseinhiet_id, menge_id):
+    def create_lebensmittel(self, name, masseinheit_id, menge_id):
         """ Lebensmittel hinterlegen """
         food = Lebensmittel()
         food.set_id(1)
         food.set_lebensmittlename(name)
-        food.set_masseinheit(masseinhiet_id)
+        food.set_masseinheit(masseinheit_id)
         food.set_mengenanzahl(menge_id)
 
         with LebensmittelMapper() as mapper:
