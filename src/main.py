@@ -8,6 +8,8 @@ from server.bo.WG import WG
 from server.bo.Rezept import Rezept
 from server.bo.Person import Person
 from server.bo.Lebensmittel import Lebensmittel
+from server.bo.mengenanzahl import Mengenanzahl
+from server.bo.Masseinheit import Masseinheit
 
 app = Flask(__name__)
 
@@ -50,8 +52,15 @@ rezept = api.inherit('Rezept', bo, {
 
 lebensmittel = api.inherit('Lebensmittel', bo, {
     'lebensmittelName': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
-    'aggregatszustand': fields.String(attribute='aggregatszustand', description='Aggregatszustand'),
+})
 
+menge = api.inherit('Menge', bo, {
+    'menge': fields.Integer(attribute='menge', description='MengenObjekt')
+})
+
+masseinheit = api.inherit('Masseinheit', bo, {
+    'masseinheitsname': fields.String(attribute='maßeinheit', description='Name einer Maßeinheit'),
+    'umrechnungsfaktor': fields.Float(attribute='faktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
 @app.route("/")
@@ -202,28 +211,75 @@ class RezeptOperations(Resource):
             return rezepte
         else:
             return '', 500
-        
+
+""" Lebensmittel Calls """
+
 @smartapi.route('/lebensmittelverwaltung')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
     def post(self):
-        '''Anlegen eines neuen Lebensmittel-Objekt'''
-        adm=Administration()
-        proposal = lebensmittel.from_dict(api.payload)
-        print(api.payload)
+        # TODO:
+        """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
+        adm = Administration()
+        proposal = Lebensmittel.from_dict(api.payload)
+        print(f"Lebensmittel payload im Backend (Flask): {api.payload}")
 
         if proposal is not None:
             result = adm.create_lebensmittel(
-                proposal.getLebensmittelname(),
-                proposal.getAggregatszustand())
-            print(result, "Lebensmitte hinzugefügt")
+                proposal.getLebensmittelname()
+            )
             return result, 200
         else:
-            print("Lebensmitte bereits angelegt")  
             return 'Fehler in LebensmittelOperation post methode', 500
-              
+
+@smartapi.route('/menge')
+@smartapi.response(500, "Serverseitiger-Fehler")
+class MengenOperationen(Resource):
+    @smartapi.expect(menge)
+    @smartapi.marshal_with(menge)
+    def post(self):
+        """
+        Methode gehört zum Lebensmittel API-Call und wird zur Vorbereitung benötigt.
+        Wenn ein Lebensmittel hinzugefügt wird, werden 3 API-Calls aufgerufen. (Erstellen von
+        Menge, Maßeinheit und Lebensmittel). Das ist der call für das Anlegen eines MengenObjekts.
+        """
+        adm = Administration()
+        proposal = Mengenanzahl.from_dict(api.payload)
+        print(f"Mengen payload im Backend (Flask): {api.payload}")
+
+        if proposal is not None:
+            res = adm.create_menge(
+                proposal.get_menge()
+            )
+            return res, 200
+        else:
+            return "Fehler in MengenOperationen Post Methode", 500
+
+@smartapi.route('/masseinheit')
+@smartapi.response(500, "Serverseitiger-Fehler")
+class MasseinheitOperation(Resource):
+    @smartapi.expect(masseinheit)
+    @smartapi.marshal_with(masseinheit)
+    def post(self):
+        """
+        Methode gehört zum Lebensmittel API-Call und wird zur Vorbereitung benötigt.
+        Wenn ein Lebensmittel hinzugefügt wird, werden 3 API-Calls aufgerufen. (Erstellen von
+        Menge, Maßeinheit und Lebensmittel). Das ist der call für das Anlegen einer Maßeinheit.
+        """
+        adm = Administration()
+        proposal = Masseinheit.from_dict(api.payload)
+        print(f"Masseinheit payload im Backend (Flask): {api.payload}")
+
+        if proposal is not None:
+            res = adm.create_measurement(
+                proposal.get_masseinheit(),
+                proposal.get_umrechnungsfaktor()
+            )
+            return res, 200
+        else:
+            return "Fehler in MengenOperationen Post Methode", 500
 
 
 

@@ -1,15 +1,11 @@
-from src.server.bo import BusinessObject as bo
-class Masseinheit (bo.BusinessObject):
-    """Realisierung einer exemplarischen Benutzerklasse.
+from src.server.bo.BusinessObject import BusinessObject as bo
 
-    Aus Gründen der Vereinfachung besitzt der Kunden in diesem Demonstrator
-    lediglich einen einfachen Namen, eine E_Mail-Adresse sowie eine außerhalb
-    unseres Systems verwaltete User ID (z.B. die Google ID).
-    """
+
+class Masseinheit(bo):
     def __init__(self):
         super().__init__()
         self.masseinheitsname = ""
-        self.menge = ""
+        self.umrechnungsfaktor = 0.0
 
     def get_masseinheit(self):
         """Auslesen des maßeinheit."""
@@ -19,20 +15,17 @@ class Masseinheit (bo.BusinessObject):
         """Setzen des maßeinheit."""
         self.masseinheitsname = masseinheitsname
 
-    def get_menge(self):
-        """Auslesen des menge."""
-        return self.menge
+    def get_umrechnungsfaktor(self):
+        """Auslesen des umrechnungsfaktors."""
+        return self.umrechnungsfaktor
 
-    def set_menge(self, menge):
-        """Setzen des menge."""
-        self.menge = menge
-
-
-
+    def set_umrechnungsfaktor(self, faktor):
+        """Setzen des umrechnungsfaktors."""
+        self.umrechnungsfaktor = faktor
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "User: {}, {}, {}".format(self.get_id(), self.masseinheitsname, self.menge)
+        return f"MaßeinheitObjekt: masseinheitsname={self.get_masseinheit()}, umrechnungsfaktor={self.get_umrechnungsfaktor()}"
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -40,6 +33,5 @@ class Masseinheit (bo.BusinessObject):
         ma = Masseinheit()
         ma.set_id(dictionary["id"])
         ma.set_masseinheit(dictionary["maßeinheit"])
-        ma.set_menge(dictionary["menge"])
+        ma.set_umrechnungsfaktor(dictionary["faktor"])
         return ma
-

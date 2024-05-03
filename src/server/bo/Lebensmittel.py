@@ -5,7 +5,8 @@ class Lebensmittel(bo):
     def __init__(self):
         super().__init__()
         self.lebensmittelname = ""
-        self.aggregatszustand = ""
+        self.masseinheit = 0
+        self.mengenanzahl = 0
 
     def get_lebensmittlename(self):
         """Auslesen des Lebensmittelnamens."""
@@ -15,17 +16,24 @@ class Lebensmittel(bo):
         """Setzen des Lebensmittelnamens."""
         self.lebensmittelname = name
 
-    def get_aggregatszustand(self):
-        """Auslesen des Aggregatszustands."""
-        return self.aggregatszustand
+    def get_masseinheit(self):
+        """Auslesen des maßeinheit."""
+        return self.masseinheit
 
-    def set_aggregatszustand(self, zustand):
-        """Setzen des Aggregatszustands."""
-        self.aggregatszustand = zustand
+    def set_masseinheit(self, m):
+        """Setzen des maßeinheit."""
+        self.masseinheit = m
+
+    def set_mengenanzahl(self, m):
+        self.mengenanzahl = m
+
+    def get_mengenanzahl(self):
+        return self.mengenanzahl
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "Lebensmittel: {}, {}, {}".format(self.get_id(), self.lebensmittelname, self.aggregatszustand)
+        return f"LebensmittelObjekt: Name={self.get_lebensmittlename()}, " \
+               f"Maßeinheit={self.get_masseinheit()}, Anzahl={self.get_mengenanzahl()}"
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -33,5 +41,4 @@ class Lebensmittel(bo):
         lm = Lebensmittel()
         lm.set_id(dictionary["id"])
         lm.set_lebensmittlename(dictionary["lebensmittelname"])
-        lm.set_aggregatszustand(dictionary["aggregatszustand"])
         return lm

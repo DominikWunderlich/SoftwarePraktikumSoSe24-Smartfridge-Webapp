@@ -1,44 +1,31 @@
 import BusinessObject from "./BusinessObject";
 export default class LebensmittelBO extends BusinessObject{
-    constructor(id, lebensmittelname, aggregatszustand){
+    constructor(lebensmittel_name, menge, masseinheit) {
         super();
-        this.id = id;
-        this.lebensmittelname = lebensmittelname;
-        this.aggregatszustand = aggregatszustand;
+        this.lebensmittel_name = lebensmittel_name;
+        this.menge = menge
+        this.masseinheit = masseinheit
     }
 
-    setId(id){
-        this.id = id;
 
-    }
-    getId() {
-        return this.id;
-    }
-
-    setLebensmittelname(lebensmittelname){
-        this.lebensmittelname = lebensmittelname;
+    setLebensmittelname(lebensmittel_name){
+        this.lebensmittel_name = lebensmittel_name;
     }
     getLebensmittelname() {
-        return this.lebensmittelname;
+        return this.lebensmittel_name;
     }
 
-    setAggregatszustand(aggregatszustand){
-        this.aggregatszustand = aggregatszustand;
-    }
-    getAggregatszustand(){
-        return this.aggregatszustand;
-    }
 
-    static fromJSON(lebensmittelname){
+    static fromJSON(lebensmittel_name){
         let result = [];
 
-        if(Array.isArray(lebensmittelname)){
-            lebensmittelname.foreach((lm)=> {
+        if(Array.isArray(lebensmittel_name)){
+            lebensmittel_name.foreach((lm)=> {
                 Object.setPrototypeOf(lm, LebensmittelBO.prototype);
                 result.push(lm);
             });
         }else{
-            let lm = lebensmittelname;
+            let lm = lebensmittel_name;
             Object.setPrototypeOf(lm, LebensmittelBO.prototype);
             result.push(lm);
         }

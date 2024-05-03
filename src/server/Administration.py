@@ -5,6 +5,11 @@ from server.db.PersonMapper import PersonMapper
 from server.bo.Rezept import Rezept
 from server.db.RezeptMapper import RezeptMapper
 from server.db.LebensmittelMapper import LebensmittelMapper
+from server.bo.Lebensmittel import Lebensmittel
+from server.bo.Masseinheit import Masseinheit
+from server.bo.mengenanzahl import Mengenanzahl
+from server.db.MaßeinheitMapper import MasseinheitMapper
+from server.db.mengenmapper import MengenanzahlMapper
 
 class Administration(object):
     def __init__(self):
@@ -97,15 +102,34 @@ class Administration(object):
             return mapper.find_all()
 
 
-    """ Rezept-spezifische Methoden """
+    """ Lebensmittel-spezifische Methoden """
 
+    def create_menge(self, menge):
+        # Erstellen eines Mengenobjekts. Dieses Objekt wird für die Erstellung eines
+        # Lebensmitels benötigt.
+        amount = Mengenanzahl()
+        amount.set_menge(menge)
+        amount.set_id(1)
 
-    def create_lebensmittel(self, lebensmittelname, aggregatszustand):
+        with MengenanzahlMapper() as mapper:
+            return mapper.insert(amount)
+
+    def create_measurement(self, name, faktor):
+        """ Erstellen einer Maßeinheit.  """
+        m = Masseinheit()
+        m.set_masseinheit(name)
+        m.set_umrechnungsfaktor(faktor)
+
+        with MasseinheitMapper() as mapper:
+            return mapper.insert(m)
+
+    def create_lebensmittel(self, name, masseinheit_id, menge_id):
         """ Lebensmittel hinterlegen """
-        lm = lebensmittelname()
-        lm.set_lebensmittelname(lebensmittelname)
-        lm.set_aggregatszustand(aggregatszustand)
-        lm.set_id(1)
+        food = Lebensmittel()
+        food.set_id(1)
+        food.set_lebensmittlename(name)
+        food.set_masseinheit(masseinheit_id)
+        food.set_mengenanzahl(menge_id)
 
         with LebensmittelMapper() as mapper:
-            return mapper.insert(lm)
+            return mapper.insert(food)
