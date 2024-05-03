@@ -3,11 +3,12 @@ import BusinessObject from "./BusinessObject";
 export default class RezeptBO extends BusinessObject{
 
     // Jedes erstellte Rezept-BusinessObjekt wird mit folgenden Attributen erstellt
-    constructor(aRezeptName, aAnzahlPortionen, aRezeptAdmin){
+    constructor(aRezeptName, aAnzahlPortionen, aRezeptAdmin, aWgName){
         super();
         this.rezeptName = aRezeptName;
         this.anzahlPortionen = aAnzahlPortionen;
         this.rezeptAdmin = aRezeptAdmin;
+        this.wgName = aWgName;
     }
 
     // Setzen und Aufruf von den Attributen des RezeptBusinessObjects
@@ -32,6 +33,14 @@ export default class RezeptBO extends BusinessObject{
     }
     getRezeptAdmin(){
         return this.rezeptAdmin;
+    }
+
+    setWgName(aWgName){
+        this.wgName=aWgName;
+    }
+
+    getWgName(){
+        return this.wgName;
     }
 
     // Methode gibt Array mit den RezeptBOs aus der JSON Struktur zurück
