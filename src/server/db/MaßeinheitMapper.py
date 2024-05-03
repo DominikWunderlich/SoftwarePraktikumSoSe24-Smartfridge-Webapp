@@ -19,7 +19,7 @@ class MasseinheitMapper(mapper):
     def find_by_name(self, name):
         result = None
         cursor = self._connector.cursor()
-        command = "SELECT masseinheit_id, masseinheit_name, umrechnungsfaktor FROM datenbank.maßeinheit WHERE maßeinheit = %s"
+        command = "SELECT masseinheit_id, masseinheit_name, umrechnungsfaktor FROM datenbank.maßeinheit WHERE masseinheit_name = %s"
         cursor.execute(command, (name,))
         tuple = cursor.fetchone()
         cursor.close()

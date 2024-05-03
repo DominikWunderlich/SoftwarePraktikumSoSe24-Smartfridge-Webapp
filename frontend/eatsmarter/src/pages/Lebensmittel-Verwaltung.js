@@ -26,7 +26,7 @@ function Lebensmittelverwaltung() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (formData.lebensmittelname.trim() === "" || formData.masseinheit.trim() === "") {
+        if (formData.lebensmittelname.trim() === ""^1 || formData.masseinheit.trim() === "") {
             setErrors({ message: "Bitte füllen Sie alle Felder aus." });
             return;
         }

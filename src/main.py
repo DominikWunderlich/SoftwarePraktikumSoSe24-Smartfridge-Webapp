@@ -50,7 +50,9 @@ rezept = api.inherit('Rezept', bo, {
 })
 
 lebensmittel = api.inherit('Lebensmittel', bo, {
-    'lebensmittelName': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
+    'lebensmittel_name': fields.String(attribute='lebensmittelName', description='Name des Lebensmittels'),
+    'masseinheit': fields.String(attribute='masseinheit', description='Maßeinheit des Lebenmittels'),
+    'mengenanzahl': fields.Integer(attribute='mengenanzahl', description='Menge des Lebensmittels'),
 })
 
 menge = api.inherit('Menge', bo, {
@@ -58,8 +60,8 @@ menge = api.inherit('Menge', bo, {
 })
 
 masseinheit = api.inherit('Masseinheit', bo, {
-    'masseinheitsname': fields.String(attribute='maßeinheit', description='Name einer Maßeinheit'),
-    'umrechnungsfaktor': fields.Float(attribute='faktor', description='Umrechnungsfaktor einer Maßeinheit')
+    'masseinheitsname': fields.String(attribute='masseinheitsname', description='Name einer Maßeinheit'),
+    'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
 @app.route("/")
@@ -218,15 +220,17 @@ class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
     def post(self):
-        # TODO:
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
+        print(f"Lebensmittel payload im Backend (Flask): {api.payload}")
         proposal = Lebensmittel.from_dict(api.payload)
         print(f"Lebensmittel payload im Backend (Flask): {api.payload}")
 
         if proposal is not None:
             result = adm.create_lebensmittel(
-                proposal.getLebensmittelname()
+                proposal.get_lebensmittelname(),
+                proposal.get_masseinheit(),
+                proposal.get_mengenanzahl()
             )
             return result, 200
         else:
@@ -267,6 +271,7 @@ class MasseinheitOperation(Resource):
         Menge, Maßeinheit und Lebensmittel). Das ist der call für das Anlegen einer Maßeinheit.
         """
         adm = Administration()
+        print(f"Masseinheit payload im Backend (Flask): {api.payload}")
         proposal = Masseinheit.from_dict(api.payload)
         print(f"Masseinheit payload im Backend (Flask): {api.payload}")
 
