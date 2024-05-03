@@ -9,7 +9,7 @@ import EatSmarterAPI from "../api/EatSmarterAPI";
 function Lebensmittelverwaltung() {
     const [formData, setFormData] = useState({
         lebensmittelname: "",
-        mengenanzahl: "",
+        mengenanzahl: 0,
         masseinheit: ""
     });
 
@@ -26,7 +26,7 @@ function Lebensmittelverwaltung() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (formData.lebensmittelname.trim() === "" || formData.mengenanzahl.trim() === "" || formData.masseinheit.trim() === "") {
+        if (formData.lebensmittelname.trim() === "" || formData.masseinheit.trim() === "") {
             setErrors({ message: "Bitte füllen Sie alle Felder aus." });
             return;
         }
@@ -48,7 +48,7 @@ function Lebensmittelverwaltung() {
         // Zurücksetzen des Formulars nach dem Hinzufügen
         setFormData({
             lebensmittelname: "",
-            mengenanzahl: "",
+            mengenanzahl: 0,
             masseinheit: ""
         });
         setErrors({});
@@ -73,7 +73,7 @@ function Lebensmittelverwaltung() {
 
                     <label>Menge</label>
                     <input
-                        type="text"
+                        type="number"
                         name="mengenanzahl"
                         value={formData.mengenanzahl}
                         onChange={handleChange}
