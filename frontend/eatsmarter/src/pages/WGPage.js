@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
+import { useNavigate } from "react-router-dom";
 
 
 function WGPage(props) {
     const [wg, setWg] = useState(null)
     const[addNewMemberEmail, setAddNewMemberEmail] = useState("");
     const[deleteNewMemberEmail, setDeleteNewMemberEmail] = useState("");
+    const navigate = useNavigate()
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
             .then(response => {
@@ -98,6 +100,7 @@ function WGPage(props) {
 
         if(currentUser===wgAdmin){
             EatSmarterAPI.getAPI().deleteWgByName(wgName)
+            navigate("/registerWg")
 
         }
         else{

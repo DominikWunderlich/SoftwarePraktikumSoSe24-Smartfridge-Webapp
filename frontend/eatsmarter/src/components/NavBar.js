@@ -36,10 +36,6 @@ function NavBar({ currentUser, onSignOut }) {
                 <Button color="inherit" component={Link} to="/wg">
                     WG
                 </Button>
-                {/*//TODO: Remove Navbar registerWg after completing the registerWg page*/}
-                <Button color="inherit" component={Link} to="/registerWg">
-                    TEMPORARY: WG erstellen
-                </Button>
                 {currentUser && (
                     <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
                         <Avatar
