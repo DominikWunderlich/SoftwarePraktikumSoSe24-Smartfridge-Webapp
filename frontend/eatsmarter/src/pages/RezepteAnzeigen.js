@@ -61,8 +61,10 @@ function RezepteAnzeigen() {
         const fetchRezepte = async () => {
             try {
                 const api = new EatSmarterAPI();
-                const rezeptList = await api.getAllRezepte(); // Ruf die neuen Rezept-Methode auf
+                const wg_name = "abc" //Hier wird festgelegt welche wg_name die Rezepte haben müssen damit sie angezeigt werden
+                const rezeptList = await api.getRezepteByWg(wg_name); // Ruf die neuen Rezept-Methode auf
                 setRezepte(rezeptList);
+                console.log(rezeptList)
             } catch (error) {
                 console.error("Fehler beim Abrufen der Rezepte:", error);
             }

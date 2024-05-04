@@ -48,18 +48,18 @@ export default class EatSmarterAPI{
     #getRezepteByWgURL = (wg_name) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_name}`;
 
     getRezepteByWg(wg_name){
-        return this.#fetchAdvanced(this.#getRezepteByWgURL(wg_name), {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            },
-        }).then((response) => {
-            let responseRezeptBO = RezeptBO.fromJSON(response)[0];
-            return new Promise(function (resolve){
-                resolve(responseRezeptBO);
-            });
+    return this.#fetchAdvanced(this.#getRezepteByWgURL(wg_name), {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    }).then((response) => {
+        let rezepte = RezeptBO.fromJSON(response);
+        return new Promise(function (resolve){
+            resolve(rezepte);
         });
+    });
     }
     //also bis hier
     addRezept(rezeptBO){
