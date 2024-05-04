@@ -46,7 +46,8 @@ person = api.inherit('Person', bo, {
 rezept = api.inherit('Rezept', bo, {
     'rezeptName': fields.String(attribute='rezept_name', description='Name einer Rezeptes'),
     'anzahlPortionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
-    'rezeptAdmin': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts')
+    'rezeptAdmin': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts'),
+    'wgName': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
 })
 
 lebensmittel = api.inherit('Lebensmittel', bo, {
@@ -189,7 +190,8 @@ class RezeptOperations(Resource):
             result = adm.create_rezept(
                 proposal.get_rezept_name(),
                 proposal.get_anzahl_portionen(),
-                proposal.get_rezept_ersteller())
+                proposal.get_rezept_ersteller(),
+                proposal.get_wg_name())
             print(result, "hi")
             return result, 200
         else:

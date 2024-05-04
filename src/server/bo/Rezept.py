@@ -8,6 +8,7 @@ class Rezept(bo):
         self.rezept_name = ""
         self.anzahl_portionen = ""
         self.rezept_ersteller = ""
+        self.wg_name = ""
 
     def set_rezept_name(self, rezept_name):
         self.rezept_name = rezept_name
@@ -18,6 +19,9 @@ class Rezept(bo):
     def set_anzahl_portionen(self, anzahl_portionen):
         self.anzahl_portionen = anzahl_portionen
 
+    def set_wg_name(self, wg_name):
+        self.wg_name = wg_name
+
     def get_rezept_name(self):
         return self.rezept_name
 
@@ -27,9 +31,12 @@ class Rezept(bo):
     def get_anzahl_portionen(self):
         return self.anzahl_portionen
 
+    def get_wg_name(self):
+        return self.wg_name
+
     def __str__(self):
-        return "Rezept: {}, {}, {}, {}".format(self.get_id(), self.rezept_name, self.anzahl_portionen,
-                                               self.rezept_ersteller)
+        return "Rezept: {}, {}, {}, {}, {}".format(self.get_id(), self.rezept_name, self.anzahl_portionen,
+                                               self.rezept_ersteller, self.wg_name)
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -38,5 +45,6 @@ class Rezept(bo):
         rz.set_rezept_name(dictionary["rezeptName"])
         rz.set_anzahl_portionen(dictionary["anzahlPortionen"])
         rz.set_rezept_ersteller(dictionary["rezeptAdmin"])
+        rz.set_wg_name(dictionary["wgName"])
         return rz
 

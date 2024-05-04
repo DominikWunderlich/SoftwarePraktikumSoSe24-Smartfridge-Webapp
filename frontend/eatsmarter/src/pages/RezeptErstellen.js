@@ -1,19 +1,38 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import RezeptBO from "../api/RezeptBO";
 import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 
-function RezeptErstellen(){
+function RezeptErstellen(props){
 
     const [formData, setFormData] = useState({
         rezeptname: "",
         anzahlportionen: "",
-        rezeptadmin: ""
+        rezeptadmin: props.user.email,
+        wgname: ""
     })
 
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
+    //Die folgenden 13 Zeilen sind 1:1 aus WGPage übernommen. Da dort auch schon implementiert wurde
+    //dass der WG Name anhand der Email der eingeloggten Person angezeigt wird
+    //in der renderCurrentUsersWg Funktion wird die WG Methode getWgByUser Methode aus der EatSmarterAPI
+    //benutzt
+    const [wg, setWg] = useState(null)
+    async function renderCurrentUsersWg(){
+        await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
+            .then(response => {
+                setWg(response);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    }
+    useEffect(() => {
+        renderCurrentUsersWg()
+    }, []);
 
     const handleChange = (event) => {
         if (event.target.name === 'isAccepted') {
@@ -27,11 +46,13 @@ function RezeptErstellen(){
         event.preventDefault();
 
         if (!Object.keys(errors).length) {
+            const updatedFormData = {...formData, wgname: wg.wgName};
             const newRezept = new RezeptBO(
-                formData.rezeptname,
-                formData.anzahlportionen,
-                formData.rezeptadmin,
-            );
+                updatedFormData.rezeptname,
+                updatedFormData.anzahlportionen,
+                updatedFormData.rezeptadmin,
+                updatedFormData.wgname,
+        );
             console.log(newRezept)
             console.log(".... starting to create a API-Call (EatSmarterAPI)")
             EatSmarterAPI.getAPI()
@@ -65,16 +86,15 @@ function RezeptErstellen(){
                         />
                     </div>
                     <div className='formitem'>
-                        <label>Füge einen Ersteller hinzu:</label>
-                        <input
-                            type={"text"}
-                            name={"rezeptadmin"}
-                            value={formData.rezeptadmin}
-                            onChange={handleChange}
-                        />
+                        <label>Ersteller:</label>
+                        <p>{formData.rezeptadmin}</p>
+                    </div>
+                    <div className='formitem'>
+                        <label>WG:</label>
+                        <p>{wg ? wg.wgName : 'Lade WG...'}</p>
                     </div>
                     <div>
-                        <button type={"submit"}>Bestätigen</button>
+                    <button type={"submit"}>Bestätigen</button>
                     </div>
                 </form>
             </div>
