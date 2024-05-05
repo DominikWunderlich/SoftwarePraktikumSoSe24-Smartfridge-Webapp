@@ -1,64 +1,10 @@
 import React, {useEffect, useState} from "react";
 import WgBO from "../api/WgBO";
-import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import NavBarRegisterWg from "../components/NavBarRegisterWg";
 
-
-function NavBar({currentUser, onSignOut}){
-    const [state, setState] = useState({
-        menuAnchor: null,
-    })
-
-    // Handle Funktionen, um zu prüfen, ob das Menü geöffnet ist oder nicht
- 	const handleOpen = (event) =>{
-		setState({...state, menuAnchor: event.currentTarget})
-	}
-	const handleClose = () => {
-		setState({...state, menuAnchor: null})
-	}
-
-    return (
-        <AppBar>
-            <Toolbar>
-                {/*Wenn CurrentUser existiert, wird der Avatar und das Menü gerendert*/}
-                {currentUser && (
-                    <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
-                        <Avatar
-                            src={currentUser.photoURL}
-                            alt={currentUser.displayName}
-                            onClick={handleOpen}
-                            style={{ cursor: 'pointer' }}
-                        />
-                        <Menu
-                            anchorEl={state.menuAnchor}
-                            open={Boolean(state.menuAnchor)}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                        >
-                            <MenuItem>{currentUser.displayName}</MenuItem>
-                            <MenuItem onClick={onSignOut}>Abmelden</MenuItem>
-                        </Menu>
-                    </div>
-                )}
-            </Toolbar>
-        </AppBar>
-    );
-}
 
 function WGLandingpage(props) {
     const [formData, setFormData] = useState({
@@ -97,7 +43,7 @@ function WGLandingpage(props) {
     return (
         <div>
             {/*TODO: neue Navbar einfügen, in welcher nur die registerWg Seite anklickbar ist*/}
-            <NavBar currentUser={props.user} />
+            <NavBarRegisterWg currentUser={props.user} onSignOut={props.onSignOut}/> <br/> <br/>
             <div className='container'>
                 <form onSubmit={handleSubmit}>
                     <h2>Erstelle eine WG!</h2>
