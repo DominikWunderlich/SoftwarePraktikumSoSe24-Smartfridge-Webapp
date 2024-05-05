@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import { useParams } from "react-router-dom";
+import NavBar from "../components/NavBar";
 
-function Homepage() {
+function Homepage(props) {
     const { wgName } = useParams(); 
     const [wgData, setWgData] = useState(null);
     const [error, setError] = useState(null); 
@@ -28,7 +29,7 @@ function Homepage() {
 
     return (
         <div>
-            <p>Header</p>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
                 <h2>Name der WG: {wgData ? wgData.getWgName() : "Loading..."}</h2>
                 <p>Bewohner: {wgData ? wgData.getWGBewohner() : "Loading..."}</p>

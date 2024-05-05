@@ -3,6 +3,7 @@ import RezeptBO from "../api/RezeptBO";
 import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
+import NavBar from "../components/NavBar";
 
 
 //Notiz: Hier ist dieselbe Methode zwei mal implementiert, einmal wie es mit der getRezept MEthode
@@ -13,68 +14,42 @@ import '../sytles/WG-Landingpage.css';
 //Hier nochmal angucken
 
 
-{/*
-function RezepteAnzeigen() {
+function RezepteAnzeigen(props) {
     const [rezepte, setRezepte] = useState([]);
-
-    useEffect(() => {
-        // Funktion, um Rezepte von der API abzurufen und in den State zu setzen
-        const fetchRezepte = async () => {
-            try {
-                const api = new EatSmarterAPI(); // Erstelle eine Instanz der API
-                const fetchedRezepte = await api.getRezept(); // Rufe die Rezepte von der API ab
-                setRezepte(fetchedRezepte); // Setze die abgerufenen Rezepte in den State
-            } catch (error) {
-                console.error("Fehler beim Abrufen der Rezepte:", error);
-                // Hier könntest du eine Fehlermeldung anzeigen oder andere Fehlerbehandlung durchführen
-            }
-        };
-
-        fetchRezepte(); // Rezepte beim ersten Rendern der Komponente abrufen
-    }, []);
-
-
-        return (
-        <div>
-            <h2>Alle Rezepte anzeigen</h2>
-            <div className='container'>
-                {rezepte.map((rezept, index) => (
-                    <div key={index}>
-                        <p>Rezeptname: {rezept.rezeptName}</p>
-                        <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
-                        <p>Ersteller: {rezept.rezeptAdmin}</p>
-                        <p>Response JSON: {JSON.stringify(rezept)}</p>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-export default RezepteAnzeigen;
-*/}
-
-function RezepteAnzeigen() {
-    const [rezepte, setRezepte] = useState([]);
+    const emailDerEingeloggtenPerson = props.user.email;
+    const [wgName, setWgName] = useState(""); //brauche ich diese Zeile?
 
     useEffect(() => {
         const fetchRezepte = async () => {
             try {
                 const api = new EatSmarterAPI();
-                const rezeptList = await api.getAllRezepte(); // Ruf die neuen Rezept-Methode auf
+                const userWg = await api.getWgByUser(props.user.email); // Ruf die WG des Benutzers ab
+                console.log("userWg"+userWg)
+                console.log("userWg.name"+userWg.name)
+                console.log("userWg.wgName"+userWg.wgName)
+                //setWgName(userWg.name); // Setze den Namen der WG in den State //diese Zeile brauch ich nicht
+                console.log("Hier vor kam dieser Befehl: setWgName(userWg.name);")
+                console.log("userWg"+userWg)
+                console.log("userWg.name"+userWg.name)
+                console.log("userWg.wgName"+userWg.wgName)
+                const rezeptList = await api.getRezepteByWg(userWg.wgName); // Ruf die neuen Rezept-Methode auf
                 setRezepte(rezeptList);
+                console.log("Hallo")
+                console.log("rezeptList"+rezeptList)
             } catch (error) {
                 console.error("Fehler beim Abrufen der Rezepte:", error);
             }
         };
 
         fetchRezepte();
-    }, []);
+    }, [props.user.email]);  // Abhängigkeit hinzufügen, um den Effekt bei Änderung der E-Mail-Adresse des Benutzers auszulösen
 
     return (
         <div>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <h2>Alle Rezepte anzeigen</h2>
             <div className='container'>
+                {emailDerEingeloggtenPerson}
 
                 {rezepte.map((rezept, index) => (
                     <div key={index} className='rezepteAnzeigenDiv'>

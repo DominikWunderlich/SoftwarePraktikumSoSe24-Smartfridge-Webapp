@@ -125,18 +125,17 @@ function App(props) {
         {state.currentUser ? (
               <div className="content">
 				  <Router>
-					  //TODO: Remove placeholder for navbar in other components
-					  <NavBar currentUser={state.currentUser} onSignOut={handleSignOut}></NavBar> <br></br> <br></br>
 					  <Routes>
 						  <Route path="/" element={<Navigate to="/login"/>}/>
-						  <Route path="/login" element={<LoginPerson user={state.currentUser}/>}/>
-						  <Route path="registerWg" element={<RegisterWG user={state.currentUser}/>}/>
-						  <Route path="/wg" element={<WGPage user={state.currentUser}/>}/>
-						  <Route path="/wg/:wgName" element={<Homepage/>}/>
-						  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung/>}/>
+						  <Route path="/login" element={<LoginPerson user={state.currentUser} onSignOut={handleSignOut}/>}/>
+						  <Route path="registerWg" element={<RegisterWG user={state.currentUser} onSignOut={handleSignOut}/>}/>
+						  <Route path="/wg" element={<WGPage user={state.currentUser} onSignOut={handleSignOut}/>}/>
+						  // TODO: Pfad von der Homepage (/wg/:wgName) umbenennen
+						  <Route path="/wg/:wgName" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
+						  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
-						  <Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser}/>}/>
-                          <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen user={state.currentUser}/>} />
+						  <Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser} onSignOut={handleSignOut}/>}/>
+                          <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut}/>} />
 					  </Routes>
 				  </Router>
 			  </div>

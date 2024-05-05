@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
+import NavBar from "../components/NavBar";
 
 function LoginPerson(props) {
     const [formData, setFormData] = useState({
@@ -33,7 +34,8 @@ function LoginPerson(props) {
             .then((UserInWg) => {
                 // Redirect user based on wether the user is in a wg or not.
                 if (UserInWg.length > 0) {
-                    navigate("/home");
+                    // TODO: Pfad von der Homepage umbenennen
+                    navigate("/wg/:wgName");
                 } else {
                     navigate("/registerWg")
                 }
@@ -51,7 +53,7 @@ function LoginPerson(props) {
 
     return (
         <div>
-            <p>Platzhalter für Navigationsleiste</p>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
                 <form onSubmit={handleSubmit}>
                     <h2>Account erstellen</h2>
