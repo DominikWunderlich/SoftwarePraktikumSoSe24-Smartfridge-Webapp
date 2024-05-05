@@ -3,6 +3,7 @@ import RezeptBO from "../api/RezeptBO";
 import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
+import NavBar from "../components/NavBar";
 
 
 //Notiz: Hier ist dieselbe Methode zwei mal implementiert, einmal wie es mit der getRezept MEthode
@@ -45,6 +46,7 @@ function RezepteAnzeigen(props) {
 
     return (
         <div>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <h2>Alle Rezepte anzeigen</h2>
             <div className='container'>
                 {emailDerEingeloggtenPerson}

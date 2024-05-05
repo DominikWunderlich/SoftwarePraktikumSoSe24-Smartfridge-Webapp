@@ -3,6 +3,7 @@ import RezeptBO from "../api/RezeptBO";
 import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
+import NavBar from "../components/NavBar";
 
 function RezeptErstellen(props){
 
@@ -63,7 +64,7 @@ function RezeptErstellen(props){
 
     return (
         <div>
-            <p>Platzhalter für Navigationsleiste</p>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
                 <form onSubmit={handleSubmit}>
                     <h2>Erstelle ein Rezept!</h2>

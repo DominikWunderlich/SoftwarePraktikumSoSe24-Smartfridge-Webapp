@@ -5,8 +5,9 @@ import MasseinheitBO from "../api/MasseinheitBO";
 import mengenanzahlBO from "../api/mengenanzahlBO";
 import { Link } from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
+import NavBar from "../components/NavBar";
 
-function Lebensmittelverwaltung() {
+function Lebensmittelverwaltung(props) {
     const [formData, setFormData] = useState({
         lebensmittelname: "",
         mengenanzahl: 0,
@@ -56,7 +57,7 @@ function Lebensmittelverwaltung() {
 
     return (
         <div>
-            <p>Platzhalter für Navigationsleiste</p>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
                 <h2>Lebensmittel hinzufügen</h2>
                 {errors.message && <p>{errors.message}</p>}
