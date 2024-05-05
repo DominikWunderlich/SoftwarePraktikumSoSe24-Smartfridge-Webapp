@@ -10,10 +10,10 @@ class Kuehlschrank(bo):
     def get_lebensmittel(self, lebensmittel_id):
         """Gibt ein Lebensmittel anhand seiner ID aus dem Kühlschrank zürck"""
         return self.lebensmittel_dict[lebensmittel_id]
-    
+
     def get_lebensmittelliste_by_name(self):
         """Gibt eine Liste der Namen der Lebensmittel im Kühlschrank zurück."""
-        return [lebensmittel.get_lebensmittlename() for lebensmittel in self.lebensmittel_dict.values()]
+        return [lebensmittel.get_lebensmittelname() for lebensmittel in self.lebensmittel_dict.values()]
 
     def __str__(self):
         """Gibt eine textuelle Darstellung des Kühlschranks zurück."""
