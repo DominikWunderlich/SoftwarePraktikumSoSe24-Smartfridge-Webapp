@@ -27,7 +27,7 @@ function Lebensmittelverwaltung(props) {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (formData.lebensmittelname.trim() === ""^1 || formData.masseinheit.trim() === "") {
+        if (formData.lebensmittelname.trim() === "" || formData.masseinheit.trim() === "") {
             setErrors({ message: "Bitte füllen Sie alle Felder aus." });
             return;
         }
@@ -44,7 +44,9 @@ function Lebensmittelverwaltung(props) {
         console.log("Neue Menge:", newMengenanzahl);
         console.log("Neue Maßeinheit:", newMasseinheit);
 
-        EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel, newMengenanzahl, newMasseinheit);
+        EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit)
+        EatSmarterAPI.getAPI().addMenge(newMengenanzahl)
+        EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
 
         // Zurücksetzen des Formulars nach dem Hinzufügen
         setFormData({

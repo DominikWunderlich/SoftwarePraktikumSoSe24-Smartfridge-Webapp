@@ -40,7 +40,7 @@ class Lebensmittel(bo):
         """Umwandeln eines Python dict() in ein Lebensmittel-Objekt."""
         lm = Lebensmittel()
         lm.set_id(dictionary["id"])
-        lm.set_lebensmittelname(dictionary["lebensmittelName"])
+        lm.set_lebensmittelname(dictionary["lebensmittel_name"])
         lm.set_masseinheit(dictionary["masseinheit"])
-        lm.set_mengenanzahl(dictionary["mengenanzahl"])
+        lm.set_mengenanzahl(dictionary["menge"])
         return lm
