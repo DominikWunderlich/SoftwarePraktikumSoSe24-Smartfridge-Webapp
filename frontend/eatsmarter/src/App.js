@@ -14,6 +14,7 @@ import RezeptErstellen from "./pages/RezeptErstellen";
 import NavBar from "./components/NavBar";
 import RezeptAnzeigen from "./pages/RezepteAnzeigen";
 import WGPage from "./pages/WGPage";
+import Kuehlschrank from './pages/Kuehlschrank';
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -132,6 +133,7 @@ function App(props) {
 						  <Route path="/wg" element={<WGPage user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  // TODO: Pfad von der Homepage (/wg/:wgName) umbenennen
 						  <Route path="/wg/:wgName" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
+						  <Route path="/kuehlschrank" element={<Kuehlschrank user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
 						  <Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser} onSignOut={handleSignOut}/>}/>
