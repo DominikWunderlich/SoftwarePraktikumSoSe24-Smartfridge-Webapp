@@ -170,5 +170,5 @@ def remove_lebensmittel(self, lebensmittel_id, menge):
             neue_menge = bestandsmenge - menge
             lebensmittel.set_mengenanzahl(neue_menge)
         else:
-            # Lebensmittel vollständig entfernen, wenn die zu entnehmende Menge >= Bestandsmenge ist
+            # Lebensmittel vollständig entfernen, wenn die zu entnehmende Menge >= Bestandsmenge
             del self.lebensmittel_dict[lebensmittel_id]

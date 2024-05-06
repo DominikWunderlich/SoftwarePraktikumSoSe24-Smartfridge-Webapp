@@ -7,6 +7,10 @@ class Kuehlschrank(bo):
         super().__init__()
         self.lebensmittel_dict = {}
 
+    def get_kuehlschrank(self):
+        """Gibt das Kuehlschrank-Objekt zurück."""
+        return self
+
     def get_lebensmittel(self, lebensmittel_id):
         """Gibt ein Lebensmittel anhand seiner ID aus dem Kühlschrank zürck"""
         return self.lebensmittel_dict[lebensmittel_id]
