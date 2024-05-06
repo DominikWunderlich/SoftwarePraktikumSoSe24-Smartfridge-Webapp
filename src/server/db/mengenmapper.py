@@ -34,8 +34,6 @@ class MengenanzahlMapper(mapper):
         cursor.execute(command, (m,))
         tuple = cursor.fetchone()
 
-        cursor.close()
-
         if tuple:
             (id, menge) = tuple
             result = Mengenanzahl()

@@ -17,18 +17,23 @@ class MasseinheitMapper(mapper):
         return result
 
     def find_by_name(self, name):
-        result = None
+        print(f"Starting the find_by_name mapper function of maßeinheit")
         cursor = self._connector.cursor()
         command = "SELECT masseinheit_id, masseinheit_name, umrechnungsfaktor FROM datenbank.maßeinheit WHERE masseinheit_name = %s"
         cursor.execute(command, (name,))
         tuple = cursor.fetchone()
-        cursor.close()
+        print(f"DEBUG: this is the tuple: {tuple}")
+
         if tuple:
-            (id, maßeinheit, faktor) = tuple
+            (masseinheit_id, masseinheit, faktor) = tuple
+            print(f"Das ist die Variable ID: {masseinheit_id}")
             result = Masseinheit()
-            result.set_id(id)
-            result.set_masseinheit(maßeinheit)
+            result.set_id(masseinheit_id)
+            result.set_masseinheit(masseinheit)
             result.set_umrechnungsfaktor(faktor)
+
+        print(f"IM DB-MAPPER Maßeinheit. Result = {result}")
+        print(f"IM DB-MAPPER Maßeinheit. Result = {result.get_id()}")
         return result
 
     def insert(self, Masseinheit):

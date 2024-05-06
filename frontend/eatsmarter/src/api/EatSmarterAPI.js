@@ -81,14 +81,14 @@ export default class EatSmarterAPI{
     #addLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
     #deleteLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<Lebensmittel_name>`;
 
-    addLebensmittel(LebensmittelBO){
+    addLebensmittel(BO){
         return this.#fetchAdvanced(this.#addLebensmittelURL(), {
             method: "POST",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(LebensmittelBO)
+            body: JSON.stringify(BO)
         }).then((responseJSON) => {
             let responseLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
@@ -136,14 +136,14 @@ export default class EatSmarterAPI{
     #addMengeURL = () => `${this.#EatSmarterServerBaseURL}/menge`;
     #deleteMengeURL = () => `${this.#EatSmarterServerBaseURL}/menge/<menge>`;
     
-    addMenge(mengenanzahlBO){
+    addMenge(mengenBO){
         return this.#fetchAdvanced(this.#addMengeURL(), {
             method: "POST",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(mengenanzahlBO)
+            body: JSON.stringify(mengenBO)
         }).then((responseJSON) => {
             let responsemengenanzahlBO= mengenanzahlBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
@@ -190,14 +190,14 @@ export default class EatSmarterAPI{
     #addMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit`;
     #deleteMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit/<masseinheit>`;
 
-    addMasseinheit(MasseinheitBO){
+    addMasseinheit(meinheitBO){
         return this.#fetchAdvanced(this.#addMasseinheitURL(), {
             method: "POST",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(MasseinheitBO)
+            body: JSON.stringify(meinheitBO)
         }).then((responseJSON) => {
             let responseMasseinheitBO= MasseinheitBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
