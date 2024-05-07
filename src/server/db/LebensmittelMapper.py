@@ -44,6 +44,19 @@ class LebensmittelMapper(mapper):
 
     def insert(self, l):
         cursor = self._connector.cursor()
+
+        # Zuerst überprüfen wir, ob ein Lebensmittel bereits angelegt wurde:
+        command_check = "SELECT lebensmittel_id FROM datenbank.lebensmittel WHERE lebensmittel_name = %s AND " \
+                        "masseinheit_id = %s AND mengenanzahl_id = %s"
+        data_check = (l.get_lebensmittelname(), l.get_masseinheit(), l.get_mengenanzahl())
+        cursor.execute(command_check, data_check)
+        existing_id = cursor.fetchone()
+
+        # Wenn das Lebensmittel bereits existiert, geben wir ein False zurück.
+        if existing_id:
+            cursor.close()
+            return False
+
         cursor.execute("SELECT MAX(lebensmittel_id) AS maxid FROM datenbank.lebensmittel")
         tuples = cursor.fetchall()
 
