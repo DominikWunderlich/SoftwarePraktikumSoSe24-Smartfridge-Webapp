@@ -10,6 +10,7 @@ from server.bo.Masseinheit import Masseinheit
 from server.bo.mengenanzahl import Mengenanzahl
 from server.db.MaßeinheitMapper import MasseinheitMapper
 from server.db.mengenmapper import MengenanzahlMapper
+import time
 
 class Administration(object):
     def __init__(self):
@@ -126,6 +127,7 @@ class Administration(object):
     def create_lebensmittel(self, name, meinheit, menge):
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
         # des Users dar (gr, kg, l, ...).
+        time.sleep(3)
         with MasseinheitMapper() as mapper:
             m_id = mapper.find_by_name(meinheit)
             masseinheit_id = m_id.get_id()
@@ -142,6 +144,7 @@ class Administration(object):
         food.set_masseinheit(masseinheit_id)
         food.set_mengenanzahl(menge_id)
 
+        time.sleep(3)
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
 
