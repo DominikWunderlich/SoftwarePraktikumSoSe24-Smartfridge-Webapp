@@ -17,27 +17,35 @@ class MasseinheitMapper(mapper):
         return result
 
     def find_by_name(self, name):
-        print(f"Starting the find_by_name mapper function of maßeinheit")
+        res = None
+
         cursor = self._connector.cursor()
         command = "SELECT masseinheit_id, masseinheit_name, umrechnungsfaktor FROM datenbank.maßeinheit WHERE masseinheit_name = %s"
         cursor.execute(command, (name,))
         tuple = cursor.fetchone()
-        print(f"DEBUG: this is the tuple: {tuple}")
 
         if tuple:
             (masseinheit_id, masseinheit, faktor) = tuple
-            print(f"Das ist die Variable ID: {masseinheit_id}")
-            result = Masseinheit()
-            result.set_id(masseinheit_id)
-            result.set_masseinheit(masseinheit)
-            result.set_umrechnungsfaktor(faktor)
+            res = Masseinheit()
+            res.set_id(masseinheit_id)
+            res.set_masseinheit(masseinheit)
+            res.set_umrechnungsfaktor(faktor)
 
-        print(f"IM DB-MAPPER Maßeinheit. Result = {result}")
-        print(f"IM DB-MAPPER Maßeinheit. Result = {result.get_id()}")
-        return result
+        return res
 
     def insert(self, Masseinheit):
         cursor = self._connector.cursor()
+
+        # Zuerst überprüfen wir, ob eine Maßeinheit bereits angelegt wurde:
+        command_check = "SELECT masseinheit_id FROM datenbank.maßeinheit WHERE masseinheit_name = %s"
+        data_check = (Masseinheit.get_masseinheit())
+        cursor.execute(command_check, (data_check, ))
+        existing_id = cursor.fetchone()
+
+        # Wenn der Maßeinheit_name bereits existiert, geben wir ein False zurück.
+        if existing_id:
+            cursor.close()
+            return False
 
         cursor.execute(f'SELECT MAX(masseinheit_id) AS maxid FROM datenbank.maßeinheit')
         tuples = cursor.fetchall()

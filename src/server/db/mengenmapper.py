@@ -6,6 +6,17 @@ class MengenanzahlMapper(mapper):
     def insert(self, obj):
         cursor = self._connector.cursor()
 
+        # Zuerst überprüfen wir, ob eine Menge bereits angelegt wurde:
+        command_check = "SELECT id FROM datenbank.mengenanzahl WHERE menge = %s"
+        data_check = (obj.get_menge())
+        cursor.execute(command_check, (data_check,))
+        existing_id = cursor.fetchone()
+
+        # Wenn der Maßeinheit_name bereits existiert, geben wir ein False zurück.
+        if existing_id:
+            cursor.close()
+            return False
+
         cursor.execute(f'SELECT MAX(id) AS maxid FROM datenbank.mengenanzahl')
         tuples = cursor.fetchall()
 
