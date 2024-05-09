@@ -10,6 +10,8 @@ from server.bo.Masseinheit import Masseinheit
 from server.bo.mengenanzahl import Mengenanzahl
 from server.db.MaßeinheitMapper import MasseinheitMapper
 from server.db.mengenmapper import MengenanzahlMapper
+from server.bo.Kuehlschrank import Kuehlschrank
+from server.db.KuehlschrankMapper import KuehlschrankMapper
 import time
 
 class Administration(object):
@@ -148,30 +150,11 @@ class Administration(object):
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
 
-"""Kuehlschrank-spezifische Methoden """
+    """Kuehlschrank-spezifische Methoden """
 
-def add_lebensmittel(self, lebensmittel):
-    """Fügt ein Lebensmittel dem Kühlschrank hinzu."""
-    if lebensmittel.get_id() in self.lebensmittel_dict:
-        # Wenn das Lebensmittel bereits existiert, Menge aktualisieren
-        self.update_lebensmittelmenge(lebensmittel.get_id(), lebensmittel.get_mengenanzahl())
-    else:
-        # Wenn keins existiert neues Lebensmittel hinzufügen
-        self.lebensmittel_dict[lebensmittel.get_id()] = lebensmittel
+    def get_lebensmittel_by_kuehlschrank_id(self, kuehlschrank):
+        with KuehlschrankMapper() as mapper:
+            return mapper.find_lebensmittel_by_kuehlschrank_id(kuehlschrank)
 
-def remove_lebensmittel(self, lebensmittel_id, menge):
-    """Entfernt ein Lebensmittel anhand seiner ID aus dem Kühlschrank oder aktualisiert die Menge."""
-    if lebensmittel_id in self.lebensmittel_dict:
-        # Lebensmittel aus dem Kühlschrank abrufen
-        lebensmittel = self.lebensmittel_dict[lebensmittel_id]
 
-        # Bestandsmenge des Lebensmittels
-        bestandsmenge = lebensmittel.get_mengenanzahl()
 
-        if menge < bestandsmenge:
-            # Aktualisieren der Menge des Lebensmittels
-            neue_menge = bestandsmenge - menge
-            lebensmittel.set_mengenanzahl(neue_menge)
-        else:
-            # Lebensmittel vollständig entfernen, wenn die zu entnehmende Menge >= Bestandsmenge
-            del self.lebensmittel_dict[lebensmittel_id]
