@@ -81,7 +81,15 @@ class Administration(object):
             else:
                 return
 
+    def get_user_by_google_id(self, id):
+        """ Auslesen einer Account-Instanz anhand der GoogleID. """
+        with PersonMapper() as mapper:
+            return mapper.find_by_google_id(id)
 
+    def save_person(self, account):
+        """ Update einer Person-Instanz. """
+        with PersonMapper() as mapper:
+            mapper.update(account)
 
 
     """ Rezept-spezifische Methoden """
