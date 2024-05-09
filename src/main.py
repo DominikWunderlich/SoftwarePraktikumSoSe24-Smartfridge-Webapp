@@ -90,16 +90,6 @@ class WgOperations(Resource):
         else:
             return 'Fehler in WG-Operations post methode', 500
 
-    # Update wg on wgPage
-    @smartapi.expect(wg)
-    @smartapi.marshal_with(wg)
-    def put(self):
-        adm = Administration()
-        proposal = WG.from_dict(api.payload)
-
-        if proposal is not None:
-            result = adm.update_wg_by_email(proposal)
-            return result
 
 
 @smartapi.route('/wg/user/<email>')
@@ -115,6 +105,19 @@ class WgGetWgOperations(Resource):
             return wg_p
         else:
             return '', 500
+
+    # Update wg on wgPage
+    @smartapi.expect(wg)
+    @smartapi.marshal_with(wg)
+    def put(self, email):
+        adm = Administration()
+        proposal = WG.from_dict(api.payload)
+        print("Main.py", api.payload)
+
+        if proposal is not None:
+            result = adm.update_wg_by_email(email, proposal)
+            print("Ergebnis:", result)
+            return result
 
 
 

@@ -289,7 +289,7 @@ export default class EatSmarterAPI{
     #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
-    #updateWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg`;
+    #updateWgURL = (email, WgBo) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
 
      addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
@@ -307,8 +307,8 @@ export default class EatSmarterAPI{
         })
     }
 
-    updateWg(wgBO){
-    return this.#fetchAdvanced(this.#updateWgURL(wgBO.wgBewohner), {
+    updateWg(email, wgBO){
+    return this.#fetchAdvanced(this.#updateWgURL(email, wgBO), {
         method: "PUT",
         headers: {
             "Accept": "application/json, text/plain",

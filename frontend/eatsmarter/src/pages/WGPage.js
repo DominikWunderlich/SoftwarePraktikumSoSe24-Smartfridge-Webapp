@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
-import { useNavigate} from "react-router-dom";
+import {isRouteErrorResponse, useNavigate} from "react-router-dom";
 import NavBar from "../components/NavBar";
+import WgBO from "../api/WgBO";
 
 
 function WGPage(props) {
+    const currentUser = props.user.email;
     const [wg, setWg] = useState(null)
     const[addNewMemberEmail, setAddNewMemberEmail] = useState("");
     const[deleteNewMemberEmail, setDeleteNewMemberEmail] = useState("");
@@ -24,43 +26,22 @@ function WGPage(props) {
         renderCurrentUsersWg()
     }, []);
 
-    // Handle Methode um Wg-Bewohner hinzuzufügen
-    const handleAddMember = async () => {
-        // wgDaten mit neuer Mail aktualiesiern
+    const handleAddMember = async() => {
 
-        // Überprüfen, ob die E-Mail-Adresse bereits in der Liste der WG-Bewohner enthalten ist
-        if (wg && wg.wgBewohner.includes(addNewMemberEmail)) {
-            alert("Dieser Nutzer ist bereits in der WG");
-        }
-        else{
-            // E-Mail des eingeloggten Users
-            let currentUser = props.user.email
-            // E-Mail des wgAdmins
-            let wgAdmin = wg.wgAdmin
+        //TODO: Überprüfung, ob bewohner schon in der Wg implementieren
+        const updatedWg = {...wg};
+        updatedWg.wgBewohner += `,${addNewMemberEmail}`;
 
-        // Wenn der currentUser der wgAdmin ist, dann WgBewohner hinzufügen
-        if(currentUser === wgAdmin){
-             const updatedWg = {...wg};
-             updatedWg.wgBewohner += `,${addNewMemberEmail}`;
-
-             try{
-                 await EatSmarterAPI.getAPI().updateWg(updatedWg);
-                 setWg(updatedWg);
-             }
-             catch(error){
-                 console.error(error);
-             }
-        }
-
-        // Alert ausgeben, dass nur der Ersteller die Wg bearbeiten darf
-        // TODO: Bei Bedarf, Alert durch was schöneres ersetzen
-        else{
-            alert("Nur der Ersteller kann die Wg bearbeiten")
-        }
-        }
-         // Am Ende wird das Input Feld geleert
-            setAddNewMemberEmail("");
-    };
+        await EatSmarterAPI.getAPI().updateWg(currentUser, updatedWg)
+            .then((responseWgBO) => {
+                console.log("Das ist das Ergebnis der update", responseWgBO);
+                if (responseWgBO.wgName !== null && responseWgBO.wgBewohner !== null && responseWgBO.wgAdmin !== null) {
+                    setWg(responseWgBO);
+                } else {
+                    alert("Sie sind nicht der Ersteller");
+                }
+            });
+    }
 
 
     // Handle Methode um Wg-Bewohner zu entfernen
