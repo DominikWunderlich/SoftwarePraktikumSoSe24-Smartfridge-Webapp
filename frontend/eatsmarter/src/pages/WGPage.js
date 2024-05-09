@@ -27,7 +27,6 @@ function WGPage(props) {
     }, []);
 
     const handleAddMember = async() => {
-
         //TODO: Überprüfung, ob bewohner schon in der Wg implementieren
         const updatedWg = {...wg};
         updatedWg.wgBewohner += `,${addNewMemberEmail}`;
@@ -38,39 +37,29 @@ function WGPage(props) {
                 if (responseWgBO.wgName !== null && responseWgBO.wgBewohner !== null && responseWgBO.wgAdmin !== null) {
                     setWg(responseWgBO);
                 } else {
-                    alert("Sie sind nicht der Ersteller");
+                    alert("Nur der Ersteller kann Mitglieder hinzufügen");
                 }
             });
+        // Am Ende wird das Input Feld geleert
+            setAddNewMemberEmail("");
     }
-
 
     // Handle Methode um Wg-Bewohner zu entfernen
     const handleDeleteMember = async () => {
-        // E-Mail des eingeloggten Users
-        let currentUser = props.user.email
-        // E-Mail des wgAdmins
-        let wgAdmin = wg.wgAdmin
+        const updatedWg = {...wg};
+        // Bewohner aus der Liste entfernen
+        updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== deleteNewMemberEmail).join(',');
 
-        // Wenn der currentUser der wgAdmin ist, dann WgBewohner löschen
-        if(currentUser === wgAdmin){
-             const updatedWg = {...wg};
-                // Bewohner aus der Liste entfernen
-                updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== deleteNewMemberEmail).join(',');
-
-             try{
-                 await EatSmarterAPI.getAPI().updateWg(updatedWg);
-                 setWg(updatedWg);
-             }
-             catch(error){
-                 console.error(error);
-             }
-        }
-        // Alert ausgeben, dass nur der Ersteller die Mitglieder entfernen darf
-        // TODO: Bei Bedarf, Alert durch was schöneres ersetzen
-        else{
-            alert("Nur der Ersteller kann Mitglieder entfernen")
-        }
-          // Am Ende wird das Input Feld geleert
+        await EatSmarterAPI.getAPI().updateWg(currentUser, updatedWg)
+            .then((responseWgBO) => {
+                console.log("Das ist das Ergebnis der update", responseWgBO);
+                if (responseWgBO.wgName !== null && responseWgBO.wgBewohner !== null && responseWgBO.wgAdmin !== null) {
+                    setWg(responseWgBO);
+                } else {
+                    alert("Nur der Ersteller kann Mitglieder entfernen");
+                }
+            });
+           // Am Ende wird das Input Feld geleert
             setDeleteNewMemberEmail("");
     };
 
