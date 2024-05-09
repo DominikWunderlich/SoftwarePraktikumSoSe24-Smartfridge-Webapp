@@ -144,13 +144,12 @@ class PersonMapper(mapper):
         return person
 
     def update(self, person):
-
         cursor = self._connector.cursor()
 
-        command = 'INSERT INTO datenbank.person (person_id, email, benutzername, vorname, nachname, google_id) VALUES (%s, %s, %s, %s, %s, %s)'
+        command = 'UPDATE datenbank.person SET email=%s, benutzername=%s, nachname=%s, vorname=%s, id=%s WHERE google_id=%s'
         data = (
-            person.get_id, person.get_email(), person.get_benutzername(), person.get_vorname(), person.get_nachname(),
-            person.get_google_id())
+            person.get_email(), person.get_benutzername(), person.get_nachname(), person.get_vorname(),
+            person.get_id(), person.get_google_id())
         cursor.execute(command, data)
 
         self._connector.commit()

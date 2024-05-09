@@ -11,6 +11,8 @@ from server.bo.Lebensmittel import Lebensmittel
 from server.bo.mengenanzahl import Mengenanzahl
 from server.bo.Masseinheit import Masseinheit
 
+from SecurityDecorator import secured
+
 app = Flask(__name__)
 
 
@@ -76,6 +78,7 @@ def index():
 class WgOperations(Resource):
     @smartapi.expect(wg)
     @smartapi.marshal_with(wg)
+    @secured
     def post(self):
         """ Anlegen eines neuen WG-Objekts. """
         adm = Administration()
@@ -93,6 +96,7 @@ class WgOperations(Resource):
     # Update wg on wgPage
     @smartapi.expect(wg)
     @smartapi.marshal_with(wg)
+    @secured
     def put(self):
         adm = Administration()
         proposal = WG.from_dict(api.payload)
@@ -107,6 +111,7 @@ class WgOperations(Resource):
 @smartapi.param('email', 'Die E-mail der aktuellen person')
 class WgGetWgOperations(Resource):
     @smartapi.marshal_with(wg)
+    @secured
     def get(self, email):
         adm = Administration()
         wg_p = adm.getWGByEmail(email)
@@ -124,6 +129,7 @@ class WgGetWgOperations(Resource):
 class WgGetOperations(Resource):
     #@secured
     @smartapi.marshal_with(wg)
+    @secured
     def get(self, wg_name):
         """ Auslesen eines WG-Objekts """
 
@@ -136,6 +142,8 @@ class WgGetOperations(Resource):
             return '', 500
 
     """Wg über den Namen löschen"""
+
+    @secured
     def delete(self, wg_name):
         adm = Administration()
         adm.get_wg_by_name(wg_name)
@@ -148,6 +156,7 @@ class WgGetOperations(Resource):
 class UserOperations(Resource):
     @smartapi.expect(person)
     @smartapi.marshal_with(person)
+    @secured
     def post(self):
         """ Anlegen eines neuen User-Objekts. """
         adm = Administration()
@@ -171,6 +180,7 @@ class UserOperations(Resource):
 @smartapi.param("google_id", 'Die Google-ID des Profil-Objekts')
 class ProfileOperations(Resource):
     @smartapi.marshal_with(person)
+    @secured
     def get(self, google_id):
         """ Auslesen eines bestimmten Profil-Objekts. """
         adm = Administration()
@@ -182,6 +192,7 @@ class ProfileOperations(Resource):
 class RezeptOperations(Resource):
     @smartapi.expect(rezept)
     @smartapi.marshal_with(rezept)
+    @secured
     def post(self):
         """ Anlegen eines neuen Rezept-Objekts. """
         adm = Administration()
@@ -202,6 +213,7 @@ class RezeptOperations(Resource):
 
 #Notiz: Hier bin ich mir seeeehr unsicher ob das richtig gecodet ist
     @smartapi.marshal_with(rezept)
+    @secured
     def get(self):
         """ Auslesen aller Rezept-Objekte"""
 
@@ -219,6 +231,7 @@ class RezeptOperations(Resource):
 @smartapi.param('wg_name', 'Name der WG')
 class getRezeptOperations(Resource):
     @smartapi.marshal_with(rezept)
+    @secured
     def get(self, wg_name):
         """ Auslesen aller Rezepte einer WG """
 
@@ -237,6 +250,7 @@ class getRezeptOperations(Resource):
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
+    @secured
     def post(self):
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
@@ -259,6 +273,7 @@ class LebensmittelOperation(Resource):
 class MengenOperationen(Resource):
     @smartapi.expect(menge)
     @smartapi.marshal_with(menge)
+    @secured
     def post(self):
         """
         Methode gehört zum Lebensmittel API-Call und wird zur Vorbereitung benötigt.
@@ -282,6 +297,7 @@ class MengenOperationen(Resource):
 class MasseinheitOperation(Resource):
     @smartapi.expect(masseinheit)
     @smartapi.marshal_with(masseinheit)
+    @secured
     def post(self):
         """
         Methode gehört zum Lebensmittel API-Call und wird zur Vorbereitung benötigt.
