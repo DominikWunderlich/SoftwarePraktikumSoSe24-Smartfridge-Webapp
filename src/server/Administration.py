@@ -161,14 +161,19 @@ class Administration(object):
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
         # des Users dar (gr, kg, l, ...).
         time.sleep(3)
+        print(f"name = {name}")
+        print(f"name = {meinheit}")
+        print(f"name = {menge}")
         with MasseinheitMapper() as mapper:
             m_id = mapper.find_by_name(meinheit)
             masseinheit_id = m_id.get_id()
+            print("Beende maßeinheitmapper")
 
         # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
         with MengenanzahlMapper() as mmapper:
             mengen_id = mmapper.find_by_menge(menge)
             menge_id = mengen_id.get_id()
+            print("Beende mengenmapper")
 
         # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
         food = Lebensmittel()
@@ -189,19 +194,42 @@ class Administration(object):
 
     def add_food_to_fridge(self, kuehlschrank_id, lebensmittel): # lebensmittel = Karotte, 1, Kilogramm
         # Zugehörige Lebensmittel des Kühlschranks finden
+        print(f"DEBUG Das ist die kühlschrank_id {kuehlschrank_id}")
+        print(f"DEBUG Das ist das das lebensmittel: {lebensmittel}")
+        print("calling get_lebensmitteel_by_kuehlschrnak_id")
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id) # Output: [(k_id/l_obj), (k_id/L-obj2)]
+        print(f"DEBUG das ist das Ergebnis (fridge) {fridge}")
+        print(f"DEBUG Objekt aus dem kühlschrank = {fridge.__getitem__(0)}")
 
         # Idee: prüfen ob Lebensmittelname bereits im fridge liegt
         lebenmittel_name = lebensmittel.get_lebensmittelname()
+        print(f"DEBUG das ist des gesuchte Lebensmittelname: {lebenmittel_name}")
         for elem in fridge:
+            print(f"DEBUG das ist elem {elem}")
             name = elem.get_lebensmittelname()
-            # Wenn Lebensmittel bereits im Kühlschrank ist, gebe das Objekt zurück
+            print(f"DEBUG name {name}")
+
             if name != lebenmittel_name:
-                self.create_lebensmittel(lebensmittel)
-            # Ansonsten erzeuge ein neues.
+                # Wenn das Lebensmittel NICHT im Kühlschrank ist, dann geht es hier weiter
+                self.create_measurement(lebensmittel.get_lebensmittelname(), 0)
+                self.create_menge(lebensmittel.get_mengenanzahl())
+                print(f"{lebensmittel.get_lebensmittelname()} , {lebensmittel.get_masseinheit()}, {lebensmittel.get_mengenanzahl()}")
+                created_lebensmittel = self.create_lebensmittel(lebensmittel.get_lebensmittelname(),
+                                                                lebensmittel.get_masseinheit(),
+                                                                lebensmittel.get_mengenanzahl())
+                # Update kühlschrank
+                with KuehlschrankMapper() as mapper:
+                    # TODO: Mapper insert muss definiert werden
+                    mapper.insert(created_lebensmittel.get_id())
+
+
             else:
+                # Ansonsten update.
                 updated_food = elem.increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit())
-                self.create_lebensmittel(updated_food)
+                print(f"DEBUG Das ist der updated_food {updated_food}")
+                self.create_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
+                                         updated_food.get_mengenanzahl())
+                # TODO: AttributeError: 'NoneType' object has no attribute 'get_lebensmittelname' - updated_food = NoneType
                 # Update kühlschrank
                 with KuehlschrankMapper() as mapper:
                     mapper.update(updated_food.get_id())
