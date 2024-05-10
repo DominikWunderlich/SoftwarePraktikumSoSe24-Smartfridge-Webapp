@@ -46,7 +46,23 @@ export default class EatSmarterAPI{
 
     //Ich glaube die getRezepteByWg Methode stimmt
     #getRezepteByWgURL = (wg_name) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_name}`;
+    #getRezeptByIdURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
 
+
+    getRezeptById(rezept_id){
+    return this.#fetchAdvanced(this.#getRezeptByIdURL(rezept_id),{
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    }).then((response) =>{
+        let rezept = RezeptBO.fromJSON(response);
+        return new Promise(function(resolve){
+            resolve(rezept);
+        });
+    });
+    }
     getRezepteByWg(wg_name){
     return this.#fetchAdvanced(this.#getRezepteByWgURL(wg_name), {
         method: "GET",

@@ -75,6 +75,26 @@ class RezeptMapper(mapper):
 
         return result
 
+    def find_by_rezept_id(self, rezept_id):
+        result = []
+        cursor = self._connector.cursor()
+        cursor.execute(f"SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name FROM datenbank.rezept WHERE rezept_id = '{rezept_id}'")
+        tuples = cursor.fetchall()
+
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name) in tuples:
+            rezept = Rezept()
+            rezept.set_id(rezept_id)
+            rezept.set_rezept_name(rezept_name)
+            rezept.set_anzahl_portionen(anzahl_portionen)
+            rezept.set_rezept_ersteller(rezept_ersteller)
+            rezept.set_wg_name(wg_name)
+            result.append(rezept)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
+
     def update(self, object):
         # Implementierung der Methode update
         pass

@@ -279,6 +279,25 @@ class getRezeptOperations(Resource):
         else:
             return '', 500
 
+@smartapi.route('/rezept/einrezept/<rezept_id>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('rezept_id', 'ID des Rezepts')
+class getEinRezeptOperations(Resource):
+    @smartapi.marshal_with(rezept)
+    @secured
+    def get(self, rezept_id):
+        """ Auslesen aller Rezepte mit bestimmter id """
+        print("hallo")
+
+        adm = Administration()
+        rezept_page = adm.get_rezept_by_id(rezept_id)
+        print(rezept_page)
+
+        if rezept_page is not None:
+            return rezept_page
+        else:
+            return '', 500
+
 """ Lebensmittel Calls """
 
 @smartapi.route('/lebensmittelverwaltung')
