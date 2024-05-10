@@ -286,7 +286,7 @@ export default class EatSmarterAPI{
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
-    #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
+    #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/user/${wgName}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
     #updateWgURL = (email, WgBo) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
@@ -305,6 +305,27 @@ export default class EatSmarterAPI{
                 resolve(responseWgBO);
             })
         })
+    }
+
+    #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgAdmin/${email}`;
+
+    checkIfUserIsWgAdmin(currentUser){
+         return this.#fetchAdvanced(this.#getWgAdminURL(currentUser), {
+             method: "GET",
+             headers: {
+                 "Accept": "application/json",
+                 "Content-Type": "application/json",
+             },
+         }).then((response) => {
+             console.log("API",response)
+             if(response === true){
+                 return true;
+             }
+             else{
+                 return false;
+             }
+        });
+
     }
 
     updateWg(email, wgBO){
@@ -361,7 +382,7 @@ export default class EatSmarterAPI{
             },
             body: JSON.stringify(wgName)
         }).then((responseJSON) => {
-            let removedWgBO = WgBO.fromJSON(responseJSON)[0];
+            console.log("Entfernte Wg", responseJSON)
             return new Promise( function(resolve) {
                 resolve(responseJSON);
             })

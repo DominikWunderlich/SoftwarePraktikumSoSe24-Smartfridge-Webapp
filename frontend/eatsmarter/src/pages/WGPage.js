@@ -63,21 +63,21 @@ function WGPage(props) {
             setDeleteNewMemberEmail("");
     };
 
-    const handleDeleteWG = () => {
+    const handleDeleteWG = async () => {
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
+        console.log("Frontend", isAdmin);
 
-        let currentUser = props.user.email
-        let wgAdmin = wg.wgAdmin
-        let wgName = wg.wgName
-
-        if(currentUser===wgAdmin){
-            EatSmarterAPI.getAPI().deleteWgByName(wgName)
-            navigate("/registerWg")
-
+        if(isAdmin){
+            await EatSmarterAPI.getAPI().deleteWgByName(currentUser)
+                .then(() => {
+                    navigate("/registerWg");
+                })
         }
         else{
-            alert("Nur der Ersteller kann die WG löschen")
+            alert("Nur der Ersteller kann die Wg löschen");
         }
     }
+
 
     return (
         <div>

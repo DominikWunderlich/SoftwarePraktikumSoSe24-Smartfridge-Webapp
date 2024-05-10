@@ -119,7 +119,23 @@ class WgGetWgOperations(Resource):
             print("Ergebnis:", result)
             return result
 
+    def delete(self, email):
+        adm = Administration()
+        wgs = adm.getWGByEmail(email)
+        print(adm.getWGByEmail(email))
+        wg = wgs[0]
+        print(wg)
+        wg_name = wg.get_wg_name()
+        adm.delete_wg_by_name(wg_name)
 
+@smartapi.route('/wg/user/wgAdmin/<email>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('email', 'Die E-mail der aktuellen person')
+class WgGetWgAdminWgOperations(Resource):
+    def get(self, email):
+        adm = Administration()
+        print("True in der Main.py?", adm.is_current_user_wg_admin(email))
+        return adm.is_current_user_wg_admin(email)
 
 @smartapi.route('/wg/<wg_name>')
 @smartapi.response(500, 'Serverseitiger Fehler')
