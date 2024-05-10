@@ -151,19 +151,19 @@ class WgGetOperations(Resource):
         return "", 200
 
 @smartapi.route('/kuehlschrankinhalt')
-@smartapi.route(500, 'Serverseitiger Fehler')
-@smartapi.param('kuehlschrank', 'Der Kuehlschrank der aktuellen Person')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('kuehlschrank_id', 'Der Kuehlschrank der aktuellen Person')
 class KuehlschrankGetOperations(Resource):
-    #@secured
+    @secured
     @smartapi.marshal_with(lebensmittel)
-    def get(self, kuehlschrank):
+    def get(self, kuehlschrank_id):
         """Auslesen eines Lebensmittel-Objekts"""
 
         adm = Administration()
-        k_inhalt = adm.get_lebensmittel_by_kuehlschrank_id(kuehlschrank)
+        k_inhalt = adm.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
 
         if k_inhalt is not None:
-            return k_inhalt
+            return k_inhalt, 200
         else:
             return '', 500
 
