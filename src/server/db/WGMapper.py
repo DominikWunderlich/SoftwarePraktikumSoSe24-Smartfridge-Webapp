@@ -110,3 +110,20 @@ class WGMapper(mapper):
 
         self._connector.commit()
         cursor.close()
+
+    def find_wg_admin_by_email(self, email):
+        result = []
+        cursor = self._connector.cursor()
+        command = f"SELECT wg_ersteller FROM datenbank.wg WHERE wg_bewohner LIKE '%{email}%' OR wg_ersteller LIKE '%{email}%'"
+        cursor.execute(command)
+
+        tuples = cursor.fetchall()
+
+        for (wg_ersteller) in tuples:
+            wg = WG()
+            wg.set_wg_ersteller(wg_ersteller)
+            result.append(wg)
+
+        self._connector.commit()
+        cursor.close()
+        return result
