@@ -49,7 +49,9 @@ function RezepteAnzeigen(props) {
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <h2>Alle Rezepte anzeigen</h2>
             <div className='container'>
-                {emailDerEingeloggtenPerson}
+                <Link to="/rezeptErstellen">
+                    <button>Rezept erstellen</button>
+                </Link>
 
                 {rezepte.map((rezept, index) => (
                     <div key={index} className='rezepteAnzeigenDiv'>
