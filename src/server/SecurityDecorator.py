@@ -1,7 +1,7 @@
 from flask import request
 from google.auth.transport import requests
 import google.oauth2.id_token
-from Administration import Administration
+from server.Administration import Administration
 
 
 def secured(function):
