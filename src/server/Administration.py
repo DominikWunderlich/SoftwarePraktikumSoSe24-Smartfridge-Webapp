@@ -43,29 +43,23 @@ class Administration(object):
     # Sie wird in der Updatewg methode und deletewgMethode verwendet
     def is_current_user_wg_admin(self, email):
         with WGMapper() as mapper:
-            print("Email:", email)
+            # print("Email:", email)
             wgs = mapper.find_by_email(email)
-            print("wgs", wgs)
+            # print("wgs", wgs)
 
         for wg in wgs:
-            print(wg)
+            # print(wg)
             if wg.get_wg_ersteller() == email:
                 return True
 
             return False
 
-
     """ Diese Methode updated die Wg auf der wgPage"""
-    """ Die Wg muss nicht nochmal anhand der email ausgegeben werden, da sie bereits in der anderen Methode"""
-    def update_wg_by_email(self, email, new_wg):
-        if self.is_current_user_wg_admin(email):
-            with WGMapper() as mapper:
-                mapper.update(new_wg)
-                print("new Wg", new_wg)
-                return new_wg
-        else:
-            return False
-
+    def update_wg_by_email(self, new_wg):
+        with WGMapper() as mapper:
+            mapper.update(new_wg)
+            # print("new Wg", new_wg)
+            return new_wg
 
     def delete_wg_by_name(self, key):
         with WGMapper() as mapper:

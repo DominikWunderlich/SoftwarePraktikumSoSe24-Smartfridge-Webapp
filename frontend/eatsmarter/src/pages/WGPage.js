@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
-import {isRouteErrorResponse, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import NavBar from "../components/NavBar";
-import WgBO from "../api/WgBO";
 
 
 function WGPage(props) {
     const currentUser = props.user.email;
     const [wg, setWg] = useState(null)
-    const[addNewMemberEmail, setAddNewMemberEmail] = useState("");
-    const[deleteNewMemberEmail, setDeleteNewMemberEmail] = useState("");
+    const [addNewMemberEmail, setAddNewMemberEmail] = useState("");
+    const [deleteNewMemberEmail, setDeleteNewMemberEmail] = useState("");
     const navigate = useNavigate()
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
@@ -26,46 +25,45 @@ function WGPage(props) {
         renderCurrentUsersWg()
     }, []);
 
+    // Handler-Function, um Mitglieder als Admin hinzuzufügen
     const handleAddMember = async() => {
-        //TODO: Überprüfung, ob bewohner schon in der Wg implementieren
         const updatedWg = {...wg};
         updatedWg.wgBewohner += `,${addNewMemberEmail}`;
 
-        await EatSmarterAPI.getAPI().updateWg(currentUser, updatedWg)
-            .then((responseWgBO) => {
-                console.log("Das ist das Ergebnis der update", responseWgBO);
-                if (responseWgBO.wgName !== null && responseWgBO.wgBewohner !== null && responseWgBO.wgAdmin !== null) {
-                    setWg(responseWgBO);
-                } else {
-                    alert("Nur der Ersteller kann Mitglieder hinzufügen");
-                }
-            });
-        // Am Ende wird das Input Feld geleert
-            setAddNewMemberEmail("");
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
+           if(isAdmin){
+               await EatSmarterAPI.getAPI().updateWg(updatedWg)
+               renderCurrentUsersWg()
+           }
+           else{
+               alert("Nur der Ersteller kann Mitglieder hinzufügen");
+           }
+           setAddNewMemberEmail("");
+
     }
 
-    // Handle Methode um Wg-Bewohner zu entfernen
-    const handleDeleteMember = async () => {
-        const updatedWg = {...wg};
-        // Bewohner aus der Liste entfernen
-        updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== deleteNewMemberEmail).join(',');
+    // Handler-Function, um Mitglieder als Admin zu entfernen
+    const handleDeleteMember = async()  => {
+           const updatedWg = {...wg};
+           // Bewohner aus der Liste entfernen
+           updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== deleteNewMemberEmail).join(',');
 
-        await EatSmarterAPI.getAPI().updateWg(currentUser, updatedWg)
-            .then((responseWgBO) => {
-                console.log("Das ist das Ergebnis der update", responseWgBO);
-                if (responseWgBO.wgName !== null && responseWgBO.wgBewohner !== null && responseWgBO.wgAdmin !== null) {
-                    setWg(responseWgBO);
-                } else {
-                    alert("Nur der Ersteller kann Mitglieder entfernen");
-                }
-            });
-           // Am Ende wird das Input Feld geleert
-            setDeleteNewMemberEmail("");
-    };
+           const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
+           // console.log("wg", isAdmin)
+           if(isAdmin){
+               await EatSmarterAPI.getAPI().updateWg(updatedWg)
+               renderCurrentUsersWg()
+           }
+           else{
+               alert("Nur der Ersteller kann Mitglieder entfernen");
+           }
+           setDeleteNewMemberEmail("");
+    }
 
+     // Handler-Function, um die Wg als Admin zu löschen
     const handleDeleteWG = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
-        console.log("Frontend", isAdmin);
+        // console.log("Frontend", isAdmin);
 
         if(isAdmin){
             await EatSmarterAPI.getAPI().deleteWgByName(currentUser)
@@ -88,7 +86,6 @@ function WGPage(props) {
                     <div>
                         <h2>Aktuelle WG: {wg.wgName}</h2>
                         <p>Bewohner: </p>
-                        {/*TODO: Wenn die Liste in DB nicht mehr als string sondern als Liste, dann map-Methode und forEach*/}
                         <p>
                             {wg.wgBewohner.split(',').map((bewohner, index) => (
                                 <li key={index}>{bewohner.trim()}</li>

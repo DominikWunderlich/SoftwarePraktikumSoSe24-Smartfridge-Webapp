@@ -289,7 +289,7 @@ export default class EatSmarterAPI{
     #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/user/${wgName}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
-    #updateWgURL = (email, WgBo) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
+    #updateWgURL = (wgBo) => `${this.#EatSmarterServerBaseURL}/wg`;
 
      addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
@@ -307,29 +307,9 @@ export default class EatSmarterAPI{
         })
     }
 
-    #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgAdmin/${email}`;
 
-    checkIfUserIsWgAdmin(currentUser){
-         return this.#fetchAdvanced(this.#getWgAdminURL(currentUser), {
-             method: "GET",
-             headers: {
-                 "Accept": "application/json",
-                 "Content-Type": "application/json",
-             },
-         }).then((response) => {
-             console.log("API",response)
-             if(response === true){
-                 return true;
-             }
-             else{
-                 return false;
-             }
-        });
-
-    }
-
-    updateWg(email, wgBO){
-    return this.#fetchAdvanced(this.#updateWgURL(email, wgBO), {
+    updateWg(wgBO){
+    return this.#fetchAdvanced(this.#updateWgURL(wgBO), {
         method: "PUT",
         headers: {
             "Accept": "application/json, text/plain",
@@ -382,11 +362,34 @@ export default class EatSmarterAPI{
             },
             body: JSON.stringify(wgName)
         }).then((responseJSON) => {
-            console.log("Entfernte Wg", responseJSON)
+            // console.log("Entfernte Wg", responseJSON)
             return new Promise( function(resolve) {
                 resolve(responseJSON);
             })
         })
+    }
+
+    // Wg-attribute related
+    #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgAdmin/${email}`;
+
+    checkIfUserIsWgAdmin(currentUser){
+        // console.log("api", currentUser)
+         return this.#fetchAdvanced(this.#getWgAdminURL(currentUser), {
+             method: "GET",
+             headers: {
+                 "Accept": "application/json",
+                 "Content-Type": "application/json",
+             },
+         }).then((response) => {
+             // console.log("API",response)
+             if(response === true){
+                 return true;
+             }
+             else{
+                 return false;
+             }
+        });
+
     }
 
 
