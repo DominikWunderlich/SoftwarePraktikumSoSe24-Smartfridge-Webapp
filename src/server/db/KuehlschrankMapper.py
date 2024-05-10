@@ -1,10 +1,10 @@
 from server.db.mapper import mapper
 from server.bo.Kuehlschrank import Kuehlschrank
 from server.bo.Lebensmittel import Lebensmittel
+from server.bo.Kuehlschrank_Inhalt import Kuehlschrank_Inhalt
 
 
 class KuehlschrankMapper(mapper):
-
     def __init__(self):
         super().__init__()
 
@@ -41,8 +41,18 @@ class KuehlschrankMapper(mapper):
     def find_by_key(self, key):
         pass
 
-    def insert(self, object):
-        pass
+    def insert(self, kuehlschrank_id, lebensmittel):
+        cursor = self._connector.cursor()
+
+        command = "INSERT INTO datenbank.kuehlschrankinhalt (kuehlschrank_id, lebensmittel_id) VALUES (%s, %s) "
+        data = (kuehlschrank_id, lebensmittel.get_id())
+        print(F" Lebensmittel id: {lebensmittel.get_id()}")
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+
+        return lebensmittel
 
     def update(self, object):
         pass

@@ -181,14 +181,19 @@ class Administration(object):
 
         # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
         food = Lebensmittel()
-        food.set_id(1)
+        # Hier wird die Lebensmittel_id auf 1 gesetzt
+        # TODO: Erstellte id ist = 1 wegen der Zeile? @Domi
+        #food.set_id(1)
         food.set_lebensmittelname(name)
         food.set_masseinheit(masseinheit_id)
         food.set_mengenanzahl(menge_id)
 
+        print(f" Das ist das erstellte Lebensmittel: {food}")
+
         time.sleep(3)
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
+
 
     """Kuehlschrank-spezifische Methoden """
 
@@ -221,10 +226,12 @@ class Administration(object):
                 created_lebensmittel = self.create_lebensmittel(lebensmittel.get_lebensmittelname(),
                                                                 lebensmittel.get_masseinheit(),
                                                                 lebensmittel.get_mengenanzahl())
+                print(f"Das ist das erstellte Lebensmittel in add_food: {created_lebensmittel}")
                 # Update kühlschrank
                 with KuehlschrankMapper() as mapper:
                     # TODO: Mapper insert muss definiert werden
-                    mapper.insert(created_lebensmittel.get_id())
+                    print(F"Lebensmittel id in admin: {created_lebensmittel.get_id()} {created_lebensmittel.get_lebensmittelname()}")
+                    mapper.insert(kuehlschrank_id, created_lebensmittel)
 
 
             else:
