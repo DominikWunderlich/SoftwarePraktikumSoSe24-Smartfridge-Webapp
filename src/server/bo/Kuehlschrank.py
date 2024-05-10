@@ -1,37 +1,23 @@
 from server.bo.BusinessObject import BusinessObject as bo
-from server.bo.Lebensmittel import Lebensmittel
-
+from server.bo.WG import WG
 
 class Kuehlschrank(bo):
     def __init__(self):
         super().__init__()
-        self.lebensmittel_dict = {}
+        self.wg_id = None
 
-    def get_kuehlschrank(self):
-        """Gibt das Kuehlschrank-Objekt zurück."""
-        return self
-
-    def get_lebensmittel(self, lebensmittel_id):
-        """Gibt ein Lebensmittel anhand seiner ID aus dem Kühlschrank zürck"""
-        return self.lebensmittel_dict[lebensmittel_id]
-
-    def get_lebensmittelliste_by_name(self):
-        """Gibt eine Liste der Namen der Lebensmittel im Kühlschrank zurück."""
-        return [lebensmittel.get_lebensmittelname() for lebensmittel in self.lebensmittel_dict.values()]
+    def get_wg_id(self):
+        return self.wg_id
+    
+    def set_wg_id(self, wg_id):
+        self.wg_id = wg_id
 
     def __str__(self):
-        """Gibt eine textuelle Darstellung des Kühlschranks zurück."""
-        lebensmittel_str = ", ".join(self.get_lebensmittelliste_by_name())
-        return f"Kuehlschrank: {self.get_id()}, Lebensmittel: {lebensmittel_str}"
-
+        return "Kuehlschrank: {}, {}".format(self.get_id(), self.get_wg_id())
+    
     @staticmethod
-    def from_dict(dictionary=dict()):
-        """Umwandeln eines Python dict() in ein Kuehlschrank-Objekt."""
+    def from_dict(dictonary=dict()):
         ks = Kuehlschrank()
-        ks.set_id(dictionary['id'])
-        lebensmittel_liste = dictionary.get('lebensmittel_liste', [])
-        for lebensmittel_dict in lebensmittel_liste:
-            lebensmittel = Lebensmittel.from_dict(lebensmittel_dict)
-            ks.add_lebensmittel(lebensmittel)
+        ks.set_id(dictonary["id"])
+        ks.set_wg_id(dictonary["wg_id"])
         return ks
-
