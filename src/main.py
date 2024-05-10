@@ -11,7 +11,7 @@ from server.bo.Lebensmittel import Lebensmittel
 from server.bo.mengenanzahl import Mengenanzahl
 from server.bo.Masseinheit import Masseinheit
 
-from SecurityDecorator import secured
+from server.SecurityDecorator import secured
 
 app = Flask(__name__)
 
@@ -151,7 +151,7 @@ class WgGetOperations(Resource):
         return "", 200
 
 @smartapi.route('/kuehlschrankinhalt')
-@smartapi.route(500, 'Serverseitiger Fehler')
+@smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('kuehlschrank', 'Der Kuehlschrank der aktuellen Person')
 class KuehlschrankGetOperations(Resource):
     #@secured
