@@ -10,11 +10,12 @@ import NavBar from "../components/NavBar";
 function Lebensmittelverwaltung(props) {
     const [formData, setFormData] = useState({
         lebensmittelname: "",
-        mengenanzahl: 0,
+        mengenanzahl: "",
         masseinheit: ""
     });
 
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
+    const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [errors, setErrors] = useState({});
 
     const handleChange = (event) => {
@@ -39,22 +40,26 @@ function Lebensmittelverwaltung(props) {
         );
         const newMengenanzahl = new mengenanzahlBO(formData.mengenanzahl);
         const newMasseinheit = new MasseinheitBO(formData.masseinheit);
-
+        
         console.log("Neues Lebensmittel:", newLebensmittel);
         console.log("Neue Menge:", newMengenanzahl);
         console.log("Neue Maßeinheit:", newMasseinheit);
 
-        EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit)
-        EatSmarterAPI.getAPI().addMenge(newMengenanzahl)
+        EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit);
+        EatSmarterAPI.getAPI().addMenge(newMengenanzahl);
         EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
+
 
         // Zurücksetzen des Formulars nach dem Hinzufügen
         setFormData({
             lebensmittelname: "",
-            mengenanzahl: 0,
+            mengenanzahl: "",
             masseinheit: ""
         });
         setErrors({});
+
+        setLebensmittelliste(prevList => [...prevList, newLebensmittel]);
+        setMasseinheitenListe(prevList => [...prevList, formData.masseinheit]);
     };
 
     return (
@@ -73,6 +78,20 @@ function Lebensmittelverwaltung(props) {
                         onChange={handleChange}
                         className="eingabe"
                     />
+                    {/* Dropdown-Menü für vorhandene Lebensmittel */}
+                    <select
+                        name="lebensmittelname"
+                        value={formData.lebensmittelname}
+                        onChange={handleChange}
+                        className="eingabe"
+                    >
+                        
+                        {lebensmittelliste.map((lebensmittel, index) => (
+                            <option key={index} value={lebensmittel.lebensmittel_name}>
+                                {lebensmittel.lebensmittel_name}
+                            </option>
+                        ))}
+                    </select>
 
                     <label>Menge</label>
                     <input
@@ -92,28 +111,51 @@ function Lebensmittelverwaltung(props) {
                         onChange={handleChange}
                         className="eingabe"
                     />
-                    <datalist id="masseinheit">
-                        <option value="Gramm" />
-                        <option value="Kilogramm" />
-                        <option value="Liter" />
-                        {/* Weitere Maßeinheiten können hier hinzugefügt werden */}
-                    </datalist>
+                    {/* Dropdown-Menü für eingegebene Maßeinheiten */}
+                    <select
+                        name="masseinheit"
+                        value={formData.masseinheit}
+                        onChange={handleChange}
+                        className="eingabe"
+                    >
+                        {masseinheitenListe.map((masseinheit, index) => (
+                            <option key={index} value={masseinheit}>
+                                {masseinheit}
+                            </option>
+                        ))}
+                    </select>
+                    
 
                     <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                 </div>
             </div>
+
             <div>
-                <h2>Eingetragene Lebensmittel</h2>
+                
+                <div className="container">
+                  <h2>Eingetragene Lebensmittel</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Lebensmittel</th>
+                    <th>Menge</th>
+                    <th>Masseinheit</th>
+                </tr>
+            </thead>
+            <tbody>
                 {lebensmittelliste.map((lebensmittel, index) => (
-                    <div key={index}>
-                        <p>Lebensmittel: {lebensmittel.lebensmittelname}</p>
-                        <p>Masseinheit: {lebensmittel.masseinheit}</p>
-                        <p>Menge: {lebensmittel.mengenanzahl}</p>
-                    </div>
+                    <tr key={index}>
+                        <td>{lebensmittel.lebensmittel_name}</td>
+                        <td>{lebensmittel.menge}</td>
+                        <td>{lebensmittel.masseinheit}</td>
+                    </tr>
                 ))}
+            </tbody>
+        </table>
+                </div>
             </div>
         </div>
     );
-}
+};
 
 export default Lebensmittelverwaltung;
