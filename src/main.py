@@ -150,6 +150,24 @@ class WgGetOperations(Resource):
         adm.delete_wg_by_name(wg_name)
         return "", 200
 
+@smartapi.route('/kuehlschrankinhalt')
+@smartapi.route(500, 'Serverseitiger Fehler')
+@smartapi.param('kuehlschrank', 'Der Kuehlschrank der aktuellen Person')
+class KuehlschrankGetOperations(Resource):
+    #@secured
+    @smartapi.marshal_with(lebensmittel)
+    def get(self, kuehlschrank):
+        """Auslesen eines Lebensmittel-Objekts"""
+
+        adm = Administration()
+        k_inhalt = adm.get_lebensmittel_by_kuehlschrank_id(kuehlschrank)
+
+        if k_inhalt is not None:
+            return k_inhalt
+        else:
+            return '', 500
+
+
 """ User related API Endpoints """
 @smartapi.route('/login')
 @smartapi.response(500, 'Serverseitiger Fehler')

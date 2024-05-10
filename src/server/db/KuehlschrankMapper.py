@@ -8,7 +8,6 @@ class KuehlschrankMapper(mapper):
     def __init__(self):
         super().__init__()
 
-
     def find_lebensmittel_by_kuehlschrank_id(self, kuehlschrank_id):
         result = []
         cursor = self._connector.cursor()
