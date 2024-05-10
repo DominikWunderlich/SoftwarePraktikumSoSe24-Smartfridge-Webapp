@@ -137,6 +137,7 @@ class Administration(object):
             return mapper.insert(m)
 
     def create_lebensmittel(self, name, meinheit, menge):
+        """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
         # des Users dar (gr, kg, l, ...).
         time.sleep(3)
@@ -165,6 +166,26 @@ class Administration(object):
     def get_lebensmittel_by_kuehlschrank_id(self, kuehlschrank):
         with KuehlschrankMapper() as mapper:
             return mapper.find_lebensmittel_by_kuehlschrank_id(kuehlschrank)
+
+    def add_food_to_fridge(self, kuehlschrank_id, lebensmittel): # lebensmittel = Karotte, 1, Kilogramm
+        # Zugehörige Lebensmittel des Kühlschranks finden
+        fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id) # Output: [(k_id/l_obj), (k_id/L-obj2)]
+
+        # Idee: prüfen ob Lebensmittelname bereits im fridge liegt
+        lebenmittel_name = lebensmittel.get_lebensmittelname()
+        for elem in fridge:
+            name = elem.get_lebensmittelname()
+            # Wenn Lebensmittel bereits im Kühlschrank ist, gebe das Objekt zurück
+            if name != lebenmittel_name:
+                self.create_lebensmittel(lebensmittel)
+            # Ansonsten erzeuge ein neues.
+            else:
+                updated_food = elem.increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit())
+                self.create_lebensmittel(updated_food)
+                # Update kühlschrank
+                with KuehlschrankMapper() as mapper:
+                    mapper.update(updated_food.get_id())
+
 
 
 
