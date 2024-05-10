@@ -24,18 +24,8 @@ function RezepteAnzeigen(props) {
             try {
                 const api = new EatSmarterAPI();
                 const userWg = await api.getWgByUser(props.user.email); // Ruf die WG des Benutzers ab
-                console.log("userWg"+userWg)
-                console.log("userWg.name"+userWg.name)
-                console.log("userWg.wgName"+userWg.wgName)
-                //setWgName(userWg.name); // Setze den Namen der WG in den State //diese Zeile brauch ich nicht
-                console.log("Hier vor kam dieser Befehl: setWgName(userWg.name);")
-                console.log("userWg"+userWg)
-                console.log("userWg.name"+userWg.name)
-                console.log("userWg.wgName"+userWg.wgName)
                 const rezeptList = await api.getRezepteByWg(userWg.wgName); // Ruf die neuen Rezept-Methode auf
                 setRezepte(rezeptList);
-                console.log("Hallo")
-                console.log("rezeptList"+rezeptList)
             } catch (error) {
                 console.error("Fehler beim Abrufen der Rezepte:", error);
             }
