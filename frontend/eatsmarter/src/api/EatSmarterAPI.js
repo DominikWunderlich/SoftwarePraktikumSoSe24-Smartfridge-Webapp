@@ -286,10 +286,10 @@ export default class EatSmarterAPI{
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
-    #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
+    #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/user/${wgName}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
-    #updateWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg`;
+    #updateWgURL = (wgBo) => `${this.#EatSmarterServerBaseURL}/wg`;
 
      addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
@@ -307,8 +307,9 @@ export default class EatSmarterAPI{
         })
     }
 
+
     updateWg(wgBO){
-    return this.#fetchAdvanced(this.#updateWgURL(wgBO.wgBewohner), {
+    return this.#fetchAdvanced(this.#updateWgURL(wgBO), {
         method: "PUT",
         headers: {
             "Accept": "application/json, text/plain",
@@ -361,11 +362,34 @@ export default class EatSmarterAPI{
             },
             body: JSON.stringify(wgName)
         }).then((responseJSON) => {
-            let removedWgBO = WgBO.fromJSON(responseJSON)[0];
+            // console.log("Entfernte Wg", responseJSON)
             return new Promise( function(resolve) {
                 resolve(responseJSON);
             })
         })
+    }
+
+    // Wg-attribute related
+    #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgAdmin/${email}`;
+
+    checkIfUserIsWgAdmin(currentUser){
+        // console.log("api", currentUser)
+         return this.#fetchAdvanced(this.#getWgAdminURL(currentUser), {
+             method: "GET",
+             headers: {
+                 "Accept": "application/json",
+                 "Content-Type": "application/json",
+             },
+         }).then((response) => {
+             // console.log("API",response)
+             if(response === true){
+                 return true;
+             }
+             else{
+                 return false;
+             }
+        });
+
     }
 
 

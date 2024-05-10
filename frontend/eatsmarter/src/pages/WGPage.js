@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
-import { useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import NavBar from "../components/NavBar";
 
 
 function WGPage(props) {
+    const currentUser = props.user.email;
     const [wg, setWg] = useState(null)
-    const[addNewMemberEmail, setAddNewMemberEmail] = useState("");
-    const[deleteNewMemberEmail, setDeleteNewMemberEmail] = useState("");
+    const [addNewMemberEmail, setAddNewMemberEmail] = useState("");
+    const [deleteNewMemberEmail, setDeleteNewMemberEmail] = useState("");
     const navigate = useNavigate()
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
@@ -24,90 +25,57 @@ function WGPage(props) {
         renderCurrentUsersWg()
     }, []);
 
-    // Handle Methode um Wg-Bewohner hinzuzufügen
-    const handleAddMember = async () => {
-        // wgDaten mit neuer Mail aktualiesiern
+    // Handler-Function, um Mitglieder als Admin hinzuzufügen
+    const handleAddMember = async() => {
+        const updatedWg = {...wg};
+        updatedWg.wgBewohner += `,${addNewMemberEmail}`;
 
-        // Überprüfen, ob die E-Mail-Adresse bereits in der Liste der WG-Bewohner enthalten ist
-        if (wg && wg.wgBewohner.includes(addNewMemberEmail)) {
-            alert("Dieser Nutzer ist bereits in der WG");
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
+           if(isAdmin){
+               await EatSmarterAPI.getAPI().updateWg(updatedWg)
+               renderCurrentUsersWg()
+           }
+           else{
+               alert("Nur der Ersteller kann Mitglieder hinzufügen");
+           }
+           setAddNewMemberEmail("");
+
+    }
+
+    // Handler-Function, um Mitglieder als Admin zu entfernen
+    const handleDeleteMember = async()  => {
+           const updatedWg = {...wg};
+           // Bewohner aus der Liste entfernen
+           updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== deleteNewMemberEmail).join(',');
+
+           const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
+           // console.log("wg", isAdmin)
+           if(isAdmin){
+               await EatSmarterAPI.getAPI().updateWg(updatedWg)
+               renderCurrentUsersWg()
+           }
+           else{
+               alert("Nur der Ersteller kann Mitglieder entfernen");
+           }
+           setDeleteNewMemberEmail("");
+    }
+
+     // Handler-Function, um die Wg als Admin zu löschen
+    const handleDeleteWG = async () => {
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
+        // console.log("Frontend", isAdmin);
+
+        if(isAdmin){
+            await EatSmarterAPI.getAPI().deleteWgByName(currentUser)
+                .then(() => {
+                    navigate("/registerWg");
+                })
         }
         else{
-            // E-Mail des eingeloggten Users
-            let currentUser = props.user.email
-            // E-Mail des wgAdmins
-            let wgAdmin = wg.wgAdmin
-
-        // Wenn der currentUser der wgAdmin ist, dann WgBewohner hinzufügen
-        if(currentUser === wgAdmin){
-             const updatedWg = {...wg};
-             updatedWg.wgBewohner += `,${addNewMemberEmail}`;
-
-             try{
-                 await EatSmarterAPI.getAPI().updateWg(updatedWg);
-                 setWg(updatedWg);
-             }
-             catch(error){
-                 console.error(error);
-             }
-        }
-
-        // Alert ausgeben, dass nur der Ersteller die Wg bearbeiten darf
-        // TODO: Bei Bedarf, Alert durch was schöneres ersetzen
-        else{
-            alert("Nur der Ersteller kann die Wg bearbeiten")
-        }
-        }
-         // Am Ende wird das Input Feld geleert
-            setAddNewMemberEmail("");
-    };
-
-
-    // Handle Methode um Wg-Bewohner zu entfernen
-    const handleDeleteMember = async () => {
-        // E-Mail des eingeloggten Users
-        let currentUser = props.user.email
-        // E-Mail des wgAdmins
-        let wgAdmin = wg.wgAdmin
-
-        // Wenn der currentUser der wgAdmin ist, dann WgBewohner löschen
-        if(currentUser === wgAdmin){
-             const updatedWg = {...wg};
-                // Bewohner aus der Liste entfernen
-                updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== deleteNewMemberEmail).join(',');
-
-             try{
-                 await EatSmarterAPI.getAPI().updateWg(updatedWg);
-                 setWg(updatedWg);
-             }
-             catch(error){
-                 console.error(error);
-             }
-        }
-        // Alert ausgeben, dass nur der Ersteller die Mitglieder entfernen darf
-        // TODO: Bei Bedarf, Alert durch was schöneres ersetzen
-        else{
-            alert("Nur der Ersteller kann Mitglieder entfernen")
-        }
-          // Am Ende wird das Input Feld geleert
-            setDeleteNewMemberEmail("");
-    };
-
-    const handleDeleteWG = () => {
-
-        let currentUser = props.user.email
-        let wgAdmin = wg.wgAdmin
-        let wgName = wg.wgName
-
-        if(currentUser===wgAdmin){
-            EatSmarterAPI.getAPI().deleteWgByName(wgName)
-            navigate("/registerWg")
-
-        }
-        else{
-            alert("Nur der Ersteller kann die WG löschen")
+            alert("Nur der Ersteller kann die Wg löschen");
         }
     }
+
 
     return (
         <div>
@@ -118,7 +86,6 @@ function WGPage(props) {
                     <div>
                         <h2>Aktuelle WG: {wg.wgName}</h2>
                         <p>Bewohner: </p>
-                        {/*TODO: Wenn die Liste in DB nicht mehr als string sondern als Liste, dann map-Methode und forEach*/}
                         <p>
                             {wg.wgBewohner.split(',').map((bewohner, index) => (
                                 <li key={index}>{bewohner.trim()}</li>

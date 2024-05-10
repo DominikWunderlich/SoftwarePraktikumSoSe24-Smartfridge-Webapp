@@ -93,17 +93,19 @@ class WgOperations(Resource):
         else:
             return 'Fehler in WG-Operations post methode', 500
 
-    # Update wg on wgPage
     @smartapi.expect(wg)
     @smartapi.marshal_with(wg)
     @secured
     def put(self):
         adm = Administration()
         proposal = WG.from_dict(api.payload)
+        # print("Main.py", api.payload)
 
         if proposal is not None:
             result = adm.update_wg_by_email(proposal)
+            # print("Ergebnis:", result)
             return result
+
 
 
 @smartapi.route('/wg/user/<email>')
@@ -121,7 +123,23 @@ class WgGetWgOperations(Resource):
         else:
             return '', 500
 
+    def delete(self, email):
+        adm = Administration()
+        wgs = adm.getWGByEmail(email)
+        # print(adm.getWGByEmail(email))
+        for wg in wgs:
+            # print(wg)
+            wg_name = wg.get_wg_name()
+            adm.delete_wg_by_name(wg_name)
 
+@smartapi.route('/wg/user/wgAdmin/<email>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('email', 'Die E-mail der aktuellen person')
+class WgGetWgAdminWgOperations(Resource):
+    def get(self, email):
+        adm = Administration()
+        # print("True in der Main.py?", adm.is_current_user_wg_admin(email))
+        return adm.is_current_user_wg_admin(email)
 
 @smartapi.route('/wg/<wg_name>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -152,18 +170,18 @@ class WgGetOperations(Resource):
 
 @smartapi.route('/kuehlschrankinhalt')
 @smartapi.response(500, 'Serverseitiger Fehler')
-@smartapi.param('kuehlschrank', 'Der Kuehlschrank der aktuellen Person')
+@smartapi.param('kuehlschrank_id', 'Der Kuehlschrank der aktuellen Person')
 class KuehlschrankGetOperations(Resource):
-    #@secured
+    @secured
     @smartapi.marshal_with(lebensmittel)
-    def get(self, kuehlschrank):
+    def get(self, kuehlschrank_id):
         """Auslesen eines Lebensmittel-Objekts"""
 
         adm = Administration()
-        k_inhalt = adm.get_lebensmittel_by_kuehlschrank_id(kuehlschrank)
+        k_inhalt = adm.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
 
         if k_inhalt is not None:
-            return k_inhalt
+            return k_inhalt, 200
         else:
             return '', 500
 
