@@ -182,7 +182,6 @@ class Administration(object):
         # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
         food = Lebensmittel()
         # Hier wird die Lebensmittel_id auf 1 gesetzt
-        # TODO: Erstellte id ist = 1 wegen der Zeile? @Domi
         food.set_id(1)
         food.set_lebensmittelname(name)
         food.set_masseinheit(masseinheit_id)
@@ -194,6 +193,18 @@ class Administration(object):
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
 
+
+    def get_lebensmittel_by_lebensmittel_name(self, lebensmittel_name):
+        with LebensmittelMapper() as mapper:
+            return mapper.find_by_lebensmittelname(lebensmittel_name)
+
+    def get_menge_by_id(self, mengen_id):
+        with MengenanzahlMapper() as mapper:
+            return mapper.find_by_key(mengen_id)
+
+    def get_masseinheit_by_id(self, masseinheit_id):
+        with MasseinheitMapper() as mapper:
+            return mapper.find_by_key(masseinheit_id)
 
     """Kuehlschrank-spezifische Methoden """
 
@@ -237,8 +248,21 @@ class Administration(object):
                 mapper.insert(kuehlschrank_id, created_lebensmittel)
 
         else:
+            elem = self.get_lebensmittel_by_lebensmittel_name(lebenmittel_name)
+            print(F" Das ist das bereits vorhandene Lebensmittel {elem}")
             # Ansonsten update.
-            updated_food = elem.increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit())
+            print(F"Das erste Element im List Object {elem[0]}")
+            print(F"{lebensmittel.get_mengenanzahl()}, {lebensmittel.get_masseinheit()}")
+
+            quantity_obj = self.get_menge_by_id(elem[0].get_mengenanzahl())
+            quantity = quantity_obj[0].get_menge()
+            print(F"Das sollte die Mengen_id sein {elem[0].get_mengenanzahl()}")
+            print(f"Quantity an der Stelle 0 soll 100 sein {quantity}")
+
+            unit = self.get_masseinheit_by_id(elem[0].get_masseinheit())
+            print(f"unit soll Gramm sein: {unit}")
+
+            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit())
             print(f"DEBUG Das ist der updated_food {updated_food}")
             self.create_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
                                         updated_food.get_mengenanzahl())

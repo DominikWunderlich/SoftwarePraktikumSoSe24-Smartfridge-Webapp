@@ -27,14 +27,16 @@ class LebensmittelMapper(mapper):
     def find_by_lebensmittelname(self, lebensmittelname):
         result = []
         cursor = self._connector.cursor()
-        command = "SELECT id, lebensmittelname, aggregatszustand FROM datenbank.lebensmittel WHERE lebensmittelname LIKE %s"
+        command = "SELECT lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id FROM datenbank.lebensmittel WHERE lebensmittel_name LIKE %s"
         cursor.execute(command, (lebensmittelname,))
         tuples = cursor.fetchall()
 
-        for (id, lebensmittelname) in tuples:
+        for (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id) in tuples:
             lebensmittel = Lebensmittel()
-            lebensmittel.set_id(id)
-            lebensmittel.set_lebensmittlename(lebensmittelname)
+            lebensmittel.set_id(lebensmittel_id)
+            lebensmittel.set_lebensmittelname(lebensmittel_name)
+            lebensmittel.set_masseinheit(masseinheit_id)
+            lebensmittel.set_mengenanzahl(mengenanzahl_id)
             result.append(lebensmittel)
 
         self._connector.commit()

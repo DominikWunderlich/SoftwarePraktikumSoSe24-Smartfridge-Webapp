@@ -69,6 +69,7 @@ class Lebensmittel(bo):
             self.masseinheit = new_unit
 
     def increase_food_quantity(self, add_quantity, add_unit):
+        # 13 , Gramm
         """ Diese Methode repräsentiert das Hinzufügen von Lebensmittel.
                  @:param add_quantity: neue Menge des Lebensmittels.
                  @:param add_unit: neue Maßeinheit des Lebensmittels.
@@ -78,15 +79,30 @@ class Lebensmittel(bo):
             'Liter': 1000,
             'Milliliter': 1,
             'Kilogramm': 1000,
-            'Gramm': 1
+            'Gramm': 1,
+            # Temporär: da self.masseinheit die id wiedergibt und nicht den Namen
+            3: 1,
             # Hier weitere Faktoren anlegen.
         }
 
+
+        #print(f"Das ist meine add_quantity {add_quantity} & conversion_factors: {conversion_factors[add_unit]}]")
         new_calculated_qnty = add_quantity * conversion_factors[add_unit]
+        print(F"meine new calculated_qnty {new_calculated_qnty}")
+        print(F" self.mengenanzahl {self.mengenanzahl} & self.masseinheit {self.masseinheit}")
+        # TODO: self.maßeinheit muss den namen der Maßeinheit weidergeben
         current_quantity = self.mengenanzahl * conversion_factors[self.masseinheit]
+        print(F"current_quantity {current_quantity}")
         total_quantity = current_quantity + new_calculated_qnty
+        print(F"total quantity {total_quantity}")
         total_qnty = total_quantity / conversion_factors[self.masseinheit]
+        print(F"total_qnty {total_qnty}")
         self.mengenanzahl = total_qnty
+        print(F"self.mengenanzahl {self.mengenanzahl}")
+        print(F"self {self}")
+        # Das Objekt gibt als Maßeinheit die id zurück, das führt zu Problemen bei der erstellung des lebensmittels
+
+        return self
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
