@@ -34,7 +34,7 @@ class MengenanzahlMapper(mapper):
         cursor.execute(command, data)
 
         self._connector.commit()
-        cursor.close()
+       # cursor.close()
 
     def find_by_menge(self, m):
         result = None

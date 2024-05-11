@@ -216,11 +216,12 @@ class Administration(object):
             mengen_id = mmapper.find_by_menge(menge)
             if mengen_id is None:
                 self.create_menge(menge)
-                time.sleep(5)
-                amenge = mmapper.find_by_menge(menge)
-                menge_id = amenge.get_id()
             else:
                 menge_id = mengen_id.get_id()
+
+        with MengenanzahlMapper() as m2mapper:
+            amenge = m2mapper.find_by_menge(menge)
+            menge_id = amenge.get_id()
 
             print("Beende mengenmapper")
 
@@ -259,6 +260,19 @@ class Administration(object):
         with KuehlschrankMapper() as mapper:
             return mapper.find_lebensmittel_by_kuehlschrank_id(kuehlschrank)
 
+    def find_common_objects(self, elem, kuehlschrank_inhalt):
+        common_objects = []
+
+        for item in kuehlschrank_inhalt:
+            item_id = item.get_id()
+
+            for obj in elem:
+                if obj.get_id() == item_id:
+                    common_objects.append(obj)
+                    break
+
+        return common_objects
+
     def add_food_to_fridge(self, kuehlschrank_id, lebensmittel): # lebensmittel = Karotte, 1, Kilogramm
         # Zugehörige Lebensmittel des Kühlschranks finden
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id) # Output: [(k_id/l_obj), (k_id/L-obj2)]
@@ -288,14 +302,25 @@ class Administration(object):
         else:
             # Wenn ein Lebensmittel im Kühlschrank ist, sind wir im Else-Zweig
             print("...starting add_food_to_fridge: else-Zweig")
-
+            # 1. find all lebensmittel with the given name "karotte"
             elem = self.get_lebensmittel_by_lebensmittel_name(lebenmittel_name)
-            quantity_obj = self.get_menge_by_id(elem[0].get_mengenanzahl())
+            print(f" das ist elem: {elem}")
+            # 2. check which lebensmittel are in the fridge
+            kuehlschrank_inhalt = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
+            print(f"kuehlschrank_inhalt[0].get_id() {kuehlschrank_inhalt[0].get_id()}")
+            # 3. compare karotten_id mit der karotten_id, die ich im kühlschrank habe. -> das ist mein gesuchtes Objekt
+            found_obj = self.find_common_objects(elem, kuehlschrank_inhalt)
+            print(found_obj)
+            print(f"das sollte jetzt die id 2 sein: {found_obj[0].get_id()}")
+
+
+
+            quantity_obj = self.get_menge_by_id(found_obj[0].get_mengenanzahl())
             quantity = quantity_obj.get_menge()
-            unit_obj = self.get_masseinheit_by_id(elem[0].get_masseinheit())
+            unit_obj = self.get_masseinheit_by_id(found_obj[0].get_masseinheit())
             unit = unit_obj.get_masseinheit()
 
-            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
+            updated_food = found_obj[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
             new_food_obj = self.create_lebensmittel_from_fridge(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
                                     updated_food.get_mengenanzahl())
 
@@ -303,7 +328,7 @@ class Administration(object):
             print(f"Das ist die  id von neue food objekt: {new_food_obj_id}")
 
 
-            old_food_id = elem[0].get_id()
+            old_food_id = found_obj[0].get_id()
             # Update kühlschrank
             with KuehlschrankMapper() as mapper:
                 print(f"Das ist die old_food_id {old_food_id}")
