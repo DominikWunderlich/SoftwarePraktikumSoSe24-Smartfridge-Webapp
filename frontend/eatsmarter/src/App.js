@@ -139,8 +139,7 @@ function App(props) {
 						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
 						  <Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser} onSignOut={handleSignOut}/>}/>
                           <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut}/>} />
-						  <Route path="/genaueinrezeptAnzeigen" element={<GenauEinRezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut}/>} />
-					  </Routes>
+						  <Route path="/genaueinrezeptAnzeigen/:rezeptId" element={<GenauEinRezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut} />} />					  </Routes>
 				  </Router>
 			  </div>
            ) : (

@@ -7,6 +7,7 @@ import NavBar from "../components/NavBar";
 import LebensmittelBO from "../api/LebensmittelBO";
 import MasseinheitBO from "../api/MasseinheitBO";
 import mengenanzahlBO from "../api/mengenanzahlBO";
+import { useParams } from "react-router-dom"; // Importing useParams
 
 function GenauEinRezeptAnzeigen(props) {
     const [formData, setFormData] = useState({
@@ -18,6 +19,9 @@ function GenauEinRezeptAnzeigen(props) {
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [errors, setErrors] = useState({});
+    const [rezept, setRezept] = useState(null); // Nur ein Rezept anstelle einer Liste von Rezepten
+
+    const { rezeptId } = useParams(); // Holen der rezeptId aus den Routenparametern
 
     const handleChange = (event) => {
         setFormData({
@@ -42,16 +46,10 @@ function GenauEinRezeptAnzeigen(props) {
         const newMengenanzahl = new mengenanzahlBO(formData.mengenanzahl);
         const newMasseinheit = new MasseinheitBO(formData.masseinheit);
 
-        console.log("Neues Lebensmittel:", newLebensmittel);
-        console.log("Neue Menge:", newMengenanzahl);
-        console.log("Neue Maßeinheit:", newMasseinheit);
-
         EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit);
         EatSmarterAPI.getAPI().addMenge(newMengenanzahl);
         EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
 
-
-        // Zurücksetzen des Formulars nach dem Hinzufügen
         setFormData({
             lebensmittelname: "",
             mengenanzahl: "",
@@ -62,11 +60,38 @@ function GenauEinRezeptAnzeigen(props) {
         setLebensmittelliste(prevList => [...prevList, newLebensmittel]);
         setMasseinheitenListe(prevList => [...prevList, formData.masseinheit]);
     };
+
+    useEffect(() => {
+        const fetchRezeptById = async () => {
+            try {
+                const api = new EatSmarterAPI();
+                const [rezept] = await api.getRezeptById(rezeptId); // Verwenden der dynamischen rezeptId
+                setRezept(rezept);
+                console.log(rezept);
+            } catch (error) {
+                console.error("Fehler beim Abrufen des Rezepts:", error);
+            }
+        };
+
+        fetchRezeptById();
+    }, [rezeptId]); // Beachte die Abhängigkeit von rezeptId
+
     return (
         <div>
-            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut} /><br /><br />
             <h2>Ein Rezept Anzeigen</h2>
-            Hier soll der Rezeptname, anzahl Portionen angezeigt werden
+
+
+            <div className='container'>
+                {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
+                    <div className='rezepteAnzeigenDiv'>
+                        <p>Rezeptname: {rezept.rezeptName}</p>
+                        <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                        <p>Ersteller: {rezept.rezeptAdmin}</p>
+                        <p>WG: {rezept.wgName}</p>
+                    </div>
+                )}
+            </div>
             <div className="container">
                 <h2>Eingetragene Lebensmittel</h2>
                 <table>

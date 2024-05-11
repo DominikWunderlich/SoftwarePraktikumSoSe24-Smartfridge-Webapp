@@ -44,12 +44,14 @@ function RezepteAnzeigen(props) {
                 </Link>
 
                 {rezepte.map((rezept, index) => (
-                    <div key={index} className='rezepteAnzeigenDiv'>
-                        <p>Rezeptname: {rezept.rezeptName}</p>
-                        <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
-                        <p>Ersteller: {rezept.rezeptAdmin}</p>
-                        <p>WG: {rezept.wgName}</p>
-                    </div>
+                    <Link key={index} to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
+                        <div className='rezepteAnzeigenDiv'>
+                            <p>Rezeptname: {rezept.rezeptName}</p>
+                            <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                            <p>Ersteller: {rezept.rezeptAdmin}</p>
+                            <p>WG: {rezept.wgName}</p>
+                        </div>
+                    </Link>
                 ))}
 
             </div>
