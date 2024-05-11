@@ -176,7 +176,51 @@ class Administration(object):
         # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
         with MengenanzahlMapper() as mmapper:
             mengen_id = mmapper.find_by_menge(menge)
+            print(F" Mengen_id {mengen_id}")
             menge_id = mengen_id.get_id()
+
+            print("Beende mengenmapper")
+
+        # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
+        food = Lebensmittel()
+        # Hier wird die Lebensmittel_id auf 1 gesetzt
+        food.set_id(1)
+        food.set_lebensmittelname(name)
+        food.set_masseinheit(masseinheit_id)
+        food.set_mengenanzahl(menge_id)
+
+        print(f" Das ist das erstellte Lebensmittel: {food}")
+
+        time.sleep(3)
+        with LebensmittelMapper() as lmapper:
+            return lmapper.insert(food)
+
+    def create_lebensmittel_from_fridge(self, name, meinheit, menge):
+        """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
+        # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
+        # des Users dar (gr, kg, l, ...).
+        time.sleep(3)
+        print(f"name = {name}")
+        print(f"name = {meinheit}")
+        print(f"name = {menge}")
+        with MasseinheitMapper() as mapper:
+            m_id = mapper.find_by_name(meinheit)
+
+            if m_id is None:
+                masseinheit_id = self.create_measurement(meinheit, 0)
+            else:
+                masseinheit_id = m_id.get_id()
+            print("Beende maßeinheitmapper")
+
+        # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
+        with MengenanzahlMapper() as mmapper:
+            mengen_id = mmapper.find_by_menge(menge)
+            print(F" Mengen_id {mengen_id}")
+            if mengen_id is None:
+                menge_id = self.create_menge(menge)
+            else:
+                menge_id = mengen_id.get_id()
+
             print("Beende mengenmapper")
 
         # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
@@ -255,21 +299,25 @@ class Administration(object):
             print(F"{lebensmittel.get_mengenanzahl()}, {lebensmittel.get_masseinheit()}")
 
             quantity_obj = self.get_menge_by_id(elem[0].get_mengenanzahl())
-            quantity = quantity_obj[0].get_menge()
+            print(F"Das ist das Quantity obj {quantity_obj}")
+            quantity = quantity_obj.get_menge()
             print(F"Das sollte die Mengen_id sein {elem[0].get_mengenanzahl()}")
             print(f"Quantity an der Stelle 0 soll 100 sein {quantity}")
 
-            unit = self.get_masseinheit_by_id(elem[0].get_masseinheit())
+            unit_obj = self.get_masseinheit_by_id(elem[0].get_masseinheit())
+            unit = unit_obj.get_masseinheit()
             print(f"unit soll Gramm sein: {unit}")
 
-            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit())
+            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
             print(f"DEBUG Das ist der updated_food {updated_food}")
-            self.create_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
-                                        updated_food.get_mengenanzahl())
-            # TODO: AttributeError: 'NoneType' object has no attribute 'get_lebensmittelname' - updated_food = NoneType
+            self.create_lebensmittel_from_fridge(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
+                                    updated_food.get_mengenanzahl())
+
+
+            old_food_id = elem[0].get_id()
             # Update kühlschrank
             with KuehlschrankMapper() as mapper:
-                mapper.update(updated_food.get_id())
+                mapper.update(old_food_id, updated_food)
 
 
 

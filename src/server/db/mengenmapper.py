@@ -56,18 +56,17 @@ class MengenanzahlMapper(mapper):
         pass
 
     def find_by_key(self, key):
-        result = []
 
+        result = None
         cursor = self._connector.cursor()
         command = f"SELECT id, menge FROM datenbank.mengenanzahl WHERE id='{key}' "
         cursor.execute(command)
         tuples = cursor.fetchall()
 
         for (id, menge) in tuples:
-            menge = Mengenanzahl()
-            menge.set_id(id)
-            menge.set_menge(menge)
-            result.append(menge)
+            result = Mengenanzahl()
+            result.set_id(id)
+            result.set_menge(menge)
 
         self._connector.commit()
         cursor.close()

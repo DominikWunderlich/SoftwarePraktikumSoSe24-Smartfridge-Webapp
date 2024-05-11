@@ -54,8 +54,17 @@ class KuehlschrankMapper(mapper):
 
         return lebensmittel
 
-    def update(self, object):
-        pass
+
+    def update(self, old_food_id, object):
+        cursor = self._connector.cursor()
+
+        command = "UPDATE datenbank.kuehlschrankinhalt SET lebensmittel_id =%s WHERE lebensmittel_id = %s"
+        print(object.get_id())
+        data = (object.get_id(), old_food_id)
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
 
     def delete(self, object):
         pass

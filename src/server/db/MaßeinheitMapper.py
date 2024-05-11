@@ -81,7 +81,7 @@ class MasseinheitMapper(mapper):
         cursor.close()
 
     def find_by_key(self, key):
-        result = []
+        result = None
 
         cursor = self._connector.cursor()
         command = f"SELECT masseinheit_id, masseinheit_name, umrechnungsfaktor FROM datenbank.maßeinheit WHERE masseinheit_id='{key}' "
@@ -89,11 +89,10 @@ class MasseinheitMapper(mapper):
         tuples = cursor.fetchall()
 
         for (masseinheit_id, masseinheit_name, umrechnungsfaktor) in tuples:
-            masseinheit = Masseinheit()
-            masseinheit.set_id(masseinheit_id)
-            masseinheit.set_masseinheit(masseinheit_name)
-            masseinheit.set_umrechnungsfaktor(umrechnungsfaktor)
-            result.append(masseinheit)
+            result = Masseinheit()
+            result.set_id(masseinheit_id)
+            result.set_masseinheit(masseinheit_name)
+            result.set_umrechnungsfaktor(umrechnungsfaktor)
 
         self._connector.commit()
         cursor.close()

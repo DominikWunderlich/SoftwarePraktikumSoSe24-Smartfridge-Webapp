@@ -68,7 +68,7 @@ class Lebensmittel(bo):
         else:
             self.masseinheit = new_unit
 
-    def increase_food_quantity(self, add_quantity, add_unit):
+    def increase_food_quantity(self, add_quantity, add_unit, curr_quantity, curr_unit):
         # 13 , Gramm
         """ Diese Methode repräsentiert das Hinzufügen von Lebensmittel.
                  @:param add_quantity: neue Menge des Lebensmittels.
@@ -86,18 +86,19 @@ class Lebensmittel(bo):
         }
 
 
+
+
         #print(f"Das ist meine add_quantity {add_quantity} & conversion_factors: {conversion_factors[add_unit]}]")
         new_calculated_qnty = add_quantity * conversion_factors[add_unit]
         print(F"meine new calculated_qnty {new_calculated_qnty}")
-        print(F" self.mengenanzahl {self.mengenanzahl} & self.masseinheit {self.masseinheit}")
         # TODO: self.maßeinheit muss den namen der Maßeinheit weidergeben
-        current_quantity = self.mengenanzahl * conversion_factors[self.masseinheit]
-        print(F"current_quantity {current_quantity}")
+        current_quantity = curr_quantity * conversion_factors[curr_unit]
         total_quantity = current_quantity + new_calculated_qnty
         print(F"total quantity {total_quantity}")
-        total_qnty = total_quantity / conversion_factors[self.masseinheit]
+        total_qnty = total_quantity / conversion_factors[curr_unit]
         print(F"total_qnty {total_qnty}")
         self.mengenanzahl = total_qnty
+        self.masseinheit = curr_unit
         print(F"self.mengenanzahl {self.mengenanzahl}")
         print(F"self {self}")
         # Das Objekt gibt als Maßeinheit die id zurück, das führt zu Problemen bei der erstellung des lebensmittels
