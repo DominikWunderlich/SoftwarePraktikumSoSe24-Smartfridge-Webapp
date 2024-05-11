@@ -12,7 +12,7 @@ class MengenanzahlMapper(mapper):
         cursor.execute(command_check, (data_check,))
         existing_id = cursor.fetchone()
 
-        # Wenn der Maßeinheit_name bereits existiert, geben wir ein False zurück.
+        # Wenn die Menge bereits existiert, geben wir ein False zurück.
         if existing_id:
             cursor.close()
             return False
@@ -30,6 +30,7 @@ class MengenanzahlMapper(mapper):
 
         command = "INSERT INTO datenbank.mengenanzahl (id, menge) VALUES (%s, %s)"
         data = (obj.get_id(), obj.get_menge())
+        print(f" IM Mengenmapper: hier wird die Menge {obj.get_menge()} in die DB gebracht. ")
         cursor.execute(command, data)
 
         self._connector.commit()
