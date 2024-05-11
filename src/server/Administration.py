@@ -183,7 +183,7 @@ class Administration(object):
         food = Lebensmittel()
         # Hier wird die Lebensmittel_id auf 1 gesetzt
         # TODO: Erstellte id ist = 1 wegen der Zeile? @Domi
-        #food.set_id(1)
+        food.set_id(1)
         food.set_lebensmittelname(name)
         food.set_masseinheit(masseinheit_id)
         food.set_mengenanzahl(menge_id)
@@ -213,37 +213,39 @@ class Administration(object):
         # Idee: prüfen ob Lebensmittelname bereits im fridge liegt
         lebenmittel_name = lebensmittel.get_lebensmittelname()
         print(f"DEBUG das ist des gesuchte Lebensmittelname: {lebenmittel_name}")
+        # TODO: Handling, wenn der Kühlschrankinhalt leer ist
+        names = []
         for elem in fridge:
             print(f"DEBUG das ist elem {elem}")
             name = elem.get_lebensmittelname()
             print(f"DEBUG name {name}")
+            names.append(name)
 
-            if name != lebenmittel_name:
-                # Wenn das Lebensmittel NICHT im Kühlschrank ist, dann geht es hier weiter
-                self.create_measurement(lebensmittel.get_lebensmittelname(), 0)
-                self.create_menge(lebensmittel.get_mengenanzahl())
-                print(f"{lebensmittel.get_lebensmittelname()} , {lebensmittel.get_masseinheit()}, {lebensmittel.get_mengenanzahl()}")
-                created_lebensmittel = self.create_lebensmittel(lebensmittel.get_lebensmittelname(),
-                                                                lebensmittel.get_masseinheit(),
-                                                                lebensmittel.get_mengenanzahl())
-                print(f"Das ist das erstellte Lebensmittel in add_food: {created_lebensmittel}")
-                # Update kühlschrank
-                with KuehlschrankMapper() as mapper:
-                    # TODO: Mapper insert muss definiert werden
-                    print(F"Lebensmittel id in admin: {created_lebensmittel.get_id()} {created_lebensmittel.get_lebensmittelname()}")
-                    mapper.insert(kuehlschrank_id, created_lebensmittel)
+        if lebenmittel_name not in names:
+            # Wenn das Lebensmittel NICHT im Kühlschrank ist, dann geht es hier weiter
+            self.create_measurement(lebensmittel.get_masseinheit(), 0)
+            self.create_menge(lebensmittel.get_mengenanzahl())
+            print(f"{lebensmittel.get_lebensmittelname()} , {lebensmittel.get_masseinheit()}, {lebensmittel.get_mengenanzahl()}")
+            created_lebensmittel = self.create_lebensmittel(lebensmittel.get_lebensmittelname(),
+                                                            lebensmittel.get_masseinheit(),
+                                                            lebensmittel.get_mengenanzahl())
+            print(f"Das ist das erstellte Lebensmittel in add_food: {created_lebensmittel}")
+            # Update kühlschrank
+            with KuehlschrankMapper() as mapper:
+                # TODO: Mapper insert muss definiert werden
+                print(F"Lebensmittel id in admin: {created_lebensmittel.get_id()} {created_lebensmittel.get_lebensmittelname()}")
+                mapper.insert(kuehlschrank_id, created_lebensmittel)
 
-
-            else:
-                # Ansonsten update.
-                updated_food = elem.increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit())
-                print(f"DEBUG Das ist der updated_food {updated_food}")
-                self.create_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
-                                         updated_food.get_mengenanzahl())
-                # TODO: AttributeError: 'NoneType' object has no attribute 'get_lebensmittelname' - updated_food = NoneType
-                # Update kühlschrank
-                with KuehlschrankMapper() as mapper:
-                    mapper.update(updated_food.get_id())
+        else:
+            # Ansonsten update.
+            updated_food = elem.increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit())
+            print(f"DEBUG Das ist der updated_food {updated_food}")
+            self.create_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
+                                        updated_food.get_mengenanzahl())
+            # TODO: AttributeError: 'NoneType' object has no attribute 'get_lebensmittelname' - updated_food = NoneType
+            # Update kühlschrank
+            with KuehlschrankMapper() as mapper:
+                mapper.update(updated_food.get_id())
 
 
 
