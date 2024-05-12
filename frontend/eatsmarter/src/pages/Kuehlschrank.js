@@ -9,13 +9,15 @@ function Kuehlschrank(props) {
     const [lebensmittel, setLebensmittel] = useState([]);
 
     // API-Aufruf beim Rendern der Komponente
+    console.log(props.kuehlschrank_id)
     useEffect(() => {
         // Funktion zum Laden der Lebensmittel vom Server
+        console.log(EatSmarterAPI);
         const fetchLebensmittel = async () => {
             try {
                 // API-Aufruf, um Lebensmittel anhand der Kühlschrank-ID zu erhalten
                 const lebensmittelListe = await EatSmarterAPI.getLebensmittelByKuehlschrankId(props.kuehlschrank_id);
-                // Aktualisiere den Zustand mit den erhaltenen Daten
+                // Aktualisiere den Zustand mit den erhaltenen Daten 
                 setLebensmittel(lebensmittelListe);
             } catch (error) {
                 console.error("Fehler beim Laden der Lebensmittel:", error);
@@ -32,7 +34,13 @@ function Kuehlschrank(props) {
             <div className="container">
                 <h2>Kühlschrank</h2>
                 <div className="inner-container">
-                    <p>test1</p>
+                {lebensmittel.map((lm, index) => (
+                        <div key={index}>
+                            <p>Lebensmittel: {lm.getLebensmittelname()}</p>
+                            <p>Menge: {lm.menge}</p>
+                            <p>Masseinheit: {lm.masseinheit}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

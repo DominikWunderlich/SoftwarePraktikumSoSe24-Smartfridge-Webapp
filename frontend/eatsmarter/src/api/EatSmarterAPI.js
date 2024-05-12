@@ -442,26 +442,22 @@ export default class EatSmarterAPI{
         })
     }
 
-    #kuehlschrankInhaltByIdURL = (id) => `${this.#EatSmarterServerBaseURL}/kuehlschrank/${id}`;
+    #kuehlschrankInhaltByIdURL = (id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${id}`;
     /**
      * API-Aufruf um den Inhalt eines Kühlschranks anhand seiner ID auszulesen
      * @param id = ID eines Kühlschranks.
      */
-
     getLebensmittelByKuehlschrankId(kuehlschrank_id) {
+        console.log("API-Aufruf URL:", this.#kuehlschrankInhaltByIdURL(kuehlschrank_id));
         return this.#fetchAdvanced(this.#kuehlschrankInhaltByIdURL(kuehlschrank_id), {
             method: "GET",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
-            },
-            body: JSON.stringify(LebensmittelBO)
+            }
         }).then((responseJSON) => {
             // Die JSON-Antwort in eine Liste von LebensmittelBO-Objekten umwandeln
-            let lebensmittelList = LebensmittelBO.fromJSON(responseJSON);
-            return new Promise(function (resolve) {
-                resolve(lebensmittelList);
-            });
+            return LebensmittelBO.fromJSON(responseJSON);
         }).catch((error) => {
             console.error("Fehler beim Abrufen der Lebensmittel im Kühlschrank:", error);
             throw error; // Fehler weitergeben
