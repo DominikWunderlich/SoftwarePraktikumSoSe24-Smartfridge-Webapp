@@ -113,10 +113,10 @@ export default class EatSmarterAPI{
         })
     }
 
-    #getLebensmittebyURL =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
+    #getLebensmittelbyURL =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
 
     getLebensmittelbyName(lebensmittel_name) {
-        return this.#fetchAdvanced(this.#getLebensmittebyURL(),{
+        return this.#fetchAdvanced(this.#getLebensmittelbyURL(),{
             method: "GET",
             headers: {
                 "Accept": "application/json, text/plain",
@@ -255,7 +255,48 @@ export default class EatSmarterAPI{
             })
         })
     }
-
+    async getAllLebensmittelangabe() {
+        try {
+            const lebensmittelResponse = await this.#fetchAdvanced(this.#getLebensmittelbyURL(), {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                }
+            });
+    
+            const mengenResponse = await this.#fetchAdvanced(this.#getMengebyURL(), {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                }
+            });
+    
+            const masseinheitResponse = await this.#fetchAdvanced(this.#getMasseinheitbyURL(), {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                }
+            });
+    
+            // Extrahiere Daten aus den Responses
+            const lebensmittel = LebensmittelBO.fromJSON(lebensmittelResponse)[0];
+            const mengenangabe = mengenanzahlBO.fromJSON(mengenResponse)[0];
+            const masseinheit = MasseinheitBO.fromJSON(masseinheitResponse)[0];
+    
+            // Erstelle ein Objekt mit den integrierten Werten
+            const integratedData = {
+                lebensmittel: lebensmittel,
+                mengenangabe: mengenangabe,
+                masseinheit: masseinheit
+            };
+    
+            return integratedData;
+        } catch (error) {
+            console.error("Fehler beim Abrufen der Lebensmittelangaben:", error);
+            throw error;
+        }
+    }
+    
 
     //Ich füge hier jetzt eine getAllRezepte Methode ein, die soll eigentlich genau das gleiche machen
     //wie die getRezept Methode, nämlich alle Rezepte die wir in der DB haben im Frontend anzeigen
