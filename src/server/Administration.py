@@ -334,7 +334,3 @@ class Administration(object):
                 print(f"Das ist die old_food_id {old_food_id}")
                 print(f"Das ist die updated_food id {updated_food.get_id()}")
                 mapper.update(old_food_id, new_food_obj_id)
-
-
-
-
