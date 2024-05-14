@@ -67,6 +67,7 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
+
 @app.route("/")
 def index():
     print("HELLO")
@@ -185,6 +186,24 @@ class KuehlschrankGetOperations(Resource):
             return k_inhalt, 200
         else:
             return '', 500
+
+@smartapi.route('/kuehlschrankinhalt/<wg_id>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param("wg_id")
+class KuelschrankOperations(Resource):
+    #@secured
+    @smartapi.expect(lebensmittel)
+    @smartapi.marshal_with(lebensmittel)
+    def post(self, wg_id):
+        adm = Administration()
+        print(wg_id)
+        print(api.payload)
+        proposal = Lebensmittel.from_dict(api.payload)
+        k_id = wg_id
+        if proposal is not None:
+            result = adm.add_food_to_fridge(k_id, proposal)
+            return result
+
 
 
 """ User related API Endpoints """
@@ -337,7 +356,7 @@ class getEinRezeptOperations(Resource):
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
-    @secured
+    # @secured
     def post(self):
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
@@ -355,6 +374,20 @@ class LebensmittelOperation(Resource):
         else:
             return 'Fehler in LebensmittelOperation post methode', 500
 
+    @smartapi.marshal_with(lebensmittel)
+    #@secured
+    def get(self):
+        """ Auslesen aller Lebensmittelobjekte-Objekte"""
+
+        adm = Administration()
+        lebensmittel = adm.getAllLebensmittelangabe()  # Methode, um alle Lebensmitteln abzurufen
+        print("Hier in Flask: ", lebensmittel[0].__str__())
+
+        if lebensmittel is not None:
+            return lebensmittel
+        else:
+            return '', 500
+        
 @smartapi.route('/menge')
 @smartapi.response(500, "Serverseitiger-Fehler")
 class MengenOperationen(Resource):
@@ -404,9 +437,21 @@ class MasseinheitOperation(Resource):
             return res, 200
         else:
             return "Fehler in MengenOperationen Post Methode", 500
+        
 
+    @smartapi.marshal_with(masseinheit)
+    @secured
+    def get(self):
+        """ Auslesen aller masseinheit-Objekte"""
 
+        adm = Administration()
+        masseinheit = adm.getMasseinheitAll()  # Methode, um alle masseinheiten abzurufen
+        print(masseinheit)
 
+        if masseinheit is not None:
+            return masseinheit
+        else:
+            return '', 500
 
 if __name__ == '__main__':
     app.run(debug=True)

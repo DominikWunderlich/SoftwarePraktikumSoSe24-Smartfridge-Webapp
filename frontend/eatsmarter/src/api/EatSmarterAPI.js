@@ -129,10 +129,10 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
         })
     }
 
-    #getLebensmittebyURL =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
+    #getLebensmittelbyURL =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
 
     getLebensmittelbyName(lebensmittel_name) {
-        return this.#fetchAdvanced(this.#getLebensmittebyURL(),{
+        return this.#fetchAdvanced(this.#getLebensmittelbyURL(),{
             method: "GET",
             headers: {
                 "Accept": "application/json, text/plain",
@@ -255,6 +255,61 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
             })
         })
     }
+
+    #getMasseinheitAll =()=> `${this.#EatSmarterServerBaseURL}/masseinheit`;
+
+    getMasseinheitAll() {
+        return this.#fetchAdvanced(this.#getMasseinheitAll(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+        }).then((responseJSON) => {
+            return MasseinheitBO.fromJSON(responseJSON);
+        });
+    }
+
+
+    #getAllLebensmittelangabe =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
+
+    getAllLebensmittelangabe() {
+        return this.#fetchAdvanced(this.#getAllLebensmittelangabe(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+        }).then((responseJSON) => {
+            console.log("Response in Eatsmarterapi", responseJSON)
+            return LebensmittelBO.fromJSON(responseJSON);
+        });
+    }
+
+    // async getAllLebensmittelangabe() {
+    //     try {
+    //         const lebensmittelResponse = await this.#fetchAdvanced(this.#getAllLebensmittelangabe(), {
+    //             method: "GET",
+    //             headers: {
+    //                 "Accept": "application/json",
+    //             }
+    //         });
+
+
+    //         //Extrahiere Daten aus den Responses
+    //         const lebensmittel = LebensmittelBO.fromJSON(lebensmittelResponse);
+
+    //         // Erstelle ein Objekt mit den integrierten Werten
+    //         const integratedData = {
+    //             lebensmittel: lebensmittel,
+    //         };
+
+    //         return integratedData;
+    //     } catch (error) {
+    //         console.error("Fehler beim Abrufen der Lebensmittelangaben:", error);
+    //         throw error;
+    //     }
+    // }
 
     deleteMasseinheitByName(masseinheit){
         return this.#fetchAdvanced(this.#deleteMasseinheitURL(),{
@@ -458,6 +513,25 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
         })
     }
 
+    // Kühlschrank related API-Calls:
+    //TODO: Wenn ein Kühlschrank angelegt werden kann muss die 1 mit {kuelschrank_id} ersetzt werden
+    #addFoodToFridgeURL = () => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/1`;
+
+    addFoodToFridge(BO){
+        return this.#fetchAdvanced(this.#addFoodToFridgeURL(), {
+            method: "POST",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(BO)
+        }).then((responseJSON) => {
+            let responseLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseLebensmittelBO);
+            })
+        })
+    }
     #kuehlschrankInhaltByIdURL = (kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${kuehlschrank_id}`;
     /**
      * API-Aufruf um den Inhalt eines Kühlschranks anhand seiner ID auszulesen

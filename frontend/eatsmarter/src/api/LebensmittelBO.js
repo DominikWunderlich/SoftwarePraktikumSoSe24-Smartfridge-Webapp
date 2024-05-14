@@ -3,7 +3,7 @@ export default class LebensmittelBO extends BusinessObject{
     constructor(lebensmittel_name, menge, masseinheit) {
         super();
         this.lebensmittel_name = lebensmittel_name;
-        this.menge = menge
+        this.menge = parseFloat(menge)
         this.masseinheit = masseinheit
     }
 
