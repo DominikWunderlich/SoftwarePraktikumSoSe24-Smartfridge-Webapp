@@ -442,7 +442,7 @@ export default class EatSmarterAPI{
         })
     }
 
-    #kuehlschrankInhaltByIdURL = (id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${id}`;
+    #kuehlschrankInhaltByIdURL = (kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${kuehlschrank_id}`;
     /**
      * API-Aufruf um den Inhalt eines Kühlschranks anhand seiner ID auszulesen
      * @param id = ID eines Kühlschranks.

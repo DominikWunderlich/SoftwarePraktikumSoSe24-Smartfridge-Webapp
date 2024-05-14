@@ -168,11 +168,12 @@ class WgGetOperations(Resource):
         adm.delete_wg_by_name(wg_name)
         return "", 200
 
-@smartapi.route('/kuehlschrankinhalt')
+
+@smartapi.route('/kuehlschrankinhalt/<kuehlschrank_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
-@smartapi.param('kuehlschrank_id', 'Der Kuehlschrank der aktuellen Person')
+@smartapi.param('kuehlschrank_id', 'Der Kuehlschrank der aktuellen WG')
 class KuehlschrankGetOperations(Resource):
-    @secured
+    #@secured
     @smartapi.marshal_with(lebensmittel)
     def get(self, kuehlschrank_id):
         """Auslesen eines Lebensmittel-Objekts"""
