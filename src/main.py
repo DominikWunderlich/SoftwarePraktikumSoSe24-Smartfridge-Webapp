@@ -185,6 +185,22 @@ class KuehlschrankGetOperations(Resource):
         else:
             return '', 500
 
+@smartapi.route('/kuehlschrankinhalt/<wg_id>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+class KuelschrankOperations(Resource):
+    #@secured
+    @smartapi.expect(lebensmittel)
+    @smartapi.marshal_with(lebensmittel)
+    def post(self, wg_id):
+        adm = Administration()
+        print(api.payload)
+        proposal = Lebensmittel.from_dict(api.payload)
+        kuehlschrank_id = wg_id
+        if proposal is not None:
+            result = adm.add_food_to_fridge(kuehlschrank_id, proposal)
+            return result
+
+
 
 """ User related API Endpoints """
 @smartapi.route('/login')
@@ -305,7 +321,7 @@ class getEinRezeptOperations(Resource):
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
-    @secured
+    # @secured
     def post(self):
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
@@ -372,8 +388,6 @@ class MasseinheitOperation(Resource):
             return res, 200
         else:
             return "Fehler in MengenOperationen Post Methode", 500
-
-
 
 
 if __name__ == '__main__':
