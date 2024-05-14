@@ -48,7 +48,23 @@ export default class EatSmarterAPI{
     #getRezepteByWgURL = (wg_name) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_name}`;
     #getRezeptByIdURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
 
-
+    #lebensmittelZuRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezeptt/${rezept_id}/lebensmittel`;
+lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
+    return this.#fetchAdvanced(this.#lebensmittelZuRezeptURL(rezept_id),{
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newLebensmittel)
+    }).then((responseJSON) => {
+        // Hier könntest du die Antwort verarbeiten, falls benötigt
+        return responseJSON;
+    }).catch((error) => {
+        console.error("Fehler beim Hinzufügen von Lebensmittel zum Rezept:", error);
+        throw error;
+    });
+    }
     getRezeptById(rezept_id){
     return this.#fetchAdvanced(this.#getRezeptByIdURL(rezept_id),{
         method: "GET",

@@ -22,7 +22,7 @@ function GenauEinRezeptAnzeigen(props) {
     const [rezept, setRezept] = useState(null); // Nur ein Rezept anstelle einer Liste von Rezepten
 
     const { rezeptId } = useParams(); // Holen der rezeptId aus den Routenparametern
-
+    console.log(rezeptId)
     const handleChange = (event) => {
         setFormData({
             ...formData,
@@ -30,7 +30,7 @@ function GenauEinRezeptAnzeigen(props) {
         });
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (formData.lebensmittelname.trim() === "" || formData.masseinheit.trim() === "") {
@@ -45,6 +45,18 @@ function GenauEinRezeptAnzeigen(props) {
         );
         const newMengenanzahl = new mengenanzahlBO(formData.mengenanzahl);
         const newMasseinheit = new MasseinheitBO(formData.masseinheit);
+
+        try {
+        const api = new EatSmarterAPI();
+        console.log("hi")
+        console.log(newLebensmittel)
+        console.log(rezeptId)
+        console.log("ciao")
+        await api.lebensmittelZuRezeptHinzufuegen(rezeptId, newLebensmittel);
+    } catch (error) {
+        console.error("Fehler beim Hinzufügen von Lebensmittel zum Rezept:", error);
+        // Handle error
+    }
 
         EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit);
         EatSmarterAPI.getAPI().addMenge(newMengenanzahl);
