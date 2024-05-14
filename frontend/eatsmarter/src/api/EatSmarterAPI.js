@@ -443,7 +443,8 @@ export default class EatSmarterAPI{
     }
 
     // Kühlschrank related API-Calls:
-    #addFoodToFridgeURL = () => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/<wg_id>`;
+    //TODO: Wenn ein Kühlschrank angelegt werden kann muss die 1 mit {kuelschrank_id} ersetzt werden
+    #addFoodToFridgeURL = () => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/1`;
 
     addFoodToFridge(BO){
         return this.#fetchAdvanced(this.#addFoodToFridgeURL(), {

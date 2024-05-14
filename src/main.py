@@ -67,6 +67,7 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
+
 @app.route("/")
 def index():
     print("HELLO")
@@ -187,17 +188,19 @@ class KuehlschrankGetOperations(Resource):
 
 @smartapi.route('/kuehlschrankinhalt/<wg_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param("wg_id")
 class KuelschrankOperations(Resource):
     #@secured
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
     def post(self, wg_id):
         adm = Administration()
+        print(wg_id)
         print(api.payload)
         proposal = Lebensmittel.from_dict(api.payload)
-        kuehlschrank_id = wg_id
+        k_id = wg_id
         if proposal is not None:
-            result = adm.add_food_to_fridge(kuehlschrank_id, proposal)
+            result = adm.add_food_to_fridge(k_id, proposal)
             return result
 
 

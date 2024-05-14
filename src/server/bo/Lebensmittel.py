@@ -112,7 +112,7 @@ class Lebensmittel(bo):
         lm.set_id(dictionary["id"])
         lm.set_lebensmittelname(dictionary["lebensmittel_name"])
         lm.set_masseinheit(dictionary["masseinheit"])
-        lm.set_mengenanzahl(dictionary["mengenanzahl"])
+        lm.set_mengenanzahl(dictionary["menge"])
         return lm
 
 
