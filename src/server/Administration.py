@@ -160,6 +160,15 @@ class Administration(object):
         with MasseinheitMapper() as mapper:
             return mapper.insert(m)
 
+
+    """Auslesen aller Masseinheiten """
+
+    def getMasseinheitAll(self):
+        with MasseinheitMapper() as mapper:
+            return mapper.find_all()
+        
+
+
     def create_lebensmittel(self, name, meinheit, menge):
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
         # des Users dar (gr, kg, l, ...).
@@ -183,6 +192,14 @@ class Administration(object):
         time.sleep(3)
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
+
+ 
+    """Auslesen aller Lebensmittel """
+
+    def getAllLebensmittelangabe(self):
+        with LebensmittelMapper() as mapper:
+            return mapper.find_all()
+        
 
     """Kuehlschrank-spezifische Methoden """
 

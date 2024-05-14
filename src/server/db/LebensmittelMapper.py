@@ -13,10 +13,12 @@ class LebensmittelMapper(mapper):
         cursor.execute("SELECT * from datenbank.lebensmittel")
         tuples = cursor.fetchall()
 
-        for (id, lebensmittelname) in tuples:
+        for (id, lebensmittelname, masseinheit_id, mengenanzahl_id) in tuples:
             lebensmittel = Lebensmittel()
             lebensmittel.set_id(id)
-            lebensmittel.set_lebensmittlename(lebensmittelname)
+            lebensmittel.set_lebensmittelname(lebensmittelname)
+            lebensmittel.set_masseinheit(masseinheit_id)
+            lebensmittel.set_mengenanzahl(mengenanzahl_id)
             result.append(lebensmittel)
 
         self._connector.commit()
@@ -34,7 +36,7 @@ class LebensmittelMapper(mapper):
         for (id, lebensmittelname) in tuples:
             lebensmittel = Lebensmittel()
             lebensmittel.set_id(id)
-            lebensmittel.set_lebensmittlename(lebensmittelname)
+            lebensmittel.set_lebensmittelename(lebensmittelname)
             result.append(lebensmittel)
 
         self._connector.commit()

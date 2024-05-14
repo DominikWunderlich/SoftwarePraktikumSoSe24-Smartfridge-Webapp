@@ -323,6 +323,20 @@ class LebensmittelOperation(Resource):
         else:
             return 'Fehler in LebensmittelOperation post methode', 500
 
+    @smartapi.marshal_with(lebensmittel)
+    #@secured
+    def get(self):
+        """ Auslesen aller Lebensmittelobjekte-Objekte"""
+
+        adm = Administration()
+        lebensmittel = adm.getAllLebensmittelangabe()  # Methode, um alle Lebensmitteln abzurufen
+        print("Hier in Flask: ", lebensmittel[0].__str__())
+
+        if lebensmittel is not None:
+            return lebensmittel
+        else:
+            return '', 500
+        
 @smartapi.route('/menge')
 @smartapi.response(500, "Serverseitiger-Fehler")
 class MengenOperationen(Resource):
@@ -372,7 +386,21 @@ class MasseinheitOperation(Resource):
             return res, 200
         else:
             return "Fehler in MengenOperationen Post Methode", 500
+        
 
+    @smartapi.marshal_with(masseinheit)
+    @secured
+    def get(self):
+        """ Auslesen aller masseinheit-Objekte"""
+
+        adm = Administration()
+        masseinheit = adm.getMasseinheitAll()  # Methode, um alle masseinheiten abzurufen
+        print(masseinheit)
+
+        if masseinheit is not None:
+            return masseinheit
+        else:
+            return '', 500
 
 
 

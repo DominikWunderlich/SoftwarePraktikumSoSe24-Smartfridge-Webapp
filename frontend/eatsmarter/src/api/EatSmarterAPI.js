@@ -240,6 +240,61 @@ export default class EatSmarterAPI{
         })
     }
 
+    #getMasseinheitAll =()=> `${this.#EatSmarterServerBaseURL}/masseinheit`;
+
+    getMasseinheitAll() {
+        return this.#fetchAdvanced(this.#getMasseinheitAll(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+        }).then((responseJSON) => {
+            return MasseinheitBO.fromJSON(responseJSON);
+        });
+    }
+    
+  
+    #getAllLebensmittelangabe =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
+
+    getAllLebensmittelangabe() {
+        return this.#fetchAdvanced(this.#getAllLebensmittelangabe(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+        }).then((responseJSON) => {
+            console.log("Response in Eatsmarterapi", responseJSON)
+            return LebensmittelBO.fromJSON(responseJSON);
+        });
+    }
+
+    // async getAllLebensmittelangabe() {
+    //     try {
+    //         const lebensmittelResponse = await this.#fetchAdvanced(this.#getAllLebensmittelangabe(), {
+    //             method: "GET",
+    //             headers: {
+    //                 "Accept": "application/json",
+    //             }
+    //         });
+    
+          
+    //         //Extrahiere Daten aus den Responses
+    //         const lebensmittel = LebensmittelBO.fromJSON(lebensmittelResponse);
+
+    //         // Erstelle ein Objekt mit den integrierten Werten
+    //         const integratedData = {
+    //             lebensmittel: lebensmittel,
+    //         };
+    
+    //         return integratedData;
+    //     } catch (error) {
+    //         console.error("Fehler beim Abrufen der Lebensmittelangaben:", error);
+    //         throw error;
+    //     }
+    // }
+
     deleteMasseinheitByName(masseinheit){
         return this.#fetchAdvanced(this.#deleteMasseinheitURL(),{
             method: "DELETE",
@@ -255,48 +310,6 @@ export default class EatSmarterAPI{
             })
         })
     }
-    async getAllLebensmittelangabe() {
-        try {
-            const lebensmittelResponse = await this.#fetchAdvanced(this.#getLebensmittelbyURL(), {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json",
-                }
-            });
-    
-            const mengenResponse = await this.#fetchAdvanced(this.#getMengebyURL(), {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json",
-                }
-            });
-    
-            const masseinheitResponse = await this.#fetchAdvanced(this.#getMasseinheitbyURL(), {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json",
-                }
-            });
-    
-            // Extrahiere Daten aus den Responses
-            const lebensmittel = LebensmittelBO.fromJSON(lebensmittelResponse)[0];
-            const mengenangabe = mengenanzahlBO.fromJSON(mengenResponse)[0];
-            const masseinheit = MasseinheitBO.fromJSON(masseinheitResponse)[0];
-    
-            // Erstelle ein Objekt mit den integrierten Werten
-            const integratedData = {
-                lebensmittel: lebensmittel,
-                mengenangabe: mengenangabe,
-                masseinheit: masseinheit
-            };
-    
-            return integratedData;
-        } catch (error) {
-            console.error("Fehler beim Abrufen der Lebensmittelangaben:", error);
-            throw error;
-        }
-    }
-    
 
     //Ich füge hier jetzt eine getAllRezepte Methode ein, die soll eigentlich genau das gleiche machen
     //wie die getRezept Methode, nämlich alle Rezepte die wir in der DB haben im Frontend anzeigen
