@@ -442,7 +442,22 @@ export default class EatSmarterAPI{
         })
     }
 
+    // Kühlschrank related API-Calls:
+    #addFoodToFridgeURL = () => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/<wg_id>`;
 
-
-
+    addFoodToFridge(BO){
+        return this.#fetchAdvanced(this.#addFoodToFridgeURL(), {
+            method: "POST",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(BO)
+        }).then((responseJSON) => {
+            let responseLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(responseLebensmittelBO);
+            })
+        })
+    }
 }
