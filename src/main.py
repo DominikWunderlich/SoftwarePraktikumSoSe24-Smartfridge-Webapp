@@ -263,6 +263,37 @@ class RezeptOperations(Resource):
         else:
             return '', 500
 
+@smartapi.route('/rezeptt/<rezept_id>/lebensmittel')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('rezept_id', 'ID des Rezepts')
+class AddLebensmittelToRezept(Resource):
+    @smartapi.expect(lebensmittel)
+    @smartapi.marshal_with(rezept)
+    #@secured
+    def post(self, rezept_id):
+        """ API-Endpunkt zum Hinzufügen eines Lebensmittels zu einem Rezept. """
+        adm = Administration()
+        lebensmittel_data = api.payload
+        lebensmittel_name = lebensmittel_data.get('lebensmittel_name')
+        masseinheit = lebensmittel_data.get('masseinheit')
+        menge = lebensmittel_data.get('menge')
+        print(lebensmittel_data)
+        print(rezept_id)
+        print("Hallihallo")
+        print(lebensmittel_name)
+        print(masseinheit)
+        print(menge)
+#hier bin ich stehen geblieben, der success ist false. d.h. Diese Methode liefert ein false create_and_add_lebensmittel_to_rezept
+        success = adm.create_and_add_lebensmittel_to_rezept(rezept_id, lebensmittel_name, masseinheit, menge)
+        print("hierhallo")
+        print(success)
+        if success:
+            # Rückgabe des aktualisierten Rezepts nach dem Hinzufügen des Lebensmittels
+            updated_rezept = adm.get_rezept_by_id(rezept_id)
+            return updated_rezept, 200
+        else:
+            return 'Fehler beim Hinzufügen des Lebensmittels zum Rezept.', 500
+
 @smartapi.route('/rezept/<wg_name>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('wg_name', 'Name der WG')
