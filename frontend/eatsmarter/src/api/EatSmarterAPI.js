@@ -48,7 +48,23 @@ export default class EatSmarterAPI{
     #getRezepteByWgURL = (wg_name) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_name}`;
     #getRezeptByIdURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
 
-
+    #lebensmittelZuRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezeptt/${rezept_id}/lebensmittel`;
+lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
+    return this.#fetchAdvanced(this.#lebensmittelZuRezeptURL(rezept_id),{
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newLebensmittel)
+    }).then((responseJSON) => {
+        // Hier könntest du die Antwort verarbeiten, falls benötigt
+        return responseJSON;
+    }).catch((error) => {
+        console.error("Fehler beim Hinzufügen von Lebensmittel zum Rezept:", error);
+        throw error;
+    });
+    }
     getRezeptById(rezept_id){
     return this.#fetchAdvanced(this.#getRezeptByIdURL(rezept_id),{
         method: "GET",
@@ -113,10 +129,10 @@ export default class EatSmarterAPI{
         })
     }
 
-    #getLebensmittebyURL =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
+    #getLebensmittelbyURL =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<LebensmittelName>`;
 
     getLebensmittelbyName(lebensmittel_name) {
-        return this.#fetchAdvanced(this.#getLebensmittebyURL(),{
+        return this.#fetchAdvanced(this.#getLebensmittelbyURL(),{
             method: "GET",
             headers: {
                 "Accept": "application/json, text/plain",
@@ -240,6 +256,61 @@ export default class EatSmarterAPI{
         })
     }
 
+    #getMasseinheitAll =()=> `${this.#EatSmarterServerBaseURL}/masseinheit`;
+
+    getMasseinheitAll() {
+        return this.#fetchAdvanced(this.#getMasseinheitAll(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+        }).then((responseJSON) => {
+            return MasseinheitBO.fromJSON(responseJSON);
+        });
+    }
+
+
+    #getAllLebensmittelangabe =()=> `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
+
+    getAllLebensmittelangabe() {
+        return this.#fetchAdvanced(this.#getAllLebensmittelangabe(), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+        }).then((responseJSON) => {
+            console.log("Response in Eatsmarterapi", responseJSON)
+            return LebensmittelBO.fromJSON(responseJSON);
+        });
+    }
+
+    // async getAllLebensmittelangabe() {
+    //     try {
+    //         const lebensmittelResponse = await this.#fetchAdvanced(this.#getAllLebensmittelangabe(), {
+    //             method: "GET",
+    //             headers: {
+    //                 "Accept": "application/json",
+    //             }
+    //         });
+
+
+    //         //Extrahiere Daten aus den Responses
+    //         const lebensmittel = LebensmittelBO.fromJSON(lebensmittelResponse);
+
+    //         // Erstelle ein Objekt mit den integrierten Werten
+    //         const integratedData = {
+    //             lebensmittel: lebensmittel,
+    //         };
+
+    //         return integratedData;
+    //     } catch (error) {
+    //         console.error("Fehler beim Abrufen der Lebensmittelangaben:", error);
+    //         throw error;
+    //     }
+    // }
+
     deleteMasseinheitByName(masseinheit){
         return this.#fetchAdvanced(this.#deleteMasseinheitURL(),{
             method: "DELETE",
@@ -255,7 +326,6 @@ export default class EatSmarterAPI{
             })
         })
     }
-
 
     //Ich füge hier jetzt eine getAllRezepte Methode ein, die soll eigentlich genau das gleiche machen
     //wie die getRezept Methode, nämlich alle Rezepte die wir in der DB haben im Frontend anzeigen
