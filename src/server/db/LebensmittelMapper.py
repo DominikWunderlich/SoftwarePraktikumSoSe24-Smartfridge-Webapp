@@ -58,8 +58,8 @@ class LebensmittelMapper(mapper):
 
         # Wenn das Lebensmittel bereits existiert, geben wir ein False zurück.
         if existing_id:
+            l.set_id(existing_id[0])
             cursor.close()
-            #TODO: return False war davor
             return l
 
         cursor.execute("SELECT MAX(lebensmittel_id) AS maxid FROM datenbank.lebensmittel")
