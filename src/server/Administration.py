@@ -364,6 +364,11 @@ class Administration(object):
             return mapper.find_all()
 
 
+    def get_lebensmittel_by_id(self, id):
+        with LebensmittelMapper() as mapper:
+            return mapper.find_by_id(id)
+
+
     """Kuehlschrank-spezifische Methoden """
 
     def get_lebensmittel_by_kuehlschrank_id(self, kuehlschrank):
@@ -444,3 +449,74 @@ class Administration(object):
                 print(f"Das ist die old_food_id {old_food_id}")
                 print(f"Das ist die updated_food id {updated_food.get_id()}")
                 mapper.update(old_food_id, new_food_obj_id)
+
+    def remove_food_from_fridge(self, kuehlschrank_id, rezept_id):  # rezept_id fehlt# lebensmittel = Karotte, 1, Kilogramm
+        # Zugehörige Lebensmittel des Kühlschranks finden
+        fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)  # Output: [(k_id/l_id), (k_id/l_id)]
+        # Lebensmittel_id der Lebensmittel in eine Liste speichern
+        food_id_in_fridge = []
+        for elem in fridge:
+            food_id_in_fridge.append(elem.get_id())
+
+        print(f" Das sind die Lebensmittel_ids in meinem Kühlschrank {food_id_in_fridge}")
+
+        # Benötigte Lebensmittel aus dem Rezept entziehen
+        # Todo, die Funktion muss noch implementiert werden
+        print(f"Das ist die Rezept_id {rezept_id}")
+        # required_lebensmittel = self.get_all_lebensmittel_by_rezept_id(rezept_id)  # Output: [(r_id/l_id), (r_id/l_id)]
+        required_lebensmittel = [(1, 3), (1, 2)]
+        required_lebensmittel_id_in_rezept = []
+        for elem in required_lebensmittel:
+            #required_lebensmittel_id_in_rezept.append(elem.get_id())
+            # TODO: wenn Rezept funktioniert, wird die auskommentierte Zeile verwendet
+            required_lebensmittel_id_in_rezept.append(elem[1])
+        print(f" Das sind die Lebensmittel_ids aus meinem Rezept {required_lebensmittel_id_in_rezept}")
+
+        # Die Lebensmittel_id wird verwendet um zuerst zu prüfen, ob dieses zu entfernende Lebensmittel in der gesamten Konstellation schon im kuehlschrank vorhanden ist
+        # wenn ja dann einfach rauslöschen
+        # Vergleichen, ob alle Lebensmittel_ids aus dem Rezept im Fridge enthalten sind
+        if all(elem in food_id_in_fridge for elem in required_lebensmittel_id_in_rezept):
+            print("wir sind im if-Zweig")
+            # für jede lebensmittel_id im rezept wird anhand der kuehlschrank_id, das Lebensmittel aus dem Kuehlshrankinhalt entfernt
+            for elem in required_lebensmittel_id_in_rezept:
+                with KuehlschrankMapper() as mapper:
+                    mapper.delete(kuehlschrank_id, elem)
+
+        # Wenn nciht alle Lebensmittel in derr Konstellation gefunden werden, dann weiter prüfen
+        else:
+            print("wir sind im else-Zweig")
+            # Hier speichern wir die Lebensmittelnamen
+            names = []
+            # TODO: Bis hier funktioniert es. wir benötigen die fertige Rezeptklasse und rezept_enthält_lebensmittel, sonst kann ich hier nicht weiter machen
+            for elem in required_lebensmittel:
+                name = elem.get_lebensmittelname()
+                names.append(name)
+
+            print(f"Lebesnmittelnames im Rezept {names}")
+
+            # # 1. find all lebensmittel in recipe with the given names
+            #     elem = self.get_lebensmittel_by_lebensmittel_name(lebenmittel_name)
+            #     print(f" das ist elem: {elem}")
+            #     # 2. check which lebensmittel are in the fridge
+            #     kuehlschrank_inhalt = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
+            #     print(f"kuehlschrank_inhalt[0].get_id() {kuehlschrank_inhalt[0].get_id()}")
+            #     # 3. compare karotten_id mit der karotten_id, die ich im kühlschrank habe. -> das ist mein gesuchtes Objekt
+            #     found_obj = self.find_common_objects(elem, kuehlschrank_inhalt)
+            #     print(found_obj)
+            #     print(f"das sollte jetzt die id 2 sein: {found_obj[0].get_id()}")
+            #     pass
+
+            # TODO: Meien idee fürn Else-Pfad: alle Lebensmittel anhand des Namens holen wie im add_food und dann auf dieses gefundenne object die decrease methode anwenden
+            # selbes Prinzip wie beim add food
+            # eventuell ncoh ein else Pfad, wenn es das lebensmittel anhand des namens nicht findet dann einkaufsliste rauswerfen
+
+
+
+
+
+
+
+
+
+
+
