@@ -36,7 +36,6 @@ CREATE TABLE `kuehlschrankinhalt` (
 
 LOCK TABLES `kuehlschrankinhalt` WRITE;
 /*!40000 ALTER TABLE `kuehlschrankinhalt` DISABLE KEYS */;
-INSERT INTO `kuehlschrankinhalt` VALUES (1,123),(1,123),(1,123),(1,126),(1,126),(1,123),(1,143),(1,123),(1,132),(1,133),(1,138),(1,139),(1,140),(1,142);
 /*!40000 ALTER TABLE `kuehlschrankinhalt` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -66,7 +65,7 @@ CREATE TABLE `lebensmittel` (
 
 LOCK TABLES `lebensmittel` WRITE;
 /*!40000 ALTER TABLE `lebensmittel` DISABLE KEYS */;
-INSERT INTO `lebensmittel` VALUES (123,'Brot',3,2),(124,'Zucchini',4,3),(125,'Zucchini',4,4),(126,'Zucchini',4,7),(127,'Cola',5,8),(128,'Cola',5,9),(129,'Cola',5,10),(130,'Pepsi',5,11),(131,'Pepsi',5,12),(132,'Pepsi',5,13),(133,'Test',3,8),(134,'Test',3,2),(135,'Sprite',5,8),(136,'Sprite',5,14),(137,'Sprite',5,15),(138,'Sprite',5,16),(139,'Test1',3,8),(140,'Fleisch',3,17),(141,'Fantaa',3,20),(142,'Fantaa',3,21),(143,'Cola',5,22);
+INSERT INTO `lebensmittel` VALUES (1,'Brot',3,2);
 /*!40000 ALTER TABLE `lebensmittel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,7 +114,7 @@ CREATE TABLE `mengenanzahl` (
 
 LOCK TABLES `mengenanzahl` WRITE;
 /*!40000 ALTER TABLE `mengenanzahl` DISABLE KEYS */;
-INSERT INTO `mengenanzahl` VALUES (2,500),(3,250),(4,0.5),(5,0.25),(6,0.25),(7,250.5),(8,10),(9,20),(10,30),(11,1.25),(12,2.5),(13,3.75),(14,12),(15,13),(16,14.75),(17,150),(18,0.1),(19,0.1),(20,22),(21,32),(22,30.5);
+INSERT INTO `mengenanzahl` VALUES (2,500);
 /*!40000 ALTER TABLE `mengenanzahl` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,7 +142,6 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES ('hdepicfail@gmail.com','Ynos','Fezer','Michael',1,'7cdF8J7usgajVz9tGmibFCM2BbU2'),('azirisanoob@gmail.com','kaki kika',NULL,NULL,2,'MORYRTrphGPILAErtbC4dGjuzeI2');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -219,7 +217,6 @@ CREATE TABLE `wg` (
 
 LOCK TABLES `wg` WRITE;
 /*!40000 ALTER TABLE `wg` DISABLE KEYS */;
-INSERT INTO `wg` VALUES (1,'FezerWG','','hdepicfail@gmail.com');
 /*!40000 ALTER TABLE `wg` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -232,4 +229,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-14 18:03:46
+-- Dump completed on 2024-05-15 10:22:00
