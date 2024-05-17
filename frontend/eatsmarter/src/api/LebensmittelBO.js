@@ -20,7 +20,7 @@ export default class LebensmittelBO extends BusinessObject{
         let result = [];
 
         if(Array.isArray(lebensmittel_name)){
-            lebensmittel_name.foreach((lm)=> {
+            lebensmittel_name.forEach((lm)=> {
                 Object.setPrototypeOf(lm, LebensmittelBO.prototype);
                 result.push(lm);
             });

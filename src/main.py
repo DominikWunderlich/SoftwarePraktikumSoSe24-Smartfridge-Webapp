@@ -53,7 +53,7 @@ rezept = api.inherit('Rezept', bo, {
 })
 
 lebensmittel = api.inherit('Lebensmittel', bo, {
-    'lebensmittel_name': fields.String(attribute='lebensmittelName', description='Name des Lebensmittels'),
+    'lebensmittelname': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
     'masseinheit': fields.String(attribute='masseinheit', description='Maßeinheit des Lebenmittels'),
     'mengenanzahl': fields.Integer(attribute='mengenanzahl', description='Menge des Lebensmittels'),
 })
@@ -374,17 +374,16 @@ class LebensmittelOperation(Resource):
         else:
             return 'Fehler in LebensmittelOperation post methode', 500
 
-    @smartapi.marshal_with(lebensmittel)
-    #@secured
+    @smartapi.marshal_list_with(lebensmittel)
+    @secured
     def get(self):
         """ Auslesen aller Lebensmittelobjekte-Objekte"""
 
         adm = Administration()
-        lebensmittel = adm.getAllLebensmittelangabe()  # Methode, um alle Lebensmitteln abzurufen
-        print("Hier in Flask: ", lebensmittel[0].__str__())
+        lebensmittel_liste = adm.getAllLebensmittelangabe()  # Methode, um alle Lebensmitteln abzurufen
 
-        if lebensmittel is not None:
-            return lebensmittel
+        if lebensmittel_liste is not None:
+            return lebensmittel_liste
         else:
             return '', 500
         
