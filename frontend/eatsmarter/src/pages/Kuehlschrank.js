@@ -8,32 +8,6 @@ import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
 
 
-
-// function Kuehlschrank(props) {
-
-//     const [lebensmittel, setLebensmittel] = useState([]);
-
-//     // API-Aufruf beim Rendern der Komponente
-//     console.log(props.kuehlschrank_id)
-//     useEffect(() => {
-//         // Funktion zum Laden der Lebensmittel vom Server
-//         console.log(EatSmarterAPI);
-//         const fetchLebensmittel = async () => {
-//             try {
-//                 // API-Aufruf, um Lebensmittel anhand der Kühlschrank-ID zu erhalten
-//                 const lebensmittelListe = await EatSmarterAPI.getLebensmittelByKuehlschrankId(props.kuehlschrank_id);
-//                 // Aktualisiere den Zustand mit den erhaltenen Daten 
-//                 setLebensmittel(lebensmittelListe);
-//             } catch (error) {
-//                 console.error("Fehler beim Laden der Lebensmittel:", error);
-//             }
-//         };
-
-//         // Rufe die Funktion zum Laden der Lebensmittel auf
-//         fetchLebensmittel();
-//     }, [props.kuehlschrank_id]); // Die Abhängigkeit props.kuehlschrank_id sorgt dafür, dass der Effekt bei Änderungen dieser Prop neu ausgeführt wird
-    
-
 function Kuehlschrankinhalt(props) {
     const [formData, setFormData] = useState({
         lebensmittelname: "",
@@ -44,33 +18,45 @@ function Kuehlschrankinhalt(props) {
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [errors, setErrors] = useState({});
-    // const wg_id = props.wg_id;
-    const [wgId, setWgId] = useState(null)
+    const [wgId, setWgId] = useState(null);
 
     useEffect(() => {
-        renderCurrentUsersWg();
-        fetchLebensmittel();
+        async function fetchData() {
+            try {
+                // Rufe die Funktion renderCurrentUsersWg auf, um die wgId zu aktualisieren
+                await renderCurrentUsersWg();
+            } catch (error) {
+                console.error("Fehler beim Laden der aktuellen WG des Benutzers:", error);
+            }
+        }
+        fetchData();
     }, []);
 
-    async function renderCurrentUsersWg(){
-    await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
-        .then(response => {
+    useEffect(() => {
+        async function fetchLebensmittel() {
+            try {
+                // Stellt sicher dass wgId vorm API-Aufruf nicht 0 ist 
+                if (wgId !== null) {
+                    const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
+                    console.log("lebensmittelliste in kuehlschrank.js ", lebensmittelListe);
+                    setLebensmittelliste(lebensmittelListe);
+                }
+            } catch (error) {
+                console.error("Fehler beim Laden der Lebensmittel:", error);
+            }
+        }
+        fetchLebensmittel();
+    }, [wgId]);
+
+    async function renderCurrentUsersWg() {
+        try {
+            // Rufe die WG des Benutzers ab und aktualisiere die wgId
+            const response = await EatSmarterAPI.getAPI().getWgByUser(props.user.email);
             setWgId(response.id);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    };
-
-    const fetchLebensmittel = async () => {
-    try {
-        const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
-        console.log("lebensmittelliste in kuehlschrank.js " ,lebensmittelListe)
-        setLebensmittelliste(lebensmittelListe);
-    } catch (error) {
-        console.error("Fehler beim Laden der Lebensmittel:", error);
-    }};
-
+        } catch (error) {
+            console.error("Fehler beim Laden der aktuellen WG des Benutzers:", error);
+        }
+    }
 
     return (
         <div>
@@ -82,7 +68,7 @@ function Kuehlschrankinhalt(props) {
                     <ul>
                         {lebensmittelliste.map((lebensmittel, index) => (
                             <li key={index}>
-                                {lebensmittel.lebensmittelname} - {lebensmittel.mengenanzahl} {lebensmittel.masseinheit}
+                               {`${lebensmittel.lebensmittelname} ${lebensmittel.mengenanzahl} ${lebensmittel.masseinheit}`}
                             </li>
                         ))}
                     </ul>
