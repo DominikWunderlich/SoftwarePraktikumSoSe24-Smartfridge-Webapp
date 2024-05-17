@@ -44,20 +44,33 @@ function Kuehlschrankinhalt(props) {
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [errors, setErrors] = useState({});
-    const wg_id = props.wg_id;
+    // const wg_id = props.wg_id;
+    const [wgId, setWgId] = useState(null)
 
     useEffect(() => {
-        const fetchLebensmittel = async () => {
-            try {
-                const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wg_id);
-                setLebensmittelliste(lebensmittelListe);
-            } catch (error) {
-                console.error("Fehler beim Laden der Lebensmittel:", error);
-            }
-        };
-
+        renderCurrentUsersWg();
         fetchLebensmittel();
-    }, [wg_id]); // Abhängigkeit wg_id sorgt dafür, dass der Effekt bei Änderungen dieser Prop neu ausgeführt wird
+    }, []);
+
+    async function renderCurrentUsersWg(){
+    await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
+        .then(response => {
+            setWgId(response.id);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    };
+
+    const fetchLebensmittel = async () => {
+    try {
+        const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
+        console.log("lebensmittelliste in kuehlschrank.js " ,lebensmittelListe)
+        setLebensmittelliste(lebensmittelListe);
+    } catch (error) {
+        console.error("Fehler beim Laden der Lebensmittel:", error);
+    }};
+
 
     return (
         <div>

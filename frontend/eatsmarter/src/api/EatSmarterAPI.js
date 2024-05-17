@@ -290,6 +290,7 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
     #getAllLebensmittelByWgURL = (wg_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${wg_id}`;
 
     getAllLebensmittelByWgID(wg_id) {
+        console.log("API URL getallLebensmittel:", this.#getAllLebensmittelByWgURL(wg_id));
         return this.#fetchAdvanced(this.#getAllLebensmittelByWgURL(wg_id), {
             method: "GET",
             headers: {
