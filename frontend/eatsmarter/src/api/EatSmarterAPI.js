@@ -286,6 +286,23 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
         });
     }
 
+
+    #getAllLebensmittelByWgURL = (wg_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${wg_id}`;
+
+    getAllLebensmittelByWgID(wg_id) {
+        return this.#fetchAdvanced(this.#getAllLebensmittelByWgURL(wg_id), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+        }).then((responseJSON) => {
+            console.log("Response in Eatsmarterapi", responseJSON);
+            return LebensmittelBO.fromJSON(responseJSON);
+        });
+    }
+
+    
     // async getAllLebensmittelangabe() {
     //     try {
     //         const lebensmittelResponse = await this.#fetchAdvanced(this.#getAllLebensmittelangabe(), {
@@ -532,14 +549,14 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
             })
         })
     }
-    #kuehlschrankInhaltByIdURL = (kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${kuehlschrank_id}`;
+    #kuehlschrankInhaltByIdURL = (wg_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${wg_id}`;
     /**
      * API-Aufruf um den Inhalt eines Kühlschranks anhand seiner ID auszulesen
      * @param id = ID eines Kühlschranks.
      */
-    getLebensmittelByKuehlschrankId(kuehlschrank_id) {
-        console.log("API-Aufruf URL:", this.#kuehlschrankInhaltByIdURL(kuehlschrank_id));
-        return this.#fetchAdvanced(this.#kuehlschrankInhaltByIdURL(kuehlschrank_id), {
+    getLebensmittelByKuehlschrankId(wg_id) {
+        console.log("API-Aufruf URL:", this.#kuehlschrankInhaltByIdURL(wg_id));
+        return this.#fetchAdvanced(this.#kuehlschrankInhaltByIdURL(wg_id), {
             method: "GET",
             headers: {
                 "Accept": "application/json, text/plain",

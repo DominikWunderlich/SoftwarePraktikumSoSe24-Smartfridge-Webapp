@@ -169,24 +169,6 @@ class WgGetOperations(Resource):
         adm.delete_wg_by_name(wg_name)
         return "", 200
 
-
-@smartapi.route('/kuehlschrankinhalt/<kuehlschrank_id>')
-@smartapi.response(500, 'Serverseitiger Fehler')
-@smartapi.param('kuehlschrank_id', 'Der Kuehlschrank der aktuellen WG')
-class KuehlschrankGetOperations(Resource):
-    #@secured
-    @smartapi.marshal_with(lebensmittel)
-    def get(self, kuehlschrank_id):
-        """Auslesen eines Lebensmittel-Objekts"""
-
-        adm = Administration()
-        k_inhalt = adm.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
-
-        if k_inhalt is not None:
-            return k_inhalt, 200
-        else:
-            return '', 500
-
 @smartapi.route('/kuehlschrankinhalt/<wg_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param("wg_id")
@@ -203,6 +185,17 @@ class KuelschrankOperations(Resource):
         if proposal is not None:
             result = adm.add_food_to_fridge(k_id, proposal)
             return result
+    @smartapi.marshal_with(lebensmittel)
+    def get(self, wg_id):
+        """Auslesen eines Lebensmittel-Objekts"""
+
+        adm = Administration()
+        k_inhalt = adm.get_lebensmittel_by_kuehlschrank_id(wg_id)
+
+        if k_inhalt is not None:
+            return k_inhalt, 200
+        else:
+            return '', 500
 
 
 
