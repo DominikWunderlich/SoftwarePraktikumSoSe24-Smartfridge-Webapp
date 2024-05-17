@@ -506,17 +506,16 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
     }
 
     // Kühlschrank related API-Calls:
-    //TODO: Wenn ein Kühlschrank angelegt werden kann muss die 1 mit {kuelschrank_id} ersetzt werden
-    #addFoodToFridgeURL = () => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/1`;
+    #addFoodToFridgeURL = (wgid) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${wgid}`;
 
-    addFoodToFridge(BO){
-        return this.#fetchAdvanced(this.#addFoodToFridgeURL(), {
+    addFoodToFridge(BO, wgid){
+        return this.#fetchAdvanced(this.#addFoodToFridgeURL(wgid), {
             method: "POST",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(BO)
+            body: JSON.stringify(BO, wgid)
         }).then((responseJSON) => {
             let responseLebensmittelBO = LebensmittelBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
