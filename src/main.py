@@ -188,15 +188,13 @@ class KuehlschrankGetOperations(Resource):
 
 @smartapi.route('/kuehlschrankinhalt/<wg_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
-@smartapi.param("wg_id")
+@smartapi.param("wgId")
 class KuelschrankOperations(Resource):
-    #@secured
+    @secured
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
     def post(self, wg_id):
         adm = Administration()
-        print(wg_id)
-        print(api.payload)
         proposal = Lebensmittel.from_dict(api.payload)
         k_id = wg_id
         if proposal is not None:
