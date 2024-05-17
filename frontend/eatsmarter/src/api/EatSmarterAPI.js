@@ -288,7 +288,21 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
 
 
     #getAllLebensmittelByWgURL = (wg_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${wg_id}`;
+    #getAllLebensmittelByRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezeptt/${rezept_id}/lebensmittel`;
 
+    getAllLebensmittelByRezeptId(rezept_id){
+        console.log("API URL getallLebensmittel:", this.#getAllLebensmittelByRezeptURL(rezept_id));
+        return this.#fetchAdvanced(this.#getAllLebensmittelByRezeptURL(rezept_id), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+        }).then((responseJSON) => {
+            console.log("Response in Eatsmarterapi", responseJSON);
+            return LebensmittelBO.fromJSON(responseJSON);
+        });
+    }
     getAllLebensmittelByWgID(wg_id) {
         console.log("API URL getallLebensmittel:", this.#getAllLebensmittelByWgURL(wg_id));
         return this.#fetchAdvanced(this.#getAllLebensmittelByWgURL(wg_id), {

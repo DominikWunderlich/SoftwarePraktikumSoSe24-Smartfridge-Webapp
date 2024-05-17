@@ -88,9 +88,24 @@ function GenauEinRezeptAnzeigen(props) {
         fetchRezeptById();
     }, [rezeptId]); // Beachte die Abhängigkeit von rezeptId
 
+    const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
+
+    useEffect(() => {
+        const fetchRezeptLebensmittel = async () => {
+            try {
+                const api = new EatSmarterAPI();
+                const lebensmittel = await api.getAllLebensmittelByRezeptId(rezeptId);
+                setRezeptLebensmittel(lebensmittel);
+            } catch (error) {
+                console.error("Fehler beim Abrufen der Lebensmittel:", error);
+            }
+        };
+
+        fetchRezeptLebensmittel();
+    }, [rezeptId]);
     return (
         <div>
-            <NavBar currentUser={props.user} onSignOut={props.onSignOut} /><br /><br />
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <h2>Ein Rezept Anzeigen</h2>
 
 
@@ -103,6 +118,16 @@ function GenauEinRezeptAnzeigen(props) {
                         <p>WG: {rezept.wgName}</p>
                     </div>
                 )}
+            </div>
+            <div className="container">
+                <h2>Lebensmittel im Rezept</h2>
+                <ul>
+                    {rezeptLebensmittel.map((lebensmittel, index) => (
+                        <li key={index}>
+                            {`${lebensmittel.lebensmittelname} ${lebensmittel.mengenanzahl} ${lebensmittel.masseinheit}`}
+                        </li>
+                    ))}
+                </ul>
             </div>
             <div className="container">
                 <h2>Eingetragene Lebensmittel</h2>
