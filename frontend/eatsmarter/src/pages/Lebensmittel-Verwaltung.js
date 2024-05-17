@@ -110,7 +110,7 @@ function Lebensmittelverwaltung(props) {
 
                     <datalist id="lebensmittel">
                         {lebensmittelliste.map((lebensmittel, index) => (
-                            <option key={index} value={lebensmittel} />
+                            <option key={index} value={lebensmittel.lebensmittelname} />
                         ))}
                     </datalist>
 
@@ -142,29 +142,6 @@ function Lebensmittelverwaltung(props) {
                 </div>
             </div>
 
-            <div>
-                <div className="container">
-                    <h2>Eingetragene Lebensmittel</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Lebensmittel</th>
-                                <th>Menge</th>
-                                <th>Maßeinheit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {lebensmittelliste.map((lebensmittel, index) => (
-                                <tr key={index}>
-                                    <td>{lebensmittel.lebensmittel_name}</td>
-                                    <td>{lebensmittel.menge}</td>
-                                    <td>{lebensmittel.masseinheit}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     );
 };
