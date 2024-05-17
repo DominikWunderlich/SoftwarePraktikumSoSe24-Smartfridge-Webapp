@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import '../sytles/WG-Landingpage.css';
 import LebensmittelBO from "../api/LebensmittelBO";
 import MasseinheitBO from "../api/MasseinheitBO";
-import MengenanzahlBO from "../api/mengenanzahlBO";
+import mengenanzahlBO from "../api/mengenanzahlBO";
 import { Link } from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
