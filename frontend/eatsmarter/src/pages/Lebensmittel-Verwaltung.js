@@ -71,9 +71,6 @@ function Lebensmittelverwaltung(props) {
             await EatSmarterAPI.getAPI().addMenge(new mengenanzahlBO(formData.mengenanzahl));
             await EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
     
-            const updatedLebensmittelangabe = await EatSmarterAPI.getAPI().getAllLebensmittelangabe();
-            setLebensmittelliste([...lebensmittelliste, updatedLebensmittelangabe.lebensmittel]);
-            setMasseinheitenListe([...masseinheitenListe, updatedLebensmittelangabe.masseinheit]);
         } catch (error) {
             console.error("Fehler beim Hinzufügen von Lebensmittel:", error);
             setErrors({ message: "Fehler beim Hinzufügen von Lebensmittel. Bitte versuchen Sie es erneut." });
