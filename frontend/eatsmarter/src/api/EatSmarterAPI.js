@@ -302,31 +302,6 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
         });
     }
 
-    
-    // async getAllLebensmittelangabe() {
-    //     try {
-    //         const lebensmittelResponse = await this.#fetchAdvanced(this.#getAllLebensmittelangabe(), {
-    //             method: "GET",
-    //             headers: {
-    //                 "Accept": "application/json",
-    //             }
-    //         });
-
-
-    //         //Extrahiere Daten aus den Responses
-    //         const lebensmittel = LebensmittelBO.fromJSON(lebensmittelResponse);
-
-    //         // Erstelle ein Objekt mit den integrierten Werten
-    //         const integratedData = {
-    //             lebensmittel: lebensmittel,
-    //         };
-
-    //         return integratedData;
-    //     } catch (error) {
-    //         console.error("Fehler beim Abrufen der Lebensmittelangaben:", error);
-    //         throw error;
-    //     }
-    // }
 
     deleteMasseinheitByName(masseinheit){
         return this.#fetchAdvanced(this.#deleteMasseinheitURL(),{
