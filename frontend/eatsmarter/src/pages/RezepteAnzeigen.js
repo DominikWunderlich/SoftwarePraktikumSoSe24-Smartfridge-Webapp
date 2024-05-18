@@ -40,20 +40,23 @@ function RezepteAnzeigen(props) {
             <h2>Alle Rezepte anzeigen</h2>
             <div className='container'>
                 <h2>Alle Rezepte anzeigen</h2>
+                <div className='inner-container'>
                 {rezepte.map((rezept, index) => (
                     <Link key={index} to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
-                        <div className='inner-container'>
                             <p>Rezeptname: {rezept.rezeptName}</p>
                             <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
                             <p>WG: {rezept.wgName}</p>
-                        </div>
                     </Link> 
                 ))}
+                <button type="button">Rezept Kochen</button>
+                </div>
+                <div>
                 <br></br>
-                 <Link to="/rezeptErstellen">
-                    <button type="button">Rezept erstellen</button>
-                </Link>
+                    <Link to="/rezeptErstellen">
+                        <button type="button">Rezept erstellen</button>
+                    </Link>
+                </div>
             </div>
         </div>
     );
