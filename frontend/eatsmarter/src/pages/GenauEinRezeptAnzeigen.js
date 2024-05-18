@@ -139,19 +139,6 @@ function GenauEinRezeptAnzeigen(props) {
                         onChange={handleChange}
                         className="eingabe"
                     />
-                    {/* Dropdown-Menü für vorhandene Lebensmittel */}
-                    <select
-                        name="lebensmittelname"
-                        value={formData.lebensmittelname}
-                        onChange={handleChange}
-                        className="eingabe"
-                    >
-                        {lebensmittelliste.map((lebensmittel, index) => (
-                            <option key={index} value={lebensmittel.lebensmittel_name}>
-                                {lebensmittel.lebensmittel_name}
-                            </option>
-                        ))}
-                    </select>
                     <label>Menge</label>
                         <input
                             type="number"
@@ -169,19 +156,6 @@ function GenauEinRezeptAnzeigen(props) {
                             onChange={handleChange}
                             className="eingabe"
                     />
-                    {/* Dropdown-Menü für eingegebene Maßeinheiten */}
-                    <select
-                        name="masseinheit"
-                        value={formData.masseinheit}
-                        onChange={handleChange}
-                        className="eingabe"
-                    >
-                        {masseinheitenListe.map((masseinheit, index) => (
-                            <option key={index} value={masseinheit}>
-                                {masseinheit}
-                            </option>
-                        ))}
-                    </select>
                     <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                 </div>
             </div>
