@@ -103,58 +103,34 @@ function GenauEinRezeptAnzeigen(props) {
 
         fetchRezeptLebensmittel();
     }, [rezeptId]);
+
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
-            <h2>Ein Rezept Anzeigen</h2>
-
-
             <div className='container'>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
-                    <div className='rezepteAnzeigenDiv'>
-                        <p>Rezeptname: {rezept.rezeptName}</p>
-                        <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
-                        <p>Ersteller: {rezept.rezeptAdmin}</p>
-                        <p>WG: {rezept.wgName}</p>
-                    </div>
-                )}
-            </div>
-            <div className="container">
-                <h2>Lebensmittel im Rezept</h2>
-                <ul>
-                    {rezeptLebensmittel.map((lebensmittel, index) => (
-                        <li key={index}>
-                            {`${lebensmittel.lebensmittelname} ${lebensmittel.mengenanzahl} ${lebensmittel.masseinheit}`}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            <div className="container">
-                <h2>Eingetragene Lebensmittel</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Lebensmittel</th>
-                        <th>Menge</th>
-                        <th>Masseinheit</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {lebensmittelliste.map((lebensmittel, index) => (
-                        <tr key={index}>
-                            <td>{lebensmittel.lebensmittel_name}</td>
-                            <td>{lebensmittel.menge}</td>
-                            <td>{lebensmittel.masseinheit}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-            <div className='container'>
-                <h2>Lebensmittel hinzufügen</h2>
-                {errors.message && <p>{errors.message}</p>}
+                <div className='inner-container'>
+                    <h2>Dein Rezept</h2>
+                    <p>Rezeptname: {rezept.rezeptName}</p>
+                    <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                    <p>Ersteller: {rezept.rezeptAdmin}</p>
+                    <p>WG: {rezept.wgName}</p>
+                </div> )}
+                <br></br>
+                <div className="inner-container">
+                    <h2>Lebensmittel im Rezept</h2>
+                    <ul>
+                        {rezeptLebensmittel.map((lebensmittel, index) => (
+                            <li key={index}>
+                                {`${lebensmittel.lebensmittelname} ${lebensmittel.mengenanzahl} ${lebensmittel.masseinheit}`}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <br></br>
                 <div className='formitem'>
-
+                    <h2>Lebensmittel hinzufügen</h2>
+                    {errors.message && <p>{errors.message}</p>}
                     <label>Lebensmittelname</label>
                     <input
                         type="text"
@@ -170,31 +146,28 @@ function GenauEinRezeptAnzeigen(props) {
                         onChange={handleChange}
                         className="eingabe"
                     >
-
                         {lebensmittelliste.map((lebensmittel, index) => (
                             <option key={index} value={lebensmittel.lebensmittel_name}>
                                 {lebensmittel.lebensmittel_name}
                             </option>
                         ))}
                     </select>
-
                     <label>Menge</label>
-                    <input
-                        type="number"
-                        name="mengenanzahl"
-                        value={formData.mengenanzahl}
-                        onChange={handleChange}
-                        className="eingabe"
-                    />
-
+                        <input
+                            type="number"
+                            name="mengenanzahl"
+                            value={formData.mengenanzahl}
+                            onChange={handleChange}
+                            className="eingabe"
+                        />
                     <label>Maßeinheit</label>
-                    <input
-                        type="text"
-                        name="masseinheit"
-                        list="masseinheit"
-                        value={formData.masseinheit}
-                        onChange={handleChange}
-                        className="eingabe"
+                        <input
+                            type="text"
+                            name="masseinheit"
+                            list="masseinheit"
+                            value={formData.masseinheit}
+                            onChange={handleChange}
+                            className="eingabe"
                     />
                     {/* Dropdown-Menü für eingegebene Maßeinheiten */}
                     <select
@@ -209,14 +182,11 @@ function GenauEinRezeptAnzeigen(props) {
                             </option>
                         ))}
                     </select>
-
-
                     <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                 </div>
             </div>
         </div>
     );
-
 }
 
 export default GenauEinRezeptAnzeigen;
