@@ -39,21 +39,21 @@ function RezepteAnzeigen(props) {
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <h2>Alle Rezepte anzeigen</h2>
             <div className='container'>
-                <Link to="/rezeptErstellen">
-                    <button>Rezept erstellen</button>
-                </Link>
-
+                <h2>Alle Rezepte anzeigen</h2>
                 {rezepte.map((rezept, index) => (
                     <Link key={index} to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
-                        <div className='rezepteAnzeigenDiv'>
+                        <div className='inner-container'>
                             <p>Rezeptname: {rezept.rezeptName}</p>
                             <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
                             <p>WG: {rezept.wgName}</p>
                         </div>
-                    </Link>
+                    </Link> 
                 ))}
-
+                <br></br>
+                 <Link to="/rezeptErstellen">
+                    <button type="button">Rezept erstellen</button>
+                </Link>
             </div>
         </div>
     );

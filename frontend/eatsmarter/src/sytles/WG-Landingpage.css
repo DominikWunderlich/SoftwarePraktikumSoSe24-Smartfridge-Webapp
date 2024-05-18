@@ -65,6 +65,3 @@ button[type="submit"]:hover {
     background-color: #0000cf; /* Dunklere Farbe beim Hover */
 }
 
-.rezepteAnzeigenDiv{
-    border: 1mm solid #000000;
-}

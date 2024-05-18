@@ -108,17 +108,17 @@ function GenauEinRezeptAnzeigen(props) {
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <div className='container'>
+                <h2>Dein Rezept</h2>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
                 <div className='inner-container'>
-                    <h2>Dein Rezept</h2>
                     <p>Rezeptname: {rezept.rezeptName}</p>
                     <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                     <p>Ersteller: {rezept.rezeptAdmin}</p>
                     <p>WG: {rezept.wgName}</p>
                 </div> )}
                 <br></br>
+                <h2>Lebensmittel im Rezept</h2>
                 <div className="inner-container">
-                    <h2>Lebensmittel im Rezept</h2>
                     <ul>
                         {rezeptLebensmittel.map((lebensmittel, index) => (
                             <li key={index}>
