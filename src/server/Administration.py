@@ -360,7 +360,9 @@ class Administration(object):
             print("Fehler beim Erstellen der Menge.")
             return False
 
-
+    def get_lebensmittel_by_rezept_id(self, rezept_id):
+        with RezeptEnthaeltLebensmittelMapper() as mapper:
+            return mapper.find_lebensmittel_by_rezept_id(rezept_id)
     """Auslesen aller Lebensmittel """
 
     def getAllLebensmittelangabe(self):

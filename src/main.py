@@ -304,6 +304,18 @@ class AddLebensmittelToRezept(Resource):
         else:
             return 'Fehler beim Hinzufügen des Lebensmittels zum Rezept.', 500
 
+    @smartapi.marshal_with(lebensmittel)
+    def get(self, rezept_id):
+        """Auslesen von Lebensmittel-Objekten anhand der rezept_id"""
+
+        adm = Administration()
+        r_inhalt = adm.get_lebensmittel_by_rezept_id(rezept_id)
+
+        if r_inhalt is not None:
+            return r_inhalt, 200
+        else:
+            return '', 500
+
 @smartapi.route('/rezept/<wg_name>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('wg_name', 'Name der WG')

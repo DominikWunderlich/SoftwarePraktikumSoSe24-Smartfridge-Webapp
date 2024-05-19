@@ -24,7 +24,6 @@ class RezeptEnthaeltLebensmittelMapper(mapper):
 
         self._connector.commit()
         cursor.close()
-
         return rezept_enthaelt_lebensmittel
 
     def delete(self):
