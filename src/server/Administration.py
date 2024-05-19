@@ -263,6 +263,10 @@ class Administration(object):
         with MasseinheitMapper() as mapper:
             return mapper.find_by_key(masseinheit_id)
 
+    def get_lebensmittel_by_rezept_id(self, rezept_id):
+        with RezeptEnthaeltLebensmittelMapper() as mapper:
+            return mapper.find_lebensmittel_by_rezept_id(rezept_id)
+
     def get_lebensmittel_id_by_lebensmname_masseinhid_mengeid(self, name, meinheit, menge):
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
         # des Users dar (gr, kg, l, ...).
@@ -461,15 +465,11 @@ class Administration(object):
         print(f" Das sind die Lebensmittel_ids in meinem Kühlschrank {food_id_in_fridge}")
 
         # Benötigte Lebensmittel aus dem Rezept entziehen
-        # Todo, die Funktion muss noch implementiert werden
         print(f"Das ist die Rezept_id {rezept_id}")
-        # required_lebensmittel = self.get_all_lebensmittel_by_rezept_id(rezept_id)  # Output: [(r_id/l_id), (r_id/l_id)]
-        required_lebensmittel = [(1, 3), (1, 2)]
+        required_lebensmittel = self.get_lebensmittel_by_rezept_id(rezept_id)  # Output: [lebensmittel1, lebensmittel2]
         required_lebensmittel_id_in_rezept = []
         for elem in required_lebensmittel:
-            #required_lebensmittel_id_in_rezept.append(elem.get_id())
-            # TODO: wenn Rezept funktioniert, wird die auskommentierte Zeile verwendet
-            required_lebensmittel_id_in_rezept.append(elem[1])
+            required_lebensmittel_id_in_rezept.append(elem.get_id())
         print(f" Das sind die Lebensmittel_ids aus meinem Rezept {required_lebensmittel_id_in_rezept}")
 
         # Die Lebensmittel_id wird verwendet um zuerst zu prüfen, ob dieses zu entfernende Lebensmittel in der gesamten Konstellation schon im kuehlschrank vorhanden ist
@@ -482,29 +482,54 @@ class Administration(object):
                 with KuehlschrankMapper() as mapper:
                     mapper.delete(kuehlschrank_id, elem)
 
-        # Wenn nciht alle Lebensmittel in derr Konstellation gefunden werden, dann weiter prüfen
+        # Wenn nicht alle Lebensmittel in der benötigten Konstellation gefunden werden, dann überprüfen wir
+        # ob wir das Lebensmittel überhaupt im Kühlschrank haben
         else:
             print("wir sind im else-Zweig")
             # Hier speichern wir die Lebensmittelnamen
             names = []
-            # TODO: Bis hier funktioniert es. wir benötigen die fertige Rezeptklasse und rezept_enthält_lebensmittel, sonst kann ich hier nicht weiter machen
             for elem in required_lebensmittel:
                 name = elem.get_lebensmittelname()
                 names.append(name)
 
             print(f"Lebesnmittelnames im Rezept {names}")
 
-            # # 1. find all lebensmittel in recipe with the given names
-            #     elem = self.get_lebensmittel_by_lebensmittel_name(lebenmittel_name)
-            #     print(f" das ist elem: {elem}")
-            #     # 2. check which lebensmittel are in the fridge
-            #     kuehlschrank_inhalt = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
-            #     print(f"kuehlschrank_inhalt[0].get_id() {kuehlschrank_inhalt[0].get_id()}")
-            #     # 3. compare karotten_id mit der karotten_id, die ich im kühlschrank habe. -> das ist mein gesuchtes Objekt
-            #     found_obj = self.find_common_objects(elem, kuehlschrank_inhalt)
-            #     print(found_obj)
-            #     print(f"das sollte jetzt die id 2 sein: {found_obj[0].get_id()}")
-            #     pass
+            # 1. find all lebensmittel in recipe with the given names
+            ingredient_from_recipe_name = []
+            for x in required_lebensmittel:
+                print(f" das ist der Lebensmittelname für das Rezept: {x}")
+                name = x.get_lebensmittelname()
+                ingredient_from_recipe_name.append(name)
+
+            # 2. check which lebensmittel are in the fridge
+            kuehlschrank_inhalt = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id) # []
+            kuehlschrank_inhalt_names = []
+            for y in kuehlschrank_inhalt:
+                print(f" das ist der Lebensmittelname aus dem Kühlschrank: {y}")
+                name = y.get_lebensmittelname()
+                kuehlschrank_inhalt_names.append(name)
+
+            # 3. Compare, if the needed ingredient is in the fridge:
+            print(f"Das sind die benötigten Lebensmittel aus dem Rezept: {ingredient_from_recipe_name}")
+            print(f"Das sind die vorhandenen Lebensmittel aus dem Kühlschrank: {kuehlschrank_inhalt_names}")
+            # Convert list to sets for comparison
+            recipe_ingredients_set = set(ingredient_from_recipe_name)
+            fridge_contents_set = set(kuehlschrank_inhalt_names)
+            # Find missing ingredients
+            missing_ingredients = recipe_ingredients_set - fridge_contents_set
+            # Check if there are missing ingredients
+            if missing_ingredients:
+                print(f"Du musst noch folgende Lebensmittel einkaufen: {missing_ingredients}")
+            else:
+                pass
+            """ @Johnny: bis hierhin prüfen wir nur ob die Lebensmittelnamen vollständig sind oder nicht. 
+            Das ist ein erster Ansatz, aber wir müssen eigtl. überprüfen ob die Lebensmittel auch in der benötigten
+            Menge oder mehr verfügbar sind. 
+            """
+
+            # print(found_obj)
+            # print(f"das sollte jetzt die id 2 sein: {found_obj[0].get_id()}")
+            # pass
 
             # TODO: Meien idee fürn Else-Pfad: alle Lebensmittel anhand des Namens holen wie im add_food und dann auf dieses gefundenne object die decrease methode anwenden
             # selbes Prinzip wie beim add food
