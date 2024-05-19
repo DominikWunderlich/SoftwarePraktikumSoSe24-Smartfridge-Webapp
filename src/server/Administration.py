@@ -523,6 +523,31 @@ class Administration(object):
             if missing_ingredients:
                 print(f"Du musst noch folgende Lebensmittel einkaufen: {missing_ingredients}")
             else:
+                for elem in required_lebensmittel:
+                    required_amount = elem.get_mengenanzahl()
+                    required_unit = elem.get_masseinheit()
+                    print(f"required amount: {required_amount}")
+                    print(f"required amount: {required_unit}")
+                    for x in fridge:
+                        if elem.get_lebensmittelname() == x.get_lebensmittelname():
+                            new_amount = x.decrease_food_quantity(required_amount, required_unit)
+                            print(f"das ist new_amount {new_amount}")
+
+                            print(f"das ist new_amount_menge{new_amount.get_mengenanzahl()}")
+                            if new_amount.get_mengenanzahl() == 0:
+                                # TODO: Implement function to delete the lebensmittel aus dem Kuehlschrankinhalt
+                                print("if pfad")
+                                pass
+                            elif new_amount.get_mengenanzahl() > 0:
+                                # TODO: Create new food objects with amount and update the kuehlschrankinhalt
+                                print("elif1 Pfad")
+                                pass
+                            elif new_amount.get_mengenanzahl() < 0:
+                                print(f"Du musss dieses Lebensmittel einkaufen {new_amount}")
+
+
+
+
                 pass
             """ @Johnny: bis hierhin prüfen wir nur ob die Lebensmittelnamen vollständig sind oder nicht. 
             Das ist ein erster Ansatz, aber wir müssen eigtl. überprüfen ob die Lebensmittel auch in der benötigten
