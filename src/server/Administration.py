@@ -141,6 +141,15 @@ class Administration(object):
         with RezeptMapper() as mapper:
             return mapper.find_by_rezept_id(rezept_id)
 
+    """Rezept löschen"""
+    def delete_rezept_by_id(self, rezept_id):
+        try:
+                with RezeptMapper() as mapper:
+                    return mapper.delete_by_rezept_id(rezept_id)
+        except Exception as e:
+            print(f"Fehler beim Löschen des Rezepts: {e}")
+            return False
+       
     """ Lebensmittel-spezifische Methoden """
 
     def create_menge(self, menge):

@@ -40,7 +40,7 @@ export default class EatSmarterAPI{
 
     // Rezept related URLS
     #addRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
-    #deleteRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept/<rezept_name>`;
+
     #getRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
 
 
@@ -111,6 +111,7 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
     }
 
     //Rezept löschen deleteRezept
+    #deleteRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept/<rezept_name>`;
 
     deleteRezept(rezeptId){
         return this.#fetchAdvanced(this.#deleteRezeptURL(),{
@@ -119,7 +120,7 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(rezeptId)
+            // body: JSON.stringify(rezeptId)
         }).then((responseJSON) => {
             let removedRezeptBO = RezeptBO.fromJSON(responseJSON)[0];
             return new Promise( function(resolve) {
