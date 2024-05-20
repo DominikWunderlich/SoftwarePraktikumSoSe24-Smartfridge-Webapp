@@ -109,6 +109,25 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
             })
         })
     }
+
+    //Rezept löschen deleteRezept
+
+    deleteRezept(rezeptId){
+        return this.#fetchAdvanced(this.#deleteRezeptURL(),{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(rezeptId)
+        }).then((responseJSON) => {
+            let removedRezeptBO = RezeptBO.fromJSON(responseJSON)[0];
+            return new Promise( function(resolve) {
+                resolve(responseJSON);
+            })
+        })
+    }
+
     // Lebensmittel related URLS
     #addLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
     #deleteLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung/<Lebensmittel_name>`;
