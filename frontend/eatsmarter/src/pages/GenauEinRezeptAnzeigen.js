@@ -103,10 +103,22 @@ function GenauEinRezeptAnzeigen(props) {
 
         fetchRezeptLebensmittel();
     }, [rezeptId]);
+    const handleJetztKochen = async () => {
+        try {
+            const api = new EatSmarterAPI();
+            await api.sendRezeptIdToBackend(rezeptId);
+            console.log(rezeptId + "Hallo")
+            alert("Rezept wurde an das Backend gesendet!");
+        } catch (error) {
+            console.error("Fehler beim Senden der Rezept-ID:", error);
+            alert("Fehler beim Senden der Rezept-ID.");
+        }
+    };
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <h2>Ein Rezept Anzeigen</h2>
+            <button onClick={handleJetztKochen}>Jetzt kochen</button>
 
 
             <div className='container'>

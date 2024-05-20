@@ -352,6 +352,18 @@ class getEinRezeptOperations(Resource):
         else:
             return '', 500
 
+@smartapi.route('/rezept/send/<rezept_id>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('rezept_id', 'ID des Rezepts')
+class rezeptIdToBackendOperations(Resource):
+    @smartapi.marshal_with(rezept)
+    @secured
+    def post(self, rezept_id):
+        """ Rezept-ID im Terminal ausgeben """
+        print(f"Erhaltene Rezept-ID: {rezept_id}")
+        return {'rezept_id': rezept_id}, 200
+
+
 """ Lebensmittel Calls """
 
 @smartapi.route('/lebensmittelverwaltung')

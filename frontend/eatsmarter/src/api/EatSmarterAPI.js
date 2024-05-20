@@ -377,6 +377,25 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
         throw error; // Fehler weitergeben
     });
 }
+    #sendRezeptIdToBackendURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/send/${rezept_id}`;
+
+    sendRezeptIdToBackend(rezept_id) {
+    return this.#fetchAdvanced(this.#sendRezeptIdToBackendURL(rezept_id), {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+    }).then((responseJSON) => {
+        // Process the response if needed
+        console.log("Response from sending Rezept ID:", responseJSON);
+        return responseJSON;
+    }).catch((error) => {
+        console.error("Fehler beim Senden der Rezept-ID:", error);
+        throw error;
+    });
+}
+
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
