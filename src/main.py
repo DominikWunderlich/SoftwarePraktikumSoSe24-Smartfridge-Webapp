@@ -273,7 +273,7 @@ class RezeptOperations(Resource):
         else:
             return '', 500
 
-@smartapi.route('/rezept/<rezept_id>/lebensmittel')
+@smartapi.route('/rezeptt/<rezept_id>/lebensmittel')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class AddLebensmittelToRezept(Resource):
