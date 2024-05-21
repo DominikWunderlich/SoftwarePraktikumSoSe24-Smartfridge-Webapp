@@ -370,7 +370,7 @@ class rezeptIdToBackendOperations(Resource):
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class DeleteEinRezeptOperations(Resource):
-    @secured
+    #@secured
     def delete(self, rezept_id):
         """Rezept löschen"""
         print(f"Versuche, Rezept mit ID {rezept_id} zu löschen")
@@ -394,7 +394,7 @@ class DeleteEinRezeptOperations(Resource):
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
-    # @secured
+    @secured
     def post(self):
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()

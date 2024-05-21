@@ -111,10 +111,10 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
     }
 
     //Rezept löschen deleteRezept
-    #deleteRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept/<rezept_name>`;
+    #delete_rezept_by_idURL = () => `${this.#EatSmarterServerBaseURL}/rezept/<rezept_name>`;
 
-    deleteRezept(rezeptId){
-        return this.#fetchAdvanced(this.#deleteRezeptURL(),{
+    delete_rezept_by_id(rezeptId){
+        return this.#fetchAdvanced(this.#delete_rezept_by_idURL(),{
             method: "DELETE",
             headers: {
                 "Accept": "application/json, text/plain",

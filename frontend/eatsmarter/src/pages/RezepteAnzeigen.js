@@ -34,11 +34,11 @@ function RezepteAnzeigen(props) {
         fetchRezepte();
     }, [props.user.email]);  // Abhängigkeit hinzufügen, um den Effekt bei Änderung der E-Mail-Adresse des Benutzers auszulösen
 
-    const handleDelete = async (rezeptId) => {
+    const handleDelete = async (rezept_id) => {
         try {
             const api = new EatSmarterAPI();
-            await api.deleteRezept(rezeptId);
-            setRezepte(rezepte.filter(rezept => rezept.id !== rezeptId));
+            await api.delete_rezept_by_id(rezept_id);
+            setRezepte(rezepte.filter(rezept => rezept.id !== rezept_id));
         } catch (error) {
             console.error("Fehler beim löschen des Rezepts:", error);
         }
