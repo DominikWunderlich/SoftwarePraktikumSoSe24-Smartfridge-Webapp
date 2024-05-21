@@ -30,22 +30,43 @@ class RezeptEnthaeltLebensmittelMapper(mapper):
         pass
     def find_all(self):
         pass
-    def find_by_key(self):
-        pass
+    def find_by_key(self, key):
+        result = []
+        cursor = self._connector.cursor()
+        command = "SELECT rezept_enthaelt_lebensmittel, rezept_id, lebensmittel_id FROM " \
+                  "datenbank.rezept_enthaelt_lebensmittel WHERE rezept_id LIKE %s"
+        data = (key)
+        cursor.execute(command, data)
+        tuples = cursor.fetchall()
+
+        for (rezept_enthaelt_lebensmittel, rezept_id, lebensmittel_id) in tuples:
+            r = RezeptEnthaeltLebensmittel()
+            r.set_id(rezept_enthaelt_lebensmittel)
+            r.set_rezept_id(rezept_id)
+            r.set_lebensmittel_id(lebensmittel_id)
+            print(f" Das ist das gezogene Rezept_enthält_lebensmittel aus der DB {r.__str__()}")
+            result.append(r)
+
+        self._connector.commit()
+
+        cursor.close()
+
+        return result
     def update(self):
         pass
 
-    def find_lebensmittel_by_rezept_id(self, rezept_id):
+    def find_lebensmittel_by_rezept_id(self, rezept):
         result = []
         cursor = self._connector.cursor()
         command = f"SELECT lebensmittel.lebensmittel_id, " \
                   f"lebensmittel.lebensmittel_name, " \
                   f"maßeinheit.masseinheit_name, " \
                   f"mengenanzahl.menge FROM datenbank.lebensmittel " \
-                  f"JOIN rezept_enthaelt_lebensmittel ON lebensmittel.lebensmittel_id = rezept_enthaelt_lebensmittel.lebensmittel_id " \
+                  f"JOIN rezept_enthaelt_lebensmittel ON lebensmittel.lebensmittel_id = " \
+                  f"rezept_enthaelt_lebensmittel.lebensmittel_id " \
                   f"JOIN maßeinheit ON lebensmittel.masseinheit_id = maßeinheit.masseinheit_id " \
                   f"JOIN mengenanzahl on lebensmittel.mengenanzahl_id = mengenanzahl.id " \
-                  f"WHERE rezept_enthaelt_lebensmittel.rezept_id = '{rezept_id}'"
+                  f"WHERE rezept_enthaelt_lebensmittel.rezept_id = '{rezept}'"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -55,6 +76,7 @@ class RezeptEnthaeltLebensmittelMapper(mapper):
             l.set_lebensmittelname(lebensmittel_name)
             l.set_masseinheit(masseinheit_name)
             l.set_mengenanzahl(menge)
+            print(f" Das ist das gezogene Rezept_enthält_lebensmittel aus der DB {l.__str__()}")
             result.append(l)
 
         self._connector.commit()

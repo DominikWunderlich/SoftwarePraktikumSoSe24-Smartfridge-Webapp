@@ -352,6 +352,41 @@ class getEinRezeptOperations(Resource):
         else:
             return '', 500
 
+@smartapi.route('/rezept/send/<rezept_id>/<email>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('rezept_id', 'ID des Rezepts')
+class rezeptIdToBackendOperations(Resource):
+    @smartapi.marshal_with(rezept)
+    @secured
+    def post(self, rezept_id, email):
+        """ Rezept-ID im Terminal ausgeben """
+        adm = Administration()
+        k_id = adm.find_kuehlschrank_id(email)
+        adm.remove_food_from_fridge(k_id, rezept_id)
+        return {'rezept_id': rezept_id}, 200
+
+"""Rezept löschen"""
+@smartapi.route('/rezept/rezept_name')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('rezept_id', 'ID des Rezepts')
+class DeleteEinRezeptOperations(Resource):
+    @secured
+    def delete(self, rezept_id):
+        """Rezept löschen"""
+        print(f"Versuche, Rezept mit ID {rezept_id} zu löschen")
+
+        adm = Administration()
+        result = adm.delete_rezept_by_id(rezept_id)
+        
+        if result:
+            print(f"Rezept mit ID {rezept_id} erfolgreich gelöscht")
+            return '', 204  # 204 No Content
+        else:
+            print(f"Fehler beim Löschen des Rezepts mit ID {rezept_id}")
+            return {'message': 'Fehler beim Löschen des Rezepts'}, 500  # Fehler beim Löschen
+        
+
+
 """ Lebensmittel Calls """
 
 @smartapi.route('/lebensmittelverwaltung')

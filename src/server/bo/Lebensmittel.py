@@ -30,7 +30,7 @@ class Lebensmittel(bo):
     def get_mengenanzahl(self):
         return self.mengenanzahl
 
-    def decrease_food_quantity(self, new_quantity, new_unit):
+    def decrease_food_quantity(self, required_amount, required_unit):
         """ Diese Methode repräsentiert den Verbrauch von Lebensmittel.
          @:param new_quantity: verbrauchte Menge des Lebensmittels.
          @:param new_unit: neue Maßeinheit des Lebensmittels.
@@ -45,14 +45,18 @@ class Lebensmittel(bo):
         }
 
         # Umrechnen der "neuen" Menge.
-        new_calculated_qnty = new_quantity * conversion_factors[new_unit]
+        new_calculated_qnty = required_amount * conversion_factors[required_unit]
+        print(F"Das ist die new_calculated_qnty {new_calculated_qnty}")
 
         # Neue Menge berechnen
         current_quantity = self.mengenanzahl * conversion_factors[self.masseinheit]
+        print(F"Das ist die current_quantity {current_quantity}")
         updated_qnty = current_quantity - new_calculated_qnty
+        print(F"Das ist die updated_qnty {updated_qnty}")
 
         # Auf ursprüngliche Maßeinheit zurück
         updated_quantity = updated_qnty / conversion_factors[self.masseinheit]
+        print(F"Das ist die updated_quantity {updated_quantity}")
 
         # Update der Attribute
         self.mengenanzahl = updated_quantity
@@ -66,7 +70,9 @@ class Lebensmittel(bo):
             ## TODO: test ob das so klappt
             self.masseinheit = self.masseinheit
         else:
-            self.masseinheit = new_unit
+            self.masseinheit = required_unit
+
+        return self
 
     def increase_food_quantity(self, add_quantity, add_unit, curr_quantity, curr_unit):
         # 13 , Gramm
