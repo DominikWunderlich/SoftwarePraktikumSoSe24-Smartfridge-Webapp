@@ -386,6 +386,12 @@ class Administration(object):
 
     """Kuehlschrank-spezifische Methoden """
 
+    def find_kuehlschrank_id(self, email):
+        with WGMapper() as wmapper:
+            obj = wmapper.find_by_email(email)
+            obj_id = obj[0].get_id()
+            return obj_id
+
     def get_lebensmittel_by_kuehlschrank_id(self, kuehlschrank):
         with KuehlschrankMapper() as mapper:
             return mapper.find_lebensmittel_by_kuehlschrank_id(kuehlschrank)

@@ -352,15 +352,17 @@ class getEinRezeptOperations(Resource):
         else:
             return '', 500
 
-@smartapi.route('/rezept/send/<rezept_id>')
+@smartapi.route('/rezept/send/<rezept_id>/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class rezeptIdToBackendOperations(Resource):
     @smartapi.marshal_with(rezept)
     @secured
-    def post(self, rezept_id):
+    def post(self, rezept_id, email):
         """ Rezept-ID im Terminal ausgeben """
-        print(f"Erhaltene Rezept-ID: {rezept_id}")
+        adm = Administration()
+        k_id = adm.find_kuehlschrank_id(email)
+        adm.remove_food_from_fridge(k_id, rezept_id)
         return {'rezept_id': rezept_id}, 200
 
 """Rezept löschen"""
