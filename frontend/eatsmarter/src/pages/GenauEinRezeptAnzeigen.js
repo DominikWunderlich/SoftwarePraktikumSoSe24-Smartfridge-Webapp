@@ -106,8 +106,7 @@ function GenauEinRezeptAnzeigen(props) {
     const handleJetztKochen = async () => {
         try {
             const api = new EatSmarterAPI();
-            await api.sendRezeptIdToBackend(rezeptId);
-            console.log(rezeptId + "Hallo")
+            await api.sendRezeptIdToBackend(rezeptId, props.user.email);
             alert("Rezept wurde an das Backend gesendet!");
         } catch (error) {
             console.error("Fehler beim Senden der Rezept-ID:", error);

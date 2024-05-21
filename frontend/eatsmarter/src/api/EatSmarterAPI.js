@@ -397,10 +397,10 @@ lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
         throw error; // Fehler weitergeben
     });
 }
-    #sendRezeptIdToBackendURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/send/${rezept_id}`;
+    #sendRezeptIdToBackendURL = (rezept_id, email) => `${this.#EatSmarterServerBaseURL}/rezept/send/${rezept_id}/${email}`;
 
-    sendRezeptIdToBackend(rezept_id) {
-    return this.#fetchAdvanced(this.#sendRezeptIdToBackendURL(rezept_id), {
+    sendRezeptIdToBackend(rezept_id, email) {
+    return this.#fetchAdvanced(this.#sendRezeptIdToBackendURL(rezept_id, email), {
         method: "POST",
         headers: {
             "Accept": "application/json",
