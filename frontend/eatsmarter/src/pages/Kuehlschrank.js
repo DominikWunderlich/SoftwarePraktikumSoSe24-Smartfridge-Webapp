@@ -127,12 +127,10 @@ function Kuehlschrankinhalt(props) {
                         ))}
                     </ul>
                 </div>
-            </div>
-            <div className='container'>
+                <br></br>
+                <div className='formitem'>
                 <h2>Lebensmittel hinzufügen</h2>
                 {errors.message && <p>{errors.message}</p>}
-                <div className='formitem'>
-
                     <label>Lebensmittelname</label>
                     <input
                         type="text"
