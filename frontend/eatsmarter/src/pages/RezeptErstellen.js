@@ -68,6 +68,17 @@ function RezeptErstellen(props){
             <div className='container'>
                 <form onSubmit={handleSubmit}>
                     <h2>Erstelle ein Rezept!</h2>
+                    <div className='inner-container '>
+                        <div className='formitem'>
+                            <label>Ersteller:</label>
+                            <p>{formData.rezeptadmin}</p>
+                        </div>
+                        <div className='formitem'>
+                            <label>WG:</label>
+                            <p>{wg ? wg.wgName : 'Lade WG...'}</p>
+                        </div>
+                    </div>
+                    <br></br>
                     <div className='formitem'>
                         <label>Name deines Rezepts: </label>
                         <input
@@ -76,8 +87,6 @@ function RezeptErstellen(props){
                             value={formData.rezeptname}
                             onChange={handleChange}
                         />
-                    </div>
-                    <div className='formitem'>
                         <label>Anzahl Personen: </label>
                         <input
                             type={"text"}
@@ -86,17 +95,7 @@ function RezeptErstellen(props){
                             onChange={handleChange}
                         />
                     </div>
-                    <div className='formitem'>
-                        <label>Ersteller:</label>
-                        <p>{formData.rezeptadmin}</p>
-                    </div>
-                    <div className='formitem'>
-                        <label>WG:</label>
-                        <p>{wg ? wg.wgName : 'Lade WG...'}</p>
-                    </div>
-                    <div>
                     <button type={"submit"}>Bestätigen</button>
-                    </div>
                 </form>
             </div>
         </div>

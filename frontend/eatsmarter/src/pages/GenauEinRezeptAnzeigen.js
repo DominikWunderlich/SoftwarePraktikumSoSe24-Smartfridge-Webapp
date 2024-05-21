@@ -118,9 +118,6 @@ function GenauEinRezeptAnzeigen(props) {
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <h2>Ein Rezept Anzeigen</h2>
-            <button onClick={handleJetztKochen}>Jetzt kochen</button>
-
-
             <div className='container'>
                 <h2>Dein Rezept</h2>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
@@ -129,6 +126,7 @@ function GenauEinRezeptAnzeigen(props) {
                     <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                     <p>Ersteller: {rezept.rezeptAdmin}</p>
                     <p>WG: {rezept.wgName}</p>
+                    <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
                 </div> )}
                 <br></br>
                 <h2>Lebensmittel im Rezept</h2>
