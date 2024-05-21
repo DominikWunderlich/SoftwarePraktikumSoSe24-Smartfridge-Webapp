@@ -532,20 +532,59 @@ class Administration(object):
             if missing_ingredients:
                 print(f"Du musst noch folgende Lebensmittel einkaufen: {missing_ingredients}")
             else:
-                pass
-            """ @Johnny: bis hierhin prüfen wir nur ob die Lebensmittelnamen vollständig sind oder nicht. 
-            Das ist ein erster Ansatz, aber wir müssen eigtl. überprüfen ob die Lebensmittel auch in der benötigten
-            Menge oder mehr verfügbar sind. 
+                for elem in required_lebensmittel:
+                    required_amount = elem.get_mengenanzahl()
+                    required_unit = elem.get_masseinheit()
+                    print(f"required amount: {required_amount}")
+                    print(f"required amount: {required_unit}")
+                    for x in fridge:
+                        if elem.get_lebensmittelname() == x.get_lebensmittelname():
+                            new_amount = x.decrease_food_quantity(required_amount, required_unit)
+                            print(f"das ist new_amount {new_amount}")
+
+                            print(f"das ist new_amount_menge{new_amount.get_mengenanzahl()}")
+                            if new_amount.get_mengenanzahl() > 0:
+                                print("if Pfad")
+                                # Create new food objects with amount and update the kuehlschrankinhalt
+                                # Lebensmittel_id im Kühschhrank finden um, dann mit einem neuen zu ersetzen
+                                old_food_id = x.get_id()
+                                print(f" Das ist das lebensmittel x im Kühlschrank, was nach dem decrease  größer0 ist {old_food_id}")
+                                # Neues lebensmittelobjekt mit neuer menge erstellen
+                                new_food_obj = self.create_lebensmittel_from_fridge(new_amount.get_lebensmittelname(),
+                                                                                    new_amount.get_masseinheit(),
+                                                                                    new_amount.get_mengenanzahl())
+
+                                print(f"Das ist new_food_obj nach dem erfolgreichen Decrease {new_food_obj}")
+                                # Lebensmittel id vom neuen Lebensmittelobjekt ausgeben
+                                new_food_obj_id = new_food_obj.get_id()
+                                print(f"Das ist die  id von neue food objekt: {new_food_obj_id}")
+
+                                # Update kühlschrank
+                                with KuehlschrankMapper() as mapper:
+                                    print(f"Das ist die old_food_id {old_food_id}")
+                                    print(f"Das ist die new_food_obj_id {new_food_obj_id}")
+                                    mapper.update(old_food_id, new_food_obj_id)
+
+                            elif new_amount.get_mengenanzahl() == 0:
+                                # DELETE Lebensmittel aus kuehlschrankinhalt where Menge nach Decrease == 0
+                                print("elif1 pfad")
+                                # Lebensmittel aus dem kühlschrank löschen, da die Menge 0 ist
+                                print(f" Das Lebesnmittel hat nach dem Decrease die menge 0 {x}")
+                                delete_food_id = x.get_id()
+                                print(f"Die ID des zu entfernenden lebensmittels {delete_food_id}")
+                                print(f"Die ID die kuehlschrank_id {kuehlschrank_id}")
+                                with KuehlschrankMapper() as mapper:
+                                    mapper.delete(kuehlschrank_id, delete_food_id)
+
+                            elif new_amount.get_mengenanzahl() < 0:
+                                # Wenn die Menge nach dem Decrease < 0 ist, dann soll das Lebensmittel als einkaufsliste ausgegeben werden
+                                print(f"Du musss dieses Lebensmittel einkaufen {new_amount}")
+
             """
-
-            # print(found_obj)
-            # print(f"das sollte jetzt die id 2 sein: {found_obj[0].get_id()}")
-            # pass
-
-            # TODO: Meien idee fürn Else-Pfad: alle Lebensmittel anhand des Namens holen wie im add_food und dann auf dieses gefundenne object die decrease methode anwenden
-            # selbes Prinzip wie beim add food
-            # eventuell ncoh ein else Pfad, wenn es das lebensmittel anhand des namens nicht findet dann einkaufsliste rauswerfen
-
+            Domi: Es funktioniert soweit, aber 1 Edge Case müssen wir bei Bedarf noch anpassen: Wenn ein Lebensmittelname 
+            nicht im Kuehlschtank, dann sind wir im if-Pfad. Und selbst wenn die Menge des Anderen lebensmittels im kuehlschrank 
+            nicht ausreichen sollte, dann wird es nicht mehr im else Pfad überprüft.
+            """
 
 
 
