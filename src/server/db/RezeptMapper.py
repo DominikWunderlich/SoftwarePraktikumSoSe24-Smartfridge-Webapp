@@ -99,8 +99,9 @@ class RezeptMapper(mapper):
         # Implementierung der Methode update
         pass
 
-    def delete_rezept_by_id(self, rezept_id):
-        cursor = self._connector.cursor()
-        cursor.execute("DELETE FROM datenbank.rezept WHERE rezept_id = ?", (rezept_id,))
-        self._connector.commit()
-        cursor.close()
+    def delete(self, rezept_id):
+        pass
+        # cursor = self._connector.cursor()
+        # cursor.execute("DELETE FROM datenbank.rezept WHERE rezept_id = ?", (rezept_id,))
+        # self._connector.commit()
+        # cursor.close()

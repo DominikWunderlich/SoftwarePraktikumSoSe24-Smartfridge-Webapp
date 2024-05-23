@@ -37,7 +37,7 @@ function RezepteAnzeigen(props) {
     const handleDelete = async (rezept_id) => {
         try {
             const api = new EatSmarterAPI();
-            await api.delete_rezept_by_id(rezept_id);
+            await api.deleteRezept(rezept_id);
             setRezepte(rezepte.filter(rezept => rezept.id !== rezept_id));
         } catch (error) {
             console.error("Fehler beim löschen des Rezepts:", error);
