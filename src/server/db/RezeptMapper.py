@@ -100,8 +100,10 @@ class RezeptMapper(mapper):
         pass
 
     def delete(self, rezept_id):
-        pass
-        # cursor = self._connector.cursor()
-        # cursor.execute("DELETE FROM datenbank.rezept WHERE rezept_id = ?", (rezept_id,))
-        # self._connector.commit()
-        # cursor.close()
+        cursor = self._connector.cursor()
+
+        command = f"DELETE FROM datenbank.rezept WHERE rezept_id='{rezept_id}'"
+        cursor.execute(command)
+
+        self._connector.commit()
+        cursor.close()
