@@ -136,6 +136,7 @@ export default class EatSmarterAPI{
         });
     }
     
+    
 
     // Lebensmittel related URLS
     #addLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;

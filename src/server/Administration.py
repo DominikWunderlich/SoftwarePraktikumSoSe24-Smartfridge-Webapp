@@ -142,9 +142,9 @@ class Administration(object):
             return mapper.find_by_rezept_id(rezept_id)
 
     """Rezept löschen"""
-    def delete_rezept_by_name(self, rezept_id):
+    def delete_rezept_by_id(self, rezept_id):
         with RezeptMapper() as mapper:
-            return mapper.delete_rezept_by_name(rezept_id)
+            return mapper.delete(rezept_id)
        
     """ Lebensmittel-spezifische Methoden """
 

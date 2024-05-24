@@ -62,6 +62,7 @@ function GenauEinRezeptAnzeigen(props) {
         EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit);
         EatSmarterAPI.getAPI().addMenge(newMengenanzahl);
         EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
+        EatSmarterAPI.getAPI().deleteRezept(rezeptId)
 
         setFormData({
             lebensmittelname: "",
@@ -119,7 +120,7 @@ function GenauEinRezeptAnzeigen(props) {
         try {
             const api = new EatSmarterAPI();
             await api.deleteRezept(rezeptId);
-            setRezepte(rezepte.filter(rezept => rezept.id !== rezeptId));
+            setRezept(rezepte.filter(rezept => rezept.id !== rezeptId));
         } catch (error) {
             console.error("Fehler beim löschen des Rezepts:", error);
         }

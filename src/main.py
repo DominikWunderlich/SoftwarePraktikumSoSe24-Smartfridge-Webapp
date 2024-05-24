@@ -366,19 +366,20 @@ class rezeptIdToBackendOperations(Resource):
         return {'rezept_id': rezept_id}, 200
 
 """Rezept löschen"""
-@smartapi.route('/rezept/rezept_name')
+@smartapi.route('/rezept/<rezept_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class DeleteEinRezeptOperations(Resource):
-    secured    
+    
     def delete(self, rezept_id):
             adm = Administration()
-            rezeptliste = adm.get_rezept_by_id(rezept_id)
+            rezept = adm.get_rezept_by_id(rezept_id)
             # print(adm.getWGByEmail(email))
-            for rz in rezeptliste:
+            for rz in rezept:
                 # print(wg)
-                rezept = rz.get_rezept_by_id()
-                adm.delete_rezept_by_name(rezept)
+                rz_id = rz.get_id()
+                adm.delete_rezept_by_id(rz_id)
+
 """ Lebensmittel Calls """
 
 @smartapi.route('/lebensmittelverwaltung')
