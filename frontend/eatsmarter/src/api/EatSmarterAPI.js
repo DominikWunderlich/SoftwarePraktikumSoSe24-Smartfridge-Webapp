@@ -113,23 +113,29 @@ export default class EatSmarterAPI{
     }
 
     //Rezept löschen deleteRezept
-    #deleteRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept/<rezept_name>`;
+    #deleteRezeptURL = (rezeptId) => `${this.#EatSmarterServerBaseURL}/rezept/${rezeptId}`;
 
-    deleteRezept(rezeptId){
-        return this.#fetchAdvanced(this.#deleteRezeptURL(),{
+
+    deleteRezept(rezeptId) {
+        return this.#fetchAdvanced(this.#deleteRezeptURL(rezeptId), {
             method: "DELETE",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
-            },
-            // body: JSON.stringify(rezeptId)
+            }
+        }).then((response) => {
+            if (!response.ok) {
+                throw new Error(`Fehler beim Löschen des Rezepts mit ID ${rezeptId}: ${response.statusText}`);
+            }
+            return response.json();
         }).then((responseJSON) => {
             let removedRezeptBO = RezeptBO.fromJSON(responseJSON)[0];
-            return new Promise( function(resolve) {
-                resolve(responseJSON);
-            })
-        })
+            return new Promise(function(resolve) {
+                resolve(removedRezeptBO);
+            });
+        });
     }
+    
 
     // Lebensmittel related URLS
     #addLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
