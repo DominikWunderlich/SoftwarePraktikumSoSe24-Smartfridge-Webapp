@@ -20,6 +20,7 @@ function GenauEinRezeptAnzeigen(props) {
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [errors, setErrors] = useState({});
     const [rezept, setRezept] = useState(null); // Nur ein Rezept anstelle einer Liste von Rezepten
+    const [rezepte, setRezepte] = useState([]); 
 
     const { rezeptId } = useParams(); // Holen der rezeptId aus den Routenparametern
     console.log(rezeptId)
@@ -114,6 +115,16 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    const handleDelete = async (rezeptId) => {
+        try {
+            const api = new EatSmarterAPI();
+            await api.deleteRezept(rezeptId);
+            setRezepte(rezepte.filter(rezept => rezept.id !== rezeptId));
+        } catch (error) {
+            console.error("Fehler beim löschen des Rezepts:", error);
+        }
+    };
+
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
@@ -128,7 +139,6 @@ function GenauEinRezeptAnzeigen(props) {
                     <p>WG: {rezept.wgName}</p>
                     <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
                 </div> )}
-                <br></br>
                 <h2>Lebensmittel im Rezept</h2>
                 <div className="inner-container">
                     <ul>
@@ -169,6 +179,8 @@ function GenauEinRezeptAnzeigen(props) {
                             className="eingabe"
                     />
                     <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
+                    <br></br>
+                    <button type="button" onClick={() => handleDelete(rezept.id)}>Rezept löschen</button>
                 </div>
             </div>
         </div>

@@ -129,8 +129,8 @@ function Kuehlschrankinhalt(props) {
                 </div>
                 <br></br>
                 <div className='formitem'>
-                <h2>Lebensmittel hinzufügen</h2>
-                {errors.message && <p>{errors.message}</p>}
+                    <h2>Lebensmittel hinzufügen</h2>
+                    {errors.message && <p>{errors.message}</p>}
                     <label>Lebensmittelname</label>
                     <input
                         type="text"

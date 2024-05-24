@@ -59,6 +59,7 @@ button[type="submit"], button[type="button"], input[type="submit"] {
     border-radius: 6px;
     cursor: pointer;
     width: 100%;
+    margin-bottom: 20px;
 }
 
 
