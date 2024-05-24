@@ -425,7 +425,27 @@ export default class EatSmarterAPI{
     });
 }
 
+#getRezeptAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgAdmin/${email}`;
 
+checkIfUserIsRezeptAdmin(currentUser){
+    // console.log("api", currentUser)
+     return this.#fetchAdvanced(this.#getRezeptAdminURL(currentUser), {
+         method: "GET",
+         headers: {
+             "Accept": "application/json",
+             "Content-Type": "application/json",
+         },
+     }).then((response) => {
+         // console.log("API",response)
+         if(response === true){
+             return true;
+         }
+         else{
+             return false;
+         }
+    });
+
+}
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
     #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/user/${wgName}`;
