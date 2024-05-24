@@ -409,11 +409,17 @@ class Administration(object):
 
         return common_objects
 
-    def add_food_to_fridge(self, kuehlschrank_id, lebensmittel): # lebensmittel = Karotte, 1, Kilogramm
-        # Zugehörige Lebensmittel des Kühlschranks finden
-        fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id) # Output: [(k_id/l_obj), (k_id/L-obj2)]
+    def add_food_to_fridge(self, kuehlschrank_id, lebensmittel):  # Input = Karotte, 1, Kilogramm
+        """
+        Diese Methode stellt das hinzufügen von Lebensmitteln dar. Ausgangspunkt ist das befüllen des Kühl-/ Vorrats-
+        schrankes.
+        :param kuehlschrank_id: Ist die ID der WG / des dazugehörigen Kühlschranks.
+        :param lebensmittel: Ist das Lebensmittel das hinzugefügt werden soll.
+        """
+        # Zuerst werden die zugehörigen Lebensmittel des Kühlschranks geholt.
+        fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)  # Output: [(k_id/l_obj), (k_id2/l_obj2)]
 
-        # Idee: prüfen ob Lebensmittelname bereits im fridge liegt
+        # Als nächstes prüfen wir ob der gesuchte Lebensmittelname bereits im Vorratsschrank ist.
         lebenmittel_name = lebensmittel.get_lebensmittelname()
         # TODO: Handling, wenn der Kühlschrankinhalt leer ist
         names = []
@@ -423,52 +429,46 @@ class Administration(object):
 
         if lebenmittel_name not in names:
             print("...starting add_food_to_fridge: if-Zweig")
-            # Wenn das Lebensmittel NICHT im Kühlschrank ist, dann geht es hier weiter
+            # Wenn das Lebensmittel NICHT im Kühlschrank ist, dann wird es hier angelegt und hinzugefügt.
             self.create_measurement(lebensmittel.get_masseinheit(), 0)
             self.create_menge(lebensmittel.get_mengenanzahl())
-            print(f"{lebensmittel.get_lebensmittelname()} , {lebensmittel.get_masseinheit()}, {lebensmittel.get_mengenanzahl()}")
             created_lebensmittel = self.create_lebensmittel(lebensmittel.get_lebensmittelname(),
                                                             lebensmittel.get_masseinheit(),
                                                             lebensmittel.get_mengenanzahl())
-            print(f"Das ist das erstellte Lebensmittel in add_food: {created_lebensmittel}")
+
             with KuehlschrankMapper() as mapper:
-                print(F"Lebensmittel id in admin: {created_lebensmittel.get_id()} {created_lebensmittel.get_lebensmittelname()}")
                 mapper.insert(kuehlschrank_id, created_lebensmittel)
 
         else:
-            # Wenn ein Lebensmittel im Kühlschrank ist, sind wir im Else-Zweig
+            # Wenn ein Lebensmittel bereits im Kühlschrank ist, erhöhen wir den Bestand und fügen es dem Vorrats-
+            # schrank hinzu.
             print("...starting add_food_to_fridge: else-Zweig")
-            # 1. find all lebensmittel with the given name "karotte"
+
+            # 1. Alle vorhandenen Lebensmittel mit dem gesuchten Namen auslesen.
             elem = self.get_lebensmittel_by_lebensmittel_name(lebenmittel_name)
-            print(f" das ist elem: {elem}")
-            # 2. check which lebensmittel are in the fridge
+
+            # 2. Auslesen aller Lebensmittel des Kühlschranks.
             kuehlschrank_inhalt = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
-            print(f"kuehlschrank_inhalt[0].get_id() {kuehlschrank_inhalt[0].get_id()}")
-            # 3. compare karotten_id mit der karotten_id, die ich im kühlschrank habe. -> das ist mein gesuchtes Objekt
+
+            # 3. Vergleich, welche ID im Kühlschrank liegt vs. welche ID im System ist.
             found_obj = self.find_common_objects(elem, kuehlschrank_inhalt)
-            print(found_obj)
-            print(f"das sollte jetzt die id 2 sein: {found_obj[0].get_id()}")
 
-
-
+            # 4. Menge und Maßeinheit auslesen.
             quantity_obj = self.get_menge_by_id(found_obj[0].get_mengenanzahl())
             quantity = quantity_obj.get_menge()
             unit_obj = self.get_masseinheit_by_id(found_obj[0].get_masseinheit())
             unit = unit_obj.get_masseinheit()
 
+            # 5. Lebensmittel updaten bzw. neu erstellen
             updated_food = found_obj[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
             new_food_obj = self.create_lebensmittel_from_fridge(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
                                     updated_food.get_mengenanzahl())
 
             new_food_obj_id = new_food_obj.get_id()
-            print(f"Das ist die  id von neue food objekt: {new_food_obj_id}")
-
-
             old_food_id = found_obj[0].get_id()
+
             # Update kühlschrank
             with KuehlschrankMapper() as mapper:
-                print(f"Das ist die old_food_id {old_food_id}")
-                print(f"Das ist die updated_food id {updated_food.get_id()}")
                 mapper.update(old_food_id, new_food_obj_id)
 
     def remove_food_from_fridge(self, kuehlschrank_id, rezept_id):  # rezept_id fehlt# lebensmittel = Karotte, 1, Kilogramm
