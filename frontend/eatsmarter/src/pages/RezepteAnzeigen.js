@@ -34,26 +34,13 @@ function RezepteAnzeigen(props) {
         fetchRezepte();
     }, [props.user.email]);  // Abhängigkeit hinzufügen, um den Effekt bei Änderung der E-Mail-Adresse des Benutzers auszulösen
 
-    const handleDelete = async (rezeptId) => {
-        try {
-            const api = new EatSmarterAPI();
-            await api.deleteRezept(rezeptId);
-            setRezepte(rezepte.filter(rezept => rezept.id !== rezeptId));
-        } catch (error) {
-            console.error("Fehler beim löschen des Rezepts:", error);
-        }
-    };
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
-            <h2>Alle Rezepte anzeigen</h2>
             <div className='container'>
-                <Link to="/rezeptErstellen">
-                    <button>Rezept erstellen</button>
-                </Link>
-
+            <h2>Alle Rezepte der WG</h2>
                 {rezepte.map((rezept, index) => (
-                    <div key={index} className='rezepteAnzeigenDiv'>
+                    <div key={index} className='inner-container'>
                         <Link to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
                             <div>
                                 <p>Rezeptname: {rezept.rezeptName}</p>
@@ -62,11 +49,12 @@ function RezepteAnzeigen(props) {
                                 <p>WG: {rezept.wgName}</p>
                             </div>
                         </Link>
-                        <button onClick={() => handleDelete(rezept.id)}>Rezept löschen</button>
                     </div>
                 ))}
-
-
+                <br></br>
+                <Link to="/rezeptErstellen">
+                    <button type="button">Rezept erstellen</button>
+                </Link>
             </div>
         </div>
     );

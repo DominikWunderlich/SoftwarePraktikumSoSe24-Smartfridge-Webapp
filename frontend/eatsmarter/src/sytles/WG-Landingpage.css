@@ -30,6 +30,7 @@ h2 {
     background-color: #f0f0f0;
     border-radius: 20px; 
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
 }
 
 .formitem {
@@ -38,7 +39,7 @@ h2 {
     box-sizing: border-box;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"], input[type="email"], input[type="password"], input[type="number"]{
     width: 93%;
     padding: 14px 3%;
     font-size: medium;
@@ -58,13 +59,11 @@ button[type="submit"], button[type="button"], input[type="submit"] {
     border-radius: 6px;
     cursor: pointer;
     width: 100%;
+    margin-bottom: 20px;
 }
 
 
-button[type="submit"]:hover {
+button[type="submit"], button[type="button"]:hover {
     background-color: #0000cf; /* Dunklere Farbe beim Hover */
 }
 
-.rezepteAnzeigenDiv{
-    border: 1mm solid #000000;
-}

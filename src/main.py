@@ -370,26 +370,19 @@ class rezeptIdToBackendOperations(Resource):
         return shoppinglist
 
 """Rezept löschen"""
-@smartapi.route('/rezept/rezept_name')
+@smartapi.route('/rezept/<rezept_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class DeleteEinRezeptOperations(Resource):
-    @secured
+    
     def delete(self, rezept_id):
-        """Rezept löschen"""
-        print(f"Versuche, Rezept mit ID {rezept_id} zu löschen")
-
-        adm = Administration()
-        result = adm.delete_rezept_by_id(rezept_id)
-        
-        if result:
-            print(f"Rezept mit ID {rezept_id} erfolgreich gelöscht")
-            return '', 204  # 204 No Content
-        else:
-            print(f"Fehler beim Löschen des Rezepts mit ID {rezept_id}")
-            return {'message': 'Fehler beim Löschen des Rezepts'}, 500  # Fehler beim Löschen
-        
-
+            adm = Administration()
+            rezept = adm.get_rezept_by_id(rezept_id)
+            # print(adm.getWGByEmail(email))
+            for rz in rezept:
+                # print(wg)
+                rz_id = rz.get_id()
+                adm.delete_rezept_by_id(rz_id)
 
 """ Lebensmittel Calls """
 
@@ -398,7 +391,7 @@ class DeleteEinRezeptOperations(Resource):
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
-    # @secured
+    @secured
     def post(self):
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
