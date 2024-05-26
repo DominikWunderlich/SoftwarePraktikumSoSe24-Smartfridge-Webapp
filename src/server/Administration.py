@@ -15,6 +15,7 @@ from server.db.KuehlschrankMapper import KuehlschrankMapper
 import time
 from server.bo.RezeptEnthaeltLebensmittel import RezeptEnthaeltLebensmittel
 from server.db.RezeptEnthaeltLebensmittelMapper import RezeptEnthaeltLebensmittelMapper
+from server.bo.Einkaufsliste import Einkaufsliste
 
 class Administration(object):
     def __init__(self):
@@ -537,6 +538,8 @@ class Administration(object):
             # Check if there are missing ingredients
             if missing_ingredients:
                 print(f"Du musst noch folgende Lebensmittel einkaufen: {missing_ingredients}")
+                shopping_list = self.create_shoppinglist(missing_ingredients)
+                return shopping_list
             else:
                 for elem in required_lebensmittel:
                     required_amount = elem.get_mengenanzahl()
@@ -592,12 +595,12 @@ class Administration(object):
             nicht ausreichen sollte, dann wird es nicht mehr im else Pfad überprüft.
             """
 
+    def create_shoppinglist(self, missing_ingredients):
+        result = []
 
+        for elem in missing_ingredients:
+            a = Einkaufsliste()
+            a.set_benutzername(elem)
+            result.append(a)
 
-
-
-
-
-
-
-
+        return result

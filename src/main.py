@@ -67,6 +67,10 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
+shopping_list = api.inherit('Einkaufsliste', {
+    'bezeichnung': fields.String(attribute='bezeichnung', description='Liste bestehend aus Lebensmittelnamen')
+})
+
 
 @app.route("/")
 def index():
@@ -356,14 +360,14 @@ class getEinRezeptOperations(Resource):
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class rezeptIdToBackendOperations(Resource):
-    @smartapi.marshal_with(rezept)
+    @smartapi.marshal_with(shopping_list)
     @secured
     def post(self, rezept_id, email):
         """ Rezept-ID im Terminal ausgeben """
         adm = Administration()
         k_id = adm.find_kuehlschrank_id(email)
-        adm.remove_food_from_fridge(k_id, rezept_id)
-        return {'rezept_id': rezept_id}, 200
+        shoppinglist = adm.remove_food_from_fridge(k_id, rezept_id)
+        return shoppinglist
 
 """Rezept löschen"""
 @smartapi.route('/rezept/rezept_name')
