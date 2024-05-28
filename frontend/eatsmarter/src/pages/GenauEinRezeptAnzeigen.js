@@ -1,6 +1,4 @@
 import React, {useState, useEffect} from "react";
-import RezeptBO from "../api/RezeptBO";
-import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import NavBar from "../components/NavBar";
@@ -20,10 +18,10 @@ function GenauEinRezeptAnzeigen(props) {
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [errors, setErrors] = useState({});
     const [rezept, setRezept] = useState(null); // Nur ein Rezept anstelle einer Liste von Rezepten
-    const [rezepte, setRezepte] = useState([]); 
+    const [rezepte, setRezepte] = useState([]);
+    const [shoppingListElem, setShoppingListElem]  = useState([]);
 
     const { rezeptId } = useParams(); // Holen der rezeptId aus den Routenparametern
-    console.log(rezeptId)
     const handleChange = (event) => {
         setFormData({
             ...formData,
@@ -49,10 +47,6 @@ function GenauEinRezeptAnzeigen(props) {
 
         try {
         const api = new EatSmarterAPI();
-        console.log("hi")
-        console.log(newLebensmittel)
-        console.log(rezeptId)
-        console.log("ciao")
         await api.lebensmittelZuRezeptHinzufuegen(rezeptId, newLebensmittel);
     } catch (error) {
         console.error("Fehler beim Hinzufügen von Lebensmittel zum Rezept:", error);
@@ -62,7 +56,6 @@ function GenauEinRezeptAnzeigen(props) {
         EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit);
         EatSmarterAPI.getAPI().addMenge(newMengenanzahl);
         EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
-        EatSmarterAPI.getAPI().deleteRezept(rezeptId)
 
         setFormData({
             lebensmittelname: "",
@@ -81,7 +74,6 @@ function GenauEinRezeptAnzeigen(props) {
                 const api = new EatSmarterAPI();
                 const [rezept] = await api.getRezeptById(rezeptId); // Verwenden der dynamischen rezeptId
                 setRezept(rezept);
-                console.log(rezept);
             } catch (error) {
                 console.error("Fehler beim Abrufen des Rezepts:", error);
             }
@@ -90,25 +82,11 @@ function GenauEinRezeptAnzeigen(props) {
         fetchRezeptById();
     }, [rezeptId]); // Beachte die Abhängigkeit von rezeptId
 
-    const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
-
-    useEffect(() => {
-        const fetchRezeptLebensmittel = async () => {
-            try {
-                const api = new EatSmarterAPI();
-                const lebensmittel = await api.getAllLebensmittelByRezeptId(rezeptId);
-                setRezeptLebensmittel(lebensmittel);
-            } catch (error) {
-                console.error("Fehler beim Abrufen der Lebensmittel:", error);
-            }
-        };
-
-        fetchRezeptLebensmittel();
-    }, [rezeptId]);
     const handleJetztKochen = async () => {
         try {
             const api = new EatSmarterAPI();
-            await api.sendRezeptIdToBackend(rezeptId, props.user.email);
+            const shoppingList = await api.sendRezeptIdToBackend(rezeptId, props.user.email);
+            setShoppingListElem(shoppingList.flat());
             alert("Rezept wurde an das Backend gesendet!");
         } catch (error) {
             console.error("Fehler beim Senden der Rezept-ID:", error);
@@ -140,12 +118,12 @@ function GenauEinRezeptAnzeigen(props) {
                     <p>WG: {rezept.wgName}</p>
                     <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
                 </div> )}
-                <h2>Lebensmittel im Rezept</h2>
+                <h2>Einkaufsliste</h2>
                 <div className="inner-container">
                     <ul>
-                        {rezeptLebensmittel.map((lebensmittel, index) => (
+                        {shoppingListElem.map((shoppingList, index) => (
                             <li key={index}>
-                                {`${lebensmittel.lebensmittelname} ${lebensmittel.mengenanzahl} ${lebensmittel.masseinheit}`}
+                                {`${shoppingList.bezeichnung}`}
                             </li>
                         ))}
                     </ul>
