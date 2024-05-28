@@ -42,7 +42,7 @@ function RezepteAnzeigen(props) {
                 {rezepte.map((rezept, index) => (
                     <div key={index} className='inner-container'>
                         <Link to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
-                            <div>
+                            <div className="mini-container">
                                 <p>Rezeptname: {rezept.rezeptName}</p>
                                 <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                                 <p>Ersteller: {rezept.rezeptAdmin}</p>

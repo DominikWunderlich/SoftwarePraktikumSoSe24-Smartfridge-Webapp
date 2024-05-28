@@ -82,6 +82,20 @@ function GenauEinRezeptAnzeigen(props) {
         fetchRezeptById();
     }, [rezeptId]); // Beachte die Abhängigkeit von rezeptId
 
+    const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
+    useEffect(() => {
+        const fetchRezeptLebensmittel = async () => {
+            try {
+                const api = new EatSmarterAPI();
+                const lebensmittel = await api.getAllLebensmittelByRezeptId(rezeptId);
+                setRezeptLebensmittel(lebensmittel);
+            } catch (error) {
+                console.error("Fehler beim Abrufen der Lebensmittel:", error);
+            }
+        };
+        fetchRezeptLebensmittel();
+    }, [rezeptId]);
+
     const handleJetztKochen = async () => {
         try {
             const api = new EatSmarterAPI();
@@ -109,15 +123,28 @@ function GenauEinRezeptAnzeigen(props) {
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <h2>Ein Rezept Anzeigen</h2>
             <div className='container'>
-                <h2>Dein Rezept</h2>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
                 <div className='inner-container'>
+                    <h2>Dein Rezept</h2>
+                    <div className="mini-container">
                     <p>Rezeptname: {rezept.rezeptName}</p>
                     <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                     <p>Ersteller: {rezept.rezeptAdmin}</p>
                     <p>WG: {rezept.wgName}</p>
-                    <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
+                </div>
+                <h2>Lebensmittel im Rezept</h2>
+                <div className="mini-container">
+                    <ul>
+                        {rezeptLebensmittel.map((lebensmittel, index) => (
+                            <li key={index}>
+                                {`${lebensmittel.lebensmittelname} ${lebensmittel.mengenanzahl} ${lebensmittel.masseinheit}`}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+                <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
                 </div> )}
+                
                 <h2>Einkaufsliste</h2>
                 <div className="inner-container">
                     <ul>
