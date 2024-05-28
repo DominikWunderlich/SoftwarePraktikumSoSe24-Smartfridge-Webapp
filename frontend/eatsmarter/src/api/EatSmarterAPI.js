@@ -5,6 +5,7 @@ import RezeptBO from "./RezeptBO";
 import LebensmittelBO from "./LebensmittelBO";
 import mengenanzahlBO from "./mengenanzahlBO";
 import MasseinheitBO from "./MasseinheitBO";
+import EinkaufslisteBO from "./EinkaufslisteBO";
 
 export default class EatSmarterAPI{
 
@@ -135,6 +136,7 @@ export default class EatSmarterAPI{
             });
         });
     }
+    
     
 
     // Lebensmittel related URLS
@@ -415,9 +417,10 @@ export default class EatSmarterAPI{
             "Content-Type": "application/json",
         }
     }).then((responseJSON) => {
-        // Process the response if needed
-        console.log("Response from sending Rezept ID:", responseJSON);
-        return responseJSON;
+        // TODO: Error-Handling wenn alle Lebensmittel eines Rezepts verfügbar sind. Siehe Notion
+        // https://www.notion.so/b3d6e4807e684ff3a68df0da32a4704d?v=151fa08464574a0592e2126cf6399ae9&p=25f590eba1204f288536d5b9a9e35e96&pm=s
+        let shoppingList = responseJSON.map(data => EinkaufslisteBO.fromJSON(data));
+        return shoppingList;
     }).catch((error) => {
         console.error("Fehler beim Senden der Rezept-ID:", error);
         throw error;

@@ -67,6 +67,10 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
+shopping_list = api.inherit('Einkaufsliste', {
+    'bezeichnung': fields.String(attribute='bezeichnung', description='Liste bestehend aus Lebensmittelnamen')
+})
+
 
 @app.route("/")
 def index():
@@ -356,29 +360,30 @@ class getEinRezeptOperations(Resource):
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class rezeptIdToBackendOperations(Resource):
-    @smartapi.marshal_with(rezept)
+    @smartapi.marshal_with(shopping_list)
     @secured
     def post(self, rezept_id, email):
         """ Rezept-ID im Terminal ausgeben """
         adm = Administration()
         k_id = adm.find_kuehlschrank_id(email)
-        adm.remove_food_from_fridge(k_id, rezept_id)
-        return {'rezept_id': rezept_id}, 200
+        shoppinglist = adm.remove_food_from_fridge(k_id, rezept_id)
+        return shoppinglist
 
 """Rezept löschen"""
-@smartapi.route('/rezept/rezept_name')
+@smartapi.route('/rezept/<rezept_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class DeleteEinRezeptOperations(Resource):
-    secured    
+    
     def delete(self, rezept_id):
             adm = Administration()
-            rezeptliste = adm.get_rezept_by_id(rezept_id)
+            rezept = adm.get_rezept_by_id(rezept_id)
             # print(adm.getWGByEmail(email))
-            for rz in rezeptliste:
+            for rz in rezept:
                 # print(wg)
-                rezept = rz.get_rezept_by_id()
-                adm.delete_rezept_by_name(rezept)
+                rz_id = rz.get_id()
+                adm.delete_rezept_by_id(rz_id)
+
 """ Lebensmittel Calls """
 
 @smartapi.route('/lebensmittelverwaltung')
