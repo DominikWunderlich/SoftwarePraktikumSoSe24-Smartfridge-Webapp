@@ -121,7 +121,6 @@ function GenauEinRezeptAnzeigen(props) {
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
-            <h2>Ein Rezept Anzeigen</h2>
             <div className='container'>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
                 <div className='inner-container'>
@@ -142,11 +141,8 @@ function GenauEinRezeptAnzeigen(props) {
                         ))}
                     </ul>
                 </div>
-                <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
-                </div> )}
-                
                 <h2>Einkaufsliste</h2>
-                <div className="inner-container">
+                <div className="mini-container">
                     <ul>
                         {shoppingListElem.map((shoppingList, index) => (
                             <li key={index}>
@@ -155,39 +151,44 @@ function GenauEinRezeptAnzeigen(props) {
                         ))}
                     </ul>
                 </div>
+                <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
+                </div> )}
                 <br></br>
-                <div className='formitem'>
-                    <h2>Lebensmittel hinzufügen</h2>
-                    {errors.message && <p>{errors.message}</p>}
-                    <label>Lebensmittelname</label>
-                    <input
-                        type="text"
-                        name="lebensmittelname"
-                        value={formData.lebensmittelname}
-                        onChange={handleChange}
-                        className="eingabe"
-                    />
-                    <label>Menge</label>
+                <div className="inner-container">
+                    <div className='formitem'>
+                        <h2>Lebensmittel hinzufügen</h2>
+                        {errors.message && <p>{errors.message}</p>}
+                        <label>Lebensmittelname</label>
                         <input
-                            type="number"
-                            name="mengenanzahl"
-                            value={formData.mengenanzahl}
+                            type="text"
+                            name="lebensmittelname"
+                            value={formData.lebensmittelname}
                             onChange={handleChange}
                             className="eingabe"
                         />
-                    <label>Maßeinheit</label>
-                        <input
-                            type="text"
-                            name="masseinheit"
-                            list="masseinheit"
-                            value={formData.masseinheit}
-                            onChange={handleChange}
-                            className="eingabe"
-                    />
+                        <label>Menge</label>
+                            <input
+                                type="number"
+                                name="mengenanzahl"
+                                value={formData.mengenanzahl}
+                                onChange={handleChange}
+                                className="eingabe"
+                            />
+                        <label>Maßeinheit</label>
+                            <input
+                                type="text"
+                                name="masseinheit"
+                                list="masseinheit"
+                                value={formData.masseinheit}
+                                onChange={handleChange}
+                                className="eingabe"
+                        />
+                    </div>
                     <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
-                    <br></br>
-                    <button type="button" onClick={() => handleDelete(rezept.id)}>Rezept löschen</button>
                 </div>
+                <br></br>
+                <br></br>
+                <button className="button-uebersicht" type="button" onClick={() => handleDelete(rezept.id)}>Rezept löschen</button>
             </div>
         </div>
     );
