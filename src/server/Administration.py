@@ -327,44 +327,34 @@ class Administration(object):
         print(f"das  hier!!!!!!!!!!!! {menge_id}")
         #Das menge_id ist False, wenns die menge schon gibt und None wenn sie neu ist
 
-        if menge_id is not "halleluja":
-            # Dann die Maßeinheit erstellen
-            faktor = 1  # Hier kann ein Standardfaktor verwendet werden, da er in dieser Methode nicht spezifiziert wurde
-            masseinheit_id = self.create_measurement(masseinheit, faktor)
-            print(f"das  hier2!!!!!!!!!!!! {masseinheit_id}")
 
-            if masseinheit_id is not "halleluja":
-                lebensmittel_id = self.create_lebensmittel(lebensmittel_name, masseinheit, menge)
-                print(f"das hier2,5!!!!!!!!!{lebensmittel_name}")
-                print(f"das hier3!!!!!!!!!!!{lebensmittel_id}")
-                # Lebensmittel erstellen und hinzufügen
-                if lebensmittel_id is not "halleluja":
-                    print("komm ich bis hier her? Zeile 253")
-                    print(rezept_id)
-                    print(lebensmittel_id)
-                    print(lebensmittel_name)
-                    print(masseinheit)
-                    print(menge)
-                    print("Zeile 259")
-                    result = self.add_lebensmittel_to_rezept(rezept_id, lebensmittel_name, masseinheit, menge)
-                    print("Admin.py Zeile 249")
-                    print(rezept_id)
-                    print(lebensmittel_name)
-                    print(masseinheit)
-                    print(menge)
-                    print(result)
-                    if result is not "halleluja":
-                        print("Lebensmittel wurde erfolgreich zum Rezept hinzugefügt!")
-                        return True
-                else:
-                    print("Fehler beim Hinzufügen des Lebensmittels zum Rezept.")
-                    return False
-            else:
-                print("Fehler beim Erstellen der Maßeinheit.")
-                return False
-        else:
-            print("Fehler beim Erstellen der Menge.")
-            return False
+        # Dann die Maßeinheit erstellen
+        faktor = 1  # Hier kann ein Standardfaktor verwendet werden, da er in dieser Methode nicht spezifiziert wurde
+        masseinheit_id = self.create_measurement(masseinheit, faktor)
+        print(f"das  hier2!!!!!!!!!!!! {masseinheit_id}")
+
+
+        lebensmittel_id = self.create_lebensmittel(lebensmittel_name, masseinheit, menge)
+        print(f"das hier2,5!!!!!!!!!{lebensmittel_name}")
+        print(f"das hier3!!!!!!!!!!!{lebensmittel_id}")
+
+        # Lebensmittel erstellen und hinzufügen
+        print("komm ich bis hier her? Zeile 253")
+        print(rezept_id)
+        print(lebensmittel_id)
+        print(lebensmittel_name)
+        print(masseinheit)
+        print(menge)
+        print("Zeile 259")
+        result = self.add_lebensmittel_to_rezept(rezept_id, lebensmittel_name, masseinheit, menge)
+        print("Admin.py Zeile 249")
+        print(rezept_id)
+        print(lebensmittel_name)
+        print(masseinheit)
+        print(menge)
+        print(result)
+        print("Lebensmittel wurde erfolgreich zum Rezept hinzugefügt!")
+        return True
 
     def get_lebensmittel_by_rezept_id(self, rezept_id):
         with RezeptEnthaeltLebensmittelMapper() as mapper:
