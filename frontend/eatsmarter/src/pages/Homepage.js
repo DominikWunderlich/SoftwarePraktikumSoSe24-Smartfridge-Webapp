@@ -51,18 +51,16 @@ function Homepage(props) {
                     <div>
                         <h2>Du bist Mitglied in der {wg.wgName}</h2>
                         <div className="inner-container">
-                            <div className="mini-container">
+                            <div>
                                 <p>Bewohner:</p>
-                                <p>
+                                <p className="info">
                                     {wg.wgBewohner.split(',').map((bewohner, index) => (
                                         <li key={index}>{bewohner.trim()}</li>
                                     ))}
                                 </p>
                             </div>
-                            <div className="mini-container">
                                 <p>Ersteller der WG:</p>
-                                <p> {wg.wgAdmin}</p>
-                            </div>
+                                <p className="info"> {wg.wgAdmin}</p>
                         </div>
                     </div>
                 )}

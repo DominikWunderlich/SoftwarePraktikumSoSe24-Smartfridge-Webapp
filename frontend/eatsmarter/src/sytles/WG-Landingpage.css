@@ -9,7 +9,7 @@ body {
 
 h2 {
     color: #000000; 
-    margin-bottom: 30px; 
+    margin-bottom: 5px; 
     text-align: center; 
     font-weight: 700; 
 }
@@ -33,12 +33,22 @@ h2 {
     margin-bottom: 20px;
 }
 
-
 .mini-container {
-    width: 93%;
+    width: 95%;
     padding: 14px 2%;
     font-size: medium;
     margin: 6px 0 10px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fffefe;
+}
+
+.info {
+    width: 93%;
+    padding: 14px 2%;
+    font-size: medium;
+    margin: 6px 0 15px 0;
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 6px;
