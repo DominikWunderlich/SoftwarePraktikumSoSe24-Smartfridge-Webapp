@@ -456,7 +456,7 @@ class Administration(object):
 
             # Update kühlschrank
             with KuehlschrankMapper() as mapper:
-                mapper.update(old_food_id, new_food_obj_id)
+                mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
 
     def remove_food_from_fridge(self, kuehlschrank_id, rezept_id):  # rezept_id fehlt# lebensmittel = Karotte, 1, Kilogramm
         # Zugehörige Lebensmittel des Kühlschranks finden
@@ -525,7 +525,7 @@ class Administration(object):
                             with KuehlschrankMapper() as mapper:
                                 print(f"Das ist die old_food_id {old_food_id}")
                                 print(f"Das ist die new_food_obj_id {new_food_obj_id}")
-                                mapper.update(old_food_id, new_food_obj_id)
+                                mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
 
                         elif new_amount.get_mengenanzahl() == 0:
                             # DELETE Lebensmittel aus kuehlschrankinhalt where Menge nach Decrease == 0
