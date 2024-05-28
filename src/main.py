@@ -55,7 +55,7 @@ rezept = api.inherit('Rezept', bo, {
 lebensmittel = api.inherit('Lebensmittel', bo, {
     'lebensmittelname': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
     'masseinheit': fields.String(attribute='masseinheit', description='Maßeinheit des Lebenmittels'),
-    'mengenanzahl': fields.Integer(attribute='mengenanzahl', description='Menge des Lebensmittels'),
+    'mengenanzahl': fields.Float(attribute='mengenanzahl', description='Menge des Lebensmittels'),
 })
 
 menge = api.inherit('Menge', bo, {
