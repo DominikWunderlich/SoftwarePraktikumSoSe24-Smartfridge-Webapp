@@ -61,16 +61,18 @@ class Lebensmittel(bo):
         # Update der Attribute
         self.mengenanzahl = updated_quantity
 
-        if self.mengenanzahl >= 0:
-            self.mengenanzahl = updated_quantity
-        else:
-            self.mengenanzahl = 0
+        self.masseinheit = required_unit
 
-        if updated_quantity >= 0:
-            ## TODO: test ob das so klappt
-            self.masseinheit = self.masseinheit
-        else:
-            self.masseinheit = required_unit
+        # if self.mengenanzahl >= 0:
+        #     self.mengenanzahl = updated_quantity
+        # else:
+        #     self.mengenanzahl = 0
+        #
+        # if updated_quantity >= 0:
+        #     ## TODO: test ob das so klappt
+        #     self.masseinheit = self.masseinheit
+        # else:
+        #     self.masseinheit = required_unit
 
         return self
 

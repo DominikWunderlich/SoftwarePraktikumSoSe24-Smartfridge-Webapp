@@ -150,7 +150,8 @@ function GenauEinRezeptAnzeigen(props) {
                     <ul>
                         {shoppingListElem.map((shoppingList, index) => (
                             <li key={index}>
-                                {`${shoppingList.bezeichnung}`}
+                                {/*TODO: Bei der Mengenanzahl muss das Minus noch weg*/}
+                                {`${shoppingList.lebensmittelname} ${shoppingList.mengenanzahl} ${shoppingList.masseinheit} `}
                             </li>
                         ))}
                     </ul>

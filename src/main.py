@@ -67,9 +67,6 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
-shopping_list = api.inherit('Einkaufsliste', {
-    'bezeichnung': fields.String(attribute='bezeichnung', description='Liste bestehend aus Lebensmittelnamen')
-})
 
 
 @app.route("/")
@@ -360,7 +357,7 @@ class getEinRezeptOperations(Resource):
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class rezeptIdToBackendOperations(Resource):
-    @smartapi.marshal_with(shopping_list)
+    @smartapi.marshal_with(lebensmittel)
     @secured
     def post(self, rezept_id, email):
         """ Rezept-ID im Terminal ausgeben """
