@@ -5,8 +5,23 @@ import NavBar from "../components/NavBar";
 
 function Homepage(props) {
     const { wgName } = useParams(); 
+    const [wg, setWg] = useState(null)
     const [wgData, setWgData] = useState(null);
     const [error, setError] = useState(null); 
+
+    async function renderCurrentUsersWg(){
+        await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
+            .then(response => {
+                setWg(response);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    }
+    useEffect(() => {
+        renderCurrentUsersWg()
+    }, []);
 
     const getWGbyName = async () => {
         try {
@@ -31,9 +46,26 @@ function Homepage(props) {
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
-                <h2>Name der WG: {wgData ? wgData.getWgName() : "Loading..."}</h2>
-                <p>Bewohner: {wgData ? wgData.getWGBewohner() : "Loading..."}</p>
-                <p>Ersteller: {wgData ? wgData.getWgAdmin() : "Loading..."}</p>
+               {/*Abfrage, ob wg nicht null*/}
+               {wg && (
+                    <div>
+                        <h2>Du bist Mitglied in der {wg.wgName}</h2>
+                        <div className="inner-container">
+                            <div className="mini-container">
+                                <p>Bewohner:</p>
+                                <p>
+                                    {wg.wgBewohner.split(',').map((bewohner, index) => (
+                                        <li key={index}>{bewohner.trim()}</li>
+                                    ))}
+                                </p>
+                            </div>
+                            <div className="mini-container">
+                                <p>Ersteller der WG:</p>
+                                <p> {wg.wgAdmin}</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
