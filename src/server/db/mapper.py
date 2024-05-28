@@ -2,7 +2,7 @@ import mysql.connector as connector
 from contextlib import AbstractContextManager
 from abc import ABC, abstractmethod
 from credentials import credentials
-
+import os
 
 class mapper(AbstractContextManager, ABC):
 
@@ -10,7 +10,21 @@ class mapper(AbstractContextManager, ABC):
         self._connector = None
 
     def __enter__(self):
-        self._connector = connector.connect(user='root', password=credentials["db_password"], host='localhost', database='datenbank')
+
+        """Hier wird geprüft ob die Verbindung zur Datenbank in der Cloud oder lokal ausgeführt wird. """
+
+        if os.getenv('GAE_ENV', '').startswith('standard'):
+            """Falls Code in der Cloud läuft, sind wir im "if" Zweig"""
+
+            self._connector = connector.connect(user='root', password='sopra2024',
+                                                unix_socket='/cloudsql/eatsmarter:europe-west3:eatsmarter-db',
+                                                database='datenbank')
+
+        else:
+            """Kommen wir hier an, läuft der Code auf einem lokalen Development Server. Es wird eine Verbindung zu 
+            einer lokal installierten MySQL Datenbank hergestellt."""
+            self._connector = connector.connect(user='root', password=credentials["db_password"], host='127.0.0.1',
+                                                database='main')
 
         return self
 

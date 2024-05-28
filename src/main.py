@@ -13,8 +13,16 @@ from server.bo.Masseinheit import Masseinheit
 
 from server.SecurityDecorator import secured
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="build", static_url_path='/')
 
+
+@app.route("/")
+def index():
+    return app.send_static_file("index.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
 
 # Calls with /system/* are allowed.
 CORS(app, resources=r'/system/*')
@@ -70,12 +78,6 @@ masseinheit = api.inherit('Masseinheit', bo, {
 shopping_list = api.inherit('Einkaufsliste', {
     'bezeichnung': fields.String(attribute='bezeichnung', description='Liste bestehend aus Lebensmittelnamen')
 })
-
-
-@app.route("/")
-def index():
-    print("HELLO")
-    return app.send_static_file("index.html")
 
 
 @smartapi.route('/wg')
