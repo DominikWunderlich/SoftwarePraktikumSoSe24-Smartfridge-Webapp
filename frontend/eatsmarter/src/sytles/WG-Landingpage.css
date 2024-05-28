@@ -33,6 +33,18 @@ h2 {
     margin-bottom: 20px;
 }
 
+
+.mini-container {
+    width: 93%;
+    padding: 14px 2%;
+    font-size: medium;
+    margin: 6px 0 10px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fffefe;
+}
+
 .formitem {
     margin-bottom: 15px;
     text-align: left;
