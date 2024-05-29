@@ -43,12 +43,12 @@ function RezepteAnzeigen(props) {
             <h2>Alle Rezepte der WG</h2>
                 {rezepte.map((rezept, index) => (
                     <div key={index}>
-                        <Link to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
+                        <Link className="links" to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
                             <div className="list-container">
-                                <p className="p-black">Rezeptname: {rezept.rezeptName}</p>
-                                <p className="p-black">Anzahl Portionen: {rezept.anzahlPortionen}</p>
-                                <p className="p-black">Ersteller: {rezept.rezeptAdmin}</p>
-                                <p className="p-black">WG: {rezept.wgName}</p>
+                                <p className="blue-mini-container">{rezept.rezeptName}</p>
+                                <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                                <p>Ersteller: {rezept.rezeptAdmin}</p>
+                                <p>WG: {rezept.wgName}</p>
                             </div>
                         </Link>
                     </div>

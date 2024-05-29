@@ -42,7 +42,7 @@ function Homepage(props) {
         return <div className='container'>Error loading data: {error.message}</div>;
     }
 
-    
+
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
@@ -54,7 +54,7 @@ function Homepage(props) {
                         <h2>Du bist Mitglied in der {wg.wgName}</h2>
                             <div className="formitem">
                                 <label>Bewohner:</label>
-                                <p className="mini-container">
+                                <p className="mini-info-container">
                                     {wg.wgBewohner.split(',').map((bewohner, index) => (
                                         <li key={index}>{bewohner.trim()}</li>
                                     ))}
@@ -63,7 +63,7 @@ function Homepage(props) {
                             <br></br>
                             <div className="formitem">
                                 <label>Ersteller der WG:</label>
-                                <p className="mini-container"> {wg.wgAdmin}</p>
+                                <p className="mini-info-container"> {wg.wgAdmin}</p>
                             </div>         
                         </div>
                     </div>

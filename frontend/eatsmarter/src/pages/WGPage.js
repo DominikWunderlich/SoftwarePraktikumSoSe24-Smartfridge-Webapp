@@ -87,7 +87,7 @@ function WGPage(props) {
                     <div className="formitem">
                         <h2>Infos der {wg.wgName}</h2>
                         <label>Bewohner: </label>
-                        <p className="mini-container">
+                        <p className="mini-info-container">
                             {wg.wgBewohner.split(',').map((bewohner, index) => (
                                 <li key={index}>{bewohner.trim()}</li>
                             ))}
@@ -96,7 +96,7 @@ function WGPage(props) {
                     <br></br>
                     <div className="formitem">
                         <label>Ersteller der WG: </label>
-                        <p className="mini-container">{wg.wgAdmin}</p>
+                        <p className="mini-info-container">{wg.wgAdmin}</p>
                     </div>
                 </div>
                 )}

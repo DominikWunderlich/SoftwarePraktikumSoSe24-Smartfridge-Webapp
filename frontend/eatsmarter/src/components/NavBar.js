@@ -36,6 +36,9 @@ function NavBar({ currentUser, onSignOut }) {
                 <Button color="inherit" component={Link} to="/wg">
                     WG
                 </Button>
+                <Button color="inherit" component={Link} to="/generator">
+                    Generator
+                </Button>
                 {/*Wenn CurrentUser existiert, wird der Avatar und das Menü gerendert*/}
                 {currentUser && (
                     <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>

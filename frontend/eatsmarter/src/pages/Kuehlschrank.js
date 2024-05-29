@@ -6,6 +6,7 @@ import mengenanzahlBO from "../api/mengenanzahlBO";
 import { Link } from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
+import Lebensmittelverwaltung from "./Lebensmittel-Verwaltung";
 
 
 function Kuehlschrankinhalt(props) {

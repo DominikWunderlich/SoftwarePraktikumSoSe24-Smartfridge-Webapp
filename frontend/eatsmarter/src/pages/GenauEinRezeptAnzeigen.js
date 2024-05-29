@@ -127,7 +127,7 @@ function GenauEinRezeptAnzeigen(props) {
                 <div className='inner-container'>
                     <h2>Dein Rezept</h2>
                     <div className="mini-container">
-                    <p>Rezeptname: {rezept.rezeptName}</p>
+                    <p className="blue-mini-container"> {rezept.rezeptName}</p>
                     <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                     <p>Ersteller: {rezept.rezeptAdmin}</p>
                     <p>WG: {rezept.wgName}</p>
