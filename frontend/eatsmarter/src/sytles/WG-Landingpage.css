@@ -10,9 +10,21 @@ body {
 }
 
 .navbar {
-    margin-left: 'auto';
+    margin: 'auto';
     display: 'flex';
     align-items: 'center';
+    background-image: linear-gradient(70deg, #000000 0%, #010121 100%); 
+}
+
+.navbar .bold-button {
+    font-weight: 700;
+    font-size: medium;
+    border: 2px solid white;
+    border-radius: 15px;
+    margin-right: 10px;
+}
+.navbar-button:hover {
+    font-weight: 700;
 }
 
 h2 {
@@ -55,7 +67,7 @@ label {
 /* Styling für Container-Elemente */
 .container {
     padding: 15px; /* Inneres Padding */
-    background-color: white; /* Hintergrundfarbe */
+    background-color: white; ; /* Hintergrundfarbe */
     border-radius: 30px; /* Abgerundete Ecken */
     box-shadow: #000000; /* Optionaler Schatten für etwas Tiefe */
     margin-top: 40px; /* Abstand von oben */
@@ -68,7 +80,7 @@ label {
     padding: 15px; 
     background-color: #031544;
     border-radius: 20px; 
-    border: 1px solid #ccc;
+    border: 2px solid white;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
     margin-left: auto; /* Zentriert das div */
     margin-right: auto; /* Zentriert das div */
@@ -193,6 +205,9 @@ button[type="submit"], button[type="button"]:hover {
     font-weight: 700;
     border: 2px solid #031544;
 }
+
+
+
 
 
 

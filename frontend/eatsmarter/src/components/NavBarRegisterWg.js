@@ -1,9 +1,13 @@
 import React, {useState} from "react";
+import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import '../sytles/WG-Landingpage.css';
+
 
 function NavBarRegisterWg({currentUser, onSignOut}){
     const [state, setState] = useState({
@@ -20,7 +24,10 @@ function NavBarRegisterWg({currentUser, onSignOut}){
 
     return (
         <AppBar>
-            <Toolbar>
+            <Toolbar className="navbar">
+                <Button className='bold-button' color="inherit" component={Link} >
+                    EatSmarter
+                </Button>
                 {/*Wenn CurrentUser existiert, wird der Avatar und das Menü gerendert*/}
                 {currentUser && (
                     <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
