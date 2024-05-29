@@ -600,3 +600,8 @@ class Administration(object):
             result.append(a)
 
         return result
+
+    def check_kuehlschrankinhalt_by_id(self):
+        # LebensmittelIds aus Kühlschrank ausgeben und vergleichen mit schleife,
+        # welche rezept_id hat alle ID aus dem Kühlschrank?
+        pass
