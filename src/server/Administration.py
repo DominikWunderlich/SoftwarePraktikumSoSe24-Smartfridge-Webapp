@@ -500,6 +500,9 @@ class Administration(object):
                 print(f"required amount: {required_amount}")
                 print(f"required amount: {required_unit}")
                 for x in fridge:
+                    # TODO: Case behandeln, wenn von einem Lebensmittel genug vorhanden sind, aber danach nicht
+                    # Stand jetzt zieht er auch bei dem die geügend vorhanden sind bereits ab und gibt danch die Einkaufsliste aus
+                    # mit den fehlenden Lebensmitteln
                     if elem.get_lebensmittelname() == x.get_lebensmittelname():
                         new_amount = x.decrease_food_quantity(required_amount, required_unit)
                         print(f"das ist new_amount {new_amount}")
@@ -551,6 +554,8 @@ class Administration(object):
                         print(f"Du muss dieses Lebensmittel noch einkaufen {elem}")
                         # Das Lebensmittel an die Shopping_list hinzufügen
                         shopping_list.append(elem)
+                        # TODO: Lebensmittel werden jeweils zweimal in die Einkaufsliste gepackt
+
         print(f"Das ist die Shoppinglist Ende {shopping_list}")
         return shopping_list
 

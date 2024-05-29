@@ -59,7 +59,7 @@ lebensmittel = api.inherit('Lebensmittel', bo, {
 })
 
 menge = api.inherit('Menge', bo, {
-    'menge': fields.Integer(attribute='menge', description='MengenObjekt')
+    'menge': fields.Float(attribute='menge', description='MengenObjekt')
 })
 
 masseinheit = api.inherit('Masseinheit', bo, {
