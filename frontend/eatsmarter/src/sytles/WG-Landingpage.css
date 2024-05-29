@@ -74,6 +74,7 @@ label {
     max-width: 700px; /* Maximale Breite für bessere Darstellung */
     margin-left: auto; /* Zentriert das div */
     margin-right: auto; /* Zentriert das div */
+    margin-bottom: 50px;
 }
 
 .inner-container {
