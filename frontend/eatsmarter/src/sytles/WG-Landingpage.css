@@ -1,3 +1,4 @@
+/* Allgemeines styling */
 body {
     display: flex;
     flex-direction: column;
@@ -22,7 +23,7 @@ h2 {
     font-family: Verdana, sans-serif;
 }
 
-.p-white {
+p {
     color: black; 
     margin-bottom: 10px; 
     text-align: center; 
@@ -31,7 +32,11 @@ h2 {
 
 label {
     color: white;
+    text-align: left;
 }
+
+
+/* Styling für Container-Elemente */
 .container {
     padding: 15px; /* Inneres Padding */
     background-color: white; /* Hintergrundfarbe */
@@ -59,13 +64,13 @@ label {
     border-radius: 15px; 
     border: 1px solid #ccc;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-    margin-left: auto; /* Zentriert das div */
-    margin-right: auto; /* Zentriert das div */
+    margin-left: auto; 
+    margin-right: auto; 
     margin-top: 15px;
 }
 
 .mini-container {
-    padding: 10px;
+    padding: 15px;
     width: 95%;
     font-size: medium;
     display: inline-block;
@@ -90,8 +95,8 @@ label {
 }
 
 .info {
-    width: 93%;
-    padding: 15;
+    width: 95%;
+    padding: 15px;
     font-size: medium;
     padding: 15px;
     border-radius: 20px;
@@ -118,8 +123,10 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
     background: #ffffff;
 }
 
+
+/* Styling für die Buttons */
 button[type="submit"], button[type="button"] {
-    background-color: #031544; /* Hintergrundfarbe des Buttons */
+    background-color: #031544; 
     color: white;
     font-size: medium;
     padding: 15px 3%;
@@ -127,13 +134,13 @@ button[type="submit"], button[type="button"] {
     border-radius: 10px;
     cursor: pointer;
     width: 100%;
-    margin-left: auto; /* Zentriert das div */
-    margin-right: auto; /* Zentriert das div */
+    margin-left: auto; 
+    margin-right: auto; 
     margin-top: 10px;
 }
 
 .button-uebersicht[type="button"] {
-    background-color: #031544; /* Hintergrundfarbe des Buttons */
+    background-color: #031544; 
     color: white;
     font-size: medium;
     padding: 15px 3%;
@@ -141,12 +148,11 @@ button[type="submit"], button[type="button"] {
     border-radius: 15px;
     cursor: pointer;
     width: 100%;
-    margin-left: auto; /* Zentriert das div */
-    margin-right: auto; /* Zentriert das div */
+    margin-left: auto; 
+    margin-right: auto; 
     margin-top: -15px;
    
 }
-
 
 button[type="submit"], button[type="button"]:hover {
     background-color: #ffffff; /* Dunklere Farbe beim Hover */

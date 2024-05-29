@@ -118,6 +118,7 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>

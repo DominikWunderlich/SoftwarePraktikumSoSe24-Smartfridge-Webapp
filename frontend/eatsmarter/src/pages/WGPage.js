@@ -21,6 +21,7 @@ function WGPage(props) {
             });
 
     }
+
     useEffect(() => {
         renderCurrentUsersWg()
     }, []);
@@ -39,7 +40,6 @@ function WGPage(props) {
                alert("Nur der Ersteller kann Mitglieder hinzufügen");
            }
            setAddNewMemberEmail("");
-
     }
 
     // Handler-Function, um Mitglieder als Admin zu entfernen
@@ -76,55 +76,67 @@ function WGPage(props) {
         }
     }
 
-
+    
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
                 {/*Abfrage, ob wg nicht null*/}
                 {wg && (
-                    <div>
-                        <h2>Aktuelle WG: {wg.wgName}</h2>
-                        <p>Bewohner: </p>
-                        <p>
+                <div className="inner-container">
+                    <div className="formitem">
+                        <h2>Infos der {wg.wgName}</h2>
+                        <label>Bewohner: </label>
+                        <p className="mini-container">
                             {wg.wgBewohner.split(',').map((bewohner, index) => (
                                 <li key={index}>{bewohner.trim()}</li>
                             ))}
                         </p>
-                        <p>Ersteller der WG: {wg.wgAdmin}</p>
                     </div>
+                    <br></br>
+                    <div className="formitem">
+                        <label>Ersteller der WG: </label>
+                        <p className="mini-container">{wg.wgAdmin}</p>
+                    </div>
+                </div>
                 )}
-                <form id="addBewohner">
-                    <h2></h2>
-                    <label>Mitglied hinzufügen: </label>
-                    <input
-                        type="email"
-                        value={addNewMemberEmail}
-                        onChange={(event) => {
-                            setAddNewMemberEmail(event.target.value)
-                        }}
-                    />
-                    <button type="button" onClick={handleAddMember}>+</button>
-                    <div className='formitem'>
+                <br></br>
+                <div className="inner-container">
+                    <h2>WG-Verwaltung</h2>
+                    <div className="formitem">
+                        <form id="addBewohner">
+                            <h2></h2>
+                            <label>Mitglied hinzufügen: </label>
+                            <input
+                                type="email"
+                                value={addNewMemberEmail}
+                                onChange={(event) => {
+                                    setAddNewMemberEmail(event.target.value)
+                                }}
+                            />
+                            <button type="button" onClick={handleAddMember}>hinzufügen</button>
+                            <div className='formitem'>
+                            </div>
+                        </form>
+                        <form id="deleteBewohner">
+                            <h2></h2>
+                            <label>Mitglied entfernen: </label>
+                            <input
+                                type="email"
+                                value={deleteNewMemberEmail}
+                                onChange={(event) => {
+                                    setDeleteNewMemberEmail(event.target.value)
+                                }}
+                            />
+                            <button type="button" onClick={handleDeleteMember}>entfernen</button>
+                            <div className='formitem'>
+                            </div>
+                        </form>
                     </div>
-                </form>
-
-                <form id="deleteBewohner">
-                    <h2></h2>
-                    <label>Mitglied entfernen: </label>
-                    <input
-                        type="email"
-                        value={deleteNewMemberEmail}
-                        onChange={(event) => {
-                            setDeleteNewMemberEmail(event.target.value)
-                        }}
-                    />
-                    <button type="button" onClick={handleDeleteMember}>-</button>
-                    <div className='formitem'>
-                    </div>
-
-                    <button type="button" onClick={handleDeleteWG}>WG löschen</button>
-                </form>
+                </div>
+                <br></br>
+                <br></br>
+                <button className="button-uebersicht" type="button" onClick={handleDeleteWG}>WG löschen</button>
             </div>
         </div>
     );
