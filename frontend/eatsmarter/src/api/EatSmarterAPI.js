@@ -418,8 +418,9 @@ export default class EatSmarterAPI{
         }
     }).then((responseJSON) => {
         // TODO: Error-Handling wenn alle Lebensmittel eines Rezepts verfügbar sind. Siehe Notion
+        console.log("Eatsmarter 421 responseJSON:", responseJSON)
         // https://www.notion.so/b3d6e4807e684ff3a68df0da32a4704d?v=151fa08464574a0592e2126cf6399ae9&p=25f590eba1204f288536d5b9a9e35e96&pm=s
-        let shoppingList = responseJSON.map(data => EinkaufslisteBO.fromJSON(data));
+        let shoppingList = responseJSON.map(data => LebensmittelBO.fromJSON(data));
         return shoppingList;
     }).catch((error) => {
         console.error("Fehler beim Senden der Rezept-ID:", error);
