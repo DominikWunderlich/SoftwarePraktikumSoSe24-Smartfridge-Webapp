@@ -212,13 +212,7 @@ class UserOperations(Resource):
 
 
         if proposal is not None:
-            result = adm.create_user(
-                proposal.get_email(),
-                proposal.get_benutzername(),
-                proposal.get_vorname(),
-                proposal.get_nachname(),
-                proposal.get_google_id()
-            )
+            result = adm.save_person(proposal)
             return result, 200
         else:
             return 'Fehler in User-Operations post methode', 500
