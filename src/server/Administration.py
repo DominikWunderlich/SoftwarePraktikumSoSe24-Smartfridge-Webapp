@@ -498,7 +498,7 @@ class Administration(object):
                 required_amount = elem.get_mengenanzahl()
                 required_unit = elem.get_masseinheit()
                 print(f"required amount: {required_amount}")
-                print(f"required amount: {required_unit}")
+                print(f"required unit: {required_unit}")
                 for x in fridge:
                     # TODO: Case behandeln, wenn von einem Lebensmittel genug vorhanden sind, aber danach nicht
                     # Stand jetzt zieht er auch bei dem die geügend vorhanden sind bereits ab und gibt danch die Einkaufsliste aus
@@ -514,6 +514,7 @@ class Administration(object):
                             # Lebensmittel_id im Kühschhrank finden um, dann mit einem neuen zu ersetzen
                             old_food_id = x.get_id()
                             print(f" Das ist das lebensmittel x im Kühlschrank, was nach dem decrease  größer0 ist {old_food_id}")
+                            print(f"Das ist das Lebensmittel mit der falschen Maßeinheit: {x}")
                             # Neues lebensmittelobjekt mit neuer menge erstellen
                             new_food_obj = self.create_lebensmittel_from_fridge(new_amount.get_lebensmittelname(),
                                                                                 new_amount.get_masseinheit(),
