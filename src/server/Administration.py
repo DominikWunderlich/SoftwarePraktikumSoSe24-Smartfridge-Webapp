@@ -389,6 +389,10 @@ class Administration(object):
         with KuehlschrankMapper() as mapper:
             return mapper.find_lebensmittel_by_kuehlschrank_id(kuehlschrank)
 
+    def get_rezept_id_by_wg_name(self, wg_name):
+        with RezeptMapper() as mapper:
+            return mapper.find_id_by_wg_name(wg_name)
+
     def find_common_objects(self, elem, kuehlschrank_inhalt):
         common_objects = []
 
@@ -566,12 +570,25 @@ class Administration(object):
         print(f"Das ist die Shoppinglist Ende {shopping_list}")
         return shopping_list
 
+    def get_lebensmittel_id_by_rezept_id(self, rezeptid):
+        with RezeptMapper as mapper:
+            return mapper.find_lebensmittel_by_rezept_id(rezeptid)
 
+    def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
+        # Lebensmittel_id aus einem Kühlschrank in eine Liste speichern
+        fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
+        food_id_in_fridge = []
+        for f_elem in fridge:
+            food_id_in_fridge.append(f_elem.get_id())
 
-
-
-
-    def check_kuehlschrankinhalt_by_id(self):
-        # LebensmittelIds aus Kühlschrank ausgeben und vergleichen mit schleife,
-        # welche rezept_id hat alle ID aus dem Kühlschrank?
-        pass
+        # Rezept_id aus einer WG in eine Liste speichern
+        recipes_id = self.get_rezept_id_by_wg_name(wg_name)
+        rezept_ids = []
+        for r_elem in recipes_id:
+            rezept_ids.append(r_elem.get_id())
+            # Lebensmittel_id aus einem Rezept in eine Liste speichern
+            for rezeptId in rezept_ids:
+                lebensmittel = self.get_lebensmittel_id_by_rezept_id(rezeptId)
+                food_id_in_recipe = []
+                for elem in lebensmittel:
+                    food_id_in_recipe.append(elem.get_id())
