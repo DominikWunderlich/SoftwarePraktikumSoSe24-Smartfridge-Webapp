@@ -19,13 +19,14 @@ function SignIn(props) {
 	};
 
 	return (
-			<div>
+			<div className='container'>
 					<Typography sx={{margin: 2}} align='center' variant='h5'>Welcome to the HdM React/Python Project Showcase</Typography>
 					<Typography sx={{margin: 2}} align='center'>It appears, that you are not signed in.</Typography>
 					<Typography sx={{margin: 2}} align='center'>To use the services of the Eatsmarter-App please</Typography>
-					<Grid container justifyContent='center'>
+					<br></br>
+					<Grid>
 						<Grid item>
-							<Button variant='contained' color='primary' onClick={handleSignInButtonClicked}>
+							<Button className='button-uebersicht' variant='contained' color='primary' onClick={handleSignInButtonClicked}>
 								Sign in with Google
 							</Button>
 						</Grid>

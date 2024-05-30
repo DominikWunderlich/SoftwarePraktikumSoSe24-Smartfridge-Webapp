@@ -54,25 +54,14 @@ class Lebensmittel(bo):
         updated_qnty = current_quantity - new_calculated_qnty
         print(F"Das ist die updated_qnty {updated_qnty}")
 
-        # Auf ursprüngliche Maßeinheit zurück
         updated_quantity = updated_qnty / conversion_factors[self.masseinheit]
         print(F"Das ist die updated_quantity {updated_quantity}")
 
-        # TODO: Maßeinheiten funktionieren noch nicht richtig
-        # z.B. Ich habe 100Liter Milch im Kühlschrank
-        # Rezept verbraucht 500 Milliliter
-        # Berechnung der Menge passt werden 95,5
-        # Aber Maßeinheit wird Als Milliliter übernommen statt Liter
-        # Update der Attribute
+        # Auf ursprüngliche Maßeinheit zurück
+        current_unit = self.masseinheit
         self.mengenanzahl = updated_quantity
+        self.masseinheit = current_unit
 
-        self.masseinheit = required_unit
-
-        # if self.mengenanzahl >= 0:
-        #     self.mengenanzahl = updated_quantity
-        # else:
-        #     self.mengenanzahl = 0
-        #
         # if updated_quantity >= 0:
         #     ## TODO: test ob das so klappt
         #     self.masseinheit = self.masseinheit

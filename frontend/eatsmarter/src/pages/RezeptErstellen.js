@@ -67,35 +67,37 @@ function RezeptErstellen(props){
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
                 <form onSubmit={handleSubmit}>
-                    <h2>Erstelle ein Rezept!</h2>
                     <div className='inner-container '>
+                    <h2>Erstelle ein Rezept!</h2>
                         <div className='formitem'>
                             <label>Ersteller:</label>
-                            <p>{formData.rezeptadmin}</p>
+                            <p className="mini-info-container" >{formData.rezeptadmin}</p>
                         </div>
                         <div className='formitem'>
                             <label>WG:</label>
-                            <p>{wg ? wg.wgName : 'Lade WG...'}</p>
+                            <p className="mini-info-container" >{wg ? wg.wgName : 'Lade WG...'}</p>
                         </div>
                     </div>
                     <br></br>
-                    <div className='formitem'>
-                        <label>Name deines Rezepts: </label>
-                        <input
-                            type={"text"}
-                            name={"rezeptname"}
-                            value={formData.rezeptname}
-                            onChange={handleChange}
-                        />
-                        <label>Anzahl Personen: </label>
-                        <input
-                            type={"text"}
-                            name={"anzahlportionen"}
-                            value={formData.anzahlportionen}
-                            onChange={handleChange}
-                        />
+                    <div className='inner-container'>
+                        <div className='formitem'>
+                            <label>Name deines Rezepts: </label>
+                            <input
+                                type={"text"}
+                                name={"rezeptname"}
+                                value={formData.rezeptname}
+                                onChange={handleChange}
+                            />
+                            <label>Anzahl Personen: </label>
+                            <input
+                                type={"text"}
+                                name={"anzahlportionen"}
+                                value={formData.anzahlportionen}
+                                onChange={handleChange}
+                            />
+                            <button type={"submit"}>Bestätigen</button>
+                        </div>
                     </div>
-                    <button type={"submit"}>Bestätigen</button>
                 </form>
             </div>
         </div>
