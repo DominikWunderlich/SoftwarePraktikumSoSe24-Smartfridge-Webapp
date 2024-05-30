@@ -63,6 +63,46 @@ label {
     text-align: left;
 }
 
+/* Styling für Tabellen */
+table {
+    width: 100%;
+    padding: 4px;
+}
+
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 13px;
+}
+
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 13px;
+}
+
+thead {
+    background: #031544;
+    color: white;
+}
+
+thead th:first-child {
+    border-top-left-radius: 13px;
+}
+
+thead th:last-child {
+    border-top-right-radius: 13px;
+}
+
+th{
+    padding: 12px;
+    text-align: left;
+    font-weight: lighter;
+}
+
+td {
+    padding: 7px;
+    padding-left: 10px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+    background-color: #ddd;
+}
 
 /* Styling für Container-Elemente */
 .container {

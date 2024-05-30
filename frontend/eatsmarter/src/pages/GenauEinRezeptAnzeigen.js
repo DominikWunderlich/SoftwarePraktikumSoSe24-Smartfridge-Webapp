@@ -131,16 +131,25 @@ function GenauEinRezeptAnzeigen(props) {
                     <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                     <p>Ersteller: {rezept.rezeptAdmin}</p>
                     <p>WG: {rezept.wgName}</p>
-                </div>
-                <h2>Lebensmittel im Rezept</h2>
-                <div className="mini-container">
-                    <ul>
-                        {rezeptLebensmittel.map((lebensmittel, index) => (
-                            <li key={index}>
-                                {`${lebensmittel.lebensmittelname} ${lebensmittel.mengenanzahl} ${lebensmittel.masseinheit}`}
-                            </li>
-                        ))}
-                    </ul>
+                    {errors.message && <p>{errors.message}</p>} 
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Lebensmittelname</th>
+                                <th>Mengenanzahl</th>
+                                <th>Maßeinheit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rezeptLebensmittel.map((lebensmittel, index) => (
+                                <tr key={index}>
+                                    <td>{lebensmittel.lebensmittelname}</td>
+                                    <td>{lebensmittel.mengenanzahl}</td>
+                                    <td>{lebensmittel.masseinheit}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
                 <h2>Einkaufsliste</h2>
                 <div className="mini-container">

@@ -121,14 +121,25 @@ function Kuehlschrankinhalt(props) {
                 <div className="inner-container">
                 <h2>Kühlschrank</h2>
                     <div className="mini-container">
-                    {errors.message && <p>{errors.message}</p>}
-                    <ul>
-                        {lebensmittelliste.map((lebensmittel, index) => (
-                            <li key={index}>
-                               {`${lebensmittel.lebensmittelname} ${lebensmittel.mengenanzahl} ${lebensmittel.masseinheit}`}
-                            </li>
-                        ))}
-                    </ul>
+                        {errors.message && <p>{errors.message}</p>}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Lebensmittelname</th>
+                                    <th>Mengenanzahl</th>
+                                    <th>Maßeinheit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {lebensmittelliste.map((lebensmittel, index) => (
+                                    <tr key={index}>
+                                        <td>{lebensmittel.lebensmittelname}</td>
+                                        <td>{lebensmittel.mengenanzahl}</td>
+                                        <td>{lebensmittel.masseinheit}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <br></br>
