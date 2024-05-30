@@ -66,10 +66,16 @@ class Administration(object):
             # print("new Wg", new_wg)
             return new_wg
 
+    # Die Methode ist überflüssig, wird nicht mehr verwendet
     def delete_wg_by_name(self, key):
         with WGMapper() as mapper:
             mapper.find_wg_admin_by_email(key)
             mapper.delete(key)
+
+    """ Diese Methode löscht die wg und den kuehlschrankinhalt"""
+    def delete_wg_and_kuehlschrank(self, wg_id):
+        with WGMapper() as mapper:
+            mapper.delete_wg_and_kuehlschrank(wg_id)
 
     def get_wg_admin(self, email):
         with WGMapper() as mapper:
