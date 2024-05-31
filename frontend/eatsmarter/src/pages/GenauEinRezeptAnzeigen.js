@@ -168,46 +168,50 @@ function GenauEinRezeptAnzeigen(props) {
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <div className='container'>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
-                <div className='inner-container'>
-                    <h2>Dein Rezept</h2>
-                    <div className="mini-container">
-                    <p className="blue-mini-container"> {rezept.rezeptName}</p>
-                    <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
-                    <p>Ersteller: {rezept.rezeptAdmin}</p>
-                    <p>WG: {rezept.wgName}</p>
-                    {errors.message && <p>{errors.message}</p>}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Lebensmittelname</th>
-                                <th>Mengenanzahl</th>
-                                <th>Maßeinheit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rezeptLebensmittel.map((lebensmittel, index) => (
-                                <tr key={index}>
-                                    <td>{lebensmittel.lebensmittelname}</td>
-                                    <td>{lebensmittel.mengenanzahl}</td>
-                                    <td>{lebensmittel.masseinheit}</td>
+                    <div className='inner-container'>
+                        <h2>Dein Rezept</h2>
+                        <div className="mini-container">
+                            <p className="blue-mini-container"> {rezept.rezeptName}</p>
+                            <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                            <p>Ersteller: {rezept.rezeptAdmin}</p>
+                            <p>WG: {rezept.wgName}</p>
+                            {errors.message && <p>{errors.message}</p>}
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Lebensmittelname</th>
+                                    <th>Mengenanzahl</th>
+                                    <th>Maßeinheit</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-                <h2>Einkaufsliste</h2>
-                <div className="mini-container">
-                    <ul>
-                        {shoppingListElem.map((shoppingList, index) => (
-                            <li key={index}>
-                                {/*TODO: Bei der Mengenanzahl muss das Minus noch weg*/}
-                                {`${shoppingList.lebensmittelname} ${shoppingList.mengenanzahl} ${shoppingList.masseinheit} `}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-                <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
-                </div> )}
+                                </thead>
+                                <tbody>
+                                {rezeptLebensmittel.map((lebensmittel, index) => (
+                                    <tr key={index}>
+                                        <td>{lebensmittel.lebensmittelname}</td>
+                                        <td>{lebensmittel.mengenanzahl}</td>
+                                        <td>{lebensmittel.masseinheit}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        <h2>Kochanleitung</h2>
+                        <div className='mini-container'>
+                            <p>{rezept.rezeptAnleitung}</p>
+                        </div>
+                        <h2>Einkaufsliste</h2>
+                        <div className="mini-container">
+                            <ul>
+                                {shoppingListElem.map((shoppingList, index) => (
+                                    <li key={index}>
+                                        {/*TODO: Bei der Mengenanzahl muss das Minus noch weg*/}
+                                        {`${shoppingList.lebensmittelname} ${shoppingList.mengenanzahl} ${shoppingList.masseinheit} `}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
+                    </div>)}
                 <br></br>
                 <div className="inner-container">
                     <div className='formitem'>

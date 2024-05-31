@@ -125,6 +125,7 @@ CREATE TABLE `rezept` (
   `rezept_ersteller` varchar(45) DEFAULT NULL,
   `rezept_id` int NOT NULL,
   `wg_name` varchar(255) DEFAULT NULL,
+  `rezept_anleitung` text,
   PRIMARY KEY (`rezept_id`),
   KEY `rezeptowner_idx` (`anzahl_portionen`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -124,7 +124,7 @@ class Administration(object):
 
     """ Rezept-spezifische Methoden """
 
-    def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller, wg_name):
+    def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung):
         """ Erstellen einer Rezept-Instanz. """
         r = Rezept()
         r.set_rezept_name(rezept_name)
@@ -132,6 +132,7 @@ class Administration(object):
         r.set_rezept_ersteller(rezept_ersteller)
         r.set_id(1)
         r.set_wg_name(wg_name)
+        r.set_rezept_anleitung(rezept_anleitung)
 
         with RezeptMapper() as mapper:
             return mapper.insert(r)

@@ -34,7 +34,10 @@ function RezepteAnzeigen(props) {
         fetchRezepte();
     }, [props.user.email]);  // Abhängigkeit hinzufügen, um den Effekt bei Änderung der E-Mail-Adresse des Benutzers auszulösen
 
-    
+    /*<p>Anleitung: {rezept.rezeptAnleitung}</p>
+    * Wenn man das einfügt, dann bekommt man die Anleitungen in der Übersichtsseite mit angezeigt
+    * Ich hab das aber mal weg gelassen, da ich das an dieser Stelle nicht passend finde*/
+
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>

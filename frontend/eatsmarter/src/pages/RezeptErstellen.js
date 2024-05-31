@@ -11,7 +11,8 @@ function RezeptErstellen(props){
         rezeptname: "",
         anzahlportionen: "",
         rezeptadmin: props.user.email,
-        wgname: ""
+        wgname: "",
+        rezeptanleitung: ""
     })
 
     const [errors, setErrors] = useState({});
@@ -53,6 +54,7 @@ function RezeptErstellen(props){
                 updatedFormData.anzahlportionen,
                 updatedFormData.rezeptadmin,
                 updatedFormData.wgname,
+                updatedFormData.rezeptanleitung,
         );
             console.log(newRezept)
             console.log(".... starting to create a API-Call (EatSmarterAPI)")
@@ -93,6 +95,13 @@ function RezeptErstellen(props){
                                 type={"text"}
                                 name={"anzahlportionen"}
                                 value={formData.anzahlportionen}
+                                onChange={handleChange}
+                            />
+                            <label>Kochanleitung: </label>
+                            <input
+                                type={"text"}
+                                name={"rezeptanleitung"}
+                                value={formData.rezeptanleitung}
                                 onChange={handleChange}
                             />
                             <button type={"submit"}>Bestätigen</button>

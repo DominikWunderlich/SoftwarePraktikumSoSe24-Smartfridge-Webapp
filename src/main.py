@@ -58,6 +58,7 @@ rezept = api.inherit('Rezept', bo, {
     'anzahlPortionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
     'rezeptAdmin': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts'),
     'wgName': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
+    'rezeptAnleitung': fields.String(attribute='rezept_anleitung', description='Anleitung'),
 })
 
 lebensmittel = api.inherit('Lebensmittel', bo, {
@@ -248,7 +249,8 @@ class RezeptOperations(Resource):
                 proposal.get_rezept_name(),
                 proposal.get_anzahl_portionen(),
                 proposal.get_rezept_ersteller(),
-                proposal.get_wg_name())
+                proposal.get_wg_name(),
+                proposal.get_rezept_anleitung())
             print(result, "hi")
             return result, 200
         else:
@@ -339,10 +341,16 @@ class getEinRezeptOperations(Resource):
     def get(self, rezept_id):
         """ Auslesen aller Rezepte mit bestimmter id """
         print("hallo")
+        print(rezept_id)
 
         adm = Administration()
         rezept_page = adm.get_rezept_by_id(rezept_id)
+        print(rezept_id)
         print(rezept_page)
+        print(rezept)
+        print("halalalalal")
+        print(rezept_page)
+
 
         if rezept_page is not None:
             return rezept_page
