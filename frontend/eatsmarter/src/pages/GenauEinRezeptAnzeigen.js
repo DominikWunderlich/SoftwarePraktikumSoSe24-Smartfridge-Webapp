@@ -6,6 +6,7 @@ import LebensmittelBO from "../api/LebensmittelBO";
 import MasseinheitBO from "../api/MasseinheitBO";
 import mengenanzahlBO from "../api/mengenanzahlBO";
 import { useParams } from "react-router-dom"; // Importing useParams
+import {useNavigate} from "react-router-dom";
 
 function GenauEinRezeptAnzeigen(props) {
     const [formData, setFormData] = useState({
@@ -20,8 +21,10 @@ function GenauEinRezeptAnzeigen(props) {
     const [rezept, setRezept] = useState(null); // Nur ein Rezept anstelle einer Liste von Rezepten
     const [rezepte, setRezepte] = useState([]);
     const [shoppingListElem, setShoppingListElem]  = useState([]);
+    const navigate = useNavigate()
+    const currentUser = props.user.email;
 
-    const { rezeptId } = useParams(); // Holen der rezeptId aus den Routenparametern
+    const {rezeptId } = useParams(); // Holen der rezeptId aus den Routenparametern
     const handleChange = (event) => {
         setFormData({
             ...formData,
@@ -94,15 +97,31 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
-    const handleDelete = async (rezeptId) => {
-        try {
-            const api = new EatSmarterAPI();
-            await api.deleteRezept(rezeptId);
-            setRezept(rezepte.filter(rezept => rezept.id !== rezeptId));
-        } catch (error) {
-            console.error("Fehler beim löschen des Rezepts:", error);
+
+    // const handleDelete = async () => {
+    //     const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(props.user);
+    //     if (isAdmin) {
+    //         await EatSmarterAPI.getAPI().updatedRezept(rezept);
+    //     } else {
+    //         alert("Nur der Ersteller kann Rezept löschen");
+    //     }
+    // };
+
+    const handleDelete = async () => { 
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser);
+        console.log("Frontend", isAdmin);
+        console.log(currentUser)
+
+        if(isAdmin){
+            await EatSmarterAPI.getAPI().deleteRezept(rezeptId)
+                .then(() => {
+                    navigate("/RezeptAnzeigen");
+                })
         }
-    };
+        else{
+            alert("Nur der Ersteller kann das Rezept löschen");
+        }
+    }
 
     return (
         <div>

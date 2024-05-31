@@ -118,26 +118,44 @@ export default class EatSmarterAPI{
 
 
     deleteRezept(rezeptId) {
+        console.log(rezeptId)
         return this.#fetchAdvanced(this.#deleteRezeptURL(rezeptId), {
             method: "DELETE",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
-            }
-        }).then((response) => {
-            if (!response.ok) {
-                throw new Error(`Fehler beim Löschen des Rezepts mit ID ${rezeptId}: ${response.statusText}`);
-            }
-            return response.json();
+            },
+            body: JSON.stringify(rezeptId)
         }).then((responseJSON) => {
-            let removedRezeptBO = RezeptBO.fromJSON(responseJSON)[0];
-            return new Promise(function(resolve) {
-                resolve(removedRezeptBO);
-            });
-        });
+            return new Promise(function (resolve){
+                resolve(responseJSON);
+            })
+        })
+
     }
     
-    
+     // Rezept als admin löschen-attribute related
+     #getRezeptAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}`;
+
+     checkIfUserIsRezeptAdmin(currentUser){
+         console.log("api", currentUser)
+         return this.#fetchAdvanced(this.#getRezeptAdminURL(currentUser), {
+             method: "GET",
+             headers: {
+                 "Accept": "application/json",
+                 "Content-Type": "application/json",
+             },
+         }).then((response) => {
+             console.log("API",response)
+             if(response === true){
+                 return true;
+             }
+             else{
+                 return false;
+             }
+         });
+ 
+     }
 
     // Lebensmittel related URLS
     #addLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
@@ -426,7 +444,6 @@ export default class EatSmarterAPI{
         throw error;
     });
 }
-
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
