@@ -146,10 +146,17 @@ class PersonMapper(mapper):
     def update(self, person):
         cursor = self._connector.cursor()
 
-        command = 'UPDATE datenbank.person SET email=%s, benutzername=%s, nachname=%s, vorname=%s, id=%s WHERE google_id=%s'
+        cursor.execute('SELECT id FROM datenbank.person WHERE google_id=%s', (person.get_google_id(),))
+        current_id = cursor.fetchone()
+
+        if current_id is None:
+            print(f"Im Person-Mapper Update. Keine Person mit der  {person.get_google_id()} gefunden.")
+            cursor.close()
+
+        command = 'UPDATE datenbank.person SET email=%s, benutzername=%s, nachname=%s, vorname=%s WHERE google_id=%s'
         data = (
             person.get_email(), person.get_benutzername(), person.get_nachname(), person.get_vorname(),
-            person.get_id(), person.get_google_id())
+            person.get_google_id())
         cursor.execute(command, data)
 
         self._connector.commit()

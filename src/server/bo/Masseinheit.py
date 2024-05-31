@@ -1,4 +1,4 @@
-from src.server.bo.BusinessObject import BusinessObject as bo
+from server.bo.BusinessObject import BusinessObject as bo
 
 
 class Masseinheit(bo):

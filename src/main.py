@@ -13,8 +13,16 @@ from server.bo.Masseinheit import Masseinheit
 
 from server.SecurityDecorator import secured
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="build", static_url_path='/')
 
+
+@app.route("/")
+def index():
+    return app.send_static_file("index.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
 
 # Calls with /system/* are allowed.
 CORS(app, resources=r'/system/*')
@@ -67,12 +75,6 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
-
-
-@app.route("/")
-def index():
-    print("HELLO")
-    return app.send_static_file("index.html")
 
 
 @smartapi.route('/wg')
@@ -212,13 +214,7 @@ class UserOperations(Resource):
 
 
         if proposal is not None:
-            result = adm.create_user(
-                proposal.get_email(),
-                proposal.get_benutzername(),
-                proposal.get_vorname(),
-                proposal.get_nachname(),
-                proposal.get_google_id()
-            )
+            result = adm.save_person(proposal)
             return result, 200
         else:
             return 'Fehler in User-Operations post methode', 500
@@ -371,15 +367,24 @@ class rezeptIdToBackendOperations(Resource):
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class DeleteEinRezeptOperations(Resource):
-    
+    #@secured
     def delete(self, rezept_id):
             adm = Administration()
             rezept = adm.get_rezept_by_id(rezept_id)
-            # print(adm.getWGByEmail(email))
+            print(adm.get_rezept_by_id(rezept_id))
             for rz in rezept:
                 # print(wg)
                 rz_id = rz.get_id()
                 adm.delete_rezept_by_id(rz_id)
+
+@smartapi.route('/rezept/user/<email>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('email', 'Die E-mail der aktuellen person')
+class GetRezeptAdminWgOperations(Resource):
+    def get(self, email):
+        adm = Administration()
+        print("True in der Main.py?", adm.is_current_user_rezept_admin(email))
+        return adm.is_current_user_rezept_admin(email)
 
 """ Lebensmittel Calls """
 

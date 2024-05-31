@@ -63,11 +63,31 @@ export default class RezeptBO extends BusinessObject{
         return result;
     }
         // Methode zum Löschen des RezeptBO aus einer Liste
-    static delete(rezepte, RezeptBO){
-        let index = rezepte.indexOf(RezeptBO);
-        if(index > -1){
-            rezepte.splice(index, 1);
+//     static delete(rezepte, RezeptBO){
+//         let index = rezepte.indexOf(RezeptBO);
+//         if(index > -1){
+//             rezepte.splice(index, 1);
+//         }
+//     }
+
+    static fromJSON(rzt){
+        let result = [];
+
+        // Mehrere Objekte
+        if (Array.isArray(rzt)){
+            rzt.forEach((r) => {
+                Object.setPrototypeOf(r, RezeptBO.prototype);
+                result.push(r);
+            })
+            // Nur ein einzelnes Objekt
+        } else {
+            let r = rzt;
+            Object.setPrototypeOf(r, RezeptBO.prototype);
+            result.push(r);
         }
+
+        return result;
     }
-}    
+    
+ }    
 
