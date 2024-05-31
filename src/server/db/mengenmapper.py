@@ -35,6 +35,8 @@ class MengenanzahlMapper(mapper):
 
         self._connector.commit()
        # cursor.close()
+        print("Das ist Object im mengenmapper", obj.get_id())
+        return obj.get_id()
 
     def find_by_menge(self, m):
         result = None

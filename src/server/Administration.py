@@ -249,13 +249,13 @@ class Administration(object):
         with MengenanzahlMapper() as mmapper:
             mengen_id = mmapper.find_by_menge(menge)
             if mengen_id is None:
-                self.create_menge(menge)
+                mengen_id = self.create_menge(menge)
             else:
-                menge_id = mengen_id.get_id()
+                mengen_id = mengen_id.get_id()
 
-        with MengenanzahlMapper() as m2mapper:
-            amenge = m2mapper.find_by_menge(menge)
-            menge_id = amenge.get_id()
+        # with MengenanzahlMapper() as m2mapper:
+        #     amenge = m2mapper.find_by_menge(menge)
+        #     menge_id = amenge.get_id()
 
             print("Beende mengenmapper")
 
@@ -265,7 +265,7 @@ class Administration(object):
         food.set_id(1)
         food.set_lebensmittelname(name)
         food.set_masseinheit(masseinheit_id)
-        food.set_mengenanzahl(menge_id)
+        food.set_mengenanzahl(mengen_id)
 
         print(f" Das ist das erstellte Lebensmittel: {food}")
 
@@ -505,80 +505,82 @@ class Administration(object):
         # Die Lebensmittel_id wird verwendet um zuerst zu prüfen, ob dieses zu entfernende Lebensmittel in der gesamten Konstellation schon im kuehlschrank vorhanden ist
         # wenn ja dann einfach rauslöschen
         # Vergleichen, ob alle Lebensmittel_ids aus dem Rezept im Fridge enthalten sind
-        if all(elem in food_id_in_fridge for elem in required_lebensmittel_id_in_rezept):
-            print("wir sind im if-Zweig")
-            # für jede lebensmittel_id im rezept wird anhand der kuehlschrank_id, das Lebensmittel aus dem Kuehlshrankinhalt entfernt
-            for elem in required_lebensmittel_id_in_rezept:
-                with KuehlschrankMapper() as mapper:
-                    mapper.delete(kuehlschrank_id, elem)
+        # if all(elem in food_id_in_fridge for elem in required_lebensmittel_id_in_rezept):
+        #     print("wir sind im if-Zweig")
+        #     # für jede lebensmittel_id im rezept wird anhand der kuehlschrank_id, das Lebensmittel aus dem Kuehlshrankinhalt entfernt
+        #     for elem in required_lebensmittel_id_in_rezept:
+        #         with KuehlschrankMapper() as mapper:
+        #             mapper.delete(kuehlschrank_id, elem)
 
         # Wenn nicht alle Lebensmittel in der benötigten Konstellation gefunden werden, dann überprüfen wir
         # ob wir das Lebensmittel überhaupt im Kühlschrank haben
-        else:
-            print("wir sind im else-Zweig")
-            print(f"Required Lebensmittel {required_lebensmittel}")
-            for elem in required_lebensmittel:
-                required_amount = elem.get_mengenanzahl()
-                required_unit = elem.get_masseinheit()
-                print(f"required amount: {required_amount}")
-                print(f"required unit: {required_unit}")
-                for x in fridge:
-                    # TODO: Case behandeln, wenn von einem Lebensmittel genug vorhanden sind, aber danach nicht
-                    # Stand jetzt zieht er auch bei dem die geügend vorhanden sind bereits ab und gibt danch die Einkaufsliste aus
-                    # mit den fehlenden Lebensmitteln
-                    if elem.get_lebensmittelname() == x.get_lebensmittelname():
-                        new_amount = x.decrease_food_quantity(required_amount, required_unit)
-                        print(f"das ist new_amount {new_amount}")
 
-                        print(f"das ist new_amount_menge{new_amount.get_mengenanzahl()}")
-                        if new_amount.get_mengenanzahl() > 0:
-                            print("if Pfad")
-                            # Create new food objects with amount and update the kuehlschrankinhalt
-                            # Lebensmittel_id im Kühschhrank finden um, dann mit einem neuen zu ersetzen
-                            old_food_id = x.get_id()
-                            print(f" Das ist das lebensmittel x im Kühlschrank, was nach dem decrease  größer0 ist {old_food_id}")
-                            print(f"Das ist das Lebensmittel mit der falschen Maßeinheit: {x}")
-                            # Neues lebensmittelobjekt mit neuer menge erstellen
-                            new_food_obj = self.create_lebensmittel_from_fridge(new_amount.get_lebensmittelname(),
-                                                                                new_amount.get_masseinheit(),
-                                                                                new_amount.get_mengenanzahl())
+        print("wir sind im else-Zweig")
+        print(f"Required Lebensmittel {required_lebensmittel}")
+        for elem in required_lebensmittel:
+            required_amount = elem.get_mengenanzahl()
+            required_unit = elem.get_masseinheit()
+            print(f"required amount: {required_amount}")
+            print(f"required unit: {required_unit}")
+            for x in fridge:
+                # TODO: Case behandeln, wenn von einem Lebensmittel genug vorhanden sind, aber danach nicht
+                # Stand jetzt zieht er auch bei dem die geügend vorhanden sind bereits ab und gibt danch die Einkaufsliste aus
+                # mit den fehlenden Lebensmitteln
+                print("Rezept name", elem.get_lebensmittelname())
+                print("lebensmittelname", x.get_lebensmittelname())
+                if elem.get_lebensmittelname() == x.get_lebensmittelname():
+                    new_amount = x.decrease_food_quantity(required_amount, required_unit)
+                    print(f"das ist new_amount {new_amount}")
 
-                            print(f"Das ist new_food_obj nach dem erfolgreichen Decrease {new_food_obj}")
-                            # Lebensmittel id vom neuen Lebensmittelobjekt ausgeben
-                            new_food_obj_id = new_food_obj.get_id()
-                            print(f"Das ist die  id von neue food objekt: {new_food_obj_id}")
+                    print(f"das ist new_amount_menge{new_amount.get_mengenanzahl()}")
+                    if new_amount.get_mengenanzahl() > 0:
+                        print("if Pfad")
+                        # Create new food objects with amount and update the kuehlschrankinhalt
+                        # Lebensmittel_id im Kühschhrank finden um, dann mit einem neuen zu ersetzen
+                        old_food_id = x.get_id()
+                        print(f" Das ist das lebensmittel x im Kühlschrank, was nach dem decrease  größer0 ist {old_food_id}")
+                        print(f"Das ist das Lebensmittel mit der falschen Maßeinheit: {x}")
+                        # Neues lebensmittelobjekt mit neuer menge erstellen
+                        new_food_obj = self.create_lebensmittel_from_fridge(new_amount.get_lebensmittelname(),
+                                                                            new_amount.get_masseinheit(),
+                                                                            new_amount.get_mengenanzahl())
 
-                            # Update kühlschrank
-                            with KuehlschrankMapper() as mapper:
-                                print(f"Das ist die old_food_id {old_food_id}")
-                                print(f"Das ist die new_food_obj_id {new_food_obj_id}")
-                                mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
+                        print(f"Das ist new_food_obj nach dem erfolgreichen Decrease {new_food_obj}")
+                        # Lebensmittel id vom neuen Lebensmittelobjekt ausgeben
+                        new_food_obj_id = new_food_obj.get_id()
+                        print(f"Das ist die  id von neue food objekt: {new_food_obj_id}")
 
-                        elif new_amount.get_mengenanzahl() == 0:
-                            # DELETE Lebensmittel aus kuehlschrankinhalt where Menge nach Decrease == 0
-                            print("elif1 pfad")
-                            # Lebensmittel aus dem kühlschrank löschen, da die Menge 0 ist
-                            print(f" Das Lebesnmittel hat nach dem Decrease die menge 0 {x}")
-                            delete_food_id = x.get_id()
-                            print(f"Die ID des zu entfernenden lebensmittels {delete_food_id}")
-                            print(f"Die ID die kuehlschrank_id {kuehlschrank_id}")
-                            with KuehlschrankMapper() as mapper:
-                                mapper.delete(kuehlschrank_id, delete_food_id)
+                        # Update kühlschrank
+                        with KuehlschrankMapper() as mapper:
+                            print(f"Das ist die old_food_id {old_food_id}")
+                            print(f"Das ist die new_food_obj_id {new_food_obj_id}")
+                            mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
 
-                        elif new_amount.get_mengenanzahl() < 0:
-                            # Wenn die Menge nach dem Decrease < 0 ist, dann soll das Lebensmittel als einkaufsliste ausgegeben werden
-                            print(f"Du musss dieses Lebensmittel einkaufen {new_amount}")
-                            # Das Lebensmittel an die Shopponglist anhängen
-                            shopping_list.append(new_amount)
-                            print(f"Das ist die shopping Liste {new_amount}")
+                    elif new_amount.get_mengenanzahl() == 0:
+                        # DELETE Lebensmittel aus kuehlschrankinhalt where Menge nach Decrease == 0
+                        print("elif1 pfad")
+                        # Lebensmittel aus dem kühlschrank löschen, da die Menge 0 ist
+                        print(f" Das Lebesnmittel hat nach dem Decrease die menge 0 {x}")
+                        delete_food_id = x.get_id()
+                        print(f"Die ID des zu entfernenden lebensmittels {delete_food_id}")
+                        print(f"Die ID die kuehlschrank_id {kuehlschrank_id}")
+                        with KuehlschrankMapper() as mapper:
+                            mapper.delete(kuehlschrank_id, delete_food_id)
+
+                    elif new_amount.get_mengenanzahl() < 0:
+                        # Wenn die Menge nach dem Decrease < 0 ist, dann soll das Lebensmittel als einkaufsliste ausgegeben werden
+                        print(f"Du musss dieses Lebensmittel einkaufen elif pfad {new_amount}")
+                        # Das Lebensmittel an die Shopponglist anhängen
+                        shopping_list.append(new_amount)
+                        print(f"Das ist die shopping Liste {new_amount}")
 
 
-                    # wenn dieses Lebensmittel nicht im Kühlschrank
-                    else:
-                        print(f"Du muss dieses Lebensmittel noch einkaufen {elem}")
-                        # Das Lebensmittel an die Shopping_list hinzufügen
-                        shopping_list.append(elem)
-                        # TODO: Lebensmittel werden jeweils zweimal in die Einkaufsliste gepackt
+                # wenn dieses Lebensmittel nicht im Kühlschrank
+                else:
+                    print(f"Du muss dieses Lebensmittel noch einkaufen letzer else Pfad {elem}")
+                    # Das Lebensmittel an die Shopping_list hinzufügen
+                    shopping_list.append(elem)
+                    # TODO: Lebensmittel werden jeweils zweimal in die Einkaufsliste gepackt
 
         print(f"Das ist die Shoppinglist Ende {shopping_list}")
         return shopping_list
