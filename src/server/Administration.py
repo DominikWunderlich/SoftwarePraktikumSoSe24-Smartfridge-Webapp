@@ -391,7 +391,7 @@ class Administration(object):
 
     def get_rezept_id_by_wg_name(self, wg_name):
         with RezeptMapper() as mapper:
-            return mapper.find_id_by_wg_name(wg_name)
+            return mapper.find_all_by_wg_name(wg_name)
 
     def find_common_objects(self, elem, kuehlschrank_inhalt):
         common_objects = []
@@ -570,31 +570,60 @@ class Administration(object):
         print(f"Das ist die Shoppinglist Ende {shopping_list}")
         return shopping_list
 
-    def get_lebensmittel_id_by_rezept_id(self, rezeptid):
-        with RezeptMapper as mapper:
-            return mapper.find_lebensmittel_by_rezept_id(rezeptid)
+    def get_lebensmittel_by_rezept_id2(self, rezept):
+        with RezeptEnthaeltLebensmittelMapper() as mapper:
+            return mapper.find_lebensmittel_by_rezept_id(rezept)
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
-        food_id_in_fridge = []
-        food_in_rezept_dict = {}
+        food_id_in_fridge = set()  # Verwende ein Set für effizientes Nachschlagen
+        food_in_rezept_dict = {}  # Dict für alle Rezepte die gekocht werden können
 
-        # Lebensmittel_id aus einem Kühlschrank in eine Liste speichern
+        # Lebensmittel_id aus einem Kühlschrank in ein Set speichern
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
         for f_elem in fridge:
-            food_id_in_fridge.append(f_elem.get_id())
+            food_id_in_fridge.add(f_elem.get_id())
+        print("Kühsclhrank Lebensmittel", food_id_in_fridge)
 
         # Rezept_id aus einer WG in eine Liste speichern
         recipes_id = self.get_rezept_id_by_wg_name(wg_name)
-        for r_elem in recipes_id:
-            rezept_id = r_elem.get_id()
-            food_in_rezept_dict[rezept_id] = []
-            # Lebensmittel_id aus einem Rezept in eine Liste speichern, wenn sie im Kühlschrank vorhanden sind
-            lebensmittel = self.get_lebensmittel_id_by_rezept_id(rezept_id)
-            for elem in lebensmittel:
-                if elem.get_id() in food_id_in_fridge:
-                    food_in_rezept_dict[rezept_id].append(elem.get_id())
+        for i in recipes_id:
+            print(i)
 
-        # food_in_rezept_dict = {
-        #     rezept_id_1: [lebensmittel_id_1, lebensmittel_id_2],
-        #     rezept_id_2: [lebensmittel_id_2, lebensmittel_id_3, lebensmittel_id_4],
-        # }
+        # Für jede Rezept_ID die Lebensmittel ausgeben
+        for recipe_id in recipes_id:
+            lebensmittel_in_rezept = set()
+            lebensmittel_by_rezept_liste = self.get_lebensmittel_by_rezept_id2(recipe_id.get_id())
+            for i in lebensmittel_by_rezept_liste:
+                print(i)
+
+            for elem in lebensmittel_by_rezept_liste:
+                rezept_required_amount = elem.get_mengenanzahl()
+                rezept_required_unit = elem.get_masseinheit()
+                # print(f"required amount: {required_amount}")
+                # print(f"required unit: {required_unit}")
+
+                for x in fridge:
+                    # fridge_required_amount = x.get_mengenanzahl()
+                    # fridge_required_unit = x.get_masseinheit()
+                    if elem.get_lebensmittelname() == x.get_lebensmittelname():
+                        new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit)
+                        # print(f"das ist new_amount {new_amount}")
+                        # print(f"das ist new_amount_menge{new_amount.get_mengenanzahl()}")
+
+                        if new_amount.get_mengenanzahl() > 0:
+                            food_in_rezept_dict[recipe_id.get_id()] = lebensmittel_in_rezept
+
+                            for l in lebensmittel_by_rezept_liste:
+                                lebensmittel_in_rezept.add(l.get_id())
+
+                        elif new_amount.get_mengenanzahl() == 0:
+                            food_in_rezept_dict[recipe_id.get_id()] = lebensmittel_in_rezept
+
+                            for l in lebensmittel_by_rezept_liste:
+                                lebensmittel_in_rezept.add(l.get_id())
+
+
+                        else:
+                            pass
+
+        return food_in_rezept_dict
