@@ -111,7 +111,8 @@ class RezeptMapper(mapper):
     def find_id_by_wg_name(self, wg_name):
         result = []
         cursor = self._connector.cursor()
-        cursor.execute("SELECT rezept_id FROM datenbank.rezept WHERE wg_name = %s", (wg_name,))
+        command = f"SELECT rezept_id FROM datenbank.rezept WHERE wg_name='{wg_name}'"
+        cursor.execute(command)
         tuples = cursor.fetchall()
 
         for (rezept_id) in tuples:
