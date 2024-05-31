@@ -6,6 +6,7 @@ import LebensmittelBO from "../api/LebensmittelBO";
 import MasseinheitBO from "../api/MasseinheitBO";
 import mengenanzahlBO from "../api/mengenanzahlBO";
 import { useParams } from "react-router-dom"; // Importing useParams
+import Lebensmittelverwaltung from "./Lebensmittel-Verwaltung";
 
 function GenauEinRezeptAnzeigen(props) {
     const [formData, setFormData] = useState({
@@ -69,6 +70,31 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     useEffect(() => {
+        const fetchMasseinheiten = async () => {
+            try {
+                const masseinheiten = await EatSmarterAPI.getAPI().getMasseinheitAll();
+                setMasseinheitenListe(masseinheiten);
+            } catch (error) {
+                console.error("Fehler beim Laden der Maßeinheiten:", error);
+            }
+        };
+
+        fetchMasseinheiten();
+
+
+    const fetchLebensmittel = async () => {
+        try {
+            const lebensmittel = await EatSmarterAPI.getAPI().getAllLebensmittelangabe();
+            setLebensmittelliste(lebensmittel);
+        } catch (error) {
+            console.error("Fehler beim Laden der Maßeinheiten:", error);
+        }
+    };
+
+        fetchLebensmittel();
+}, []);
+
+    useEffect(() => {
         const fetchRezeptById = async () => {
             try {
                 const api = new EatSmarterAPI();
@@ -118,6 +144,7 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    
     
     return (
         <div>
@@ -173,10 +200,16 @@ function GenauEinRezeptAnzeigen(props) {
                         <input
                             type="text"
                             name="lebensmittelname"
+                            list="lebensmittel"
                             value={formData.lebensmittelname}
                             onChange={handleChange}
                             className="eingabe"
                         />
+                          <datalist id="lebensmittel">
+                            {lebensmittelliste.map((lebensmittel, index) => (
+                                <option key={index} value={lebensmittel.lebensmittelname} />
+                            ))}
+                        </datalist>
                         <label>Menge</label>
                             <input
                                 type="number"
@@ -189,11 +222,16 @@ function GenauEinRezeptAnzeigen(props) {
                             <input
                                 type="text"
                                 name="masseinheit"
-                                list="masseinheit"
+                                list="masseinheiten"
                                 value={formData.masseinheit}
                                 onChange={handleChange}
                                 className="eingabe"
                         />
+                         <datalist id="masseinheiten">
+                            {masseinheitenListe.map((masseinheit, index) => (
+                                <option key={index} value={masseinheit.masseinheitsname} />
+                            ))}
+                        </datalist>
                     </div>
                     <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                 </div>
