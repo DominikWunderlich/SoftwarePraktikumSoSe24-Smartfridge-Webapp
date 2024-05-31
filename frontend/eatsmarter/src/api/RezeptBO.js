@@ -45,7 +45,7 @@ export default class RezeptBO extends BusinessObject{
     }
 
     setRezeptAnleitung(aRezeptAnleitung){
-        this.rezeptAnleitung=aRezeptAnleiutng;
+        this.rezeptAnleitung=aRezeptAnleitung;
     }
 
     getRezeptAnleitung(){
