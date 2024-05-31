@@ -26,8 +26,18 @@ function WGPage(props) {
         renderCurrentUsersWg()
     }, []);
 
+    // Funktion zum Überprüfen der E-Mail-Validität
+    const isValidEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
     // Handler-Function, um Mitglieder als Admin hinzuzufügen
     const handleAddMember = async() => {
+        if (!isValidEmail(addNewMemberEmail)) {
+            alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
+            return;
+        }
         const updatedWg = {...wg};
         updatedWg.wgBewohner += `,${addNewMemberEmail}`;
 
