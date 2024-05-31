@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import '../sytles/WG-Landingpage.css';
 
 function NavBar({ currentUser, onSignOut }) {
 
@@ -23,18 +24,21 @@ function NavBar({ currentUser, onSignOut }) {
 
     return (
         <AppBar>
-            <Toolbar>
-                <Button color="inherit" component={Link} to="/wg/:wgName">
-                    Home
+            <Toolbar className='navbar'>
+                <Button className='bold-button' color="inherit" component={Link} to="/wg/:wgName">
+                    EatSmarter
                 </Button>
-                <Button color="inherit" component={Link} to="/RezeptAnzeigen">
+                <Button className='navbar-button' color="inherit" component={Link} to="/RezeptAnzeigen">
                     Recipes
                 </Button>
-                <Button color="inherit" component={Link} to="/kuehlschrankinhalt/:wg_id">
+                <Button className='navbar-button' color="inherit" component={Link} to="/kuehlschrankinhalt/:wg_id">
                     Fridge
                 </Button>
-                <Button color="inherit" component={Link} to="/wg">
+                <Button className='navbar-button' color="inherit" component={Link} to="/wg">
                     WG
+                </Button>
+                <Button className='navbar-button' color="inherit" component={Link} to="/generator">
+                    Generator
                 </Button>
                 {/*Wenn CurrentUser existiert, wird der Avatar und das Menü gerendert*/}
                 {currentUser && (

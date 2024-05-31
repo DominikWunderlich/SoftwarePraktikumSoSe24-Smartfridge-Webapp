@@ -19,6 +19,7 @@ function Homepage(props) {
             });
 
     }
+
     useEffect(() => {
         renderCurrentUsersWg()
     }, []);
@@ -32,7 +33,6 @@ function Homepage(props) {
         }
     };
     
-
     useEffect(() => {
         getWGbyName();
     }, [wgName]);
@@ -42,6 +42,7 @@ function Homepage(props) {
         return <div className='container'>Error loading data: {error.message}</div>;
     }
 
+
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
@@ -49,20 +50,21 @@ function Homepage(props) {
                {/*Abfrage, ob wg nicht null*/}
                {wg && (
                     <div>
-                        <h2>Du bist Mitglied in der {wg.wgName}</h2>
                         <div className="inner-container">
-                            <div className="mini-container">
-                                <p>Bewohner:</p>
-                                <p>
+                        <h2>Du bist Mitglied in der {wg.wgName}</h2>
+                            <div className="formitem">
+                                <label>Bewohner:</label>
+                                <p className="mini-info-container">
                                     {wg.wgBewohner.split(',').map((bewohner, index) => (
                                         <li key={index}>{bewohner.trim()}</li>
                                     ))}
                                 </p>
                             </div>
-                            <div className="mini-container">
-                                <p>Ersteller der WG:</p>
-                                <p> {wg.wgAdmin}</p>
-                            </div>
+                            <br></br>
+                            <div className="formitem">
+                                <label>Ersteller der WG:</label>
+                                <p className="mini-info-container"> {wg.wgAdmin}</p>
+                            </div>         
                         </div>
                     </div>
                 )}

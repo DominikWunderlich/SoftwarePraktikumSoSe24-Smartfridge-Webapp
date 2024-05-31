@@ -138,7 +138,7 @@ DROP TABLE IF EXISTS `rezept_enthaelt_lebensmittel`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rezept_enthaelt_lebensmittel` (
-  `rezept_enthaelt_lebensmittel` varchar(45) NOT NULL,
+  `rezept_enthaelt_lebensmittel` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `rezept_id` varchar(45) NOT NULL,
   `lebensmittel_id` bigint NOT NULL,
   PRIMARY KEY (`rezept_enthaelt_lebensmittel`,`rezept_id`)

@@ -108,6 +108,23 @@ class RezeptMapper(mapper):
         self._connector.commit()
         cursor.close()
 
+    def find_id_by_wg_name(self, wg_name):
+        result = []
+        cursor = self._connector.cursor()
+        cursor.execute("SELECT rezept_id FROM datenbank.rezept WHERE wg_name = %s", (wg_name,))
+        tuples = cursor.fetchall()
+
+        for (rezept_id) in tuples:
+            rezept = Rezept()
+            rezept.set_id(rezept_id)
+            result.append(rezept)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
+
+
     def find_rezept_admin_by_email(self, email):
         result = []
         cursor = self._connector.cursor()

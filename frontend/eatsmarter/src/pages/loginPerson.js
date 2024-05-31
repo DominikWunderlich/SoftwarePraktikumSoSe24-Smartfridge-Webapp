@@ -51,30 +51,34 @@ function LoginPerson(props) {
         }
     };
 
+    
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
-                <form onSubmit={handleSubmit}>
-                    <h2>Account erstellen</h2>
-                    <div className='formitem'>
-                        <label>Vorname:</label>
-                        <input
-                            type="text"
-                            name={"firstName"}
-                            value={formData.firstName}
-                            onChange={handleChange}
-                        />
-                        <label>Nachname:</label>
-                        <input
-                            type="text"
-                            name={"lastName"}
-                            value={formData.lastName}
-                            onChange={handleChange}
-                        />
-                        <button className="button" type="submit" >Bestätigen</button>
-                    </div>
-                </form>
+                <div className="inner-container">
+                    <form onSubmit={handleSubmit}>
+                        <h2>Account erstellen</h2>
+                        <div className='formitem'>
+                            <label>Vorname:</label>
+                            <input
+                                type="text"
+                                name={"firstName"}
+                                value={formData.firstName}
+                                onChange={handleChange}
+                            />
+                            <label>Nachname:</label>
+                            <input
+                                type="text"
+                                name={"lastName"}
+                                value={formData.lastName}
+                                onChange={handleChange}
+                            />
+                            <button className="button" type="submit" >Bestätigen</button>
+                        </div>
+                        
+                    </form>
+                </div>
             </div>
         </div>
     );

@@ -85,7 +85,7 @@ function Lebensmittelverwaltung(props) {
         setErrors({});
     };
     
-
+    
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>

@@ -6,6 +6,7 @@ import mengenanzahlBO from "../api/mengenanzahlBO";
 import { Link } from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
+import Lebensmittelverwaltung from "./Lebensmittel-Verwaltung";
 
 
 function Kuehlschrankinhalt(props) {
@@ -112,12 +113,14 @@ function Kuehlschrankinhalt(props) {
         setErrors({});
     };
 
+    
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className="container">
-                <h2>Kühlschrank</h2>
                 <div className="inner-container">
+                <h2>Kühlschrank</h2>
+                    <div className="mini-container">
                     {errors.message && <p>{errors.message}</p>}
                     <ul>
                         {lebensmittelliste.map((lebensmittel, index) => (
@@ -126,49 +129,52 @@ function Kuehlschrankinhalt(props) {
                             </li>
                         ))}
                     </ul>
+                    </div>
                 </div>
                 <br></br>
-                <div className='formitem'>
-                    <h2>Lebensmittel hinzufügen</h2>
-                    {errors.message && <p>{errors.message}</p>}
-                    <label>Lebensmittelname</label>
-                    <input
-                        type="text"
-                        name="lebensmittelname"
-                        list="lebensmittel"
-                        value={formData.lebensmittelname}
-                        onChange={handleChange}
-                        className="eingabe"
-                    />
-                    <datalist id="lebensmittel">
-                        {lebensmittelliste.map((lebensmittel, index) => (
-                            <option key={index} value={lebensmittel.lebensmittelname} />
-                        ))}
-                    </datalist>
-                    <label>Menge</label>
-                    <input
-                        type="number"
-                        name="mengenanzahl"
-                        value={formData.mengenanzahl}
-                        onChange={handleChange}
-                        className="eingabe"
-                    />
+                <div className="inner-container">
+                    <div className='formitem'>
+                        <h2>Lebensmittel hinzufügen</h2>
+                        {errors.message && <p>{errors.message}</p>}
+                        <label>Lebensmittelname</label>
+                        <input
+                            type="text"
+                            name="lebensmittelname"
+                            list="lebensmittel"
+                            value={formData.lebensmittelname}
+                            onChange={handleChange}
+                            className="eingabe"
+                        />
+                        <datalist id="lebensmittel">
+                            {lebensmittelliste.map((lebensmittel, index) => (
+                                <option key={index} value={lebensmittel.lebensmittelname} />
+                            ))}
+                        </datalist>
+                        <label>Menge</label>
+                        <input
+                            type="number"
+                            name="mengenanzahl"
+                            value={formData.mengenanzahl}
+                            onChange={handleChange}
+                            className="eingabe"
+                        />
 
-                    <label>Maßeinheit</label>
-                    <input
-                        type="text"
-                        name="masseinheit"
-                        list="masseinheiten"
-                        value={formData.masseinheit}
-                        onChange={handleChange}
-                        className="eingabe"
-                    />
-                    <datalist id="masseinheiten">
-                        {masseinheitenListe.map((masseinheit, index) => (
-                            <option key={index} value={masseinheit.masseinheitsname} />
-                        ))}
-                    </datalist>
-                    <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
+                        <label>Maßeinheit</label>
+                        <input
+                            type="text"
+                            name="masseinheit"
+                            list="masseinheiten"
+                            value={formData.masseinheit}
+                            onChange={handleChange}
+                            className="eingabe"
+                        />
+                        <datalist id="masseinheiten">
+                            {masseinheitenListe.map((masseinheit, index) => (
+                                <option key={index} value={masseinheit.masseinheitsname} />
+                            ))}
+                        </datalist>
+                        <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
+                    </div>
                 </div>
             </div>
         </div>

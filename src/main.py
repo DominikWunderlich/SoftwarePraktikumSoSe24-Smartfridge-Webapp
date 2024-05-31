@@ -13,8 +13,16 @@ from server.bo.Masseinheit import Masseinheit
 
 from server.SecurityDecorator import secured
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="build", static_url_path='/')
 
+
+@app.route("/")
+def index():
+    return app.send_static_file("index.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return app.send_static_file('index.html')
 
 # Calls with /system/* are allowed.
 CORS(app, resources=r'/system/*')
@@ -55,11 +63,11 @@ rezept = api.inherit('Rezept', bo, {
 lebensmittel = api.inherit('Lebensmittel', bo, {
     'lebensmittelname': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
     'masseinheit': fields.String(attribute='masseinheit', description='Maßeinheit des Lebenmittels'),
-    'mengenanzahl': fields.Integer(attribute='mengenanzahl', description='Menge des Lebensmittels'),
+    'mengenanzahl': fields.Float(attribute='mengenanzahl', description='Menge des Lebensmittels'),
 })
 
 menge = api.inherit('Menge', bo, {
-    'menge': fields.Integer(attribute='menge', description='MengenObjekt')
+    'menge': fields.Float(attribute='menge', description='MengenObjekt')
 })
 
 masseinheit = api.inherit('Masseinheit', bo, {
@@ -67,15 +75,6 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
-shopping_list = api.inherit('Einkaufsliste', {
-    'bezeichnung': fields.String(attribute='bezeichnung', description='Liste bestehend aus Lebensmittelnamen')
-})
-
-
-@app.route("/")
-def index():
-    print("HELLO")
-    return app.send_static_file("index.html")
 
 
 @smartapi.route('/wg')
@@ -131,11 +130,11 @@ class WgGetWgOperations(Resource):
     def delete(self, email):
         adm = Administration()
         wgs = adm.getWGByEmail(email)
-        # print(adm.getWGByEmail(email))
+
         for wg in wgs:
-            # print(wg)
-            wg_name = wg.get_wg_name()
-            adm.delete_wg_by_name(wg_name)
+            wg_id = wg.get_id()
+            adm.delete_wg_and_kuehlschrank(wg_id)
+            #TODO: Alle Rezepte anhand der Wg id auch löschen?
 
 @smartapi.route('/wg/user/wgAdmin/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -215,13 +214,7 @@ class UserOperations(Resource):
 
 
         if proposal is not None:
-            result = adm.create_user(
-                proposal.get_email(),
-                proposal.get_benutzername(),
-                proposal.get_vorname(),
-                proposal.get_nachname(),
-                proposal.get_google_id()
-            )
+            result = adm.save_person(proposal)
             return result, 200
         else:
             return 'Fehler in User-Operations post methode', 500
@@ -360,7 +353,7 @@ class getEinRezeptOperations(Resource):
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class rezeptIdToBackendOperations(Resource):
-    @smartapi.marshal_with(shopping_list)
+    @smartapi.marshal_with(lebensmittel)
     @secured
     def post(self, rezept_id, email):
         """ Rezept-ID im Terminal ausgeben """

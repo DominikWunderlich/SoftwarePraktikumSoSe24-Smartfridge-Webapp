@@ -34,16 +34,18 @@ function RezepteAnzeigen(props) {
         fetchRezepte();
     }, [props.user.email]);  // Abhängigkeit hinzufügen, um den Effekt bei Änderung der E-Mail-Adresse des Benutzers auszulösen
 
+    
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
+            <div className='inner-container'>
             <h2>Alle Rezepte der WG</h2>
                 {rezepte.map((rezept, index) => (
-                    <div key={index} className='inner-container'>
-                        <Link to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
-                            <div>
-                                <p>Rezeptname: {rezept.rezeptName}</p>
+                    <div key={index}>
+                        <Link className="links" to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
+                            <div className="list-container">
+                                <p className="blue-mini-container">{rezept.rezeptName}</p>
                                 <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                                 <p>Ersteller: {rezept.rezeptAdmin}</p>
                                 <p>WG: {rezept.wgName}</p>
@@ -51,9 +53,11 @@ function RezepteAnzeigen(props) {
                         </Link>
                     </div>
                 ))}
+                </div>
+                <br></br>
                 <br></br>
                 <Link to="/rezeptErstellen">
-                    <button type="button">Rezept erstellen</button>
+                    <button className="button-uebersicht" type="button">Rezept erstellen</button>
                 </Link>
             </div>
         </div>

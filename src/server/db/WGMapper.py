@@ -101,12 +101,24 @@ class WGMapper(mapper):
         cursor.close()
 
 
-
+    # Diese Methode wird nicht mehr verwendet, da aber WGMapper von mapper erbt, bleibt die noch drinnen
     def delete(self, key):
         cursor = self._connector.cursor()
 
         command = f"DELETE FROM datenbank.wg WHERE wg_name='{key}'"
         cursor.execute(command)
+
+        self._connector.commit()
+        cursor.close()
+
+
+    def delete_wg_and_kuehlschrank(self, wg_id):
+        cursor = self._connector.cursor()
+        data = wg_id
+        command_1 = "DELETE FROM datenbank.kuehlschrankinhalt WHERE kuehlschrank_id=%s"
+        command_2 = "DELETE FROM datenbank.wg WHERE wg_id =%s"
+        cursor.execute(command_1, (data,))
+        cursor.execute(command_2, (data,))
 
         self._connector.commit()
         cursor.close()

@@ -54,23 +54,19 @@ class Lebensmittel(bo):
         updated_qnty = current_quantity - new_calculated_qnty
         print(F"Das ist die updated_qnty {updated_qnty}")
 
-        # Auf ursprüngliche Maßeinheit zurück
         updated_quantity = updated_qnty / conversion_factors[self.masseinheit]
         print(F"Das ist die updated_quantity {updated_quantity}")
 
-        # Update der Attribute
+        # Auf ursprüngliche Maßeinheit zurück
+        current_unit = self.masseinheit
         self.mengenanzahl = updated_quantity
+        self.masseinheit = current_unit
 
-        if self.mengenanzahl >= 0:
-            self.mengenanzahl = updated_quantity
-        else:
-            self.mengenanzahl = 0
-
-        if updated_quantity >= 0:
-            ## TODO: test ob das so klappt
-            self.masseinheit = self.masseinheit
-        else:
-            self.masseinheit = required_unit
+        # if updated_quantity >= 0:
+        #     ## TODO: test ob das so klappt
+        #     self.masseinheit = self.masseinheit
+        # else:
+        #     self.masseinheit = required_unit
 
         return self
 
