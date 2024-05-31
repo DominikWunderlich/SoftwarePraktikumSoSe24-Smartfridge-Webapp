@@ -575,20 +575,26 @@ class Administration(object):
             return mapper.find_lebensmittel_by_rezept_id(rezeptid)
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
+        food_id_in_fridge = []
+        food_in_rezept_dict = {}
+
         # Lebensmittel_id aus einem Kühlschrank in eine Liste speichern
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
-        food_id_in_fridge = []
         for f_elem in fridge:
             food_id_in_fridge.append(f_elem.get_id())
 
         # Rezept_id aus einer WG in eine Liste speichern
         recipes_id = self.get_rezept_id_by_wg_name(wg_name)
-        rezept_ids = []
         for r_elem in recipes_id:
-            rezept_ids.append(r_elem.get_id())
-            # Lebensmittel_id aus einem Rezept in eine Liste speichern
-            for rezeptId in rezept_ids:
-                lebensmittel = self.get_lebensmittel_id_by_rezept_id(rezeptId)
-                food_id_in_recipe = []
-                for elem in lebensmittel:
-                    food_id_in_recipe.append(elem.get_id())
+            rezept_id = r_elem.get_id()
+            food_in_rezept_dict[rezept_id] = []
+            # Lebensmittel_id aus einem Rezept in eine Liste speichern, wenn sie im Kühlschrank vorhanden sind
+            lebensmittel = self.get_lebensmittel_id_by_rezept_id(rezept_id)
+            for elem in lebensmittel:
+                if elem.get_id() in food_id_in_fridge:
+                    food_in_rezept_dict[rezept_id].append(elem.get_id())
+
+        # food_in_rezept_dict = {
+        #     rezept_id_1: [lebensmittel_id_1, lebensmittel_id_2],
+        #     rezept_id_2: [lebensmittel_id_2, lebensmittel_id_3, lebensmittel_id_4],
+        # }
