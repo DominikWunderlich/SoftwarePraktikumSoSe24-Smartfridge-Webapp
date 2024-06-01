@@ -432,7 +432,7 @@ class Administration(object):
 
         # Als nächstes prüfen wir ob der gesuchte Lebensmittelname bereits im Vorratsschrank ist.
         lebenmittel_name = lebensmittel.get_lebensmittelname()
-        # TODO: Handling, wenn der Kühlschrankinhalt leer ist
+
         names = []
         for elem in fridge:
             name = elem.get_lebensmittelname()
@@ -493,6 +493,8 @@ class Administration(object):
 
         # Leere shopping_list erstellen
         shopping_list = []
+        # Leere Liste für Shopping_list erstellen, in welcher nur die positive Menge angezeigt wird
+        shopping_list_with_correct_amounts = []
 
         for elem in required_lebensmittel:
             food_exist = False
@@ -558,9 +560,18 @@ class Administration(object):
                 # Das Lebensmittel an die Shopping_list hinzufügen
                 shopping_list.append(elem)
 
-        print(f"Das ist die Shoppinglist Ende {shopping_list}")
+        # Shopping List inklusive Minus Werte für die Menge
+        print(f"Das ist die Shoppinglist mit Minus Werten {shopping_list}")
 
-        return shopping_list
+        # Shopping List Minus Werte mittels python abs() function in positive Werte umwandeln
+        for lebensmittel in shopping_list:
+            positive_amount = abs(lebensmittel.get_mengenanzahl())
+            lebensmittel.set_mengenanzahl(positive_amount)
+            shopping_list_with_correct_amounts.append(lebensmittel)
+
+        print(f"Das ist die Shoppinglist mit Plus Werten {shopping_list_with_correct_amounts}")
+
+        return shopping_list_with_correct_amounts
 
     def get_lebensmittel_by_rezept_id2(self, rezept):
         with RezeptEnthaeltLebensmittelMapper() as mapper:
