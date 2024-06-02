@@ -578,38 +578,32 @@ class Administration(object):
 
         # Rezept_id aus einer WG in eine Liste speichern
         recipes_id = self.get_rezept_id_by_wg_name(wg_name)
-        for i in recipes_id:
-            print(i)
 
         # Für jede Rezept_ID die Lebensmittel ausgeben
-        for recipe_id in recipes_id:
-            lebensmittel_in_rezept = set()
-            lebensmittel_by_rezept_liste = self.get_lebensmittel_by_rezept_id2(recipe_id.get_id())
-            for i in lebensmittel_by_rezept_liste:
-                print(i)
+        for rezept in recipes_id:
+            lebensmittel_in_rezept = set()  # Ein Set für alle Lebensmittel eines Rezepts
+            lebensmittel_by_rezept_liste = self.get_lebensmittel_by_rezept_id2(rezept.get_id())
+            # Lebensmittel eines Rezepts in eine Liste speichern
 
             for elem in lebensmittel_by_rezept_liste:
                 rezept_required_amount = elem.get_mengenanzahl()
                 rezept_required_unit = elem.get_masseinheit()
-                # print(f"required amount: {required_amount}")
-                # print(f"required unit: {required_unit}")
 
                 for x in fridge:
-                    # fridge_required_amount = x.get_mengenanzahl()
-                    # fridge_required_unit = x.get_masseinheit()
                     if elem.get_lebensmittelname() == x.get_lebensmittelname():
                         new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit)
-                        # print(f"das ist new_amount {new_amount}")
-                        # print(f"das ist new_amount_menge{new_amount.get_mengenanzahl()}")
+                        # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
                         if new_amount.get_mengenanzahl() > 0:
-                            food_in_rezept_dict[recipe_id.get_id()] = lebensmittel_in_rezept
+                            food_in_rezept_dict[rezept.get_id()] = lebensmittel_in_rezept
+                            # rezept_id wird als Key im Dict verwendet
+                            # Set wird den rezept_ids zugewiesen
 
                             for l in lebensmittel_by_rezept_liste:
                                 lebensmittel_in_rezept.add(l.get_id())
 
                         elif new_amount.get_mengenanzahl() == 0:
-                            food_in_rezept_dict[recipe_id.get_id()] = lebensmittel_in_rezept
+                            food_in_rezept_dict[rezept.get_id()] = lebensmittel_in_rezept
 
                             for l in lebensmittel_by_rezept_liste:
                                 lebensmittel_in_rezept.add(l.get_id())
