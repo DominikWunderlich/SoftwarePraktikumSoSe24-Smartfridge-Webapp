@@ -482,7 +482,8 @@ class Administration(object):
             with KuehlschrankMapper() as mapper:
                 mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
 
-    def remove_food_from_fridge(self, kuehlschrank_id, rezept_id):
+
+    def remove_food_from_fridge_with_recipe(self, kuehlschrank_id, rezept_id):
         # Zugehörige Lebensmittel des Kühlschranks finden
         print(f"...starting remove_food_from_fridge")
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -495,6 +496,10 @@ class Administration(object):
         shopping_list = []
         # Leere Liste für Shopping_list erstellen, in welcher nur die positive Menge angezeigt wird
         shopping_list_with_correct_amounts = []
+
+        # Leere Listen die mit den Tupeln gefüllt werden sollen, die entweder geupdated oder gelöscht werden sollen.
+        fridge_updates = []
+        fridge_deletions = []
 
         for elem in required_lebensmittel:
             food_exist = False
@@ -526,12 +531,7 @@ class Administration(object):
                         print(f"Das ist new_food_obj nach dem erfolgreichen Decrease {new_food_obj}")
                         # Lebensmittel id vom neuen Lebensmittelobjekt ausgeben
                         new_food_obj_id = new_food_obj.get_id()
-
-                        # Update kühlschrank
-                        with KuehlschrankMapper() as mapper:
-                            print(f"Das ist die old_food_id {old_food_id}")
-                            print(f"Das ist die new_food_obj_id {new_food_obj_id}")
-                            mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
+                        fridge_updates.append((old_food_id,new_food_obj_id, kuehlschrank_id))
 
                     elif new_amount.get_mengenanzahl() == 0:
                         # DELETE Lebensmittel aus kuehlschrankinhalt where Menge nach Decrease == 0
@@ -541,8 +541,7 @@ class Administration(object):
                         delete_food_id = x.get_id()
                         print(f"Die ID des zu entfernenden lebensmittels {delete_food_id}")
                         print(f"Die ID die kuehlschrank_id {kuehlschrank_id}")
-                        with KuehlschrankMapper() as mapper:
-                            mapper.delete(kuehlschrank_id, delete_food_id)
+                        fridge_deletions.append((kuehlschrank_id, delete_food_id))
 
                     elif new_amount.get_mengenanzahl() < 0:
                         # Wenn die Menge nach dem Decrease < 0 ist, dann soll das Lebensmittel als einkaufsliste ausgegeben werden
@@ -571,7 +570,23 @@ class Administration(object):
 
         print(f"Das ist die Shoppinglist mit Plus Werten {shopping_list_with_correct_amounts}")
 
+        # Wir updaten die Lebensmittel im Kühlschrank nur wenn wir alle Lebensmittel vorrätig haben.
+        if not shopping_list:
+            with KuehlschrankMapper() as mapper:
+                for old_food_id, new_food_obj_id, kuehlschrank_id in fridge_updates:
+                    print(f"Updating: old_food_id={old_food_id}, new_food_obj_id={new_food_obj_id}")
+                    mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
+
+                for kuehlschrank_id, delete_food_id in fridge_deletions:
+                    print(f"Deleting: kuehlschrank_id={kuehlschrank_id}, delete_food_id={delete_food_id}")
+                    mapper.delete(kuehlschrank_id, delete_food_id)
+
         return shopping_list_with_correct_amounts
+
+    """ Diese Methode ermöglicht das direkte Löschen eines Lebensmittels aus dem Kuehlschrank"""
+    def remove_food_from_fridge(self, kuehlschrank_id, lebensmittel_id):
+        with KuehlschrankMapper() as mapper:
+            mapper.delete(kuehlschrank_id, lebensmittel_id)
 
     def get_lebensmittel_by_rezept_id2(self, rezept):
         with RezeptEnthaeltLebensmittelMapper() as mapper:
