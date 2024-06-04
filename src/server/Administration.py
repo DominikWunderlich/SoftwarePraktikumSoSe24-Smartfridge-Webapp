@@ -482,7 +482,8 @@ class Administration(object):
             with KuehlschrankMapper() as mapper:
                 mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
 
-    def remove_food_from_fridge(self, kuehlschrank_id, rezept_id):
+
+    def remove_food_from_fridge_with_recipe(self, kuehlschrank_id, rezept_id):
         # Zugehörige Lebensmittel des Kühlschranks finden
         print(f"...starting remove_food_from_fridge")
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -581,6 +582,11 @@ class Administration(object):
                     mapper.delete(kuehlschrank_id, delete_food_id)
 
         return shopping_list_with_correct_amounts
+
+    """ Diese Methode ermöglicht das direkte Löschen eines Lebensmittels aus dem Kuehlschrank"""
+    def remove_food_from_fridge(self, kuehlschrank_id, lebensmittel_id):
+        with KuehlschrankMapper() as mapper:
+            mapper.delete(kuehlschrank_id, lebensmittel_id)
 
     def get_lebensmittel_by_rezept_id2(self, rezept):
         with RezeptEnthaeltLebensmittelMapper() as mapper:
