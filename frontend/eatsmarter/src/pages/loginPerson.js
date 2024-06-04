@@ -4,6 +4,7 @@ import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
+import NavBarRegisterWg from "../components/NavBarRegisterWg";
 
 function LoginPerson(props) {
     const [formData, setFormData] = useState({
@@ -54,7 +55,7 @@ function LoginPerson(props) {
     
     return (
         <div>
-            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
+            <NavBarRegisterWg currentUser={props.user} onSignOut={props.onSignOut}/> <br/> <br/>
             <div className='container'>
                 <div className="inner-container">
                     <form onSubmit={handleSubmit}>
