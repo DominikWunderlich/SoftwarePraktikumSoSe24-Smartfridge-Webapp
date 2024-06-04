@@ -113,6 +113,18 @@ function Kuehlschrankinhalt(props) {
         setErrors({});
     };
 
+    // Mit dieser Funktion kann das Lebensmittel aus dem Kuehlschrank gelöscht werden
+    async function deleteLebensmittel (event){
+        event.preventDefault()
+        // LebensmittelId ist der Value aus dem button Klick event
+        let lebensmittelId = event.target.value
+        // console.log("Das ist die Lebensmittel id welche gelöscht werden soll", lebensmittelId)
+        // console.log("Das ist die kuehlschrank_id", wgId)
+        await EatSmarterAPI.getAPI().deleteFoodFromFridge(wgId, lebensmittelId)
+        // Reload page nachdem Lebensmittel erfolgreich gelöscht wurde
+        window.location.reload()
+    }
+
     
     return (
         <div>
@@ -128,6 +140,7 @@ function Kuehlschrankinhalt(props) {
                                     <th>Lebensmittelname</th>
                                     <th>Mengenanzahl</th>
                                     <th>Maßeinheit</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -136,6 +149,9 @@ function Kuehlschrankinhalt(props) {
                                         <td>{lebensmittel.lebensmittelname}</td>
                                         <td>{lebensmittel.mengenanzahl}</td>
                                         <td>{lebensmittel.masseinheit}</td>
+                                        <td>
+                                            <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>

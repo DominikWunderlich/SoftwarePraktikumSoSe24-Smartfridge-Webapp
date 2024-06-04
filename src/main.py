@@ -207,8 +207,8 @@ class KuelschrankLebensmittelOperations(Resource):
         kuehlschrank_id = wg_id
 
         adm = Administration()
-        print(f"main.py lebensmittel id {lebensmittel_id}")
-        print(f"main.py kuehlschrank id {kuehlschrank_id}")
+        # print(f"main.py lebensmittel id {lebensmittel_id}")
+        # print(f"main.py kuehlschrank id {kuehlschrank_id}")
         adm.remove_food_from_fridge(kuehlschrank_id, lebensmittel_id)
 
 """ User related API Endpoints """
