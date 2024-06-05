@@ -4,6 +4,7 @@ import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
+import TrimAndLowerCase from "../functions";
 
 function LoginPerson(props) {
     const [formData, setFormData] = useState({
@@ -20,14 +21,15 @@ function LoginPerson(props) {
 
         if (!Object.keys(errors).length) {
             const newPerson = new PersonBO(
-                props.user.email,
-                props.user.displayName,
-                formData.firstName,
-                formData.lastName,
+                TrimAndLowerCase(props.user.email),
+                TrimAndLowerCase(props.user.displayName),
+                TrimAndLowerCase(formData.firstName),
+                TrimAndLowerCase(formData.lastName),
                 props.user.uid
             );
             await EatSmarterAPI.getAPI()
                 .addUser(newPerson)
+            console.log("Zeile 32: New Person", {newPerson})
         }
         // Checking if a user is already in a wg:
         EatSmarterAPI.getAPI().getUserByGID(props.user.uid)

@@ -3,6 +3,7 @@ import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
 import NavBar from "../components/NavBar";
+import TrimAndLowerCase from "../functions";
 
 
 function WGPage(props) {
@@ -39,7 +40,7 @@ function WGPage(props) {
             return;
         }
         const updatedWg = {...wg};
-        updatedWg.wgBewohner += `,${addNewMemberEmail}`;
+        updatedWg.wgBewohner += `,${TrimAndLowerCase(addNewMemberEmail)}`;
 
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
            if(isAdmin){
@@ -56,7 +57,7 @@ function WGPage(props) {
     const handleDeleteMember = async()  => {
            const updatedWg = {...wg};
            // Bewohner aus der Liste entfernen
-           updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== deleteNewMemberEmail).join(',');
+           updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== TrimAndLowerCase(deleteNewMemberEmail)).join(',');
 
            const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
            // console.log("wg", isAdmin)
