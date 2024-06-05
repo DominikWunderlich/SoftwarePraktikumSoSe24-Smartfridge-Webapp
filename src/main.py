@@ -385,6 +385,16 @@ class DeleteEinRezeptOperations(Resource):
                 rz_id = rz.get_id()
                 adm.delete_rezept_by_id(rz_id)
 
+    def get(self, rezept_id):
+        adm = Administration()
+        rezepte = adm.get_rezepte_by_rezept_id(rezept_id)
+
+        if rezepte is not None:
+            return rezepte
+        else:
+            return '', 500
+
+
 @smartapi.route('/rezept/user/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('email', 'Die E-mail der aktuellen person')
@@ -496,6 +506,25 @@ class MasseinheitOperation(Resource):
             return masseinheit
         else:
             return '', 500
+
+    """Generator Calls"""
+    @smartapi.route('/rezept/generator/<wg_name>/<kuehlschrank_id>')
+    @smartapi.response(500, 'Serverseitiger Fehler')
+    @smartapi.param('wg_name', 'Name der WG')
+    class GeneratorOperations(Resource):
+        # @secured
+        def get(self, wg_name, kuehlschrank_id):
+            """ Auslesen aller Rezepte durch Generator """
+
+            adm = Administration()
+            gen_rezepte = adm.find_verfuegbare_rezepte(wg_name, kuehlschrank_id)
+
+            print(gen_rezepte)
+            if gen_rezepte is not None:
+                return gen_rezepte
+            else:
+                return '', 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -94,8 +94,6 @@ class RezeptMapper(mapper):
 
         self._connector.commit()
         cursor.close()
-        print("hallihallo")
-        print(rezept)
 
         return result
 

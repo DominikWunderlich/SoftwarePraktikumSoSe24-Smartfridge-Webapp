@@ -579,7 +579,7 @@ class Administration(object):
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
         food_id_in_fridge = set()  # Verwende ein Set für effizientes Nachschlagen
-        food_in_rezept_dict = {}  # Dict für alle Rezepte die gekocht werden können
+        rezept_set = set()  # Liste für alle Rezepte die gekocht werden können
 
         # Lebensmittel_id aus einem Kühlschrank in ein Set speichern
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -606,21 +606,29 @@ class Administration(object):
                         # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
                         if new_amount.get_mengenanzahl() > 0:
-                            food_in_rezept_dict[rezept.get_id()] = lebensmittel_in_rezept
+                            rezept_set.add(rezept.get_id())
+
                             # rezept_id wird als Key im Dict verwendet
                             # Set wird den rezept_ids zugewiesen
 
-                            for l in lebensmittel_by_rezept_liste:
-                                lebensmittel_in_rezept.add(l.get_id())
+                            #for l in lebensmittel_by_rezept_liste:
+                                #lebensmittel_in_rezept.add(l.get_id())
 
                         elif new_amount.get_mengenanzahl() == 0:
-                            food_in_rezept_dict[rezept.get_id()] = lebensmittel_in_rezept
+                            rezept_set.add(rezept.get_id())
 
-                            for l in lebensmittel_by_rezept_liste:
-                                lebensmittel_in_rezept.add(l.get_id())
+                            #for l in lebensmittel_by_rezept_liste:
+                                #lebensmittel_in_rezept.add(l.get_id())
 
 
                         else:
                             pass
+                        print("TEST", rezept_set)
 
-        return food_in_rezept_dict
+        rezept_liste = list(rezept_set)
+        print(rezept_liste)
+        return rezept_liste
+
+    def get_rezepte_by_rezept_id(self, rezept_id):
+        with RezeptMapper() as mapper:
+            mapper.find_by_rezept_id(rezept_id)
