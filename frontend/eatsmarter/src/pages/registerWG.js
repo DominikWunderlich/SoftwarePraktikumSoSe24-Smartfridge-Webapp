@@ -5,6 +5,8 @@ import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
 import TrimAndLowerCase from "../functions";
+import Homepage from "./Homepage";
+
 
 
 function WGLandingpage(props) {
@@ -38,7 +40,7 @@ function WGLandingpage(props) {
             console.log(newWG)
             EatSmarterAPI.getAPI()
                 .addWg(newWG)
-            navigate("/wg")
+            navigate("/wg/:wgName")
         }
     };
 
