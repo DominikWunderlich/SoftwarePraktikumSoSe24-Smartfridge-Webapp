@@ -98,20 +98,6 @@ class WgOperations(Resource):
         else:
             return 'Fehler in WG-Operations post methode', 500
 
-    @smartapi.expect(wg)
-    @smartapi.marshal_with(wg)
-    @secured
-    def put(self):
-        adm = Administration()
-        proposal = WG.from_dict(api.payload)
-        # print("Main.py", api.payload)
-
-        if proposal is not None:
-            result = adm.update_wg_by_email(proposal)
-            # print("Ergebnis:", result)
-            return result
-
-
 
 @smartapi.route('/wg/user/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -164,14 +150,6 @@ class WgGetOperations(Resource):
         else:
             return '', 500
 
-    """Wg über den Namen löschen"""
-
-    @secured
-    def delete(self, wg_name):
-        adm = Administration()
-        adm.get_wg_by_name(wg_name)
-        adm.delete_wg_by_name(wg_name)
-        return "", 200
 
 # Wg bewohner hinzufügen
 @smartapi.route('/wg/add/<current_user>/<new_user>')
@@ -182,9 +160,9 @@ class WgUpdateOperations(Resource):
         wg_id = adm.get_wg_id_by_email(current_user)
         i = adm.add_new_wg_bewohner_by_email(current_user, wg_id, new_user)
 
-        print("main.py i: ", i)
         return i
 
+# Wg Bewohner entfernen
 @smartapi.route('/wg/delete/<current_user>/<new_user>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class WgUpdateOperations(Resource):
@@ -193,7 +171,6 @@ class WgUpdateOperations(Resource):
         wg_id = adm.get_wg_id_by_email(current_user)
         i = adm.delete_wg_bewohner_by_email(current_user, wg_id, new_user)
 
-        print("main.py i: ", i)
         return i
 
 

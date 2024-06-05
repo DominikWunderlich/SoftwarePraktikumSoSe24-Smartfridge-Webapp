@@ -89,7 +89,7 @@ class WGMapper(mapper):
 
         return wg
 
-    """ Diese Methode updated eine WG basierend auf der wg_id"""
+    """ Diese Methode wird nicht mehr verwendet Stand 05.06.24"""
     def update(self, wg):
         cursor = self._connector.cursor()
 
@@ -146,7 +146,6 @@ class WGMapper(mapper):
         command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_ersteller =%s AND wg_id =%s "
         data =(current_user, wg_id)
         cursor.execute(command, data)
-
         wg = cursor.fetchone()
 
         if wg:
@@ -157,29 +156,18 @@ class WGMapper(mapper):
 
         self._connector.commit()
         cursor.close()
-        print("Mapper result: result", result)
+        #print("Mapper result: result", result)
         return result
 
     def add_wg_bewohner(self, new_email, wg_id):
         cursor = self._connector.cursor()
         command = "UPDATE datenbank.wg SET wg_bewohner = CONCAT(wg_bewohner, ', ', %s) WHERE wg_id = %s"
-
         data =(new_email, wg_id)
 
         cursor.execute(command, data)
 
         self._connector.commit()
         cursor.close()
-
-    # def delete_wg_bewohner(self, new_email, wg_id):
-    #     cursor = self._connector.cursor()
-    #     command = "UPDATE datenbank.wg SET wg_bewohner = REPLACE(REPLACE(wg_bewohner, %s, ''),',,', ',') WHERE wg_id = %s"
-    #     data = (new_email, wg_id)
-    #
-    #     cursor.execute(command, data)
-    #
-    #     self._connector.commit()
-    #     cursor.close()
 
     def delete_wg_bewohner(self, new_email, wg_id):
         cursor = self._connector.cursor()
@@ -203,7 +191,7 @@ class WGMapper(mapper):
 
         wg_id = cursor.fetchone()
         if wg_id:
-            print(wg_id[0])
+            #print(wg_id[0])
             return wg_id[0]  # Nur die wg_id zurückgeben
 
         return None
