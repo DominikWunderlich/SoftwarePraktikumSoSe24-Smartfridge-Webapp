@@ -160,11 +160,35 @@ class WGMapper(mapper):
         print("Mapper result: result", result)
         return result
 
-    def update_wg_bewohner(self, new_email, wg_id):
+    def add_wg_bewohner(self, new_email, wg_id):
         cursor = self._connector.cursor()
         command = "UPDATE datenbank.wg SET wg_bewohner = CONCAT(wg_bewohner, ', ', %s) WHERE wg_id = %s"
 
         data =(new_email, wg_id)
+
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+
+    # def delete_wg_bewohner(self, new_email, wg_id):
+    #     cursor = self._connector.cursor()
+    #     command = "UPDATE datenbank.wg SET wg_bewohner = REPLACE(REPLACE(wg_bewohner, %s, ''),',,', ',') WHERE wg_id = %s"
+    #     data = (new_email, wg_id)
+    #
+    #     cursor.execute(command, data)
+    #
+    #     self._connector.commit()
+    #     cursor.close()
+
+    def delete_wg_bewohner(self, new_email, wg_id):
+        cursor = self._connector.cursor()
+        command = """
+        UPDATE datenbank.wg 
+        SET wg_bewohner = REPLACE(REPLACE(TRIM(BOTH ',' FROM REPLACE(wg_bewohner, %s, '')), ',,', ','), ',,', ',')
+        WHERE wg_id = %s
+        """
+        data = (new_email, wg_id)
 
         cursor.execute(command, data)
 

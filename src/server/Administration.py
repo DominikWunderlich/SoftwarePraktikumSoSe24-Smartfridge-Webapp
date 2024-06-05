@@ -83,13 +83,29 @@ class Administration(object):
             if is_admin:
                 print("Admin is admin true")
                 with WGMapper():
-                    mapper.update_wg_bewohner(new_user, wg_id)
+                    mapper.add_wg_bewohner(new_user, wg_id)
                     print("Bewohner hinzugefügt")
                     return True
 
             else:
                 print("Admin is admin false")
                 print("Bewohner nicht hinzugefügt")
+                return False
+
+    def delete_wg_bewohner_by_email(self, current_user, wg_id, new_user):
+        with WGMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(current_user, wg_id)
+
+            if is_admin:
+                print("Admin is admin true")
+                with WGMapper():
+                    mapper.delete_wg_bewohner(new_user, wg_id)
+                    print("Bewohner enfernt")
+                    return True
+
+            else:
+                print("Admin is admin false")
+                print("Bewohner nicht entfernt")
                 return False
 
 

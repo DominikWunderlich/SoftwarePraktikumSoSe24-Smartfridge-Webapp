@@ -508,11 +508,10 @@ export default class EatSmarterAPI{
     })
 }
 
-    #updateWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/${current_user}/${new_user}`
-
-    updateWgBewohner(currentUser,  new_user){
+    #addWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/add/${current_user}/${new_user}`
+    addWgBewohner(currentUser,  new_user){
          console.log("Eatamerter currentuser, wg_id, new_user", currentUser,  new_user)
-         return this.#fetchAdvanced(this.#updateWgBewohnerURL(currentUser,  new_user), {
+         return this.#fetchAdvanced(this.#addWgBewohnerURL(currentUser,  new_user), {
              method: "PUT",
              headers: {
                  "Accept": "application/json, text/plain",
@@ -529,6 +528,27 @@ export default class EatSmarterAPI{
 
          });
 }
+    #deleteWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/delete/${current_user}/${new_user}`
+
+    deleteWgBewohner(currentUser,  new_user){
+      console.log("Eatamerter currentuser, wg_id, new_user", currentUser,  new_user)
+      return this.#fetchAdvanced(this.#deleteWgBewohnerURL(currentUser,  new_user), {
+          method: "PUT",
+          headers: {
+              "Accept": "application/json, text/plain",
+              "Content-type": "application/json",
+          },
+      }).then((response) => {
+          console.log(response)
+          if (response === true){
+              return true
+          }
+          else{
+              return false
+          }
+
+      });
+ }
 
     getWGbyName(wgName) {
         return this.#fetchAdvanced(this.#getWgbyURL(wgName), {

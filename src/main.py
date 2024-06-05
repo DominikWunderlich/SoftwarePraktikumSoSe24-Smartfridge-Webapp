@@ -173,14 +173,25 @@ class WgGetOperations(Resource):
         adm.delete_wg_by_name(wg_name)
         return "", 200
 
-
-@smartapi.route('/wg/<current_user>/<new_user>')
+# Wg bewohner hinzufügen
+@smartapi.route('/wg/add/<current_user>/<new_user>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class WgUpdateOperations(Resource):
     def put(self, current_user, new_user):
         adm = Administration()
         wg_id = adm.get_wg_id_by_email(current_user)
         i = adm.add_new_wg_bewohner_by_email(current_user, wg_id, new_user)
+
+        print("main.py i: ", i)
+        return i
+
+@smartapi.route('/wg/delete/<current_user>/<new_user>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+class WgUpdateOperations(Resource):
+    def put(self, current_user, new_user):
+        adm = Administration()
+        wg_id = adm.get_wg_id_by_email(current_user)
+        i = adm.delete_wg_bewohner_by_email(current_user, wg_id, new_user)
 
         print("main.py i: ", i)
         return i
