@@ -33,24 +33,22 @@ function WGPage(props) {
         return emailRegex.test(email);
     };
 
-    // Handler-Function, um Mitglieder als Admin hinzuzufügen
+
     const handleAddMember = async() => {
         if (!isValidEmail(addNewMemberEmail)) {
             alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
             return;
         }
-        const updatedWg = {...wg};
-        updatedWg.wgBewohner += `,${TrimAndLowerCase(addNewMemberEmail)}`;
 
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
-           if(isAdmin){
-               await EatSmarterAPI.getAPI().updateWg(updatedWg)
-               renderCurrentUsersWg()
-           }
-           else{
-               alert("Nur der Ersteller kann Mitglieder hinzufügen");
-           }
-           setAddNewMemberEmail("");
+        const response = await EatSmarterAPI.getAPI().updateWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
+        console.log("Repsonse im wgpage", response)
+        if(response){
+            renderCurrentUsersWg();
+        }
+        else{
+            alert("Nur der Ersteller kann Mitglieder hinzufügen");
+        }
+        setAddNewMemberEmail("");
     }
 
     // Handler-Function, um Mitglieder als Admin zu entfernen

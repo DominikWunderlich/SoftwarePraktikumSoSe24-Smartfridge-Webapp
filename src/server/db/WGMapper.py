@@ -139,3 +139,49 @@ class WGMapper(mapper):
         self._connector.commit()
         cursor.close()
         return result
+
+    def check_if_current_user_is_wg_admin_using_email_and_wg_id(self, current_user, wg_id):
+
+        cursor = self._connector.cursor()
+        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_ersteller =%s AND wg_id =%s "
+        data =(current_user, wg_id)
+        cursor.execute(command, data)
+
+        wg = cursor.fetchone()
+
+        if wg:
+            result = True
+
+        else:
+            result = False
+
+        self._connector.commit()
+        cursor.close()
+        print("Mapper result: result", result)
+        return result
+
+    def update_wg_bewohner(self, new_email, wg_id):
+        cursor = self._connector.cursor()
+        command = "UPDATE datenbank.wg SET wg_bewohner = CONCAT(wg_bewohner, ', ', %s) WHERE wg_id = %s"
+
+        data =(new_email, wg_id)
+
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+
+    def find_wg_id_by_email(self, email):
+        cursor = self._connector.cursor()
+        command = "SELECT wg_id FROM datenbank.wg WHERE wg_bewohner LIKE %s OR wg_ersteller LIKE %s"
+        data = (email, email)
+        cursor.execute(command, data)
+
+        wg_id = cursor.fetchone()
+        if wg_id:
+            print(wg_id[0])
+            return wg_id[0]  # Nur die wg_id zurückgeben
+
+        return None
+
+

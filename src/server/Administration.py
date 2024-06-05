@@ -72,6 +72,28 @@ class Administration(object):
             mapper.find_wg_admin_by_email(key)
             mapper.delete(key)
 
+    def get_wg_id_by_email(self, email):
+        with WGMapper() as mapper:
+            return mapper.find_wg_id_by_email(email)
+
+    def add_new_wg_bewohner_by_email(self, current_user, wg_id, new_user):
+        with WGMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(current_user, wg_id)
+
+            if is_admin:
+                print("Admin is admin true")
+                with WGMapper():
+                    mapper.update_wg_bewohner(new_user, wg_id)
+                    print("Bewohner hinzugefügt")
+                    return True
+
+            else:
+                print("Admin is admin false")
+                print("Bewohner nicht hinzugefügt")
+                return False
+
+
+
     """ Diese Methode löscht die wg und den kuehlschrankinhalt"""
     def delete_wg_and_kuehlschrank(self, wg_id):
         with WGMapper() as mapper:
