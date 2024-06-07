@@ -244,25 +244,31 @@ function GenauEinRezeptAnzeigen(props) {
             {isPopupOpen && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h3 className="h2-black">Fehlende Lebensmittel</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Lebensmittelname</th>
-                                    <th>Mengenanzahl</th>
-                                    <th>Maßeinheit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {shoppingListElem.map((shoppingList, index) => (
-                                    <tr key={index}>
-                                        <td>{shoppingList.lebensmittelname}</td>
-                                        <td>{shoppingList.mengenanzahl}</td>
-                                        <td>{shoppingList.masseinheit}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                        {shoppingListElem.length === 0 ? (
+                            <h3 className="h2-black">Kochen erfolgreich</h3>
+                        ) : (
+                            <>
+                                <h3 className="h2-black">Fehlende Lebensmittel</h3>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Lebensmittelname</th>
+                                            <th>Mengenanzahl</th>
+                                            <th>Maßeinheit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {shoppingListElem.map((shoppingList, index) => (
+                                            <tr key={index}>
+                                                <td>{shoppingList.lebensmittelname}</td>
+                                                <td>{shoppingList.mengenanzahl}</td>
+                                                <td>{shoppingList.masseinheit}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </>
+                        )}
                         <button type="button" onClick={handleClosePopup}>Schließen</button>
                     </div>
                 </div>
