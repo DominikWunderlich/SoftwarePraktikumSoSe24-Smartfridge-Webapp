@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
 import Lebensmittelverwaltung from "./Lebensmittel-Verwaltung";
+import TrimAndLowerCase from "../functions";
 
 
 function Kuehlschrankinhalt(props) {
@@ -85,14 +86,14 @@ function Kuehlschrankinhalt(props) {
         }
 
         const newLebensmittel = new LebensmittelBO(
-            formData.lebensmittelname,
-            formData.mengenanzahl,
-            formData.masseinheit
+            TrimAndLowerCase(formData.lebensmittelname),
+            TrimAndLowerCase(formData.mengenanzahl),
+            TrimAndLowerCase(formData.masseinheit)
         );
 
         try {
-            await EatSmarterAPI.getAPI().addMasseinheit(new MasseinheitBO(formData.masseinheit));
-            await EatSmarterAPI.getAPI().addMenge(new mengenanzahlBO(formData.mengenanzahl));
+            await EatSmarterAPI.getAPI().addMasseinheit(new MasseinheitBO(TrimAndLowerCase(formData.masseinheit)));
+            await EatSmarterAPI.getAPI().addMenge(new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl)));
             await EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
 
         } catch (error) {

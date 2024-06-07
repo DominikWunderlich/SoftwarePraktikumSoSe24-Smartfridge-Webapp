@@ -7,6 +7,7 @@ import MasseinheitBO from "../api/MasseinheitBO";
 import mengenanzahlBO from "../api/mengenanzahlBO";
 import { useParams } from "react-router-dom"; // Importing useParams
 import {useNavigate} from "react-router-dom";
+import TrimAndLowerCase from "../functions";
 
 function GenauEinRezeptAnzeigen(props) {
     const [formData, setFormData] = useState({
@@ -41,12 +42,12 @@ function GenauEinRezeptAnzeigen(props) {
         }
 
         const newLebensmittel = new LebensmittelBO(
-            formData.lebensmittelname,
-            formData.mengenanzahl,
-            formData.masseinheit
+            TrimAndLowerCase(formData.lebensmittelname),
+            TrimAndLowerCase(formData.mengenanzahl),
+            TrimAndLowerCase(formData.masseinheit)
         );
-        const newMengenanzahl = new mengenanzahlBO(formData.mengenanzahl);
-        const newMasseinheit = new MasseinheitBO(formData.masseinheit);
+        const newMengenanzahl = new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl));
+        const newMasseinheit = new MasseinheitBO(TrimAndLowerCase(formData.masseinheit));
 
         try {
         const api = new EatSmarterAPI();

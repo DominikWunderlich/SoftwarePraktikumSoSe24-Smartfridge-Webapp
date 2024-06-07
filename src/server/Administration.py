@@ -59,18 +59,44 @@ class Administration(object):
 
             return False
 
-    """ Diese Methode updated die Wg auf der wgPage"""
-    def update_wg_by_email(self, new_wg):
-        with WGMapper() as mapper:
-            mapper.update(new_wg)
-            # print("new Wg", new_wg)
-            return new_wg
 
     # Die Methode ist überflüssig, wird nicht mehr verwendet
     def delete_wg_by_name(self, key):
         with WGMapper() as mapper:
             mapper.find_wg_admin_by_email(key)
             mapper.delete(key)
+
+    def get_wg_id_by_email(self, email):
+        with WGMapper() as mapper:
+            return mapper.find_wg_id_by_email(email)
+
+    def add_new_wg_bewohner_by_email(self, current_user, wg_id, new_user):
+        with WGMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(current_user, wg_id)
+
+            if is_admin:
+                with WGMapper():
+                    mapper.add_wg_bewohner(new_user, wg_id)
+                    #print("Bewohner hinzugefügt")
+                    return True
+
+            else:
+                #print("Bewohner nicht hinzugefügt")
+                return False
+
+    def delete_wg_bewohner_by_email(self, current_user, wg_id, new_user):
+        with WGMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(current_user, wg_id)
+
+            if is_admin:
+                with WGMapper():
+                    mapper.delete_wg_bewohner(new_user, wg_id)
+                    #print("Bewohner enfernt")
+                    return True
+
+            else:
+                print("Bewohner nicht entfernt")
+                return False
 
     """ Diese Methode löscht die wg und den kuehlschrankinhalt"""
     def delete_wg_and_kuehlschrank(self, wg_id):

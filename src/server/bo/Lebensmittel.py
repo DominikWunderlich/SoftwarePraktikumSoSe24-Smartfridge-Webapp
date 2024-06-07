@@ -37,10 +37,10 @@ class Lebensmittel(bo):
          """
 
         conversion_factors = {
-            'Liter': 1000,
-            'Milliliter': 1,
-            'Kilogramm': 1000,
-            'Gramm': 1
+            'liter': 1000,
+            'milliliter': 1,
+            'kilogramm': 1000,
+            'gramm': 1
             # Hier weitere Faktoren anlegen.
         }
 
@@ -78,12 +78,10 @@ class Lebensmittel(bo):
                  """
 
         conversion_factors = {
-            'Liter': 1000,
-            'Milliliter': 1,
-            'Kilogramm': 1000,
-            'Gramm': 1,
-            # Temporär: da self.masseinheit die id wiedergibt und nicht den Namen
-            3: 1,
+            'liter': 1000,
+            'milliliter': 1,
+            'kilogramm': 1000,
+            'gramm': 1,
             # Hier weitere Faktoren anlegen.
         }
 

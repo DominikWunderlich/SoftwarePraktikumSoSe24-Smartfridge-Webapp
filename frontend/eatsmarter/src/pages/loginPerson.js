@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
-import NavBar from "../components/NavBar";
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
+import TrimAndLowerCase from "../functions";
 
 function LoginPerson(props) {
     const [formData, setFormData] = useState({
@@ -22,10 +22,10 @@ function LoginPerson(props) {
 
         if (!Object.keys(errors).length) {
             const newPerson = new PersonBO(
-                props.user.email,
-                props.user.displayName,
-                formData.firstName,
-                formData.lastName,
+                TrimAndLowerCase(props.user.email),
+                TrimAndLowerCase(props.user.displayName),
+                TrimAndLowerCase(formData.firstName),
+                TrimAndLowerCase(formData.lastName),
                 props.user.uid
             );
             await EatSmarterAPI.getAPI()
@@ -67,7 +67,7 @@ function LoginPerson(props) {
     checkRegistration();
   }, []);
 
-    
+
     return (
         <div>
             <NavBarRegisterWg currentUser={props.user} onSignOut={props.onSignOut}/> <br/> <br/>

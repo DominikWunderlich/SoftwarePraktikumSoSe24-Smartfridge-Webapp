@@ -4,6 +4,7 @@ import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
+import TrimAndLowerCase from "../functions";
 import Homepage from "./Homepage";
 
 
@@ -31,9 +32,10 @@ function WGLandingpage(props) {
 
         if (!Object.keys(errors).length) {
             const newWG = new WgBO(
+                // TODO: Wg name auch Trim and lowercase?
                 formData.wgname,
-                formData.wgbewohner,
-                formData.wgadmin,
+                TrimAndLowerCase(formData.wgbewohner),
+                TrimAndLowerCase(formData.wgadmin),
             );
             console.log(newWG)
             EatSmarterAPI.getAPI()
