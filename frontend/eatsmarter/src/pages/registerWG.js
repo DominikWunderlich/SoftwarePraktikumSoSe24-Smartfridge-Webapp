@@ -4,6 +4,7 @@ import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
+import TrimAndLowerCase from "../functions";
 import Homepage from "./Homepage";
 
 
@@ -31,9 +32,10 @@ function WGLandingpage(props) {
 
         if (!Object.keys(errors).length) {
             const newWG = new WgBO(
+                // TODO: Wg name auch Trim and lowercase?
                 formData.wgname,
-                formData.wgbewohner,
-                formData.wgadmin,
+                TrimAndLowerCase(formData.wgbewohner),
+                TrimAndLowerCase(formData.wgadmin),
             );
             console.log(newWG)
             EatSmarterAPI.getAPI()
@@ -41,6 +43,21 @@ function WGLandingpage(props) {
             navigate("/wg/:wgName")
         }
     };
+
+    useEffect( () => {
+        // Checking if a user is already in a wg:
+        EatSmarterAPI.getAPI().getUserByGID(props.user.uid)
+            .then((UserInWg) => {
+                // Redirect user based on wether the user is in a wg or not.
+                if (UserInWg.length > 0) {
+                    // TODO: Pfad von der Homepage umbenennen
+                    navigate("/wg/:wgName");
+                } else {
+                    navigate("/registerWg")
+                }
+            })
+    }, [])
+
 
     
     return (

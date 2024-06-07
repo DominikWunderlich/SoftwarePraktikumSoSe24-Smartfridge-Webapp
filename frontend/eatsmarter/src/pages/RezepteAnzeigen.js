@@ -26,6 +26,7 @@ function RezepteAnzeigen(props) {
                 const userWg = await api.getWgByUser(props.user.email); // Ruf die WG des Benutzers ab
                 const rezeptList = await api.getRezepteByWg(userWg.wgName); // Ruf die neuen Rezept-Methode auf
                 setRezepte(rezeptList);
+                console.log(rezeptList)
             } catch (error) {
                 console.error("Fehler beim Abrufen der Rezepte:", error);
             }

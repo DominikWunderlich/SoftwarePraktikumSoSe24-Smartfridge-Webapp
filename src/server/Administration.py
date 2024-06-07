@@ -59,18 +59,44 @@ class Administration(object):
 
             return False
 
-    """ Diese Methode updated die Wg auf der wgPage"""
-    def update_wg_by_email(self, new_wg):
-        with WGMapper() as mapper:
-            mapper.update(new_wg)
-            # print("new Wg", new_wg)
-            return new_wg
 
     # Die Methode ist überflüssig, wird nicht mehr verwendet
     def delete_wg_by_name(self, key):
         with WGMapper() as mapper:
             mapper.find_wg_admin_by_email(key)
             mapper.delete(key)
+
+    def get_wg_id_by_email(self, email):
+        with WGMapper() as mapper:
+            return mapper.find_wg_id_by_email(email)
+
+    def add_new_wg_bewohner_by_email(self, current_user, wg_id, new_user):
+        with WGMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(current_user, wg_id)
+
+            if is_admin:
+                with WGMapper():
+                    mapper.add_wg_bewohner(new_user, wg_id)
+                    #print("Bewohner hinzugefügt")
+                    return True
+
+            else:
+                #print("Bewohner nicht hinzugefügt")
+                return False
+
+    def delete_wg_bewohner_by_email(self, current_user, wg_id, new_user):
+        with WGMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(current_user, wg_id)
+
+            if is_admin:
+                with WGMapper():
+                    mapper.delete_wg_bewohner(new_user, wg_id)
+                    #print("Bewohner enfernt")
+                    return True
+
+            else:
+                print("Bewohner nicht entfernt")
+                return False
 
     """ Diese Methode löscht die wg und den kuehlschrankinhalt"""
     def delete_wg_and_kuehlschrank(self, wg_id):
@@ -611,8 +637,8 @@ class Administration(object):
             return mapper.find_lebensmittel_by_rezept_id(rezept)
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
-        food_id_in_fridge = set()  # Verwende ein Set für effizientes Nachschlagen
-        food_in_rezept_dict = {}  # Dict für alle Rezepte die gekocht werden können
+        food_id_in_fridge = set()  # Set für die Lebensmittel im Kühlschrank
+        rezept_set = set()  # Set für alle Rezepte die gekocht werden können
 
         # Lebensmittel_id aus einem Kühlschrank in ein Set speichern
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -625,7 +651,6 @@ class Administration(object):
 
         # Für jede Rezept_ID die Lebensmittel ausgeben
         for rezept in recipes_id:
-            lebensmittel_in_rezept = set()  # Ein Set für alle Lebensmittel eines Rezepts
             lebensmittel_by_rezept_liste = self.get_lebensmittel_by_rezept_id2(rezept.get_id())
             # Lebensmittel eines Rezepts in eine Liste speichern
 
@@ -639,21 +664,25 @@ class Administration(object):
                         # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
                         if new_amount.get_mengenanzahl() > 0:
-                            food_in_rezept_dict[rezept.get_id()] = lebensmittel_in_rezept
-                            # rezept_id wird als Key im Dict verwendet
-                            # Set wird den rezept_ids zugewiesen
-
-                            for l in lebensmittel_by_rezept_liste:
-                                lebensmittel_in_rezept.add(l.get_id())
+                            rezept_set.add(rezept.get_id())
+                            # Set wird mit rezept_ids gefüllt
 
                         elif new_amount.get_mengenanzahl() == 0:
-                            food_in_rezept_dict[rezept.get_id()] = lebensmittel_in_rezept
-
-                            for l in lebensmittel_by_rezept_liste:
-                                lebensmittel_in_rezept.add(l.get_id())
-
+                            rezept_set.add(rezept.get_id())
 
                         else:
                             pass
 
-        return food_in_rezept_dict
+        rezept_liste = list(rezept_set)
+        # Set wird in Liste umgewandelt (könnte man eig auch direkt als Liste machen lol)
+        ganze_rezepte = []
+        for rezept in rezept_liste:
+            x = self.get_rezepte_by_rezept_id(rezept)
+            # durch die Methode wird für x das ganze RezeptObjekt gespeichert
+            ganze_rezepte.append(x)
+
+        return ganze_rezepte
+
+    def get_rezepte_by_rezept_id(self, rezept_id):
+        with RezeptMapper() as mapper:
+            return mapper.find_by_rezept_id2(rezept_id)

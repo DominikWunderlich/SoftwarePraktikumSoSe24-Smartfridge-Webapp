@@ -96,20 +96,6 @@ class WgOperations(Resource):
         else:
             return 'Fehler in WG-Operations post methode', 500
 
-    @smartapi.expect(wg)
-    @smartapi.marshal_with(wg)
-    @secured
-    def put(self):
-        adm = Administration()
-        proposal = WG.from_dict(api.payload)
-        # print("Main.py", api.payload)
-
-        if proposal is not None:
-            result = adm.update_wg_by_email(proposal)
-            # print("Ergebnis:", result)
-            return result
-
-
 
 @smartapi.route('/wg/user/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -162,14 +148,29 @@ class WgGetOperations(Resource):
         else:
             return '', 500
 
-    """Wg über den Namen löschen"""
 
-    @secured
-    def delete(self, wg_name):
+# Wg bewohner hinzufügen
+@smartapi.route('/wg/add/<current_user>/<new_user>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+class WgUpdateOperations(Resource):
+    def put(self, current_user, new_user):
         adm = Administration()
-        adm.get_wg_by_name(wg_name)
-        adm.delete_wg_by_name(wg_name)
-        return "", 200
+        wg_id = adm.get_wg_id_by_email(current_user)
+        i = adm.add_new_wg_bewohner_by_email(current_user, wg_id, new_user)
+
+        return i
+
+# Wg Bewohner entfernen
+@smartapi.route('/wg/delete/<current_user>/<new_user>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+class WgUpdateOperations(Resource):
+    def put(self, current_user, new_user):
+        adm = Administration()
+        wg_id = adm.get_wg_id_by_email(current_user)
+        i = adm.delete_wg_bewohner_by_email(current_user, wg_id, new_user)
+
+        return i
+
 
 @smartapi.route('/kuehlschrankinhalt/<wg_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -238,6 +239,18 @@ class ProfileOperations(Resource):
         """ Auslesen eines bestimmten Profil-Objekts. """
         adm = Administration()
         p = adm.redirect_user(google_id)
+        return p
+
+@smartapi.route('/login/check/<string:google_id>')
+@smartapi.response(500, 'Serverseitiger-Fehler')
+@smartapi.param("google_id", 'Die Google-ID des Profil-Objekts')
+class ProfileCheckOperations(Resource):
+    @smartapi.marshal_with(person)
+    @secured
+    def get(self, google_id):
+        """ Auslesen eines bestimmten Profil-Objekts. """
+        adm = Administration()
+        p = adm.get_user_by_google_id(google_id)
         return p
 
 @smartapi.route('/rezept')
@@ -393,6 +406,16 @@ class DeleteEinRezeptOperations(Resource):
                 rz_id = rz.get_id()
                 adm.delete_rezept_by_id(rz_id)
 
+    def get(self, rezept_id):
+        adm = Administration()
+        rezepte = adm.get_rezepte_by_rezept_id(rezept_id)
+
+        if rezepte is not None:
+            return rezepte
+        else:
+            return '', 500
+
+
 @smartapi.route('/rezept/user/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('email', 'Die E-mail der aktuellen person')
@@ -514,6 +537,26 @@ class MasseinheitOperation(Resource):
             return masseinheit
         else:
             return '', 500
+
+    """Generator Calls"""
+    @smartapi.route('/rezept/generator/<wg_name>/<kuehlschrank_id>')
+    @smartapi.response(500, 'Serverseitiger Fehler')
+    @smartapi.param('wg_name', 'Name der WG')
+    class GeneratorOperations(Resource):
+        # @secured
+        @smartapi.marshal_list_with(rezept)
+        def get(self, wg_name, kuehlschrank_id):
+            """ Auslesen aller Rezepte durch Generator """
+
+            adm = Administration()
+            gen_rezepte = adm.find_verfuegbare_rezepte(wg_name, kuehlschrank_id)
+
+            print(gen_rezepte)
+            if gen_rezepte is not None:
+                return gen_rezepte
+            else:
+                return '', 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

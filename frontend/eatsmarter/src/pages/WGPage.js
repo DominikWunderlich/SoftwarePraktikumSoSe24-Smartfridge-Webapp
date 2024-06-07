@@ -3,6 +3,7 @@ import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
 import NavBar from "../components/NavBar";
+import TrimAndLowerCase from "../functions";
 
 
 function WGPage(props) {
@@ -32,43 +33,40 @@ function WGPage(props) {
         return emailRegex.test(email);
     };
 
-    // Handler-Function, um Mitglieder als Admin hinzuzufügen
+
     const handleAddMember = async() => {
         if (!isValidEmail(addNewMemberEmail)) {
             alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
             return;
         }
-        const updatedWg = {...wg};
-        updatedWg.wgBewohner += `,${addNewMemberEmail}`;
 
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
-           if(isAdmin){
-               await EatSmarterAPI.getAPI().updateWg(updatedWg)
-               renderCurrentUsersWg()
-           }
-           else{
-               alert("Nur der Ersteller kann Mitglieder hinzufügen");
-           }
-           setAddNewMemberEmail("");
+        const response = await EatSmarterAPI.getAPI().addWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
+        console.log("Repsonse im wgpage", response)
+        if(response){
+            renderCurrentUsersWg();
+        }
+        else{
+            alert("Nur der Ersteller kann Mitglieder hinzufügen");
+        }
+        setAddNewMemberEmail("");
     }
 
-    // Handler-Function, um Mitglieder als Admin zu entfernen
-    const handleDeleteMember = async()  => {
-           const updatedWg = {...wg};
-           // Bewohner aus der Liste entfernen
-           updatedWg.wgBewohner = updatedWg.wgBewohner.split(',').filter(email => email.trim() !== deleteNewMemberEmail).join(',');
 
-           const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
-           // console.log("wg", isAdmin)
-           if(isAdmin){
-               await EatSmarterAPI.getAPI().updateWg(updatedWg)
-               renderCurrentUsersWg()
-           }
-           else{
-               alert("Nur der Ersteller kann Mitglieder entfernen");
-           }
-           setDeleteNewMemberEmail("");
-    }
+   const handleDeleteMember = async() => {
+          if (!isValidEmail(deleteNewMemberEmail)) {
+            alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
+            return;
+        }
+        const response = await EatSmarterAPI.getAPI().deleteWgBewohner(currentUser, TrimAndLowerCase(deleteNewMemberEmail));
+        console.log("Repsonse im wgpage", response)
+        if(response){
+            renderCurrentUsersWg();
+        }
+        else{
+            alert("Nur der Ersteller kann Mitglieder entfernen");
+        }
+        setDeleteNewMemberEmail("");
+}
 
      // Handler-Function, um die Wg als Admin zu löschen
     const handleDeleteWG = async () => {
@@ -98,10 +96,11 @@ function WGPage(props) {
                         <h2>Infos der {wg.wgName}</h2>
                         <label>Bewohner: </label>
                         <p className="mini-info-container">
-                            {wg.wgBewohner.split(',').map((bewohner, index) => (
+                            {wg.wgBewohner.split(',').filter(bewohner => bewohner.trim() !== '').map((bewohner, index) => (
                                 <li key={index}>{bewohner.trim()}</li>
                             ))}
                         </p>
+
                     </div>
                     <br></br>
                     <div className="formitem">

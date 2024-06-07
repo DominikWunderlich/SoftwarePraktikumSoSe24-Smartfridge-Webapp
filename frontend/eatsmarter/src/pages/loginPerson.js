@@ -1,9 +1,10 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
-import NavBar from "../components/NavBar";
+import NavBarRegisterWg from "../components/NavBarRegisterWg";
+import TrimAndLowerCase from "../functions";
 
 function LoginPerson(props) {
     const [formData, setFormData] = useState({
@@ -15,15 +16,16 @@ function LoginPerson(props) {
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const [isRegistered, setIsRegistered] = useState(null);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!Object.keys(errors).length) {
             const newPerson = new PersonBO(
-                props.user.email,
-                props.user.displayName,
-                formData.firstName,
-                formData.lastName,
+                TrimAndLowerCase(props.user.email),
+                TrimAndLowerCase(props.user.displayName),
+                TrimAndLowerCase(formData.firstName),
+                TrimAndLowerCase(formData.lastName),
                 props.user.uid
             );
             await EatSmarterAPI.getAPI()
@@ -51,10 +53,24 @@ function LoginPerson(props) {
         }
     };
 
-    
+    useEffect(() => {
+    const checkRegistration = () => {
+      if (props.currentUser) {
+        const user = EatSmarterAPI.getAPI().checkUserByGID(props.currentUser.uid);
+        if (user && user.firstName && user.lastName) {
+          setIsRegistered(true);
+          navigate("/wg/:wgName");
+        }
+      }
+    };
+
+    checkRegistration();
+  }, []);
+
+
     return (
         <div>
-            <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
+            <NavBarRegisterWg currentUser={props.user} onSignOut={props.onSignOut}/> <br/> <br/>
             <div className='container'>
                 <div className="inner-container">
                     <form onSubmit={handleSubmit}>
