@@ -76,6 +76,23 @@ function Kuehlschrankinhalt(props) {
         });
     };
 
+    const handleEditMasseinheit = async (lebensmittelId) => {
+        const newMasseinheit = prompt("Neue Maßeinheit eingeben:");
+        if (newMasseinheit) {
+            try {
+                const updatedMasseinheit = new MasseinheitBO(newMasseinheit);
+                console.log(updatedMasseinheit)
+                console.log(lebensmittelId)
+                await EatSmarterAPI.getAPI().updateMasseinheit(lebensmittelId, updatedMasseinheit);
+                setLebensmittelliste(prevList => prevList.map(item => 
+                    item.id === lebensmittelId ? { ...item, masseinheit: newMasseinheit } : item
+                ));
+            } catch (error) {
+                console.error("Fehler beim Aktualisieren:", error);
+                setErrors({ message: "Fehler beim Aktualisieren der Maßeinheit." });
+            }
+        }
+    };
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -149,6 +166,7 @@ function Kuehlschrankinhalt(props) {
                                         <td>{lebensmittel.lebensmittelname}</td>
                                         <td>{lebensmittel.mengenanzahl}</td>
                                         <td>{lebensmittel.masseinheit}</td>
+                                        <td><button onClick={() => handleEditMasseinheit(lebensmittel.id)}>Bearbeiten</button></td>
                                         <td>
                                             <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
                                         </td>

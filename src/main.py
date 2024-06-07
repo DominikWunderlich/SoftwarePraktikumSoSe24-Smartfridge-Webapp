@@ -76,8 +76,6 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
 
-
-
 @smartapi.route('/wg')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class WgOperations(Resource):
@@ -492,6 +490,16 @@ class MasseinheitOperation(Resource):
         else:
             return "Fehler in MengenOperationen Post Methode", 500
         
+    def put(self, masseinheitsname, new_name):
+        """
+        Diese Methode aktualisiert den Namen einer Maßeinheit.
+        """
+        adm = Administration()
+        success = adm.update_measurement_name(masseinheitsname, new_name)
+        if success:
+            return f"Masseinheit '{masseinheitsname}' erfolgreich in '{new_name}' aktualisiert.", 200
+        else:
+            return f"Aktualisierung des Maßeinheitsnamens '{masseinheitsname}' fehlgeschlagen.", 500
 
     @smartapi.marshal_with(masseinheit)
     @secured

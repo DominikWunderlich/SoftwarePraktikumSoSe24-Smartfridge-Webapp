@@ -229,6 +229,24 @@ class Administration(object):
         time.sleep(3)
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
+        
+    
+    def update_measurement_name(self, old_name, new_name):
+        """ Aktualisiert den Namen einer Maßeinheit. """
+        with MasseinheitMapper() as mapper:
+            # Zuerst die Maßeinheit anhand des alten Namens finden
+            measurement = mapper.find_by_name(old_name)
+            if measurement is None:
+                return False  # Maßeinheit nicht gefunden
+
+            # Den Namen der Maßeinheit aktualisieren
+            measurement.set_masseinheit(new_name)
+
+            # Die aktualisierte Maßeinheit in die Datenbank einfügen
+            mapper.update(measurement)
+
+            return True  # Erfolgreich aktualisiert
+
 
     def create_lebensmittel_from_fridge(self, name, meinheit, menge):
         """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
