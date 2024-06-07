@@ -623,10 +623,9 @@ class Administration(object):
 
                         else:
                             pass
-                        print("TEST", rezept_set)
 
         rezept_liste = list(rezept_set)
-        print(rezept_liste)
+        print("Meine Liste", rezept_liste)
         return rezept_liste
 
     def get_rezepte_by_rezept_id(self, rezept_id):

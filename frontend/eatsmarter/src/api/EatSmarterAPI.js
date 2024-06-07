@@ -627,4 +627,37 @@ export default class EatSmarterAPI{
             throw error; // Fehler weitergeben
         });
     }
+
+
+    #getRezeptByGeneratorURL = (wg_name, kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/rezept/generator/${wg_name}/${kuehlschrank_id}`;
+    getRezeptByGenerator(wg_name, kuehlschrank_id){
+    return this.#fetchAdvanced(this.#getRezeptByGeneratorURL(wg_name, kuehlschrank_id),{
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    }).then((responseJSON) =>{
+        let rezept = RezeptBO.fromJSON(responseJSON);
+        return new Promise(function(resolve){
+            resolve(rezept);
+        });
+    });
+    }
+
+    #getRezeptByRezeptId = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/${rezept_id}`;
+    getRezeptById2(rezept_id) {
+    return this.#fetchAdvanced(this.#getRezeptByRezeptId(rezept_id), {
+        method: "GET",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+    }).then((responseJSON) => {
+        let rezept = RezeptBO.fromJSON(responseJSON);
+        return new Promise(function(resolve) {
+            resolve(rezept);
+        });
+    });
+}
 }
