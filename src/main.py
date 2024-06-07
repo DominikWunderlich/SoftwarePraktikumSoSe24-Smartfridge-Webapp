@@ -232,6 +232,18 @@ class ProfileOperations(Resource):
         p = adm.redirect_user(google_id)
         return p
 
+@smartapi.route('/login/check/<string:google_id>')
+@smartapi.response(500, 'Serverseitiger-Fehler')
+@smartapi.param("google_id", 'Die Google-ID des Profil-Objekts')
+class ProfileCheckOperations(Resource):
+    @smartapi.marshal_with(person)
+    @secured
+    def get(self, google_id):
+        """ Auslesen eines bestimmten Profil-Objekts. """
+        adm = Administration()
+        p = adm.get_user_by_google_id(google_id)
+        return p
+
 @smartapi.route('/rezept')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class RezeptOperations(Resource):

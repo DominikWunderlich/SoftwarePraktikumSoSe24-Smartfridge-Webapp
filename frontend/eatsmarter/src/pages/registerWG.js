@@ -40,6 +40,21 @@ function WGLandingpage(props) {
         }
     };
 
+    useEffect( () => {
+        // Checking if a user is already in a wg:
+        EatSmarterAPI.getAPI().getUserByGID(props.user.uid)
+            .then((UserInWg) => {
+                // Redirect user based on wether the user is in a wg or not.
+                if (UserInWg.length > 0) {
+                    // TODO: Pfad von der Homepage umbenennen
+                    navigate("/wg/:wgName");
+                } else {
+                    navigate("/registerWg")
+                }
+            })
+    }, [])
+
+
     
     return (
         <div>

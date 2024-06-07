@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
@@ -16,6 +16,7 @@ function LoginPerson(props) {
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
+    const [isRegistered, setIsRegistered] = useState(null);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -51,6 +52,20 @@ function LoginPerson(props) {
             setFormData({...formData, [event.target.name]: event.target.value });
         }
     };
+
+    useEffect(() => {
+    const checkRegistration = () => {
+      if (props.currentUser) {
+        const user = EatSmarterAPI.getAPI().checkUserByGID(props.currentUser.uid);
+        if (user && user.firstName && user.lastName) {
+          setIsRegistered(true);
+          navigate("/wg/:wgName");
+        }
+      }
+    };
+
+    checkRegistration();
+  }, []);
 
     
     return (

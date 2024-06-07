@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, Navigate, useNavigate} from "react-router-dom";
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import firebaseConfig from "./firebaseconfig";
@@ -17,6 +17,7 @@ import WGPage from "./pages/WGPage";
 import Kuehlschrank from './pages/Kuehlschrank';
 import GenauEinRezeptAnzeigen from "./pages/GenauEinRezeptAnzeigen";
 import Generator from "./pages/Generator";
+import EatSmarterAPI from "./api/EatSmarterAPI";
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -27,12 +28,24 @@ function App(props) {
         authError: null,
         authLoading: false,
     })
+	const [isRegistered, setIsRegistered] = useState(null);
+	const [loading, setLoading] = useState(true); // New state for loading
+
 
     /**
 	 * Create an error boundary for this app and recieve all errors from below the component tree.
 	 *
 	 * @See See Reacts [Error Boundaries](https://reactjs.org/docs/error-boundaries.html)
      */
+	useEffect(() => {
+        // Simulate loading delay
+        const timer = setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer); // Cleanup timer on component unmount
+    }, []);
+
     const getDerivedStateFromError = (error) => {
     // Update state so the next render will show the fallback UI.
     	return { appError: true };
@@ -122,6 +135,25 @@ function App(props) {
 		});
     }, []); //Empty dependency array to only run once. Equivalent to componentDidMount
 
+  useEffect(() => {
+    const checkRegistration = async () => {
+      if (state.currentUser) {
+        const usersList = await EatSmarterAPI.getAPI().checkUserByGID(state.currentUser.uid);
+		const user = usersList[0]
+        if (user && user.lastName) {
+          setIsRegistered(true);
+        } else {
+          setIsRegistered(false);
+        }
+      }
+    };
+
+    checkRegistration();
+  } );
+
+   if (loading) {
+        return <div>Loading...</div>; // You can replace this with a loading spinner or other indicator
+    }
 
     return (
       <div className="App">
@@ -129,9 +161,12 @@ function App(props) {
               <div className="content">
 				  <Router>
 					  <Routes>
+						  <Route path="/" element={
+							  isRegistered ? <Navigate to={"/registerWg"} /> : <Navigate to="/login" />
+						  } />
 						  <Route path="/" element={<Navigate to="/login"/>}/>
 						  <Route path="/login" element={<LoginPerson user={state.currentUser} onSignOut={handleSignOut}/>}/>
-						  <Route path="registerWg" element={<RegisterWG user={state.currentUser} onSignOut={handleSignOut}/>}/>
+						  <Route path="/registerWg" element={<RegisterWG user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/wg" element={<WGPage user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  // TODO: Pfad von der Homepage (/wg/:wgName) umbenennen
 						  <Route path="/wg/:wgName" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
