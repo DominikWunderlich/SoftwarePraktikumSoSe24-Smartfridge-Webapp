@@ -513,6 +513,7 @@ class MasseinheitOperation(Resource):
     @smartapi.param('wg_name', 'Name der WG')
     class GeneratorOperations(Resource):
         # @secured
+        @smartapi.marshal_list_with(rezept)
         def get(self, wg_name, kuehlschrank_id):
             """ Auslesen aller Rezepte durch Generator """
 

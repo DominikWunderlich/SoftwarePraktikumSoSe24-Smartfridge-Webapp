@@ -30,6 +30,7 @@ function Generator(props) {
     async function showRezepte() {
         const rezeptListe = await EatSmarterAPI.getAPI().getRezeptByGenerator(wgName, kuehlschrankId);
         console.log("Rezept IDs:", rezeptListe);
+        setRezepte(rezeptListe)
     }
 
 
@@ -39,14 +40,14 @@ function Generator(props) {
             <div className='container'>
             <div className='inner-container'>
             <h2>Alle verfügbaren Rezepte</h2>
-                {rezepte.map((rezept, index) => (
+                {rezepte.map((rezepte, index) => (
                     <div key={index}>
-                        <Link className="links" to={`/rezept/${rezept.id}`}>
+                        <Link className="links" to={`/genaueinrezeptAnzeigen/${rezepte.id}`}>
                             <div className="list-container">
-                                <p className="blue-mini-container">{rezept.rezeptName}</p>
-                                <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
-                                <p>Ersteller: {rezept.rezeptAdmin}</p>
-                                <p>WG: {rezept.wgName}</p>
+                                <p className="blue-mini-container">{rezepte.rezeptName}</p>
+                                <p>Anzahl Portionen: {rezepte.anzahlPortionen}</p>
+                                <p>Ersteller: {rezepte.rezeptAdmin}</p>
+                                <p>WG: {rezepte.wgName}</p>
                             </div>
                         </Link>
                     </div>

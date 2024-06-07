@@ -578,8 +578,8 @@ class Administration(object):
             return mapper.find_lebensmittel_by_rezept_id(rezept)
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
-        food_id_in_fridge = set()  # Verwende ein Set für effizientes Nachschlagen
-        rezept_set = set()  # Liste für alle Rezepte die gekocht werden können
+        food_id_in_fridge = set()  # Set für die Lebensmittel im Kühlschrank
+        rezept_set = set()  # Set für alle Rezepte die gekocht werden können
 
         # Lebensmittel_id aus einem Kühlschrank in ein Set speichern
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -592,7 +592,6 @@ class Administration(object):
 
         # Für jede Rezept_ID die Lebensmittel ausgeben
         for rezept in recipes_id:
-            lebensmittel_in_rezept = set()  # Ein Set für alle Lebensmittel eines Rezepts
             lebensmittel_by_rezept_liste = self.get_lebensmittel_by_rezept_id2(rezept.get_id())
             # Lebensmittel eines Rezepts in eine Liste speichern
 
@@ -607,27 +606,24 @@ class Administration(object):
 
                         if new_amount.get_mengenanzahl() > 0:
                             rezept_set.add(rezept.get_id())
-
-                            # rezept_id wird als Key im Dict verwendet
-                            # Set wird den rezept_ids zugewiesen
-
-                            #for l in lebensmittel_by_rezept_liste:
-                                #lebensmittel_in_rezept.add(l.get_id())
+                            # Set wird mit rezept_ids gefüllt
 
                         elif new_amount.get_mengenanzahl() == 0:
                             rezept_set.add(rezept.get_id())
-
-                            #for l in lebensmittel_by_rezept_liste:
-                                #lebensmittel_in_rezept.add(l.get_id())
-
 
                         else:
                             pass
 
         rezept_liste = list(rezept_set)
-        print("Meine Liste", rezept_liste)
-        return rezept_liste
+        # Set wird in Liste umgewandelt (könnte man eig auch direkt als Liste machen lol)
+        ganze_rezepte = []
+        for rezept in rezept_liste:
+            x = self.get_rezepte_by_rezept_id(rezept)
+            # durch die Methode wird für x das ganze RezeptObjekt gespeichert
+            ganze_rezepte.append(x)
+
+        return ganze_rezepte
 
     def get_rezepte_by_rezept_id(self, rezept_id):
         with RezeptMapper() as mapper:
-            mapper.find_by_rezept_id(rezept_id)
+            return mapper.find_by_rezept_id2(rezept_id)
