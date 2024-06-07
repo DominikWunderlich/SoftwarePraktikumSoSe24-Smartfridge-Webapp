@@ -38,9 +38,16 @@ class Lebensmittel(bo):
 
         conversion_factors = {
             'liter': 1000,
-            'milliliter': 1,
             'kilogramm': 1000,
-            'gramm': 1
+            'gramm': 1,
+            'l': 1000,
+            'ml': 1,
+            'kg': 1000,
+            'gr': 1,
+            'unzen': 28.3495,
+            'oz': 3495,
+            'pfund': 453.592,
+            'lb': 453.592,
             # Hier weitere Faktoren anlegen.
         }
 
@@ -88,9 +95,7 @@ class Lebensmittel(bo):
             'unzen': 28.3495,
             'oz': 3495,
             'pfund': 453.592,  
-            'lb': 453.592,   
-            # Temporär: da self.masseinheit die id wiedergibt und nicht den Namen
-            3: 1,
+            'lb': 453.592,
             # Hier weitere Faktoren anlegen.
         }
 
