@@ -513,12 +513,13 @@ class MasseinheitOperation(Resource):
         else:
             return "Fehler in MengenOperationen Post Methode", 500
         
-    def put(self, masseinheitsname, new_name):
+    def put(self):
         """
         Diese Methode aktualisiert den Namen einer Maßeinheit.
         """
         adm = Administration()
-        success = adm.update_measurement_name(masseinheitsname, new_name)
+        proposal = Masseinheit.from_dict(api.payload)
+        success = adm.update_measurement_name(proposal.get_masseinheit())
         if success:
             return f"Masseinheit '{masseinheitsname}' erfolgreich in '{new_name}' aktualisiert.", 200
         else:
