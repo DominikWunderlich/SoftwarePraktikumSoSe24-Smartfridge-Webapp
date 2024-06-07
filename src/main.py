@@ -15,14 +15,14 @@ from server.SecurityDecorator import secured
 
 app = Flask(__name__, static_folder="build", static_url_path='/')
 
-
-@app.route("/")
-def index():
-    return app.send_static_file("index.html")
-
-@app.errorhandler(404)
-def not_found(e):
-    return app.send_static_file('index.html')
+# Auskommenteiert, swagger funktioniert wieder -> Benötigen wir das?
+# @app.route("/")
+# def index():
+#     return app.send_static_file("index.html")
+#
+# @app.errorhandler(404)
+# def not_found(e):
+#     return app.send_static_file('index.html')
 
 # Calls with /system/* are allowed.
 CORS(app, resources=r'/system/*')
@@ -200,6 +200,16 @@ class KuelschrankOperations(Resource):
             return '', 500
 
 
+@smartapi.route("/kuehlschrankinhalt/<wg_id>/<lebensmittel_id>")
+@smartapi.response(500, 'Serverseitiger Fehler')
+class KuelschrankLebensmittelOperations(Resource):
+    def delete(self, wg_id, lebensmittel_id):
+        kuehlschrank_id = wg_id
+
+        adm = Administration()
+        # print(f"main.py lebensmittel id {lebensmittel_id}")
+        # print(f"main.py kuehlschrank id {kuehlschrank_id}")
+        adm.remove_food_from_fridge(kuehlschrank_id, lebensmittel_id)
 
 """ User related API Endpoints """
 @smartapi.route('/login')
@@ -379,7 +389,7 @@ class rezeptIdToBackendOperations(Resource):
         """ Rezept-ID im Terminal ausgeben """
         adm = Administration()
         k_id = adm.find_kuehlschrank_id(email)
-        shoppinglist = adm.remove_food_from_fridge(k_id, rezept_id)
+        shoppinglist = adm.remove_food_from_fridge_with_recipe(k_id, rezept_id)
         return shoppinglist
 
 """Rezept löschen"""
@@ -396,6 +406,16 @@ class DeleteEinRezeptOperations(Resource):
                 # print(wg)
                 rz_id = rz.get_id()
                 adm.delete_rezept_by_id(rz_id)
+
+    def get(self, rezept_id):
+        adm = Administration()
+        rezepte = adm.get_rezepte_by_rezept_id(rezept_id)
+
+        if rezepte is not None:
+            return rezepte
+        else:
+            return '', 500
+
 
 @smartapi.route('/rezept/user/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -508,6 +528,26 @@ class MasseinheitOperation(Resource):
             return masseinheit
         else:
             return '', 500
+
+    """Generator Calls"""
+    @smartapi.route('/rezept/generator/<wg_name>/<kuehlschrank_id>')
+    @smartapi.response(500, 'Serverseitiger Fehler')
+    @smartapi.param('wg_name', 'Name der WG')
+    class GeneratorOperations(Resource):
+        # @secured
+        @smartapi.marshal_list_with(rezept)
+        def get(self, wg_name, kuehlschrank_id):
+            """ Auslesen aller Rezepte durch Generator """
+
+            adm = Administration()
+            gen_rezepte = adm.find_verfuegbare_rezepte(wg_name, kuehlschrank_id)
+
+            print(gen_rezepte)
+            if gen_rezepte is not None:
+                return gen_rezepte
+            else:
+                return '', 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

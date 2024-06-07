@@ -94,8 +94,6 @@ class RezeptMapper(mapper):
 
         self._connector.commit()
         cursor.close()
-        print("hallihallo")
-        print(rezept)
 
         return result
 
@@ -151,3 +149,24 @@ class RezeptMapper(mapper):
         cursor.close()
         print(result)
         return result
+
+
+    def find_by_rezept_id2(self, rezept_id):
+        cursor = self._connector.cursor()
+        cursor.execute(f"SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung FROM datenbank.rezept WHERE rezept_id = '{rezept_id}'")
+        tuples = cursor.fetchall()
+
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung) in tuples:
+            rezept = Rezept()
+            rezept.set_id(rezept_id)
+            rezept.set_rezept_name(rezept_name)
+            rezept.set_anzahl_portionen(anzahl_portionen)
+            rezept.set_rezept_ersteller(rezept_ersteller)
+            rezept.set_wg_name(wg_name)
+            rezept.set_rezept_anleitung(rezept_anleitung)
+
+
+        self._connector.commit()
+        cursor.close()
+
+        return rezept

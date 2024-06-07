@@ -482,7 +482,8 @@ class Administration(object):
             with KuehlschrankMapper() as mapper:
                 mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
 
-    def remove_food_from_fridge(self, kuehlschrank_id, rezept_id):
+
+    def remove_food_from_fridge_with_recipe(self, kuehlschrank_id, rezept_id):
         # Zugehörige Lebensmittel des Kühlschranks finden
         print(f"...starting remove_food_from_fridge")
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -582,13 +583,18 @@ class Administration(object):
 
         return shopping_list_with_correct_amounts
 
+    """ Diese Methode ermöglicht das direkte Löschen eines Lebensmittels aus dem Kuehlschrank"""
+    def remove_food_from_fridge(self, kuehlschrank_id, lebensmittel_id):
+        with KuehlschrankMapper() as mapper:
+            mapper.delete(kuehlschrank_id, lebensmittel_id)
+
     def get_lebensmittel_by_rezept_id2(self, rezept):
         with RezeptEnthaeltLebensmittelMapper() as mapper:
             return mapper.find_lebensmittel_by_rezept_id(rezept)
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
-        food_id_in_fridge = set()  # Verwende ein Set für effizientes Nachschlagen
-        food_in_rezept_dict = {}  # Dict für alle Rezepte die gekocht werden können
+        food_id_in_fridge = set()  # Set für die Lebensmittel im Kühlschrank
+        rezept_set = set()  # Set für alle Rezepte die gekocht werden können
 
         # Lebensmittel_id aus einem Kühlschrank in ein Set speichern
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -601,7 +607,6 @@ class Administration(object):
 
         # Für jede Rezept_ID die Lebensmittel ausgeben
         for rezept in recipes_id:
-            lebensmittel_in_rezept = set()  # Ein Set für alle Lebensmittel eines Rezepts
             lebensmittel_by_rezept_liste = self.get_lebensmittel_by_rezept_id2(rezept.get_id())
             # Lebensmittel eines Rezepts in eine Liste speichern
 
@@ -615,21 +620,25 @@ class Administration(object):
                         # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
                         if new_amount.get_mengenanzahl() > 0:
-                            food_in_rezept_dict[rezept.get_id()] = lebensmittel_in_rezept
-                            # rezept_id wird als Key im Dict verwendet
-                            # Set wird den rezept_ids zugewiesen
-
-                            for l in lebensmittel_by_rezept_liste:
-                                lebensmittel_in_rezept.add(l.get_id())
+                            rezept_set.add(rezept.get_id())
+                            # Set wird mit rezept_ids gefüllt
 
                         elif new_amount.get_mengenanzahl() == 0:
-                            food_in_rezept_dict[rezept.get_id()] = lebensmittel_in_rezept
-
-                            for l in lebensmittel_by_rezept_liste:
-                                lebensmittel_in_rezept.add(l.get_id())
-
+                            rezept_set.add(rezept.get_id())
 
                         else:
                             pass
 
-        return food_in_rezept_dict
+        rezept_liste = list(rezept_set)
+        # Set wird in Liste umgewandelt (könnte man eig auch direkt als Liste machen lol)
+        ganze_rezepte = []
+        for rezept in rezept_liste:
+            x = self.get_rezepte_by_rezept_id(rezept)
+            # durch die Methode wird für x das ganze RezeptObjekt gespeichert
+            ganze_rezepte.append(x)
+
+        return ganze_rezepte
+
+    def get_rezepte_by_rezept_id(self, rezept_id):
+        with RezeptMapper() as mapper:
+            return mapper.find_by_rezept_id2(rezept_id)
