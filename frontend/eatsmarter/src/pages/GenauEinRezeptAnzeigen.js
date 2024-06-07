@@ -21,6 +21,7 @@ function GenauEinRezeptAnzeigen(props) {
     const [errors, setErrors] = useState({});
     const [rezept, setRezept] = useState(null); // Nur ein Rezept anstelle einer Liste von Rezepten
     const [rezepte, setRezepte] = useState([]);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [shoppingListElem, setShoppingListElem]  = useState([]);
     const navigate = useNavigate()
     const currentUser = props.user.email;
@@ -130,22 +131,16 @@ function GenauEinRezeptAnzeigen(props) {
             const api = new EatSmarterAPI();
             const shoppingList = await api.sendRezeptIdToBackend(rezeptId, props.user.email);
             setShoppingListElem(shoppingList.flat());
-            alert("Rezept wurde an das Backend gesendet!");
+            setIsPopupOpen(true);
         } catch (error) {
             console.error("Fehler beim Senden der Rezept-ID:", error);
             alert("Fehler beim Senden der Rezept-ID.");
         }
     };
 
-
-    // const handleDelete = async () => {
-    //     const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(props.user);
-    //     if (isAdmin) {
-    //         await EatSmarterAPI.getAPI().updatedRezept(rezept);
-    //     } else {
-    //         alert("Nur der Ersteller kann Rezept löschen");
-    //     }
-    // };
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
 
     const handleDelete = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser);
@@ -176,6 +171,7 @@ function GenauEinRezeptAnzeigen(props) {
                             <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
                             <p>WG: {rezept.wgName}</p>
+                            <p>Zubereitung: {rezept.rezeptAnleitung}</p>
                             {errors.message && <p>{errors.message}</p>}
                             <table>
                                 <thead>
@@ -195,21 +191,6 @@ function GenauEinRezeptAnzeigen(props) {
                                 ))}
                                 </tbody>
                             </table>
-                        </div>
-                        <h2>Kochanleitung</h2>
-                        <div className='mini-container'>
-                            <p>{rezept.rezeptAnleitung}</p>
-                        </div>
-                        <h2>Einkaufsliste</h2>
-                        <div className="mini-container">
-                            <ul>
-                                {shoppingListElem.map((shoppingList, index) => (
-                                    <li key={index}>
-                                        {/*TODO: Bei der Mengenanzahl muss das Minus noch weg*/}
-                                        {`${shoppingList.lebensmittelname} ${shoppingList.mengenanzahl} ${shoppingList.masseinheit} `}
-                                    </li>
-                                ))}
-                            </ul>
                         </div>
                         <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
                     </div>)}
@@ -261,6 +242,38 @@ function GenauEinRezeptAnzeigen(props) {
                 <br></br>
                 <button className="button-uebersicht" type="button" onClick={() => handleDelete(rezept.id)}>Rezept löschen</button>
             </div>
+            {isPopupOpen && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        {shoppingListElem.length === 0 ? (
+                            <h3 className="h2-black">Kochen erfolgreich</h3>
+                        ) : (
+                            <>
+                                <h3 className="h2-black">Fehlende Lebensmittel</h3>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Lebensmittelname</th>
+                                            <th>Mengenanzahl</th>
+                                            <th>Maßeinheit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {shoppingListElem.map((shoppingList, index) => (
+                                            <tr key={index}>
+                                                <td>{shoppingList.lebensmittelname}</td>
+                                                <td>{shoppingList.mengenanzahl}</td>
+                                                <td>{shoppingList.masseinheit}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </>
+                        )}
+                        <button type="button" onClick={handleClosePopup}>Schließen</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
