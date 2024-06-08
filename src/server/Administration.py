@@ -311,9 +311,9 @@ class Administration(object):
             return food
 
 
-    def get_lebensmittel_by_lebensmittel_name(self, lebensmittel_name):
+    def get_lebensmittel_by_lebensmittel_name(self, lebensmittel_name, kid):
         with LebensmittelMapper() as mapper:
-            return mapper.find_by_lebensmittelname(lebensmittel_name)
+            return mapper.find_by_lebensmittelname(lebensmittel_name, kid)
 
     def get_menge_by_id(self, mengen_id):
         with MengenanzahlMapper() as mapper:
@@ -419,11 +419,14 @@ class Administration(object):
         with LebensmittelMapper() as mapper:
             return mapper.find_all()
 
-
     def get_lebensmittel_by_id(self, id):
         with LebensmittelMapper() as mapper:
             return mapper.find_by_id(id)
 
+    def update_lebensmittel(self, food):
+        """ Lebensmittel Update. """
+        with LebensmittelMapper() as mapper:
+            mapper.update(food)
 
     """Kuehlschrank-spezifische Methoden """
 
@@ -434,25 +437,12 @@ class Administration(object):
             return obj_id
 
     def get_lebensmittel_by_kuehlschrank_id(self, kuehlschrank):
-        with KuehlschrankMapper() as mapper:
+        with LebensmittelMapper() as mapper:
             return mapper.find_lebensmittel_by_kuehlschrank_id(kuehlschrank)
 
     def get_rezept_id_by_wg_name(self, wg_name):
         with RezeptMapper() as mapper:
             return mapper.find_all_by_wg_name(wg_name)
-
-    def find_common_objects(self, elem, kuehlschrank_inhalt):
-        common_objects = []
-
-        for item in kuehlschrank_inhalt:
-            item_id = item.get_id()
-
-            for obj in elem:
-                if obj.get_id() == item_id:
-                    common_objects.append(obj)
-                    break
-
-        return common_objects
 
     def add_food_to_fridge(self, kuehlschrank_id, lebensmittel):  # Input = Karotte, 1, Kilogramm
         """
@@ -463,6 +453,7 @@ class Administration(object):
         """
         # Zuerst werden die zugehörigen Lebensmittel des Kühlschranks geholt.
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)  # Output: [(k_id/l_obj), (k_id2/l_obj2)]
+        print(f"DEBUG add_food_to_fridge -- Das ist der fridge mit den Lebensmittel: {fridge}")
 
         # Als nächstes prüfen wir ob der gesuchte Lebensmittelname bereits im Vorratsschrank ist.
         lebenmittel_name = lebensmittel.get_lebensmittelname()
@@ -475,47 +466,33 @@ class Administration(object):
         if lebenmittel_name not in names:
             print("...starting add_food_to_fridge: if-Zweig")
             # Wenn das Lebensmittel NICHT im Kühlschrank ist, dann wird es hier angelegt und hinzugefügt.
-            self.create_measurement(lebensmittel.get_masseinheit(), 0)
-            self.create_menge(lebensmittel.get_mengenanzahl())
-            created_lebensmittel = self.create_lebensmittel(lebensmittel.get_lebensmittelname(),
-                                                            lebensmittel.get_masseinheit(),
-                                                            lebensmittel.get_mengenanzahl())
-
-            with KuehlschrankMapper() as mapper:
-                mapper.insert(kuehlschrank_id, created_lebensmittel)
+            self.create_lebensmittel(lebensmittel.get_lebensmittelname(),
+                                     lebensmittel.get_masseinheit(),
+                                     lebensmittel.get_mengenanzahl(),
+                                     lebensmittel.get_kuehlschrank_id(),
+                                     lebensmittel.get_rezept_id())
 
         else:
             # Wenn ein Lebensmittel bereits im Kühlschrank ist, erhöhen wir den Bestand und fügen es dem Vorrats-
             # schrank hinzu.
             print("...starting add_food_to_fridge: else-Zweig")
 
-            # 1. Alle vorhandenen Lebensmittel mit dem gesuchten Namen auslesen.
-            elem = self.get_lebensmittel_by_lebensmittel_name(lebenmittel_name)
+            # 1. Vorhandenes Lebensmittel mit dem gesuchten Namen auslesen.
+            elem = self.get_lebensmittel_by_lebensmittel_name(lebenmittel_name, kuehlschrank_id)
 
-            # 2. Auslesen aller Lebensmittel des Kühlschranks.
-            kuehlschrank_inhalt = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
-
-            # 3. Vergleich, welche ID im Kühlschrank liegt vs. welche ID im System ist.
-            found_obj = self.find_common_objects(elem, kuehlschrank_inhalt)
-
-            # 4. Menge und Maßeinheit auslesen.
-            quantity_obj = self.get_menge_by_id(found_obj[0].get_mengenanzahl())
+            # 2. Menge und Maßeinheit auslesen.
+            quantity_obj = self.get_menge_by_id(elem[0].get_mengenanzahl())
             quantity = quantity_obj.get_menge()
-            unit_obj = self.get_masseinheit_by_id(found_obj[0].get_masseinheit())
+            unit_obj = self.get_masseinheit_by_id(elem[0].get_masseinheit())
             unit = unit_obj.get_masseinheit()
 
-            # 5. Lebensmittel updaten bzw. neu erstellen
-            updated_food = found_obj[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
-            new_food_obj = self.create_lebensmittel_from_fridge(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
-                                    updated_food.get_mengenanzahl())
+            # 3. Lebensmittel updaten bzw. neu erstellen
+            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
+            new_food_obj = self.create_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
+                                    updated_food.get_mengenanzahl(), kuehlschrank_id, None)
+            a = self.update_lebensmittel(new_food_obj)
 
-            new_food_obj_id = new_food_obj.get_id()
-            old_food_id = found_obj[0].get_id()
-
-            # Update kühlschrank
-            with KuehlschrankMapper() as mapper:
-                mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
-
+            return a
 
     def remove_food_from_fridge_with_recipe(self, kuehlschrank_id, rezept_id):
         # Zugehörige Lebensmittel des Kühlschranks finden

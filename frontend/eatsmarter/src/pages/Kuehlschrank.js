@@ -93,15 +93,15 @@ function Kuehlschrankinhalt(props) {
             null
         );
 
-        try {
-            await EatSmarterAPI.getAPI().addMasseinheit(new MasseinheitBO(TrimAndLowerCase(formData.masseinheit)));
-            await EatSmarterAPI.getAPI().addMenge(new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl)));
-            await EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
-
-        } catch (error) {
-            console.error("Fehler beim Hinzufügen von Lebensmittel:", error);
-            setErrors({ message: "Fehler beim Hinzufügen von Lebensmittel. Bitte versuchen Sie es erneut." });
-        }
+        // try {
+        //     await EatSmarterAPI.getAPI().addMasseinheit(new MasseinheitBO(TrimAndLowerCase(formData.masseinheit)));
+        //     await EatSmarterAPI.getAPI().addMenge(new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl)));
+        //     await EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
+        //
+        // } catch (error) {
+        //     console.error("Fehler beim Hinzufügen von Lebensmittel:", error);
+        //     setErrors({ message: "Fehler beim Hinzufügen von Lebensmittel. Bitte versuchen Sie es erneut." });
+        // }
         console.log("Neues Lebensmittel:", newLebensmittel);
         console.log("Übergebene wgId in test_kuehlschrank:", wgId)
         EatSmarterAPI.getAPI().addFoodToFridge(newLebensmittel, wgId);

@@ -184,11 +184,15 @@ class KuelschrankOperations(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
     def post(self, wg_id):
+        """
+        Das ist der Endpunkt für das hinzufügen von Lebensmitteln in den Kühlschrank.
+        Ist ein Lebensmittel bereits enthalten, wird es geupdatet!
+        """
         adm = Administration()
         proposal = Lebensmittel.from_dict(api.payload)
-        k_id = wg_id
+
         if proposal is not None:
-            result = adm.add_food_to_fridge(k_id, proposal)
+            result = adm.add_food_to_fridge(wg_id, proposal)
             return result
     @smartapi.marshal_with(lebensmittel)
     def get(self, wg_id):
