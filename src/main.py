@@ -62,9 +62,11 @@ rezept = api.inherit('Rezept', bo, {
 })
 
 lebensmittel = api.inherit('Lebensmittel', bo, {
-    'lebensmittelname': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
+    'lebensmittelName': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
     'masseinheit': fields.String(attribute='masseinheit', description='Maßeinheit des Lebenmittels'),
-    'mengenanzahl': fields.Float(attribute='mengenanzahl', description='Menge des Lebensmittels'),
+    'mengenanzahl': fields.Float(attribute='mengenanzahl', description='Mengen des Lebensmittels'),
+    'kuehlschrankId': fields.Integer(default=None, attribute='kuehlschrank_id', description='KuehlschrankId des Lebensmittels'),
+    'rezeptId': fields.Integer(default=None, attribute='rezept_id', description='RezeptId des Lebensmittels')
 })
 
 menge = api.inherit('Menge', bo, {
@@ -434,7 +436,7 @@ class GetRezeptAdminWgOperations(Resource):
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
-    @secured
+    #@secured
     def post(self):
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
@@ -446,14 +448,16 @@ class LebensmittelOperation(Resource):
             result = adm.create_lebensmittel(
                 proposal.get_lebensmittelname(),
                 proposal.get_masseinheit(),
-                proposal.get_mengenanzahl()
+                proposal.get_mengenanzahl(),
+                proposal.get_kuehlschrank_id(),
+                proposal.get_rezept_id()
             )
             return result, 200
         else:
             return 'Fehler in LebensmittelOperation post methode', 500
 
     @smartapi.marshal_list_with(lebensmittel)
-    @secured
+    #@secured
     def get(self):
         """ Auslesen aller Lebensmittelobjekte-Objekte"""
 

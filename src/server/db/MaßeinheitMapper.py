@@ -65,6 +65,8 @@ class MasseinheitMapper(mapper):
         self._connector.commit()
         cursor.close()
 
+        return Masseinheit.get_id()
+
     def update(self, Masseinheit):
         cursor = self._connector.cursor()
         command = "UPDATE datenbank.masseinheit SET maßeinheit=%s, menge=%s WHERE id=%s"

@@ -13,12 +13,14 @@ class LebensmittelMapper(mapper):
         cursor.execute("SELECT * from datenbank.lebensmittel")
         tuples = cursor.fetchall()
 
-        for (id, lebensmittelname, masseinheit_id, mengenanzahl_id) in tuples:
+        for (id, lebensmittelname, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id) in tuples:
             lebensmittel = Lebensmittel()
             lebensmittel.set_id(id)
             lebensmittel.set_lebensmittelname(lebensmittelname)
             lebensmittel.set_masseinheit(masseinheit_id)
             lebensmittel.set_mengenanzahl(mengenanzahl_id)
+            lebensmittel.set_kuelschrank_id(kuehlschrank_id)
+            lebensmittel.set_rezept_id(rezept_id)
             result.append(lebensmittel)
 
         self._connector.commit()
@@ -29,16 +31,18 @@ class LebensmittelMapper(mapper):
     def find_by_lebensmittelname(self, lebensmittelname):
         result = []
         cursor = self._connector.cursor()
-        command = "SELECT lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id FROM datenbank.lebensmittel WHERE lebensmittel_name LIKE %s"
+        command = "SELECT lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id FROM datenbank.lebensmittel WHERE lebensmittel_name LIKE %s"
         cursor.execute(command, (lebensmittelname,))
         tuples = cursor.fetchall()
 
-        for (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id) in tuples:
+        for (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id) in tuples:
             lebensmittel = Lebensmittel()
             lebensmittel.set_id(lebensmittel_id)
             lebensmittel.set_lebensmittelname(lebensmittel_name)
             lebensmittel.set_masseinheit(masseinheit_id)
             lebensmittel.set_mengenanzahl(mengenanzahl_id)
+            lebensmittel.set_kuelschrank_id(kuehlschrank_id)
+            lebensmittel.set_rezept_id(rezept_id)
             result.append(lebensmittel)
 
         self._connector.commit()
@@ -51,8 +55,10 @@ class LebensmittelMapper(mapper):
 
         # Zuerst überprüfen wir, ob ein Lebensmittel bereits angelegt wurde:
         command_check = "SELECT lebensmittel_id FROM datenbank.lebensmittel WHERE lebensmittel_name = %s AND " \
-                        "masseinheit_id = %s AND mengenanzahl_id = %s"
-        data_check = (l.get_lebensmittelname(), l.get_masseinheit(), l.get_mengenanzahl())
+                        "masseinheit_id = %s AND mengenanzahl_id = %s AND (kuehlschrank_id=%s OR kuehlschrank_id is NULL) \
+                        AND (rezept_id=%s OR rezept_id is NULL)"
+        data_check = (l.get_lebensmittelname(), l.get_masseinheit(), l.get_mengenanzahl(), l.get_kuehlschrank_id(),
+                      l.get_rezept_id())
         cursor.execute(command_check, data_check)
         existing_id = cursor.fetchone()
 
@@ -71,8 +77,8 @@ class LebensmittelMapper(mapper):
             else:
                 l.set_id(1)
 
-        command = "INSERT INTO lebensmittel (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id) VALUES (%s, %s, %s, %s)"
-        data = (l.get_id(), l.get_lebensmittelname(), l.get_masseinheit(), l.get_mengenanzahl())
+        command = "INSERT INTO lebensmittel (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id) VALUES (%s, %s, %s, %s, %s, %s)"
+        data = (l.get_id(), l.get_lebensmittelname(), l.get_masseinheit(), l.get_mengenanzahl(), l.get_kuehlschrank_id(), l.get_rezept_id())
         cursor.execute(command, data)
 
         self._connector.commit()

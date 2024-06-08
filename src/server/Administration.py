@@ -221,13 +221,15 @@ class Administration(object):
         with MasseinheitMapper() as mapper:
             return mapper.find_all()
 
-    def create_lebensmittel(self, name, meinheit, menge):
+    def create_lebensmittel(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
         """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
         # des Users dar (gr, kg, l, ...).
         print(f"name = {name}")
         print(f"name = {meinheit}")
         print(f"name = {menge}")
+        print(f"name = {kuehlschrank_id}")
+        print(f"name = {rezept_id}")
         with MasseinheitMapper() as mapper:
             m_id = mapper.find_by_name(meinheit)
 
@@ -244,6 +246,7 @@ class Administration(object):
             else:
                 mengen_id = mengen_id.get_id()
 
+
         # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
         food = Lebensmittel()
         # Hier wird die Lebensmittel_id auf 1 gesetzt
@@ -251,6 +254,9 @@ class Administration(object):
         food.set_lebensmittelname(name)
         food.set_masseinheit(masseinheit_id)
         food.set_mengenanzahl(mengen_id)
+        food.set_kuelschrank_id(kuehlschrank_id)
+        food.set_rezept_id(rezept_id)
+
 
         print(f" Das ist das erstellte Lebensmittel: {food}")
 
