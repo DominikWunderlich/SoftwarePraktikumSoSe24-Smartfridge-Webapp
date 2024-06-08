@@ -88,7 +88,9 @@ function Kuehlschrankinhalt(props) {
         const newLebensmittel = new LebensmittelBO(
             TrimAndLowerCase(formData.lebensmittelname),
             TrimAndLowerCase(formData.mengenanzahl),
-            TrimAndLowerCase(formData.masseinheit)
+            TrimAndLowerCase(formData.masseinheit),
+            wgId,
+            null
         );
 
         try {

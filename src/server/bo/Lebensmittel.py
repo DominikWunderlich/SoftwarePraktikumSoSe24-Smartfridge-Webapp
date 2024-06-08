@@ -126,7 +126,7 @@ class Lebensmittel(bo):
         lm.set_id(dictionary["id"])
         lm.set_lebensmittelname(dictionary["lebensmittelName"])
         lm.set_masseinheit(dictionary["masseinheit"])
-        lm.set_mengenanzahl(dictionary["mengenanzahl"])
+        lm.set_mengenanzahl(dictionary["menge"])
         lm.set_kuelschrank_id(dictionary["kuehlschrankId"])
         lm.set_rezept_id(dictionary["rezeptId"])
         return lm
