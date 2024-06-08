@@ -298,7 +298,7 @@ class Administration(object):
 
         print(f" Das ist das erstellte Lebensmittel: {food}")
 
-        time.sleep(3)
+        time.sleep(1)
         with LebensmittelMapper() as lmapper:
             lmapper.insert(food)
             print(f" Das ist 'food' vor dem return im create_lebensmittel_from_fridge: {food} .")
