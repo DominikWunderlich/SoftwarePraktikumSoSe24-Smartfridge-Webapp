@@ -182,15 +182,14 @@ td {
 }
 
 .info {
-    width: 95%;
-    padding: 15px;
+    width: 93%;
+    padding: 10px;
     font-size: medium;
-    padding: 15px;
-    border-radius: 20px;
     display: inline-block;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 10px;
     background: #fffefe;
+    margin-top: 5px;
 }
 
 .formitem {
@@ -247,6 +246,45 @@ button[type="submit"], button[type="button"]:hover {
     border: 2px solid #031544;
 }
 
+
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.inner-popup {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.popup-inner h2 {
+    margin-top: 0;
+}
+
+.popup-inner ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.popup-inner ul li {
+    margin: 10px 0;
+}
+
+.popup-inner .button {
+    margin-top: 20px;
+}
 
 
 
