@@ -11,9 +11,9 @@ class KuehlschrankMapper(mapper):
     def create_kuehlschrank(self, wg_id):
         cursor = self._connector.cursor()
 
-        command = "INSERT INTO datenbank.kuehlschrank (wg_id) VALUES (%s) "
-        data = (wg_id,)
-        print(F" wg id: {wg_id}")
+        command = "INSERT INTO datenbank.kuehlschrank (kuehlschrank_id, wg_id) VALUES (%s, %s) "
+        data = (wg_id, wg_id,)
+        print(F" wg id: {data}")
         cursor.execute(command, data)
 
         self._connector.commit()
