@@ -29,10 +29,10 @@ function NavBar({ currentUser, onSignOut }) {
                     EatSmarter
                 </Button>
                 <Button className='navbar-button' color="inherit" component={Link} to="/RezeptAnzeigen">
-                    Recipes
+                    Rezepte
                 </Button>
                 <Button className='navbar-button' color="inherit" component={Link} to="/kuehlschrankinhalt/:wg_id">
-                    Fridge
+                    Kühlschrank
                 </Button>
                 <Button className='navbar-button' color="inherit" component={Link} to="/wg">
                     WG
