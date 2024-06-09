@@ -8,6 +8,18 @@ class KuehlschrankMapper(mapper):
     def __init__(self):
         super().__init__()
 
+    def create_kuehlschrank(self, wg_id):
+        cursor = self._connector.cursor()
+
+        command = "INSERT INTO datenbank.kuehlschrank (wg_id) VALUES (%s) "
+        data = (wg_id,)
+        print(F" wg id: {wg_id}")
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+
+
     def find_lebensmittel_by_kuehlschrank_id(self, kuehlschrank_id):
         result = []
         cursor = self._connector.cursor()

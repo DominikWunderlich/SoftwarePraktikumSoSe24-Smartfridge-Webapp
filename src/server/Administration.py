@@ -33,7 +33,14 @@ class Administration(object):
         w.set_id(1)
 
         with WGMapper() as mapper:
-            return mapper.insert(w)
+            mapper.insert(w)
+            print("34", w.get_id())
+            wg_id = w.get_id()
+
+        with KuehlschrankMapper() as mapper:
+            mapper.create_kuehlschrank(wg_id)
+
+        return self
 
     def get_wg_by_name(self, key):
         """ Auslesen einer WG Instanz nach Name """
