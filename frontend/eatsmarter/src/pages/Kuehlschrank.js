@@ -79,7 +79,7 @@ function Kuehlschrankinhalt(props) {
                 setCustomMasseinheit(customMasseinheit);
                 setFormData({
                     ...formData,
-                    mengenanzahl: parseInt(grammMenge), // Konvertierung zu Zahl
+                    // mengenanzahl: parseInt(grammMenge), // Konvertierung zu Zahl
                     masseinheit: customMasseinheit
                 });
             }
