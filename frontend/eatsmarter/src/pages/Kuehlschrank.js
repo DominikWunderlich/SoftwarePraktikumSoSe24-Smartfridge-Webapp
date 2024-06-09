@@ -21,6 +21,7 @@ function Kuehlschrankinhalt(props) {
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [errors, setErrors] = useState({});
     const [wgId, setWgId] = useState(null);
+    const [customMasseinheit, setCustomMasseinheit] = useState("");
 
     useEffect(() => {
         async function fetchData() {
@@ -69,6 +70,22 @@ function Kuehlschrankinhalt(props) {
             console.error("Fehler beim Laden der aktuellen WG des Benutzers:", error);
         }
     }
+    const handleCustomMasseinheit = () => {
+        const customMasseinheit = prompt("Geben Sie Ihre eigene Maßeinheit ein:");
+        if (customMasseinheit) {
+            const grammMenge = prompt(`Geben Sie die Menge in Gramm für 1 ${customMasseinheit} ein:`);
+            if (grammMenge) {
+                // Speichern der benutzerdefinierten Maßeinheit und der Menge im Zustand
+                setCustomMasseinheit(customMasseinheit);
+                setFormData({
+                    ...formData,
+                    mengenanzahl: parseInt(grammMenge), // Konvertierung zu Zahl
+                    masseinheit: customMasseinheit
+                });
+            }
+        }
+    };
+     
 
     const handleChange = (event) => {
         setFormData({
@@ -205,7 +222,7 @@ function Kuehlschrankinhalt(props) {
                             className="eingabe"
                         />
 
-                        <label>Maßeinheit</label>
+                        <label>Maßeinheit</label>                        
                         <input
                             type="text"
                             name="masseinheit"
@@ -220,6 +237,8 @@ function Kuehlschrankinhalt(props) {
                             ))}
                         </datalist>
                         <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
+                        <button className="button" type="button" onClick={handleCustomMasseinheit}>Eigene neue Maßeinheit eingeben</button>
+
                     </div>
                 </div>
             </div>
