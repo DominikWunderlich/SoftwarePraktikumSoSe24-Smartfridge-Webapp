@@ -33,7 +33,14 @@ class Administration(object):
         w.set_id(1)
 
         with WGMapper() as mapper:
-            return mapper.insert(w)
+            mapper.insert(w)
+            print("34", w.get_id())
+            wg_id = w.get_id()
+
+        with KuehlschrankMapper() as mapper:
+            mapper.create_kuehlschrank(wg_id)
+
+        return self
 
     def get_wg_by_name(self, key):
         """ Auslesen einer WG Instanz nach Name """
@@ -264,6 +271,50 @@ class Administration(object):
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
 
+    """ Diese Methode updated vorhandene Lebensmittel im Kuehlschrank, wenn die Menge geändert wird """
+    def update_lebensmittel(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
+        """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
+        # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
+        # des Users dar (gr, kg, l, ...).
+        print(f"name = {name}")
+        print(f"name = {meinheit}")
+        print(f"name = {menge}")
+        print(f"name = {kuehlschrank_id}")
+        print(f"name = {rezept_id}")
+        with MasseinheitMapper() as mapper:
+            m_id = mapper.find_by_name(meinheit)
+
+            if m_id is None:
+                masseinheit_id = self.create_measurement(meinheit, 0)
+            else:
+                masseinheit_id = m_id.get_id()
+
+        # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
+        with MengenanzahlMapper() as mmapper:
+            mengen_id = mmapper.find_by_menge(menge)
+            if mengen_id is None:
+                mengen_id = self.create_menge(menge)
+            else:
+                mengen_id = mengen_id.get_id()
+
+
+        # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
+        food = Lebensmittel()
+        # Hier wird die Lebensmittel_id auf 1 gesetzt
+        food.set_id(1)
+        food.set_lebensmittelname(name)
+        food.set_masseinheit(masseinheit_id)
+        food.set_mengenanzahl(mengen_id)
+        food.set_kuelschrank_id(kuehlschrank_id)
+        food.set_rezept_id(rezept_id)
+
+
+        print(f" Das ist das erstellte Lebensmittel: {food}")
+
+        time.sleep(1)
+        with LebensmittelMapper() as lmapper:
+            return lmapper.update(food)
+
     def create_lebensmittel_from_fridge(self, name, meinheit, menge):
         """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
@@ -423,11 +474,6 @@ class Administration(object):
         with LebensmittelMapper() as mapper:
             return mapper.find_by_id(id)
 
-    def update_lebensmittel(self, food):
-        """ Lebensmittel Update. """
-        with LebensmittelMapper() as mapper:
-            mapper.update(food)
-
     """Kuehlschrank-spezifische Methoden """
 
     def find_kuehlschrank_id(self, email):
@@ -488,11 +534,11 @@ class Administration(object):
 
             # 3. Lebensmittel updaten bzw. neu erstellen
             updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
-            new_food_obj = self.create_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
-                                    updated_food.get_mengenanzahl(), kuehlschrank_id, None)
-            a = self.update_lebensmittel(new_food_obj)
+            new_food_obj = self.update_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
+                                                    updated_food.get_mengenanzahl(), kuehlschrank_id, None)
+            # a = self.update_lebensmittel(new_food_obj)
 
-            return a
+            return new_food_obj
 
     def remove_food_from_fridge_with_recipe(self, kuehlschrank_id, rezept_id):
         # Zugehörige Lebensmittel des Kühlschranks finden

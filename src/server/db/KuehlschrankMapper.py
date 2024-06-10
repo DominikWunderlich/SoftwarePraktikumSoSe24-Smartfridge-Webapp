@@ -8,6 +8,18 @@ class KuehlschrankMapper(mapper):
     def __init__(self):
         super().__init__()
 
+    def create_kuehlschrank(self, wg_id):
+        cursor = self._connector.cursor()
+
+        command = "INSERT INTO datenbank.kuehlschrank (kuehlschrank_id, wg_id) VALUES (%s, %s) "
+        data = (wg_id, wg_id,)
+        print(F" wg id: {data}")
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+
+
     def find_lebensmittel_by_kuehlschrank_id(self, kuehlschrank_id):
         result = []
         cursor = self._connector.cursor()
@@ -68,7 +80,7 @@ class KuehlschrankMapper(mapper):
     def delete(self, kuehlschrank_id, food_id):
         cursor = self._connector.cursor()
         print(f"Das ist die zu entfernende lebensmittel_id {food_id}")
-        command = "DELETE FROM datenbank.kuehlschrankinhalt WHERE kuehlschrank_id =%s AND lebensmittel_id =%s"
+        command = "DELETE FROM datenbank.lebensmittel WHERE kuehlschrank_id =%s AND lebensmittel_id =%s"
         data = (kuehlschrank_id, food_id)
         cursor.execute(command, data)
 
