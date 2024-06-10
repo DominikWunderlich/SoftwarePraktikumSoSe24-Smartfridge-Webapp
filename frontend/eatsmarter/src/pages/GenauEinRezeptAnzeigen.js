@@ -8,6 +8,7 @@ import mengenanzahlBO from "../api/mengenanzahlBO";
 import { useParams } from "react-router-dom"; // Importing useParams
 import {useNavigate} from "react-router-dom";
 import TrimAndLowerCase from "../functions";
+import kuehlschrank from "./Kuehlschrank";
 
 function GenauEinRezeptAnzeigen(props) {
     const [formData, setFormData] = useState({
@@ -45,7 +46,9 @@ function GenauEinRezeptAnzeigen(props) {
         const newLebensmittel = new LebensmittelBO(
             TrimAndLowerCase(formData.lebensmittelname),
             TrimAndLowerCase(formData.mengenanzahl),
-            TrimAndLowerCase(formData.masseinheit)
+            TrimAndLowerCase(formData.masseinheit),
+            null,
+            rezeptId
         );
         const newMengenanzahl = new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl));
         const newMasseinheit = new MasseinheitBO(TrimAndLowerCase(formData.masseinheit));
@@ -60,7 +63,7 @@ function GenauEinRezeptAnzeigen(props) {
 
         EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit);
         EatSmarterAPI.getAPI().addMenge(newMengenanzahl);
-        EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
+
 
         setFormData({
             lebensmittelname: "",
@@ -184,7 +187,7 @@ function GenauEinRezeptAnzeigen(props) {
                                 <tbody>
                                 {rezeptLebensmittel.map((lebensmittel, index) => (
                                     <tr key={index}>
-                                        <td>{lebensmittel.lebensmittelname}</td>
+                                        <td>{lebensmittel.lebensmittelName}</td>
                                         <td>{lebensmittel.mengenanzahl}</td>
                                         <td>{lebensmittel.masseinheit}</td>
                                     </tr>
@@ -261,7 +264,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     <tbody>
                                         {shoppingListElem.map((shoppingList, index) => (
                                             <tr key={index}>
-                                                <td>{shoppingList.lebensmittelname}</td>
+                                                <td>{shoppingList.lebensmittelName}</td>
                                                 <td>{shoppingList.mengenanzahl}</td>
                                                 <td>{shoppingList.masseinheit}</td>
                                             </tr>

@@ -309,28 +309,16 @@ class AddLebensmittelToRezept(Resource):
     @smartapi.marshal_with(rezept)
     #@secured
     def post(self, rezept_id):
-        """ API-Endpunkt zum Hinzufügen eines Lebensmittels zu einem Rezept. """
+        """
+        Das ist der Endpunkt für das hinzufügen von Lebensmitteln in den Kühlschrank.
+        Ist ein Lebensmittel bereits enthalten, wird es geupdatet!
+        """
         adm = Administration()
-        lebensmittel_data = api.payload
-        lebensmittel_name = lebensmittel_data.get('lebensmittel_name')
-        masseinheit = lebensmittel_data.get('masseinheit')
-        menge = lebensmittel_data.get('menge')
-        print(lebensmittel_data)
-        print(rezept_id)
-        print("Hallihallo")
-        print(lebensmittel_name)
-        print(masseinheit)
-        print(menge)
-#hier bin ich stehen geblieben, der success ist false. d.h. Diese Methode liefert ein false create_and_add_lebensmittel_to_rezept
-        success = adm.create_and_add_lebensmittel_to_rezept(rezept_id, lebensmittel_name, masseinheit, menge)
-        print("hierhallo")
-        print(success)
-        if success:
-            # Rückgabe des aktualisierten Rezepts nach dem Hinzufügen des Lebensmittels
-            updated_rezept = adm.get_rezept_by_id(rezept_id)
-            return updated_rezept, 200
-        else:
-            return 'Fehler beim Hinzufügen des Lebensmittels zum Rezept.', 500
+        proposal = Lebensmittel.from_dict(api.payload)
+
+        if proposal is not None:
+            result = adm.add_food_to_recipe(rezept_id, proposal)
+            return result
 
     @smartapi.marshal_with(lebensmittel)
     def get(self, rezept_id):

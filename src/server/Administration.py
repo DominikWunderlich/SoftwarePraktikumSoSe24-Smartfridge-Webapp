@@ -314,6 +314,49 @@ class Administration(object):
         time.sleep(1)
         with LebensmittelMapper() as lmapper:
             return lmapper.update(food)
+    def update_lebensmittel2(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
+        """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
+        # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
+        # des Users dar (gr, kg, l, ...).
+        print(f"name = {name}")
+        print(f"name = {meinheit}")
+        print(f"name = {menge}")
+        print(f"name = {kuehlschrank_id}")
+        print(f"name = {rezept_id}")
+        with MasseinheitMapper() as mapper:
+            m_id = mapper.find_by_name(meinheit)
+
+            if m_id is None:
+                masseinheit_id = self.create_measurement(meinheit, 0)
+            else:
+                masseinheit_id = m_id.get_id()
+
+        # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
+        with MengenanzahlMapper() as mmapper:
+            mengen_id = mmapper.find_by_menge(menge)
+            if mengen_id is None:
+                mengen_id = self.create_menge(menge)
+            else:
+                mengen_id = mengen_id.get_id()
+
+
+        # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
+        food = Lebensmittel()
+        # Hier wird die Lebensmittel_id auf 1 gesetzt
+        food.set_id(1)
+        food.set_lebensmittelname(name)
+        food.set_masseinheit(masseinheit_id)
+        food.set_mengenanzahl(mengen_id)
+        food.set_kuelschrank_id(kuehlschrank_id)
+        food.set_rezept_id(rezept_id)
+
+
+        print(f" Das ist das erstellte Lebensmittel: {food}")
+
+        time.sleep(1)
+        with LebensmittelMapper() as lmapper:
+            return lmapper.update3(food)
+
 
     def create_lebensmittel_from_fridge(self, name, meinheit, menge):
         """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
@@ -366,6 +409,10 @@ class Administration(object):
         with LebensmittelMapper() as mapper:
             return mapper.find_by_lebensmittelname(lebensmittel_name, kid)
 
+    def get_lebensmittel_by_lebensmittel_name2(self, lebensmittel_name, rid):
+        with LebensmittelMapper() as mapper:
+            return mapper.find_by_lebensmittelname2(lebensmittel_name, rid)
+
     def get_menge_by_id(self, mengen_id):
         with MengenanzahlMapper() as mapper:
             return mapper.find_by_key(mengen_id)
@@ -375,7 +422,7 @@ class Administration(object):
             return mapper.find_by_key(masseinheit_id)
 
     def get_lebensmittel_by_rezept_id(self, rezept_id):
-        with RezeptEnthaeltLebensmittelMapper() as mapper:
+        with RezeptMapper() as mapper:
             return mapper.find_lebensmittel_by_rezept_id(rezept_id)
 
     def get_lebensmittel_id_by_lebensmname_masseinhid_mengeid(self, name, meinheit, menge):
@@ -407,65 +454,52 @@ class Administration(object):
     #die id vom rezept bekomm ich ja im frontend schon, also hab ich schon
 
     #wenn ich die beiden hab kann ich folgende Methode aufrufen und damit ein lebensmittel zum rezept hinzufügen
-    def add_lebensmittel_to_rezept(self, rezept_id, lebensmittel_name, masseinheit, menge):
-        l_id = self.get_lebensmittel_id_by_lebensmname_masseinhid_mengeid(lebensmittel_name, masseinheit, menge)
-        print("in der add_lebensmittel_to_rezept Methode")
-        print(l_id)
-        if l_id is not None:
-            rezept_enthaelt_lebensmittel = RezeptEnthaeltLebensmittel()
-            print(rezept_enthaelt_lebensmittel)
-            rezept_enthaelt_lebensmittel.set_rezept_id(rezept_id)
-            rezept_enthaelt_lebensmittel.set_lebensmittel_id(l_id)
-            print(rezept_enthaelt_lebensmittel)
-            print(rezept_enthaelt_lebensmittel.id)
-            print(rezept_enthaelt_lebensmittel.rezept_id)
-            print(rezept_enthaelt_lebensmittel.lebensmittel_id)
-
-            with RezeptEnthaeltLebensmittelMapper() as mapper:
-                return mapper.insert(rezept_enthaelt_lebensmittel)
-        else:
-            return None
-
-    def create_and_add_lebensmittel_to_rezept(self, rezept_id, lebensmittel_name, masseinheit, menge):
-        # Zuerst die Menge erstellen
-        menge_id = self.create_menge(menge)
-        print(f"das  hier!!!!!!!!!!!! {menge_id}")
-        #Das menge_id ist False, wenns die menge schon gibt und None wenn sie neu ist
 
 
-        # Dann die Maßeinheit erstellen
-        faktor = 1  # Hier kann ein Standardfaktor verwendet werden, da er in dieser Methode nicht spezifiziert wurde
-        masseinheit_id = self.create_measurement(masseinheit, faktor)
-        print(f"das  hier2!!!!!!!!!!!! {masseinheit_id}")
-
-
-        lebensmittel_id = self.create_lebensmittel(lebensmittel_name, masseinheit, menge)
-        print(f"das hier2,5!!!!!!!!!{lebensmittel_name}")
-        print(f"das hier3!!!!!!!!!!!{lebensmittel_id}")
-
-        # Lebensmittel erstellen und hinzufügen
-        print("komm ich bis hier her? Zeile 253")
-        print(rezept_id)
-        print(lebensmittel_id)
-        print(lebensmittel_name)
-        print(masseinheit)
-        print(menge)
-        print("Zeile 259")
-        result = self.add_lebensmittel_to_rezept(rezept_id, lebensmittel_name, masseinheit, menge)
-        print("Admin.py Zeile 249")
-        print(rezept_id)
-        print(lebensmittel_name)
-        print(masseinheit)
-        print(menge)
-        print(result)
-        print("Lebensmittel wurde erfolgreich zum Rezept hinzugefügt!")
-        return True
-
-    def get_lebensmittel_by_rezept_id(self, rezept_id):
-        with RezeptEnthaeltLebensmittelMapper() as mapper:
-            return mapper.find_lebensmittel_by_rezept_id(rezept_id)
+    #def get_lebensmittel_by_rezept_id(self, rezept_id):
+        #with RezeptEnthaeltLebensmittelMapper() as mapper:
+            #return mapper.find_lebensmittel_by_rezept_id(rezept_id)
     """Auslesen aller Lebensmittel """
+    def add_food_to_recipe(self, rezept_id, lebensmittel):  # Input = Karotte, 1, Kilogramm
+        # Zuerst werden die zugehörigen Lebensmittel des Kühlschranks geholt.
+        fridge = self.get_lebensmittel_by_rezept_id(rezept_id)  # Output: [(k_id/l_obj), (k_id2/l_obj2)]
+        # Als nächstes prüfen wir ob der gesuchte Lebensmittelname bereits im rezept ist.
+        lebenmittel_name = lebensmittel.get_lebensmittelname()
+        print("LName: ", lebenmittel_name)
+        print("LName2: ", lebensmittel.get_lebensmittelname())
 
+        names = []
+        for elem in fridge:
+            name = elem.get_lebensmittelname()
+            names.append(name)
+
+        if lebenmittel_name not in names:
+            # Wenn das Lebensmittel NICHT im Rezept ist, dann wird es hier angelegt und hinzugefügt.
+            self.update_lebensmittel2(lebensmittel.get_lebensmittelname(),
+                                     lebensmittel.get_masseinheit(),
+                                     lebensmittel.get_mengenanzahl(),
+                                     lebensmittel.get_kuehlschrank_id(),
+                                     lebensmittel.get_rezept_id())
+
+        else:
+            # Wenn ein Lebensmittel bereits im rezept ist, erhöhen wir den Bestand
+
+            # 1. Vorhandenes Lebensmittel mit dem gesuchten Namen auslesen.
+            elem = self.get_lebensmittel_by_lebensmittel_name2(lebenmittel_name, rezept_id)
+
+            # 2. Menge und Maßeinheit auslesen.
+            quantity_obj = self.get_menge_by_id(elem[0].get_mengenanzahl())
+            quantity = quantity_obj.get_menge()
+            unit_obj = self.get_masseinheit_by_id(elem[0].get_masseinheit())
+            unit = unit_obj.get_masseinheit()
+
+            # 3. Lebensmittel updaten bzw. neu erstellen
+            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
+            new_food_obj = self.update_lebensmittel2(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
+                                                    updated_food.get_mengenanzahl(), None, rezept_id)
+            # a = self.update_lebensmittel(new_food_obj)
+
+            return new_food_obj
     def getAllLebensmittelangabe(self):
         with LebensmittelMapper() as mapper:
             return mapper.find_all()
@@ -542,12 +576,10 @@ class Administration(object):
 
     def remove_food_from_fridge_with_recipe(self, kuehlschrank_id, rezept_id):
         # Zugehörige Lebensmittel des Kühlschranks finden
-        print(f"...starting remove_food_from_fridge")
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
 
         # Benötigte Lebensmittel aus dem Rezept entziehen
         required_lebensmittel = self.get_lebensmittel_by_rezept_id(rezept_id)
-        print(f"Lebensmittel aus dem Rezept {required_lebensmittel}")
 
         # Leere shopping_list erstellen
         shopping_list = []
@@ -562,81 +594,62 @@ class Administration(object):
             food_exist = False
             required_amount = elem.get_mengenanzahl()
             required_unit = elem.get_masseinheit()
-            print(f"required amount: {required_amount}")
-            print(f"required unit: {required_unit}")
+            print("benötigte Menge", required_amount)
             for x in fridge:
                 # TODO: Case behandeln, wenn von einem Lebensmittel genug vorhanden sind, aber danach nicht
                 # Stand jetzt zieht er auch bei dem die geügend vorhanden sind bereits ab und gibt danch die Einkaufsliste aus
                 # mit den fehlenden Lebensmitteln
-                print("Lebensmittelname im Rezept", elem.get_lebensmittelname())
-                print("Lebensmittelname im Kühlschrank", x.get_lebensmittelname())
                 if elem.get_lebensmittelname() == x.get_lebensmittelname():
                     new_amount = x.decrease_food_quantity(required_amount, required_unit)
-                    print(f"Das ist das Lebensmittel nach dem, die decrease-Methode angewandt wurde {new_amount}")
+                    print("New Amount", new_amount.get_id())
 
                     if new_amount.get_mengenanzahl() > 0:
-                        print("if Pfad")
                         # Create new food objects with amount and update the kuehlschrankinhalt
                         # Lebensmittel_id im Kühschhrank finden um, dann mit einem neuen zu ersetzen
-                        old_food_id = x.get_id()
+                        food_id = x.get_id()
+                        neue_menge = Mengenanzahl()
+                        neue_menge.set_id(1)
+                        neue_menge.set_menge(new_amount.get_mengenanzahl())
+                        print("neu", neue_menge)
 
-                        # Neues lebensmittelobjekt mit neuer menge erstellen
-                        new_food_obj = self.create_lebensmittel_from_fridge(new_amount.get_lebensmittelname(),
-                                                                            new_amount.get_masseinheit(),
-                                                                            new_amount.get_mengenanzahl())
+                        # Problem: Wie kann ich die menge im Lebensmittel verändern?
+                        with MengenanzahlMapper() as mapper:
+                            mapper.insert(neue_menge)
 
-                        print(f"Das ist new_food_obj nach dem erfolgreichen Decrease {new_food_obj}")
-                        # Lebensmittel id vom neuen Lebensmittelobjekt ausgeben
-                        new_food_obj_id = new_food_obj.get_id()
-                        fridge_updates.append((old_food_id,new_food_obj_id, kuehlschrank_id))
+                        neue_menge_id = neue_menge.get_id()
+
+                        with KuehlschrankMapper() as mapper:
+                            mapper.update2(food_id, neue_menge_id, kuehlschrank_id)
+
 
                     elif new_amount.get_mengenanzahl() == 0:
                         # DELETE Lebensmittel aus kuehlschrankinhalt where Menge nach Decrease == 0
-                        print("elif1 pfad")
                         # Lebensmittel aus dem kühlschrank löschen, da die Menge 0 ist
-                        print(f" Das Lebesnmittel hat nach dem Decrease die menge 0 {x}")
                         delete_food_id = x.get_id()
-                        print(f"Die ID des zu entfernenden lebensmittels {delete_food_id}")
-                        print(f"Die ID die kuehlschrank_id {kuehlschrank_id}")
-                        fridge_deletions.append((kuehlschrank_id, delete_food_id))
+
+                        with KuehlschrankMapper() as mapper:
+                            mapper.delete(kuehlschrank_id, delete_food_id)
 
                     elif new_amount.get_mengenanzahl() < 0:
                         # Wenn die Menge nach dem Decrease < 0 ist, dann soll das Lebensmittel als einkaufsliste ausgegeben werden
-                        print(f"Du musss dieses Lebensmittel einkaufen elif pfad {new_amount}")
                         # Das Lebensmittel an die Shopponglist anhängen
                         shopping_list.append(new_amount)
-                        print(f"Das ist die shopping Liste {new_amount}")
 
                     food_exist = True
                     break
 
                 # wenn dieses Lebensmittel nicht im Kühlschrank
             if not food_exist:
-                print(f"Du muss dieses Lebensmittel noch einkaufen letzer else Pfad {elem}")
                 # Das Lebensmittel an die Shopping_list hinzufügen
                 shopping_list.append(elem)
 
         # Shopping List inklusive Minus Werte für die Menge
-        print(f"Das ist die Shoppinglist mit Minus Werten {shopping_list}")
 
         # Shopping List Minus Werte mittels python abs() function in positive Werte umwandeln
         for lebensmittel in shopping_list:
             positive_amount = abs(lebensmittel.get_mengenanzahl())
             lebensmittel.set_mengenanzahl(positive_amount)
             shopping_list_with_correct_amounts.append(lebensmittel)
-
-        print(f"Das ist die Shoppinglist mit Plus Werten {shopping_list_with_correct_amounts}")
-
-        # Wir updaten die Lebensmittel im Kühlschrank nur wenn wir alle Lebensmittel vorrätig haben.
-        if not shopping_list:
-            with KuehlschrankMapper() as mapper:
-                for old_food_id, new_food_obj_id, kuehlschrank_id in fridge_updates:
-                    print(f"Updating: old_food_id={old_food_id}, new_food_obj_id={new_food_obj_id}")
-                    mapper.update(old_food_id, new_food_obj_id, kuehlschrank_id)
-
-                for kuehlschrank_id, delete_food_id in fridge_deletions:
-                    print(f"Deleting: kuehlschrank_id={kuehlschrank_id}, delete_food_id={delete_food_id}")
-                    mapper.delete(kuehlschrank_id, delete_food_id)
 
         return shopping_list_with_correct_amounts
 

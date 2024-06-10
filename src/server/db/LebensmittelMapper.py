@@ -53,6 +53,31 @@ class LebensmittelMapper(mapper):
 
         return result
 
+    def find_by_lebensmittelname2(self, lebensmittelname, rid):
+        result = []
+        cursor = self._connector.cursor()
+        command = "SELECT lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id " \
+                  "FROM datenbank.lebensmittel " \
+                  "WHERE lebensmittel_name LIKE %s" \
+                  "AND rezept_id = %s"
+        cursor.execute(command, (lebensmittelname, rid))
+        tuples = cursor.fetchall()
+
+        for (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id) in tuples:
+            lebensmittel = Lebensmittel()
+            lebensmittel.set_id(lebensmittel_id)
+            lebensmittel.set_lebensmittelname(lebensmittel_name)
+            lebensmittel.set_masseinheit(masseinheit_id)
+            lebensmittel.set_mengenanzahl(mengenanzahl_id)
+            lebensmittel.set_kuelschrank_id(kuehlschrank_id)
+            lebensmittel.set_rezept_id(rezept_id)
+            result.append(lebensmittel)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
+
     def insert(self, l):
         cursor = self._connector.cursor()
 
@@ -97,6 +122,20 @@ class LebensmittelMapper(mapper):
         data = (lebensmittel.get_lebensmittelname(), lebensmittel.get_masseinheit(), lebensmittel.get_mengenanzahl(),
                 lebensmittel.get_kuehlschrank_id(), lebensmittel.get_rezept_id(), lebensmittel.get_lebensmittelname(),
                 lebensmittel.get_kuehlschrank_id())
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+
+    def update3(self, lebensmittel):
+        cursor = self._connector.cursor()
+
+        command = "UPDATE datenbank.lebensmittel SET lebensmittel_name=%s, masseinheit_id=%s, mengenanzahl_id=%s," \
+                  "kuehlschrank_id=%s, rezept_id=%s  WHERE lebensmittel_name=%s AND rezept_id=%s"
+        data = (
+            lebensmittel.get_lebensmittelname(), lebensmittel.get_masseinheit(), lebensmittel.get_mengenanzahl(),
+            lebensmittel.get_kuehlschrank_id(), lebensmittel.get_rezept_id(), lebensmittel.get_lebensmittelname(),
+            lebensmittel.get_rezept_id())
         cursor.execute(command, data)
 
         self._connector.commit()

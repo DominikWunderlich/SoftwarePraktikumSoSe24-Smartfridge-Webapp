@@ -66,13 +66,13 @@ class KuehlschrankMapper(mapper):
 
         return lebensmittel
 
+    def update(self, object):
+        pass
 
-    def update(self, old_food_id, new_food_id, kuehlschrank_id):
+    def update2(self, food_id, new_mengen_id, kuehlschrank_id):
         cursor = self._connector.cursor()
-        print(f"Das ist old_food_id {old_food_id}, das ist die neue {new_food_id}, das ist die kuehlschrank_id {kuehlschrank_id}")
-        command = "UPDATE datenbank.kuehlschrankinhalt SET lebensmittel_id =%s WHERE lebensmittel_id = %s AND kuehlschrank_id=%s"
-        data = (new_food_id, old_food_id, kuehlschrank_id)
-        cursor.execute(command, data)
+        command = f"UPDATE datenbank.lebensmittel SET lebensmittel.mengenanzahl_id='{new_mengen_id}' WHERE lebensmittel.lebensmittel_id='{food_id}' AND lebensmittel.kuehlschrank_id='{kuehlschrank_id}'"
+        cursor.execute(command)
 
         self._connector.commit()
         cursor.close()
