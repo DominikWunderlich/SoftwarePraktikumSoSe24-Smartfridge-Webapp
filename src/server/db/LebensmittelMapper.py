@@ -113,7 +113,34 @@ class LebensmittelMapper(mapper):
         cursor.close()
 
     def find_by_key(self, key):
-        pass
+        result = []
+        cursor = self._connector.cursor()
+        command = f"SELECT lebensmittel.lebensmittel_id, " \
+                  f"lebensmittel.lebensmittel_name, " \
+                  f"masseinheit.masseinheit_name, " \
+                  f"mengenanzahl.menge, " \
+                  f"lebensmittel.kuehlschrank_id, " \
+                  f"lebensmittel.rezept_id FROM datenbank.lebensmittel " \
+                  f"JOIN masseinheit ON lebensmittel.masseinheit_id = masseinheit.masseinheit_id " \
+                  f"JOIN mengenanzahl on lebensmittel.mengenanzahl_id = mengenanzahl.id " \
+                  f"WHERE rezept_id = '{key}'"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (lebensmittel_id, lebensmittel_name, masseinheit_name, menge, kid, rid) in tuples:
+            l = Lebensmittel()
+            l.set_id(lebensmittel_id)
+            l.set_lebensmittelname(lebensmittel_name)
+            l.set_masseinheit(masseinheit_name)
+            l.set_mengenanzahl(menge)
+            l.set_kuelschrank_id(kid)
+            l.set_rezept_id(rid)
+            result.append(l)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
 
     def find_id_by_name_mengen_id_and_masseinheit_id(self, lebensmittel_name, masseinheit_id, mengenanzahl_id):
         cursor = self._connector.cursor()
