@@ -659,8 +659,8 @@ class Administration(object):
             mapper.delete(kuehlschrank_id, lebensmittel_id)
 
     def get_lebensmittel_by_rezept_id2(self, rezept):
-        with RezeptEnthaeltLebensmittelMapper() as mapper:
-            return mapper.find_lebensmittel_by_rezept_id(rezept)
+        with LebensmittelMapper() as mapper:
+            return mapper.find_by_key(rezept)
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
         food_id_in_fridge = set()  # Set für die Lebensmittel im Kühlschrank
