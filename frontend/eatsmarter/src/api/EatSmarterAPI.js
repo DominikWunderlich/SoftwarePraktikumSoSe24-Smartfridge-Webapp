@@ -403,20 +403,36 @@ export default class EatSmarterAPI{
     }
     #updateMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit`;
 
-    updateMasseinheit(MasseinheitBO){
-        return this.#fetchAdvanced(this.#updateMasseinheitURL(MasseinheitBO), {
+    // updateMasseinheit(MasseinheitBO){
+    //     return this.#fetchAdvanced(this.#updateMasseinheitURL(MasseinheitBO), {
+    //         method: "PUT",
+    //         headers: {
+    //             "Accept": "application/json, text/plain",
+    //             "Content-type": "application/json",
+    //         },
+    //         body: JSON.stringify(MasseinheitBO)
+    //     }).then((responseJSON) => {
+    //         let responseMasseinheitBO = MasseinheitBO.fromJSON(responseJSON)[0];
+    //         return new Promise(function(resolve){
+    //             resolve(responseMasseinheitBO);
+    //         })
+    //     })
+    // }
+
+    #updateFoodInFridgeURL = (wg_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}//kuehlschrankinhalt/${wg_id}/${lebensmittel_id}`
+    updateFoodInFridge(updatedLebensmittel) {
+        return this.#fetchAdvanced(this.#updateFoodInFridgeURL(updatedLebensmittel.id), {
             method: "PUT",
             headers: {
                 "Accept": "application/json, text/plain",
-                "Content-type": "application/json",
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(MasseinheitBO)
+            body: JSON.stringify(updatedLebensmittel)
         }).then((responseJSON) => {
-            let responseMasseinheitBO = MasseinheitBO.fromJSON(responseJSON)[0];
-            return new Promise(function(resolve){
-                resolve(responseMasseinheitBO);
+            return new Promise(function(resolve) {
+                resolve(responseJSON);
             })
-        })
+        });
     }
 
 

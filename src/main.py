@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restx import Api, Resource, fields
 from flask_cors import CORS, cross_origin
+from flask import Flask, jsonify, request
 
 from server.Administration import Administration
 from server.bo.BusinessObject import BusinessObject
@@ -510,17 +511,29 @@ class MasseinheitOperation(Resource):
         else:
             return "Fehler in MengenOperationen Post Methode", 500
         
+
+    @smartapi.expect(masseinheit)  
+    @smartapi.marshal_with(masseinheit)  
+    @secured
     def put(self):
         """
-        Diese Methode aktualisiert den Namen einer Maßeinheit.
+        Aktualisiert den Namen einer Maßeinheit.
         """
         adm = Administration()
-        proposal = Masseinheit.from_dict(api.payload)
-        success = adm.update_measurement_name(proposal.get_masseinheit())
+        data = api.payload  # Zugriff auf die Daten aus der PUT-Anforderung
+        id = data.get('id')
+        new_name = data.get('new_name')
+
+        if not id or not new_name:
+            return {'message': "Fehlende ID oder neuer Maßeinheitsname."}, 400
+
+        success = adm.update_measurement_name(id, new_name)
         if success:
-            return f"Masseinheit '{masseinheitsname}' erfolgreich in '{new_name}' aktualisiert.", 200
+            # Erfolgreiche Antwort im JSON-Format zurückgeben
+            return {'message': f"Masseinheit mit ID '{id}' erfolgreich in '{new_name}' aktualisiert."}, 200
         else:
-            return f"Aktualisierung des Maßeinheitsnamens '{masseinheitsname}' fehlgeschlagen.", 500
+            return {'message': f"Aktualisierung des Maßeinheitsnamens mit ID '{id}' fehlgeschlagen."}, 500
+        
 
     @smartapi.marshal_with(masseinheit)
     @secured

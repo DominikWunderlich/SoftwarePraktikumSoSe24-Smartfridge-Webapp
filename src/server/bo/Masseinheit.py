@@ -37,7 +37,7 @@ class Masseinheit(bo):
         return ma
 
    
-    def update_measurement_name(self, new_name):
+    def update_measurement_name(self, new_name, success):
         """
         Diese Methode aktualisiert den Namen der Maßeinheit.
         """

@@ -271,24 +271,6 @@ class Administration(object):
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
         
-    
-    def update_measurement_name(self, new_name):
-        """ Aktualisiert den Namen einer Maßeinheit. """
-        with MasseinheitMapper() as mapper:
-            # Zuerst die Maßeinheit anhand des alten Namens finden
-            masseinheit = mapper.find_by_name(old_name)
-            if masseinheit is None:
-                return False  # Maßeinheit nicht gefunden
-
-            # Den Namen der Maßeinheit aktualisieren
-            masseinheit.set_masseinheit(new_name)
-
-            # Die aktualisierte Maßeinheit in die Datenbank einfügen
-            mapper.update(masseinheit)
-
-            return True  # Erfolgreich aktualisiert
-
-
     """ Diese Methode updated vorhandene Lebensmittel im Kuehlschrank, wenn die Menge geändert wird """
     def update_lebensmittel(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
         """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
@@ -374,6 +356,25 @@ class Administration(object):
         time.sleep(1)
         with LebensmittelMapper() as lmapper:
             return lmapper.update3(food)
+
+
+    def update_food_in_fridge(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
+        """ Diese Methode aktualisiert vorhandene Lebensmittel im Kühlschrank, wenn sich die Lebensmittelname, Menge, Masseinheit ändert. """
+        # Zuerst suchen wir das Lebensmittel im Kühlschrank
+        with LebensmittelMapper() as lmapper:
+            existing_food = lmapper.find_by_name_and_fridge_id(name, kuehlschrank_id)
+
+        if existing_food:
+            # Das Lebensmittel existiert bereits im Kühlschrank, daher aktualisieren wir nur die Menge
+            existing_food.set_mengenanzahl(menge)
+            print(f"Die Menge von {name} im Kühlschrank wurde auf {menge} aktualisiert.")
+            time.sleep(1)
+            with LebensmittelMapper() as lmapper:
+                return lmapper.update(existing_food)
+        else:
+            # Wenn das Lebensmittel nicht gefunden wurde, geben wir eine entsprechende Meldung aus
+            print(f"{name} wurde nicht im Kühlschrank gefunden.")
+            return None
 
 
     def create_lebensmittel_from_fridge(self, name, meinheit, menge, kuehlschrank_id, rezept_id):

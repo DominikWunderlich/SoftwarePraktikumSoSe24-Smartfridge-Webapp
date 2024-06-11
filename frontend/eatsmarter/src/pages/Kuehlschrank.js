@@ -4,7 +4,7 @@ import LebensmittelBO from "../api/LebensmittelBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
 import TrimAndLowerCase from "../functions";
-
+import MasseinheitBO from "../api/MasseinheitBO";
 
 function Kuehlschrankinhalt(props) {
     const [formData, setFormData] = useState({
@@ -18,11 +18,16 @@ function Kuehlschrankinhalt(props) {
     const [errors, setErrors] = useState({});
     const [wgId, setWgId] = useState(null);
     const [customMasseinheit, setCustomMasseinheit] = useState("");
+    const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
+    const [editFormData, setEditFormData] = useState({
+        lebensmittelName: "",
+        mengenanzahl: 0,
+        masseinheit: ""
+    });
 
     useEffect(() => {
         async function fetchData() {
             try {
-                // Rufe die Funktion renderCurrentUsersWg auf, um die wgId zu aktualisieren
                 await renderCurrentUsersWg();
             } catch (error) {
                 console.error("Fehler beim Laden der aktuellen WG des Benutzers:", error);
@@ -34,7 +39,6 @@ function Kuehlschrankinhalt(props) {
     useEffect(() => {
         async function fetchLebensmittel() {
             try {
-                // Stellt sicher dass wgId vorm API-Aufruf nicht 0 ist 
                 if (wgId !== null) {
                     const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
                     console.log("lebensmittelliste in kuehlschrank.js ", lebensmittelListe);
@@ -59,29 +63,26 @@ function Kuehlschrankinhalt(props) {
 
     async function renderCurrentUsersWg() {
         try {
-            // Rufe die WG des Benutzers ab und aktualisiere die wgId
             const response = await EatSmarterAPI.getAPI().getWgByUser(props.user.email);
             setWgId(response.id);
         } catch (error) {
             console.error("Fehler beim Laden der aktuellen WG des Benutzers:", error);
         }
     }
+
     const handleCustomMasseinheit = () => {
         const customMasseinheit = prompt("Geben Sie Ihre eigene Maßeinheit ein:");
         if (customMasseinheit) {
             const grammMenge = prompt(`Geben Sie die Menge in Gramm für 1 ${customMasseinheit} ein:`);
             if (grammMenge) {
-                // Speichern der benutzerdefinierten Maßeinheit und der Menge im Zustand
                 setCustomMasseinheit(customMasseinheit);
                 setFormData({
                     ...formData,
-                    // mengenanzahl: parseInt(grammMenge), // Konvertierung zu Zahl
                     masseinheit: customMasseinheit
                 });
             }
         }
     };
-     
 
     const handleChange = (event) => {
         setFormData({
@@ -90,23 +91,41 @@ function Kuehlschrankinhalt(props) {
         });
     };
 
-    const handleEditMasseinheit = async (lebensmittelId) => {
-        const newMasseinheit = prompt("Neue Maßeinheit eingeben:");
-        if (newMasseinheit) {
-            try {
-                const updatedMasseinheit = new MasseinheitBO(newMasseinheit);
-                console.log(updatedMasseinheit)
-                console.log(lebensmittelId)
-                await EatSmarterAPI.getAPI().updateMasseinheit(lebensmittelId, updatedMasseinheit);
-                setLebensmittelliste(prevList => prevList.map(item => 
-                    item.id === lebensmittelId ? { ...item, masseinheit: newMasseinheit } : item
-                ));
-            } catch (error) {
-                console.error("Fehler beim Aktualisieren:", error);
-                setErrors({ message: "Fehler beim Aktualisieren der Maßeinheit." });
-            }
+    const handleEditChange = (event) => {
+        setEditFormData({
+            ...editFormData,
+            [event.target.name]: event.target.value
+        });
+    };
+
+    const handleEditMasseinheit = (lebensmittel) => {
+        setEditMode(lebensmittel.id);
+        setEditFormData({
+            lebensmittelName: lebensmittel.lebensmittelName,
+            mengenanzahl: lebensmittel.mengenanzahl,
+            masseinheit: lebensmittel.masseinheit
+        });
+    };
+
+    const handleSaveEdit = async (lebensmittelId) => {
+        try {
+            const updatedLebensmittel = {
+                id: lebensmittelId,
+                ...editFormData
+            };
+            await EatSmarterAPI.getAPI().updateFoodInFridge(updatedLebensmittel);
+            setLebensmittelliste(prevList =>
+                prevList.map(item =>
+                    item.id === lebensmittelId ? updatedLebensmittel : item
+                )
+            );
+            setEditMode(null);
+        } catch (error) {
+            console.error("Fehler beim Aktualisieren:", error);
+            setErrors({ message: "Fehler beim Aktualisieren der Lebensmittel." });
         }
     };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -123,21 +142,10 @@ function Kuehlschrankinhalt(props) {
             null
         );
 
-        // try {
-        //     await EatSmarterAPI.getAPI().addMasseinheit(new MasseinheitBO(TrimAndLowerCase(formData.masseinheit)));
-        //     await EatSmarterAPI.getAPI().addMenge(new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl)));
-        //     await EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
-        //
-        // } catch (error) {
-        //     console.error("Fehler beim Hinzufügen von Lebensmittel:", error);
-        //     setErrors({ message: "Fehler beim Hinzufügen von Lebensmittel. Bitte versuchen Sie es erneut." });
-        // }
         console.log("Neues Lebensmittel:", newLebensmittel);
         console.log("Übergebene wgId in test_kuehlschrank:", wgId)
         EatSmarterAPI.getAPI().addFoodToFridge(newLebensmittel, wgId);
 
-
-        // Zurücksetzen des Formulars nach dem Hinzufügen
         setFormData({
             lebensmittelName: "",
             mengenanzahl: 0,
@@ -146,25 +154,19 @@ function Kuehlschrankinhalt(props) {
         setErrors({});
     };
 
-    // Mit dieser Funktion kann das Lebensmittel aus dem Kuehlschrank gelöscht werden
-    async function deleteLebensmittel (event){
-        event.preventDefault()
-        // LebensmittelId ist der Value aus dem button Klick event
-        let lebensmittelId = event.target.value
-        // console.log("Das ist die Lebensmittel id welche gelöscht werden soll", lebensmittelId)
-        // console.log("Das ist die kuehlschrank_id", wgId)
-        await EatSmarterAPI.getAPI().deleteFoodFromFridge(wgId, lebensmittelId)
-        // Reload page nachdem Lebensmittel erfolgreich gelöscht wurde
-        window.location.reload()
+    async function deleteLebensmittel(event) {
+        event.preventDefault();
+        let lebensmittelId = event.target.value;
+        await EatSmarterAPI.getAPI().deleteFoodFromFridge(wgId, lebensmittelId);
+        window.location.reload();
     }
 
-    
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className="container">
                 <div className="inner-container">
-                <h2>Kühlschrank</h2>
+                    <h2>Kühlschrank</h2>
                     <div className="mini-container">
                         {errors.message && <p>{errors.message}</p>}
                         <table>
@@ -179,10 +181,46 @@ function Kuehlschrankinhalt(props) {
                             <tbody>
                                 {lebensmittelliste.map((lebensmittel, index) => (
                                     <tr key={index}>
-                                        <td>{lebensmittel.lebensmittelName}</td>
-                                        <td>{lebensmittel.mengenanzahl}</td>
-                                        <td>{lebensmittel.masseinheit}</td>
-                                        <td><button onClick={() => handleEditMasseinheit(lebensmittel.id)}>Bearbeiten</button></td>
+                                        {editMode === lebensmittel.id ? (
+                                            <>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        name="lebensmittelName"
+                                                        value={editFormData.lebensmittelName}
+                                                        onChange={handleEditChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        name="mengenanzahl"
+                                                        value={editFormData.mengenanzahl}
+                                                        onChange={handleEditChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        name="masseinheit"
+                                                        value={editFormData.masseinheit}
+                                                        onChange={handleEditChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <button onClick={() => handleSaveEdit(lebensmittel.id)}>Speichern</button>
+                                                </td>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <td>{lebensmittel.lebensmittelName}</td>
+                                                <td>{lebensmittel.mengenanzahl}</td>
+                                                <td>{lebensmittel.masseinheit}</td>
+                                                <td>
+                                                    <button onClick={() => handleEditMasseinheit(lebensmittel)}>Bearbeiten</button>
+                                                </td>
+                                            </>
+                                        )}
                                         <td>
                                             <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
                                         </td>
@@ -220,7 +258,7 @@ function Kuehlschrankinhalt(props) {
                             className="eingabe"
                         />
 
-                        <label>Maßeinheit</label>                        
+                        <label>Maßeinheit</label>
                         <input
                             type="text"
                             name="masseinheit"
@@ -236,7 +274,6 @@ function Kuehlschrankinhalt(props) {
                         </datalist>
                         <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                         <button className="button" type="button" onClick={handleCustomMasseinheit}>Eigene neue Maßeinheit eingeben</button>
-
                     </div>
                 </div>
             </div>
