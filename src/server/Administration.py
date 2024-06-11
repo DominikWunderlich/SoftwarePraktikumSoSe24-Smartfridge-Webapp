@@ -10,7 +10,6 @@ from server.bo.Masseinheit import Masseinheit
 from server.bo.mengenanzahl import Mengenanzahl
 from server.db.MaßeinheitMapper import MasseinheitMapper
 from server.db.mengenmapper import MengenanzahlMapper
-from server.bo.Kuehlschrank import Kuehlschrank
 from server.db.KuehlschrankMapper import KuehlschrankMapper
 import time
 

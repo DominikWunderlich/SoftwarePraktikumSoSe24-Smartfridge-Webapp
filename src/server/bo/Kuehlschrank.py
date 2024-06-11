@@ -1,5 +1,5 @@
 from server.bo.BusinessObject import BusinessObject as bo
-from server.bo.WG import WG
+
 
 class Kuehlschrank(bo):
     def __init__(self):

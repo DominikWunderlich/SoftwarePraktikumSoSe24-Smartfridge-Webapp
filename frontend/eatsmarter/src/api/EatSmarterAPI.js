@@ -660,27 +660,6 @@ export default class EatSmarterAPI{
             })
         })
     }
-    #kuehlschrankInhaltByIdURL = (wg_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${wg_id}`;
-    /**
-     * API-Aufruf um den Inhalt eines Kühlschranks anhand seiner ID auszulesen
-     * @param id = ID eines Kühlschranks.
-     */
-    getLebensmittelByKuehlschrankId(wg_id) {
-        console.log("API-Aufruf URL:", this.#kuehlschrankInhaltByIdURL(wg_id));
-        return this.#fetchAdvanced(this.#kuehlschrankInhaltByIdURL(wg_id), {
-            method: "GET",
-            headers: {
-                "Accept": "application/json, text/plain",
-                "Content-type": "application/json",
-            }
-        }).then((responseJSON) => {
-            // Die JSON-Antwort in eine Liste von LebensmittelBO-Objekten umwandeln
-            return LebensmittelBO.fromJSON(responseJSON);
-        }).catch((error) => {
-            console.error("Fehler beim Abrufen der Lebensmittel im Kühlschrank:", error);
-            throw error; // Fehler weitergeben
-        });
-    }
 
 
     #getRezeptByGeneratorURL = (wg_name, kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/rezept/generator/${wg_name}/${kuehlschrank_id}`;
