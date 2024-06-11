@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import RezeptBO from "../api/RezeptBO";
-import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import NavBar from "../components/NavBar";
@@ -22,6 +22,8 @@ function RezeptErstellen(props){
     //in der renderCurrentUsersWg Funktion wird die WG Methode getWgByUser Methode aus der EatSmarterAPI
     //benutzt
     const [wg, setWg] = useState(null)
+    const navigate = useNavigate();
+
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
             .then(response => {
@@ -60,6 +62,9 @@ function RezeptErstellen(props){
             console.log(".... starting to create a API-Call (EatSmarterAPI)")
             EatSmarterAPI.getAPI()
                 .addRezept(newRezept)
+                .then(() => {
+                    navigate("/RezeptANzeigen");
+                })
         }
     };
 
@@ -104,7 +109,9 @@ function RezeptErstellen(props){
                                 value={formData.rezeptanleitung}
                                 onChange={handleChange}
                             />
-                            <button type={"submit"}>Bestätigen</button>
+                            
+                                <button type={"submit"}>Bestätigen</button>
+                           
                         </div>
                     </div>
                 </form>

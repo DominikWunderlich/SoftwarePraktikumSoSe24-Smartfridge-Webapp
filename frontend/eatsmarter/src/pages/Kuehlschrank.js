@@ -96,6 +96,9 @@ function Kuehlschrankinhalt(props) {
             await EatSmarterAPI.getAPI().addMenge(new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl)));
             await EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
 
+            // Aktualisiere den Zustand der Lebensmittelliste mit dem neu hinzugefügten Lebensmittel
+            setLebensmittelliste([...lebensmittelliste, newLebensmittel]);
+
         } catch (error) {
             console.error("Fehler beim Hinzufügen von Lebensmittel:", error);
             setErrors({ message: "Fehler beim Hinzufügen von Lebensmittel. Bitte versuchen Sie es erneut." });
