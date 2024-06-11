@@ -10,12 +10,8 @@ from server.bo.Masseinheit import Masseinheit
 from server.bo.mengenanzahl import Mengenanzahl
 from server.db.MaßeinheitMapper import MasseinheitMapper
 from server.db.mengenmapper import MengenanzahlMapper
-from server.bo.Kuehlschrank import Kuehlschrank
 from server.db.KuehlschrankMapper import KuehlschrankMapper
 import time
-from server.bo.RezeptEnthaeltLebensmittel import RezeptEnthaeltLebensmittel
-from server.db.RezeptEnthaeltLebensmittelMapper import RezeptEnthaeltLebensmittelMapper
-from server.bo.Einkaufsliste import Einkaufsliste
 
 class Administration(object):
     def __init__(self):
@@ -450,16 +446,7 @@ class Administration(object):
             l_id = lmapper.find_id_by_name_mengen_id_and_masseinheit_id(name, masseinheit_id, menge_id)
             return l_id
 
-    #so bekomme ich die id von dem Lebensmittel
 
-    #die id vom rezept bekomm ich ja im frontend schon, also hab ich schon
-
-    #wenn ich die beiden hab kann ich folgende Methode aufrufen und damit ein lebensmittel zum rezept hinzufügen
-
-
-    #def get_lebensmittel_by_rezept_id(self, rezept_id):
-        #with RezeptEnthaeltLebensmittelMapper() as mapper:
-            #return mapper.find_lebensmittel_by_rezept_id(rezept_id)
     """Auslesen aller Lebensmittel """
     def add_food_to_recipe(self, rezept_id, lebensmittel):  # Input = Karotte, 1, Kilogramm
         # Zuerst werden die zugehörigen Lebensmittel des Kühlschranks geholt.

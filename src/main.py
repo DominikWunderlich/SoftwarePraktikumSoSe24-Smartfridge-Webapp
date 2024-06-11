@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_restx import Api, Resource, fields
 from flask_cors import CORS, cross_origin
-
 from server.Administration import Administration
 from server.bo.BusinessObject import BusinessObject
 from server.bo.WG import WG
