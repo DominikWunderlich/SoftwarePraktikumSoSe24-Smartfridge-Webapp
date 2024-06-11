@@ -141,11 +141,11 @@ class LebensmittelMapper(mapper):
         self._connector.commit()
         cursor.close()
 
-    def delete(self, lebensmittel):
+    def delete(self, lId, kId):
         cursor = self._connector.cursor()
 
-        command = "DELETE FROM datenbank.lebensmittel WHERE id=%s"
-        data = (lebensmittel.get_id(),)
+        command = "DELETE FROM datenbank.lebensmittel WHERE lebensmittel_id=%s AND kuehlschrank_id=%s"
+        data = (lId, kId)
         cursor.execute(command, data)
 
         self._connector.commit()

@@ -317,6 +317,7 @@ class AddLebensmittelToRezept(Resource):
         proposal = Lebensmittel.from_dict(api.payload)
 
         if proposal is not None:
+            print("Proposal", proposal)
             result = adm.add_food_to_recipe(rezept_id, proposal)
             return result
 
