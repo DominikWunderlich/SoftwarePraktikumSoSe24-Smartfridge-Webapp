@@ -62,9 +62,11 @@ rezept = api.inherit('Rezept', bo, {
 })
 
 lebensmittel = api.inherit('Lebensmittel', bo, {
-    'lebensmittelname': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
+    'lebensmittelName': fields.String(attribute='lebensmittelname', description='Name des Lebensmittels'),
     'masseinheit': fields.String(attribute='masseinheit', description='Maßeinheit des Lebenmittels'),
-    'mengenanzahl': fields.Float(attribute='mengenanzahl', description='Menge des Lebensmittels'),
+    'mengenanzahl': fields.Float(attribute='mengenanzahl', description='Mengen des Lebensmittels'),
+    'kuehlschrankId': fields.Integer(default=None, attribute='kuehlschrank_id', description='KuehlschrankId des Lebensmittels'),
+    'rezeptId': fields.Integer(default=None, attribute='rezept_id', description='RezeptId des Lebensmittels')
 })
 
 menge = api.inherit('Menge', bo, {
@@ -180,11 +182,15 @@ class KuelschrankOperations(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
     def post(self, wg_id):
+        """
+        Das ist der Endpunkt für das hinzufügen von Lebensmitteln in den Kühlschrank.
+        Ist ein Lebensmittel bereits enthalten, wird es geupdatet!
+        """
         adm = Administration()
         proposal = Lebensmittel.from_dict(api.payload)
-        k_id = wg_id
+
         if proposal is not None:
-            result = adm.add_food_to_fridge(k_id, proposal)
+            result = adm.add_food_to_fridge(wg_id, proposal)
             return result
     @smartapi.marshal_with(lebensmittel)
     def get(self, wg_id):
@@ -301,28 +307,17 @@ class AddLebensmittelToRezept(Resource):
     @smartapi.marshal_with(rezept)
     #@secured
     def post(self, rezept_id):
-        """ API-Endpunkt zum Hinzufügen eines Lebensmittels zu einem Rezept. """
+        """
+        Das ist der Endpunkt für das hinzufügen von Lebensmitteln in den Kühlschrank.
+        Ist ein Lebensmittel bereits enthalten, wird es geupdatet!
+        """
         adm = Administration()
-        lebensmittel_data = api.payload
-        lebensmittel_name = lebensmittel_data.get('lebensmittel_name')
-        masseinheit = lebensmittel_data.get('masseinheit')
-        menge = lebensmittel_data.get('menge')
-        print(lebensmittel_data)
-        print(rezept_id)
-        print("Hallihallo")
-        print(lebensmittel_name)
-        print(masseinheit)
-        print(menge)
-#hier bin ich stehen geblieben, der success ist false. d.h. Diese Methode liefert ein false create_and_add_lebensmittel_to_rezept
-        success = adm.create_and_add_lebensmittel_to_rezept(rezept_id, lebensmittel_name, masseinheit, menge)
-        print("hierhallo")
-        print(success)
-        if success:
-            # Rückgabe des aktualisierten Rezepts nach dem Hinzufügen des Lebensmittels
-            updated_rezept = adm.get_rezept_by_id(rezept_id)
-            return updated_rezept, 200
-        else:
-            return 'Fehler beim Hinzufügen des Lebensmittels zum Rezept.', 500
+        proposal = Lebensmittel.from_dict(api.payload)
+
+        if proposal is not None:
+            print("Proposal", proposal)
+            result = adm.add_food_to_recipe(rezept_id, proposal)
+            return result
 
     @smartapi.marshal_with(lebensmittel)
     def get(self, rezept_id):
@@ -432,7 +427,7 @@ class GetRezeptAdminWgOperations(Resource):
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
-    @secured
+    #@secured
     def post(self):
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
@@ -444,14 +439,16 @@ class LebensmittelOperation(Resource):
             result = adm.create_lebensmittel(
                 proposal.get_lebensmittelname(),
                 proposal.get_masseinheit(),
-                proposal.get_mengenanzahl()
+                proposal.get_mengenanzahl(),
+                proposal.get_kuehlschrank_id(),
+                proposal.get_rezept_id()
             )
             return result, 200
         else:
             return 'Fehler in LebensmittelOperation post methode', 500
 
     @smartapi.marshal_list_with(lebensmittel)
-    @secured
+    #@secured
     def get(self):
         """ Auslesen aller Lebensmittelobjekte-Objekte"""
 

@@ -115,10 +115,13 @@ class WGMapper(mapper):
     def delete_wg_and_kuehlschrank(self, wg_id):
         cursor = self._connector.cursor()
         data = wg_id
-        command_1 = "DELETE FROM datenbank.kuehlschrankinhalt WHERE kuehlschrank_id=%s"
-        command_2 = "DELETE FROM datenbank.wg WHERE wg_id =%s"
+
+        command_1 = "DELETE FROM datenbank.lebensmittel WHERE kuehlschrank_id=%s"
+        command_2 = "DELETE FROM datenbank.kuehlschrank WHERE kuehlschrank_id=%s"
+        command_3 = "DELETE FROM datenbank.wg WHERE wg_id =%s"
         cursor.execute(command_1, (data,))
         cursor.execute(command_2, (data,))
+        cursor.execute(command_3, (data,))
 
         self._connector.commit()
         cursor.close()
