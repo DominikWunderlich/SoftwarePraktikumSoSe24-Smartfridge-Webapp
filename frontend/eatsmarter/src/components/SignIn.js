@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, Typography, Link, Toolbar } from '@mui/material';
+import '../sytles/WG-Landingpage.css';
 
 /**
  * Renders a landing page for users who are not signed in. Provides a sign in button
@@ -19,19 +20,22 @@ function SignIn(props) {
 	};
 
 	return (
+		<div>
 			<div className='container'>
-					<Typography sx={{margin: 2}} align='center' variant='h5'>Welcome to the HdM React/Python Project Showcase</Typography>
-					<Typography sx={{margin: 2}} align='center'>It appears, that you are not signed in.</Typography>
-					<Typography sx={{margin: 2}} align='center'>To use the services of the Eatsmarter-App please</Typography>
+				<div className='inner-container'>
+					<Typography sx={{margin: 2, color: 'white'}} align='center' variant='h5'>Willkommen bei <p className='logo'>EatSmarter</p></Typography>
+					<Typography sx={{margin: 2, color: 'white', fontStyle: 'italic'}}>"Der smarte Kühlschrank für jede WG"</Typography>
 					<br></br>
-					<Grid>
-						<Grid item>
-							<Button className='button-uebersicht' variant='contained' color='primary' onClick={handleSignInButtonClicked}>
-								Sign in with Google
-							</Button>
-						</Grid>
-					</Grid>
+					<br></br>
+					<Typography sx={{color: 'white'}} align='center'>Diese Seite deutet darauf hin, dass du bei EatSmarter noch nicht registriert bist. Um EatSmarter zu nutzen:</Typography>
+				</div>
+				<br></br>
+				<br></br>
+				<Button className='button-uebersicht' variant='contained' color='primary' onClick={handleSignInButtonClicked}>
+					Melde dich mit deinem Google Account an
+				</Button>
 			</div>
+		</div>
 	)
 }
 
