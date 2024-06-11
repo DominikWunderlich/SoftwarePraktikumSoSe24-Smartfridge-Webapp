@@ -7,6 +7,8 @@ class Lebensmittel(bo):
         self.lebensmittelname = ""
         self.masseinheit = 0
         self.mengenanzahl = 0
+        self.kuehlschrank_id = None
+        self.rezept_id = None
 
     def get_lebensmittelname(self):
         """Auslesen des Lebensmittelnamens."""
@@ -29,6 +31,18 @@ class Lebensmittel(bo):
 
     def get_mengenanzahl(self):
         return self.mengenanzahl
+
+    def get_kuehlschrank_id(self):
+        return self.kuehlschrank_id
+
+    def set_kuelschrank_id(self, kuehlschrank_id):
+        self.kuehlschrank_id = kuehlschrank_id
+
+    def get_rezept_id(self):
+        return self.rezept_id
+
+    def set_rezept_id(self, rezept_id):
+        self.rezept_id = rezept_id
 
     def decrease_food_quantity(self, required_amount, required_unit):
         """ Diese Methode repräsentiert den Verbrauch von Lebensmittel.
@@ -85,12 +99,8 @@ class Lebensmittel(bo):
             # Hier weitere Faktoren anlegen.
         }
 
-
-
-
         #print(f"Das ist meine add_quantity {add_quantity} & conversion_factors: {conversion_factors[add_unit]}]")
         new_calculated_qnty = add_quantity * conversion_factors[add_unit]
-        # TODO: self.maßeinheit muss den namen der Maßeinheit weidergeben
         current_quantity = curr_quantity * conversion_factors[curr_unit]
         total_quantity = current_quantity + new_calculated_qnty
         total_qnty = total_quantity / conversion_factors[curr_unit]
@@ -102,17 +112,23 @@ class Lebensmittel(bo):
 
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return f"LebensmittelObjekt: Name={self.get_lebensmittelname()}, " \
-               f"Maßeinheit={self.get_masseinheit()}, Anzahl={self.get_mengenanzahl()}"
+        return \
+            f"LebensmittelObjekt: Lebensmittelname={self.get_lebensmittelname()}, " \
+            f"Maßeinheit_id={self.get_masseinheit()}, " \
+            f"Mengenanzahl_id={self.get_mengenanzahl()}, " \
+            f"Kuehlschrank_id ={self.kuehlschrank_id}, " \
+            f"Rezept_id={self.rezept_id}"
 
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict() in ein Lebensmittel-Objekt."""
         lm = Lebensmittel()
         lm.set_id(dictionary["id"])
-        lm.set_lebensmittelname(dictionary["lebensmittel_name"])
+        lm.set_lebensmittelname(dictionary["lebensmittelName"])
         lm.set_masseinheit(dictionary["masseinheit"])
         lm.set_mengenanzahl(dictionary["menge"])
+        lm.set_kuelschrank_id(dictionary["kuehlschrankId"])
+        lm.set_rezept_id(dictionary["rezeptId"])
         return lm
 
 

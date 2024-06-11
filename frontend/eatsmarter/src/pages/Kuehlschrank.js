@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import '../sytles/WG-Landingpage.css';
 import LebensmittelBO from "../api/LebensmittelBO";
-import MasseinheitBO from "../api/MasseinheitBO";
-import mengenanzahlBO from "../api/mengenanzahlBO";
-import { Link } from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
-import Lebensmittelverwaltung from "./Lebensmittel-Verwaltung";
 import TrimAndLowerCase from "../functions";
 
 
 function Kuehlschrankinhalt(props) {
     const [formData, setFormData] = useState({
-        lebensmittelname: "",
+        lebensmittelName: "",
         mengenanzahl: 0,
         masseinheit: ""
     });
@@ -80,37 +76,30 @@ function Kuehlschrankinhalt(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (formData.lebensmittelname.trim() === "" || formData.masseinheit.trim() === "") {
+        if (formData.lebensmittelName.trim() === "" || formData.masseinheit.trim() === "") {
             setErrors({ message: "Bitte füllen Sie alle Felder aus." });
             return;
         }
 
         const newLebensmittel = new LebensmittelBO(
-            TrimAndLowerCase(formData.lebensmittelname),
+            TrimAndLowerCase(formData.lebensmittelName),
             TrimAndLowerCase(formData.mengenanzahl),
-            TrimAndLowerCase(formData.masseinheit)
+            TrimAndLowerCase(formData.masseinheit),
+            wgId,
+            null
         );
 
-        try {
-            await EatSmarterAPI.getAPI().addMasseinheit(new MasseinheitBO(TrimAndLowerCase(formData.masseinheit)));
-            await EatSmarterAPI.getAPI().addMenge(new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl)));
-            await EatSmarterAPI.getAPI().addLebensmittel(newLebensmittel);
-
-            // Aktualisiere den Zustand der Lebensmittelliste mit dem neu hinzugefügten Lebensmittel
-            setLebensmittelliste([...lebensmittelliste, newLebensmittel]);
-
-        } catch (error) {
-            console.error("Fehler beim Hinzufügen von Lebensmittel:", error);
-            setErrors({ message: "Fehler beim Hinzufügen von Lebensmittel. Bitte versuchen Sie es erneut." });
-        }
+        console.log("Neue Menge:", newLebensmittel.mengenanzahl)
         console.log("Neues Lebensmittel:", newLebensmittel);
         console.log("Übergebene wgId in test_kuehlschrank:", wgId)
         EatSmarterAPI.getAPI().addFoodToFridge(newLebensmittel, wgId);
 
+       // Aktualisiere den Zustand der Lebensmittelliste mit dem neu hinzugefügten Lebensmittel
+        setLebensmittelliste([...lebensmittelliste, newLebensmittel]);
 
         // Zurücksetzen des Formulars nach dem Hinzufügen
         setFormData({
-            lebensmittelname: "",
+            lebensmittelName: "",
             mengenanzahl: 0,
             masseinheit: ""
         });
@@ -150,7 +139,7 @@ function Kuehlschrankinhalt(props) {
                             <tbody>
                                 {lebensmittelliste.map((lebensmittel, index) => (
                                     <tr key={index}>
-                                        <td>{lebensmittel.lebensmittelname}</td>
+                                        <td>{lebensmittel.lebensmittelName}</td>
                                         <td>{lebensmittel.mengenanzahl}</td>
                                         <td>{lebensmittel.masseinheit}</td>
                                         <td>
@@ -170,15 +159,15 @@ function Kuehlschrankinhalt(props) {
                         <label>Lebensmittelname</label>
                         <input
                             type="text"
-                            name="lebensmittelname"
+                            name="lebensmittelName"
                             list="lebensmittel"
-                            value={formData.lebensmittelname}
+                            value={formData.lebensmittelName}
                             onChange={handleChange}
                             className="eingabe"
                         />
                         <datalist id="lebensmittel">
                             {lebensmittelliste.map((lebensmittel, index) => (
-                                <option key={index} value={lebensmittel.lebensmittelname} />
+                                <option key={index} value={lebensmittel.lebensmittelName} />
                             ))}
                         </datalist>
                         <label>Menge</label>

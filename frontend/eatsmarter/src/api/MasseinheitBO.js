@@ -5,16 +5,16 @@ export default class MasseinheitBO extends BusinessObject{
     // Jedes erstellte BusinessObjekt wird mit folgenden Attributen erstellt
     constructor(masseinheit){
         super();
-        this.masseinheit = masseinheit;
+        this.masseinheitsname = masseinheit;
     }
 
     // Get- und Setter:
     setmasseinheit(ms){
-        this.masseinheit = ms;
+        this.masseinheitsname = ms;
     }
 
     getEmail(){
-        return this.masseinheit;
+        return this.masseinheitsname;
     }
 
 
