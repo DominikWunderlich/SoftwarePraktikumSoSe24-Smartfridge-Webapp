@@ -1,5 +1,6 @@
 from server.db.mapper import mapper
 from server.bo.Rezept import Rezept
+from server.bo.Lebensmittel import Lebensmittel
 
 class RezeptMapper(mapper):
     def __init__(self):
@@ -104,8 +105,10 @@ class RezeptMapper(mapper):
     def delete(self, rezept_id):
         cursor = self._connector.cursor()
 
-        command = f"DELETE FROM datenbank.rezept WHERE rezept_id='{rezept_id}'"
+        command = f"DELETE FROM datenbank.lebensmittel WHERE rezept_id='{rezept_id}'"
+        command1 = f"DELETE FROM datenbank.rezept WHERE rezept_id='{rezept_id}'"
         cursor.execute(command)
+        cursor.execute(command1)
 
         self._connector.commit()
         cursor.close()
@@ -170,3 +173,54 @@ class RezeptMapper(mapper):
         cursor.close()
 
         return rezept
+
+    def find_lebensmittel_by_rezept_id(self, rezept):
+        result = []
+        cursor = self._connector.cursor()
+        command = f"SELECT lebensmittel.lebensmittel_id, " \
+                  f"lebensmittel.lebensmittel_name, " \
+                  f"masseinheit.masseinheit_name, " \
+                  f"mengenanzahl.menge," \
+                  f"lebensmittel.kuehlschrank_id," \
+                  f"lebensmittel.rezept_id FROM datenbank.lebensmittel " \
+                  f"JOIN masseinheit ON lebensmittel.masseinheit_id = masseinheit.masseinheit_id " \
+                  f"JOIN mengenanzahl on lebensmittel.mengenanzahl_id = mengenanzahl.id " \
+                  f"WHERE lebensmittel.rezept_id = '{rezept}'"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (lebensmittel_id, lebensmittel_name, masseinheit_name, menge, kuehlschrank_id, rezept_id) in tuples:
+            l = Lebensmittel()
+            l.set_id(lebensmittel_id)
+            l.set_lebensmittelname(lebensmittel_name)
+            l.set_masseinheit(masseinheit_name)
+            l.set_mengenanzahl(menge)
+            l.set_kuelschrank_id(kuehlschrank_id)
+            l.set_rezept_id(rezept_id)
+            print(f" Das ist das gezogene Rezept_enthält_lebensmittel aus der DB {l.__str__()}")
+            result.append(l)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
+
+    def insert_in_lebensmittel(self, l):
+        print("ich bin in der insert Methode des RezeptEnthLebensmMapper")
+        cursor = self._connector.cursor()
+        cursor.execute("SELECT MAX(lebensmittel_id) AS maxid FROM datenbank.lebensmittel")
+        tuples = cursor.fetchall()
+
+        for (maxid,) in tuples:
+            if maxid is not None:
+                l.set_id(int(maxid) + 1)
+            else:
+                l.set_id(1)
+
+        command = "INSERT INTO datenbank.lebensmittel (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id) VALUES (%s, %s, %s,%s,%s,%s)"
+        data = (l.get_id(), l.get_lebensmittelname(), l.get_masseinheit_id(), l.get_mengenanzahl_id(), l.get_kuehlschrank_id(), l.get_rezept_id())
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+        return l

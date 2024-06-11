@@ -8,6 +8,18 @@ class KuehlschrankMapper(mapper):
     def __init__(self):
         super().__init__()
 
+    def create_kuehlschrank(self, wg_id):
+        cursor = self._connector.cursor()
+
+        command = "INSERT INTO datenbank.kuehlschrank (kuehlschrank_id, wg_id) VALUES (%s, %s) "
+        data = (wg_id, wg_id,)
+        print(F" wg id: {data}")
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+
+
     def find_lebensmittel_by_kuehlschrank_id(self, kuehlschrank_id):
         result = []
         cursor = self._connector.cursor()
@@ -54,13 +66,13 @@ class KuehlschrankMapper(mapper):
 
         return lebensmittel
 
+    def update(self, object):
+        pass
 
-    def update(self, old_food_id, new_food_id, kuehlschrank_id):
+    def update2(self, food_id, new_mengen_id, kuehlschrank_id):
         cursor = self._connector.cursor()
-        print(f"Das ist old_food_id {old_food_id}, das ist die neue {new_food_id}, das ist die kuehlschrank_id {kuehlschrank_id}")
-        command = "UPDATE datenbank.kuehlschrankinhalt SET lebensmittel_id =%s WHERE lebensmittel_id = %s AND kuehlschrank_id=%s"
-        data = (new_food_id, old_food_id, kuehlschrank_id)
-        cursor.execute(command, data)
+        command = f"UPDATE datenbank.lebensmittel SET lebensmittel.mengenanzahl_id='{new_mengen_id}' WHERE lebensmittel.lebensmittel_id='{food_id}' AND lebensmittel.kuehlschrank_id='{kuehlschrank_id}'"
+        cursor.execute(command)
 
         self._connector.commit()
         cursor.close()
@@ -68,7 +80,7 @@ class KuehlschrankMapper(mapper):
     def delete(self, kuehlschrank_id, food_id):
         cursor = self._connector.cursor()
         print(f"Das ist die zu entfernende lebensmittel_id {food_id}")
-        command = "DELETE FROM datenbank.kuehlschrankinhalt WHERE kuehlschrank_id =%s AND lebensmittel_id =%s"
+        command = "DELETE FROM datenbank.lebensmittel WHERE kuehlschrank_id =%s AND lebensmittel_id =%s"
         data = (kuehlschrank_id, food_id)
         cursor.execute(command, data)
 
