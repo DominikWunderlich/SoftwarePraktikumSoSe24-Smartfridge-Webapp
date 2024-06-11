@@ -10,12 +10,8 @@ from server.bo.Masseinheit import Masseinheit
 from server.bo.mengenanzahl import Mengenanzahl
 from server.db.MaßeinheitMapper import MasseinheitMapper
 from server.db.mengenmapper import MengenanzahlMapper
-from server.bo.Kuehlschrank import Kuehlschrank
 from server.db.KuehlschrankMapper import KuehlschrankMapper
 import time
-from server.bo.RezeptEnthaeltLebensmittel import RezeptEnthaeltLebensmittel
-from server.db.RezeptEnthaeltLebensmittelMapper import RezeptEnthaeltLebensmittelMapper
-from server.bo.Einkaufsliste import Einkaufsliste
 
 class Administration(object):
     def __init__(self):
@@ -450,16 +446,7 @@ class Administration(object):
             l_id = lmapper.find_id_by_name_mengen_id_and_masseinheit_id(name, masseinheit_id, menge_id)
             return l_id
 
-    #so bekomme ich die id von dem Lebensmittel
 
-    #die id vom rezept bekomm ich ja im frontend schon, also hab ich schon
-
-    #wenn ich die beiden hab kann ich folgende Methode aufrufen und damit ein lebensmittel zum rezept hinzufügen
-
-
-    #def get_lebensmittel_by_rezept_id(self, rezept_id):
-        #with RezeptEnthaeltLebensmittelMapper() as mapper:
-            #return mapper.find_lebensmittel_by_rezept_id(rezept_id)
     """Auslesen aller Lebensmittel """
     def add_food_to_recipe(self, rezept_id, lebensmittel):  # Input = Karotte, 1, Kilogramm
         # Zuerst werden die zugehörigen Lebensmittel des Kühlschranks geholt.
@@ -697,7 +684,7 @@ class Administration(object):
         for rezept in recipes_id:
             lebensmittel_by_rezept_liste = self.get_lebensmittel_by_rezept_id2(rezept.get_id())
             # Lebensmittel eines Rezepts in eine Liste speichern
-
+            can_cook = True
             for elem in lebensmittel_by_rezept_liste:
                 rezept_required_amount = elem.get_mengenanzahl()
                 rezept_required_unit = elem.get_masseinheit()
@@ -707,16 +694,17 @@ class Administration(object):
                         new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit)
                         # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
-                        if new_amount.get_mengenanzahl() > 0:
-                            rezept_set.add(rezept.get_id())
-                            # Set wird mit rezept_ids gefüllt
+                        if new_amount.get_mengenanzahl() < 0:
+                            can_cook = False
+                        break
+                else:
+                    can_cook = False
 
-                        elif new_amount.get_mengenanzahl() == 0:
-                            rezept_set.add(rezept.get_id())
+                if not can_cook:
+                    break
 
-                        else:
-                            pass
-
+            if can_cook:
+                rezept_set.add(rezept.get_id())
         rezept_liste = list(rezept_set)
         # Set wird in Liste umgewandelt (könnte man eig auch direkt als Liste machen lol)
         ganze_rezepte = []
