@@ -684,7 +684,7 @@ class Administration(object):
         for rezept in recipes_id:
             lebensmittel_by_rezept_liste = self.get_lebensmittel_by_rezept_id2(rezept.get_id())
             # Lebensmittel eines Rezepts in eine Liste speichern
-
+            can_cook = True
             for elem in lebensmittel_by_rezept_liste:
                 rezept_required_amount = elem.get_mengenanzahl()
                 rezept_required_unit = elem.get_masseinheit()
@@ -694,16 +694,17 @@ class Administration(object):
                         new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit)
                         # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
-                        if new_amount.get_mengenanzahl() > 0:
-                            rezept_set.add(rezept.get_id())
-                            # Set wird mit rezept_ids gefüllt
+                        if new_amount.get_mengenanzahl() < 0:
+                            can_cook = False
+                        break
+                else:
+                    can_cook = False
 
-                        elif new_amount.get_mengenanzahl() == 0:
-                            rezept_set.add(rezept.get_id())
+                if not can_cook:
+                    break
 
-                        else:
-                            pass
-
+            if can_cook:
+                rezept_set.add(rezept.get_id())
         rezept_liste = list(rezept_set)
         # Set wird in Liste umgewandelt (könnte man eig auch direkt als Liste machen lol)
         ganze_rezepte = []
