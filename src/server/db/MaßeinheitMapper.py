@@ -82,6 +82,15 @@ class MasseinheitMapper(mapper):
         self._connector.commit()
         cursor.close()
 
+    def update_measurement_name(self, masseinheit_id, new_name):
+        cursor = self._connector.cursor()
+        command = "UPDATE datenbank.maßeinheit SET masseinheit_name=%s WHERE masseinheit_id=%s"
+        data = (new_name, masseinheit_id)
+        cursor.execute(command, data)
+        self._connector.commit()
+        cursor.close()
+
+
     def find_by_key(self, key):
         result = None
 

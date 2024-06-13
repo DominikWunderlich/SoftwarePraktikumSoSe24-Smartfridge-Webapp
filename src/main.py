@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restx import Api, Resource, fields
 from flask_cors import CORS, cross_origin
+
 from server.Administration import Administration
 from server.bo.BusinessObject import BusinessObject
 from server.bo.WG import WG
@@ -76,8 +77,6 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'masseinheitsname': fields.String(attribute='masseinheitsname', description='Name einer Maßeinheit'),
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
-
-
 
 @smartapi.route('/wg')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -511,6 +510,29 @@ class MasseinheitOperation(Resource):
         else:
             return "Fehler in MengenOperationen Post Methode", 500
         
+
+    @smartapi.expect(masseinheit)
+    @smartapi.marshal_with(masseinheit)
+    @secured
+    def put(self):
+        """
+        Aktualisiert den Namen einer Maßeinheit.
+        """
+        adm = Administration()
+        data = api.payload  # Zugriff auf die Daten aus der PUT-Anforderung
+        id = data.get('id')
+        new_name = data.get('new_name')
+
+        if not id or not new_name:
+            return {'message': "Fehlende ID oder neuer Maßeinheitsname."}, 400
+
+        success = adm.update_measurement_name(id, new_name)
+        if success:
+            # Erfolgreiche Antwort im JSON-Format zurückgeben
+            return {'message': f"Masseinheit mit ID '{id}' erfolgreich in '{new_name}' aktualisiert."}, 200
+        else:
+            return {'message': f"Aktualisierung des Maßeinheitsnamens mit ID '{id}' fehlgeschlagen."}, 500
+
 
     @smartapi.marshal_with(masseinheit)
     @secured
