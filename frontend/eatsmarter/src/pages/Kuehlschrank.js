@@ -4,9 +4,11 @@ import LebensmittelBO from "../api/LebensmittelBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
 import TrimAndLowerCase from "../functions";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 
 function Kuehlschrankinhalt(props) {
+    
     const [formData, setFormData] = useState({
         lebensmittelName: "",
         mengenanzahl: 0,
@@ -44,6 +46,7 @@ function Kuehlschrankinhalt(props) {
             }
         }
         fetchLebensmittel();
+        
         const fetchMasseinheiten = async () => {
             try {
                 const masseinheiten = await EatSmarterAPI.getAPI().getMasseinheitAll();
@@ -52,7 +55,6 @@ function Kuehlschrankinhalt(props) {
                 console.error("Fehler beim Laden der Maßeinheiten:", error);
             }
         };
-
         fetchMasseinheiten();
     }, [wgId]);
 
@@ -76,46 +78,50 @@ function Kuehlschrankinhalt(props) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (formData.lebensmittelName.trim() === "" || formData.masseinheit.trim() === "") {
+        if (formData.lebensmittelName.trim() === "" || formData.masseinheit.trim() === "" || isNaN(formData.mengenanzahl)) {
             setErrors({ message: "Bitte füllen Sie alle Felder aus." });
             return;
         }
 
         const newLebensmittel = new LebensmittelBO(
             TrimAndLowerCase(formData.lebensmittelName),
-            TrimAndLowerCase(formData.mengenanzahl),
+            formData.mengenanzahl,
             TrimAndLowerCase(formData.masseinheit),
             wgId,
             null
         );
 
-        console.log("Neue Menge:", newLebensmittel.mengenanzahl)
-        console.log("Neues Lebensmittel:", newLebensmittel);
-        console.log("Übergebene wgId in test_kuehlschrank:", wgId)
-        EatSmarterAPI.getAPI().addFoodToFridge(newLebensmittel, wgId);
+        try {
+            await EatSmarterAPI.getAPI().addFoodToFridge(newLebensmittel, wgId);
 
-       // Aktualisiere den Zustand der Lebensmittelliste mit dem neu hinzugefügten Lebensmittel
-        setLebensmittelliste([...lebensmittelliste, newLebensmittel]);
+            // Kurze Verzögerung einfügen, um sicherzustellen, dass die Datenbankoperation abgeschlossen ist
+            setTimeout(async () => {
+                const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
+                setLebensmittelliste(lebensmittelListe);
+            }, 500); // 500 ms Verzögerung
 
-        // Zurücksetzen des Formulars nach dem Hinzufügen
-        setFormData({
-            lebensmittelName: "",
-            mengenanzahl: 0,
-            masseinheit: ""
-        });
-        setErrors({});
+            // Zurücksetzen des Formulars nach dem Hinzufügen
+            setFormData({
+                lebensmittelName: "",
+                mengenanzahl: 0,
+                masseinheit: ""
+            });
+            setErrors({});
+        } catch (error) {
+            console.error("Fehler beim Hinzufügen des Lebensmittels:", error);
+        }
     };
 
-    // Mit dieser Funktion kann das Lebensmittel aus dem Kuehlschrank gelöscht werden
-    async function deleteLebensmittel (event){
+     async function deleteLebensmittel (event){
         event.preventDefault()
         // LebensmittelId ist der Value aus dem button Klick event
         let lebensmittelId = event.target.value
-        // console.log("Das ist die Lebensmittel id welche gelöscht werden soll", lebensmittelId)
-        // console.log("Das ist die kuehlschrank_id", wgId)
-        await EatSmarterAPI.getAPI().deleteFoodFromFridge(wgId, lebensmittelId)
-        // Reload page nachdem Lebensmittel erfolgreich gelöscht wurde
-        window.location.reload()
+        try {
+            await EatSmarterAPI.getAPI().deleteFoodFromFridge(wgId, lebensmittelId);
+            setLebensmittelliste(prevLebensmittelliste => prevLebensmittelliste.filter(item => item.id !== parseInt(lebensmittelId, 10)));
+        } catch (error) {
+            console.error("Fehler beim Löschen des Lebensmittels:", error);
+        }
     }
 
     

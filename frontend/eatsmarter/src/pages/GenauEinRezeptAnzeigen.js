@@ -74,6 +74,7 @@ function GenauEinRezeptAnzeigen(props) {
 
         setLebensmittelliste(prevList => [...prevList, newLebensmittel]);
         setMasseinheitenListe(prevList => [...prevList, formData.masseinheit]);
+        window.location.reload()
     };
 
     useEffect(() => {
