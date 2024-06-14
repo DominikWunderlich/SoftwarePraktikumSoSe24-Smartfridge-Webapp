@@ -144,14 +144,17 @@ class WgGetWgOperations(Resource):
             adm.delete_wg_and_kuehlschrank(wg_id)
             #TODO: Alle Rezepte anhand der Wg id auch löschen?
 
-@smartapi.route('/wg/user/wgAdmin/<email>')
+@smartapi.route('/wg/user/wgadmin/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('email', 'Die E-mail der aktuellen person')
 class WgGetWgAdminWgOperations(Resource):
+
     def get(self, email):
         adm = Administration()
-        # print("True in der Main.py?", adm.is_current_user_wg_admin(email))
-        return adm.is_current_user_wg_admin(email)
+        wg_id = adm.get_wg_id_by_email(email)
+
+        return adm.check_if_current_user_is_wg_admin(email, wg_id)
+
 
 @smartapi.route('/wg/<wg_name>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -247,6 +250,7 @@ class UserOperations(Resource):
     def post(self):
         """ Anlegen eines neuen User-Objekts. """
         adm = Administration()
+        print(api.payload)
         proposal = Person.from_dict(api.payload)
 
 
@@ -279,6 +283,19 @@ class ProfileCheckOperations(Resource):
         adm = Administration()
         p = adm.get_user_by_google_id(google_id)
         return p
+
+@smartapi.route('/login/checkemail/<email>')
+@smartapi.response(500, 'Serverseitiger-Fehler')
+@smartapi.param("email", 'Die Email des Profil-Objekts')
+class ProfileCheckEmailOperations(Resource):
+    @smartapi.marshal_with(person)
+    #@secured
+    def get(self, email):
+        """ Auslesen eines bestimmten Profil-Objekts. """
+        adm = Administration()
+        p = adm.get_user_by_email(email)
+        return p
+
 
 @smartapi.route('/rezept')
 @smartapi.response(500, 'Serverseitiger Fehler')

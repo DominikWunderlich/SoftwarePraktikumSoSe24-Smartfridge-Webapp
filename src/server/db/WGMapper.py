@@ -187,14 +187,15 @@ class WGMapper(mapper):
         cursor.close()
 
     def find_wg_id_by_email(self, email):
+        print(email)
+        e = f"%{email}%"
         cursor = self._connector.cursor()
         command = "SELECT wg_id FROM datenbank.wg WHERE wg_bewohner LIKE %s OR wg_ersteller LIKE %s"
-        data = (email, email)
-        cursor.execute(command, data)
+        cursor.execute(command, (e, e))
 
         wg_id = cursor.fetchone()
         if wg_id:
-            #print(wg_id[0])
+            # print(wg_id[0])
             return wg_id[0]  # Nur die wg_id zurückgeben
 
         return None

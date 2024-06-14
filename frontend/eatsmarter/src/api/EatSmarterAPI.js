@@ -589,7 +589,7 @@ export default class EatSmarterAPI{
     }
 
     // Wg-attribute related
-    #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgAdmin/${email}`;
+    #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgadmin/${email}`;
 
     checkIfUserIsWgAdmin(currentUser){
         // console.log("api", currentUser)
@@ -616,6 +616,7 @@ export default class EatSmarterAPI{
     #addUserURL = () => `${this.#EatSmarterServerBaseURL}/login`;
     #getUserURL = (google_id) => `${this.#EatSmarterServerBaseURL}/login/${google_id}`;
     #checkUserURL = (google_id) => `${this.#EatSmarterServerBaseURL}/login/check/${google_id}`;
+    #getUserByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/login/checkemail/${email}`;
     addUser(personBO){
         return this.#fetchAdvanced(this.#addUserURL(), {
             method: "POST",
@@ -644,6 +645,16 @@ export default class EatSmarterAPI{
                 resolve(response);
             })
         })
+    }
+
+    getUserByEmail(email) {
+        return this.#fetchAdvanced(this.#getUserByEmailURL(email))
+            .then((responseJSON) => {
+                let response = PersonBO.fromJSON(responseJSON);
+                return new Promise(function (resolve) {
+                    resolve(response);
+                })
+            })
     }
 
          /**

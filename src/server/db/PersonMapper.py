@@ -75,28 +75,25 @@ class PersonMapper(mapper):
 
         return result
 
-    def find_by_email(self, mail):
-
+    def find_by_email(self, email):
         result = []
-
         cursor = self._connector.cursor()
-        command = f"SELECT * FROM datenbank.person WHERE email='{mail}'"
+        command = f"SELECT * FROM datenbank.person WHERE email='{email}'"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (id, email, benutzername, vorname, nachname, google_id) in tuples:
+        for (email, benutzername, nachname, vorname, person_id, google_id) in tuples:
             user = Person()
-            user.set_id(id)
             user.set_email(email)
             user.set_benutzername(benutzername)
-            user.set_vorname(vorname)
             user.set_nachname(nachname)
+            user.set_vorname(vorname)
+            user.set_id(person_id)
             user.set_google_id(google_id)
             result.append(user)
 
         self._connector.commit()
         cursor.close()
-
         return result
 
     def find_by_google_id(self, GoogleID):

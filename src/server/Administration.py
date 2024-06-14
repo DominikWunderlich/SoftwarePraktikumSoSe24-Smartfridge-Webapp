@@ -55,12 +55,27 @@ class Administration(object):
             wgs = mapper.find_by_email(email)
             # print("wgs", wgs)
 
+
+
         for wg in wgs:
             # print(wg)
             if wg.get_wg_ersteller() == email:
                 return True
 
             return False
+
+    def check_if_current_user_is_wg_admin(self, email, wg_id):
+        with WGMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(email, wg_id)
+
+            if is_admin:
+                return True
+
+            else:
+                return False
+
+
+
 
 
     # Die Methode ist überflüssig, wird nicht mehr verwendet
@@ -150,6 +165,11 @@ class Administration(object):
         """ Update einer Person-Instanz. """
         with PersonMapper() as mapper:
             mapper.update(account)
+
+    def get_user_by_email(self, email):
+        """ Auslesen einer Account-Instanz anhand der Email. """
+        with PersonMapper() as mapper:
+            return mapper.find_by_email(email)
 
     """ Rezept-spezifische Methoden """
 
@@ -725,5 +745,4 @@ class Administration(object):
             print("725 admin", wg_bewohner)
 
         with PersonMapper() as mapper:
-            print("test", mapper.find_all_by_wg_bewohner(wg_bewohner)[0])
             return mapper.find_all_by_wg_bewohner(wg_bewohner)

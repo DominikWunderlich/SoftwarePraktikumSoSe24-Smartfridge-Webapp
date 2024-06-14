@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import NavBar from "../components/NavBar";
 import TrimAndLowerCase from "../functions";
 import {render} from "@testing-library/react";
+import PersonBO from "../api/PersonBO";
 
 
 function WGPage(props) {
@@ -50,22 +51,35 @@ function WGPage(props) {
 
 
     const handleAddMember = async() => {
-        if (!isValidEmail(addNewMemberEmail)) {
-            alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
-            return;
-        }
 
-        const response = await EatSmarterAPI.getAPI().addWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
-        console.log("Repsonse im wgpage", response)
-        if(response){
-            renderCurrentUsersWg();
-            renderPersonList();
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email)
+
+        if (isAdmin) {
+            if (!isValidEmail(addNewMemberEmail)) {
+                alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
+            }
+            else{
+                let userExist = await EatSmarterAPI.getAPI().getUserByEmail(TrimAndLowerCase(addNewMemberEmail));
+                console.log(userExist)
+
+                if (userExist.length === 0) {
+                    alert("Diese eingetragene E-Mail Adresse hat noch kein Account angelegt. Um einen Bewohner hinzufügen zu können, muss sich die Person in unserem System anmelden.")
+                } else {
+                    const response = await EatSmarterAPI.getAPI().addWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
+                    console.log("Repsonse im wgpage", response)
+                    if (response) {
+                        renderCurrentUsersWg();
+                        renderPersonList();
+                    }
+                }
+                setAddNewMemberEmail("");
+            }
         }
         else{
-            alert("Nur der Ersteller kann Mitglieder hinzufügen");
+            alert("Nur der Ersteller kann Mitglieder entfernen")
         }
-        setAddNewMemberEmail("");
     }
+
 
 
    const handleDeleteMember = async() => {
