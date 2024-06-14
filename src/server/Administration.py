@@ -717,3 +717,13 @@ class Administration(object):
     def get_rezepte_by_rezept_id(self, rezept_id):
         with RezeptMapper() as mapper:
             return mapper.find_by_rezept_id2(rezept_id)
+
+
+    def find_person_by_wg_bewohner(self, wg_id):
+        with WGMapper() as mapper:
+            wg_bewohner = mapper.find_wg_bewohner_by_wg_id(wg_id)
+            print("725 admin", wg_bewohner)
+
+        with PersonMapper() as mapper:
+            print("test", mapper.find_all_by_wg_bewohner(wg_bewohner)[0])
+            return mapper.find_all_by_wg_bewohner(wg_bewohner)

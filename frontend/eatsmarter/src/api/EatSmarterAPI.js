@@ -474,6 +474,8 @@ export default class EatSmarterAPI{
     #addWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/add/${current_user}/${new_user}`
     #deleteWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/delete/${current_user}/${new_user}`
 
+    #getPersonByWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wg_bewohner/${email}`
+
      addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
             method: "POST",
@@ -535,6 +537,22 @@ export default class EatSmarterAPI{
             let responseWgBO = WgBO.fromJSON(responseJSON)[0];
             return new Promise(function(resolve){
                 resolve(responseWgBO);
+            });
+        });
+    }
+
+    getPersonByWg(email) {
+        return this.#fetchAdvanced(this.#getPersonByWgURL(email), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+        }).then((responseJSON) => {
+            let responsePersonBO = PersonBO.fromJSON(responseJSON);
+            console.log("EatSmarterAPI responsePersonBO", responsePersonBO)
+            return new Promise(function(resolve){
+                resolve(responsePersonBO);
             });
         });
     }

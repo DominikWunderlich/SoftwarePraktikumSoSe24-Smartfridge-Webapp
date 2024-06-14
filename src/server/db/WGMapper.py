@@ -199,4 +199,19 @@ class WGMapper(mapper):
 
         return None
 
+    def find_wg_bewohner_by_wg_id(self, wg_id):
+        cursor = self._connector.cursor()
+        command = f"SELECT wg_bewohner FROM datenbank.wg WHERE wg_id='{wg_id}' "
+        cursor.execute(command)
+        wg_bewohner_row = cursor.fetchone()
+
+        self._connector.commit()
+        cursor.close()
+
+        if wg_bewohner_row:
+            wg_bewohner_list = wg_bewohner_row[0].split(", ")
+            return wg_bewohner_list
+        else:
+            return []
+
 

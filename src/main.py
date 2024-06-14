@@ -99,6 +99,26 @@ class WgOperations(Resource):
         else:
             return 'Fehler in WG-Operations post methode', 500
 
+@smartapi.route("/wg/wg_bewohner/<email>")
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('email', 'Die E-mail der aktuellen person')
+class WgGetBewohnerOperations(Resource):
+
+    @smartapi.marshal_list_with(person)
+    def get(self, email):
+        adm = Administration()
+        wg_id = adm.get_wg_id_by_email(email)
+        print("main wg_id", wg_id)
+        wg_b = adm.find_person_by_wg_bewohner(wg_id)
+
+        print("main wg_b", wg_b)
+
+        if wg_b is not None:
+            return wg_b
+        else:
+            return "Error "
+
+
 
 @smartapi.route('/wg/user/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -544,6 +564,7 @@ class MasseinheitOperation(Resource):
                 return gen_rezepte
             else:
                 return '', 500
+
 
 
 if __name__ == '__main__':

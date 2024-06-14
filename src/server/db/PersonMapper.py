@@ -171,3 +171,31 @@ class PersonMapper(mapper):
 
         self._connector.commit()
         cursor.close()
+
+    def find_all_by_wg_bewohner(self, wg_bewohner):
+        result = []
+        cursor = self._connector.cursor()
+
+        # Erstelle eine Zeichenkette mit so vielen Platzhaltern wie E-Mail-Adressen in wg_bewohner
+        placeholders = ', '.join(['%s'] * len(wg_bewohner))
+
+        command = f"SELECT * FROM datenbank.person WHERE email IN ({placeholders})"
+        data = tuple(wg_bewohner)
+        print(data)
+        cursor.execute(command, data)
+        tuples = cursor.fetchall()
+
+        for (email, benutzername, nachname, vorname, person_id, google_id) in tuples:
+            user = Person()
+            user.set_email(email)
+            user.set_benutzername(benutzername)
+            user.set_nachname(nachname)
+            user.set_vorname(vorname)
+            user.set_id(person_id)
+            user.set_google_id(google_id)
+            result.append(user)
+
+        self._connector.commit()
+        cursor.close()
+        print("199", result)
+        return result
