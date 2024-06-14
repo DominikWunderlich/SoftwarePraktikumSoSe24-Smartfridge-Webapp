@@ -46,3 +46,13 @@ class KuehlschrankMapper(mapper):
 
         self._connector.commit()
         cursor.close()
+
+    def delete_with_rezept_id(self, rezept_id, food_id):
+        cursor = self._connector.cursor()
+        print(f"Das ist die zu entfernende lebensmittel_id {food_id}")
+        command = "DELETE FROM datenbank.lebensmittel WHERE rezept_id =%s AND lebensmittel_id =%s"
+        data = (rezept_id, food_id)
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()

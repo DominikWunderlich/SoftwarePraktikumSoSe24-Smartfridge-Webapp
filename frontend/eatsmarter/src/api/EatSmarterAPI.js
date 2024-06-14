@@ -213,6 +213,9 @@ export default class EatSmarterAPI{
 
     // Lebensmittel direkt aus dem Kuehlschrank löschen
     #deleteFoodFromFridgeURL = (wg_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}//kuehlschrankinhalt/${wg_id}/${lebensmittel_id}`
+
+    #deleteFoodFromRezeptURL = (rezept_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/rezeptinhalt/${rezept_id}/${lebensmittel_id}`
+
     deleteFoodFromFridge(wg_id, lebensmittel_id){
         return this.#fetchAdvanced(this.#deleteFoodFromFridgeURL(wg_id, lebensmittel_id),{
             method: "DELETE",
@@ -221,6 +224,23 @@ export default class EatSmarterAPI{
                 "Content-type": "application/json",
             },
             body: JSON.stringify(wg_id, lebensmittel_id)
+        }).then((responseJSON) => {
+             // console.log("RespinseJSON", responseJSON)
+            return new Promise( function(resolve) {
+                resolve(responseJSON);
+            })
+        })
+
+    }
+
+    deleteFoodFromRezept(rezept_id, lebensmittel_id){
+        return this.#fetchAdvanced(this.#deleteFoodFromRezeptURL(rezept_id, lebensmittel_id),{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(rezept_id, lebensmittel_id)
         }).then((responseJSON) => {
              // console.log("RespinseJSON", responseJSON)
             return new Promise( function(resolve) {
