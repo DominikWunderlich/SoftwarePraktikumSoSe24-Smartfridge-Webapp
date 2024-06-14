@@ -421,6 +421,39 @@ export default class EatSmarterAPI{
             })
         })
     }
+    #updateMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit`;
+
+    // updateMasseinheit(MasseinheitBO){
+    //     return this.#fetchAdvanced(this.#updateMasseinheitURL(MasseinheitBO), {
+    //         method: "PUT",
+    //         headers: {
+    //             "Accept": "application/json, text/plain",
+    //             "Content-type": "application/json",
+    //         },
+    //         body: JSON.stringify(MasseinheitBO)
+    //     }).then((responseJSON) => {
+    //         let responseMasseinheitBO = MasseinheitBO.fromJSON(responseJSON)[0];
+    //         return new Promise(function(resolve){
+    //             resolve(responseMasseinheitBO);
+    //         })
+    //     })
+    // }
+
+    #updateFoodInFridgeURL = (kid, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${kid}/${lebensmittel_id}`
+    updateFoodInFridge(updatedLebensmittel) {
+        return this.#fetchAdvanced(this.#updateFoodInFridgeURL(updatedLebensmittel.kuehlschrankId, updatedLebensmittel.id), {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedLebensmittel)
+        }).then((responseJSON) => {
+            return new Promise(function(resolve) {
+                resolve(responseJSON);
+            })
+        });
+    }
 
 
     //Ich füge hier jetzt eine getAllRezepte Methode ein, die soll eigentlich genau das gleiche machen

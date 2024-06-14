@@ -35,3 +35,14 @@ class Masseinheit(bo):
         ma.set_masseinheit(dictionary["masseinheitsname"])
         #ma.set_umrechnungsfaktor(dictionary["umrechnungsfaktor"])
         return ma
+
+   
+    def update_measurement_name(self, new_name, success):
+        """
+        Diese Methode aktualisiert den Namen der Maßeinheit.
+        """
+        if success:
+            self.set_masseinheit(new_name)
+            return f"Masseinheit '{self.masseinheitsname}' erfolgreich in '{new_name}' aktualisiert.", 200
+        else:
+            return f"Aktualisierung des Maßeinheitsnamens '{self.masseinheitsname}' fehlgeschlagen.", 500
