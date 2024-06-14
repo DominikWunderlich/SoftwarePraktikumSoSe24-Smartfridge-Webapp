@@ -200,6 +200,7 @@ function Kuehlschrankinhalt(props) {
                                     <th>Mengenanzahl</th>
                                     <th>Maßeinheit</th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
