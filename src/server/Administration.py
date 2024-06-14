@@ -269,7 +269,6 @@ class Administration(object):
         
     """ Diese Methode updated vorhandene Lebensmittel im Kuehlschrank, wenn die Menge geändert wird """
     def update_lebensmittel(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
-        """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
         # des Users dar (gr, kg, l, ...).
         print(f"name = {name}")

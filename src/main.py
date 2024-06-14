@@ -216,6 +216,23 @@ class KuelschrankLebensmittelOperations(Resource):
         # print(f"main.py kuehlschrank id {kuehlschrank_id}")
         adm.remove_food_from_fridge(kuehlschrank_id, lebensmittel_id)
 
+    @smartapi.expect(lebensmittel)
+    @smartapi.marshal_with(lebensmittel)
+    @secured
+    def put(self, wg_id, lebensmittel_id):
+        """
+        Aktualisiert ein Lebensmittel.
+        """
+        adm = Administration()
+        data = Lebensmittel.from_dict(api.payload)
+        if data is not None:
+            result = adm.update_lebensmittel(data.get_lebensmittelname(), data.get_masseinheit(),
+                                             data.get_mengenanzahl(),data.get_kuehlschrank_id(), data.get_rezept_id())
+            return result, 200
+        else:
+            return 'Fehler in User-Operations post methode', 500
+
+
 """ User related API Endpoints """
 @smartapi.route('/login')
 @smartapi.response(500, 'Serverseitiger Fehler')

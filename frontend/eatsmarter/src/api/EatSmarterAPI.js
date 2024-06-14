@@ -419,9 +419,9 @@ export default class EatSmarterAPI{
     //     })
     // }
 
-    #updateFoodInFridgeURL = (wg_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}//kuehlschrankinhalt/${wg_id}/${lebensmittel_id}`
+    #updateFoodInFridgeURL = (kid, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${kid}/${lebensmittel_id}`
     updateFoodInFridge(updatedLebensmittel) {
-        return this.#fetchAdvanced(this.#updateFoodInFridgeURL(updatedLebensmittel.id), {
+        return this.#fetchAdvanced(this.#updateFoodInFridgeURL(updatedLebensmittel.kuehlschrankId, updatedLebensmittel.id), {
             method: "PUT",
             headers: {
                 "Accept": "application/json, text/plain",

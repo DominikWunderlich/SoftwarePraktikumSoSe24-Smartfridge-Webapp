@@ -22,7 +22,9 @@ function Kuehlschrankinhalt(props) {
     const [editFormData, setEditFormData] = useState({
         lebensmittelName: "",
         mengenanzahl: 0,
-        masseinheit: ""
+        masseinheit: "",
+        kuehlschrankId: 0,
+        rezeptId: 0
     });
 
     useEffect(() => {
@@ -100,19 +102,27 @@ function Kuehlschrankinhalt(props) {
 
     const handleEditMasseinheit = (lebensmittel) => {
         setEditMode(lebensmittel.id);
+
         setEditFormData({
             lebensmittelName: lebensmittel.lebensmittelName,
             mengenanzahl: lebensmittel.mengenanzahl,
-            masseinheit: lebensmittel.masseinheit
+            masseinheit: lebensmittel.masseinheit,
+            kuehlschrankId: lebensmittel.kuehlschrankId,
+            rezeptId: lebensmittel.rezeptId
         });
     };
-
     const handleSaveEdit = async (lebensmittelId) => {
         try {
-            const updatedLebensmittel = {
-                id: lebensmittelId,
-                ...editFormData
-            };
+            // Erstellen des updated-food-Objekts.
+            const updatedLebensmittel = new LebensmittelBO(
+                editFormData.lebensmittelName,
+                editFormData.mengenanzahl,
+                editFormData.masseinheit,
+                editFormData.kuehlschrankId,
+                editFormData.rezeptId
+            );
+            updatedLebensmittel.id = lebensmittelId;
+
             await EatSmarterAPI.getAPI().updateFoodInFridge(updatedLebensmittel);
             setLebensmittelliste(prevList =>
                 prevList.map(item =>
