@@ -10,6 +10,8 @@ function Generator(props) {
     const [kuehlschrankId, setKuehlschrankId] = useState()
     const [wgName, setWgName] = useState()
     const [rezepte, setRezepte] = useState([]);
+    const [showPopup, setShowPopup] = useState(false);
+
 
 
     async function renderCurrentKuehlschrank() {
@@ -31,6 +33,15 @@ function Generator(props) {
         const rezeptListe = await EatSmarterAPI.getAPI().getRezeptByGenerator(wgName, kuehlschrankId);
         console.log("Rezept IDs:", rezeptListe);
         setRezepte(rezeptListe)
+        if (rezeptListe.length === 0) {
+        setShowPopup(true);
+        } else {
+            setShowPopup(false);
+        }
+    }
+
+     function closePopup() {
+        setShowPopup(false);
     }
 
 
@@ -57,7 +68,17 @@ function Generator(props) {
                 <br></br>
                 <button onClick={showRezepte} className="button-uebersicht" type="button">Generator starten</button>
             </div>
+            {showPopup && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h1 className="h2-black">Keine Rezepte gefunden</h1>
+                        <p>Kaufe etwas ein, um deine Rezepte kochen zu können!<span className="large-emoji">🙊</span></p>
+                        <button onClick={closePopup}>Schließen</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+
 export default Generator;

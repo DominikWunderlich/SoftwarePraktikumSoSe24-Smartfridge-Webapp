@@ -681,6 +681,10 @@ class Administration(object):
         with KuehlschrankMapper() as mapper:
             mapper.delete(kuehlschrank_id, lebensmittel_id)
 
+    def remove_food_from_rezept(self, rezept_id, lebensmittel_id):
+        with KuehlschrankMapper() as mapper:
+            mapper.delete_with_rezept_id(rezept_id, lebensmittel_id)
+
     def get_lebensmittel_by_rezept_id2(self, rezept):
         with LebensmittelMapper() as mapper:
             return mapper.find_by_key(rezept)

@@ -233,6 +233,15 @@ class KuelschrankLebensmittelOperations(Resource):
             return 'Fehler in User-Operations post methode', 500
 
 
+@smartapi.route("/rezeptinhalt/<rezept_id>/<lebensmittel_id>")
+@smartapi.response(500, 'Serverseitiger Fehler')
+class RezeptLebensmittelOperations(Resource):
+    def delete(self, rezept_id, lebensmittel_id):
+
+        adm = Administration()
+        adm.remove_food_from_rezept(rezept_id, lebensmittel_id)
+
+
 """ User related API Endpoints """
 @smartapi.route('/login')
 @smartapi.response(500, 'Serverseitiger Fehler')

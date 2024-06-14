@@ -300,6 +300,10 @@ button[type="submit"], button[type="button"]:hover {
     margin-top: 20px;
 }
 
+.large-emoji {
+    font-size: 5em;
+}
+
 
 
 
