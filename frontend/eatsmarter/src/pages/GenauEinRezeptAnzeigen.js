@@ -26,8 +26,8 @@ function GenauEinRezeptAnzeigen(props) {
     const [shoppingListElem, setShoppingListElem]  = useState([]);
     const navigate = useNavigate()
     const currentUser = props.user.email;
-
     const {rezeptId } = useParams(); // Holen der rezeptId aus den Routenparametern
+
     const handleChange = (event) => {
         setFormData({
             ...formData,
@@ -161,6 +161,17 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    async function deleteLebensmittel (event){
+        event.preventDefault()
+        // LebensmittelId ist der Value aus dem button Klick event
+        let lebensmittelId = event.target.value
+        // console.log("Das ist die Lebensmittel id welche gelöscht werden soll", lebensmittelId)
+        // console.log("Das ist die kuehlschrank_id", wgId)
+        await EatSmarterAPI.getAPI().deleteFoodFromRezept(rezeptId, lebensmittelId)
+        // Reload page nachdem Lebensmittel erfolgreich gelöscht wurde
+        window.location.reload()
+    }
+
     
     return (
         <div>
@@ -190,6 +201,9 @@ function GenauEinRezeptAnzeigen(props) {
                                         <td>{lebensmittel.lebensmittelName}</td>
                                         <td>{lebensmittel.mengenanzahl}</td>
                                         <td>{lebensmittel.masseinheit}</td>
+                                        <td>
+                                            <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
