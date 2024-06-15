@@ -126,14 +126,15 @@ class Administration(object):
             return mapper.find_wg_admin_by_email(email)
 
     """ User Methoden """
-    def create_user(self, email, username, firstname, lastname, googleid):
+    def create_user(self, email, username, firstname, lastname, googleid, wg_id):
         """ Erstellen des Objektes. """
         p = Person()
         p.set_email(email),
         p.set_benutzername(username),
         p.set_vorname(firstname),
         p.set_nachname(lastname),
-        p.set_google_id(googleid)
+        p.set_google_id(googleid),
+        p.set_wg_id(wg_id)
 
         with PersonMapper() as mapper:
             if mapper.find_by_email(email):

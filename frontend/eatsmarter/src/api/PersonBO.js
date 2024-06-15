@@ -3,13 +3,14 @@ import BusinessObject from "./BusinessObject";
 export default class PersonBO extends BusinessObject{
 
     // Jedes erstellte BusinessObjekt wird mit folgenden Attributen erstellt
-    constructor(email, userName, firstName, lastName, googleId){
+    constructor(email, userName, firstName, lastName, googleId, wgId){
         super();
         this.email = email;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.googleId = googleId;
+        this.wgId = wgId;
     }
 
     // Get- und Setter:
@@ -48,6 +49,14 @@ export default class PersonBO extends BusinessObject{
     }
     getgoogleId(){
         return this.googleId;
+    }
+
+    setWgId(wgId){
+        this.wgId = wgId;
+    }
+
+    getWgId(){
+        return this.wgId;
     }
 
     // Methode gibt Array oder einzelnes Objekt aus der JSON Struktur zurück

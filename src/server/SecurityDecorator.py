@@ -32,6 +32,7 @@ def secured(function):
                     email = claims.get("email")
                     name = claims.get("name")
 
+
                     # Auslesen der Person-Instanz
                     account = adm.get_user_by_google_id(google_user_id)
 
@@ -46,7 +47,7 @@ def secured(function):
 
                         account.set_email(email)
                         account.set_benutzername(name)
-                        adm.save_person(account)
+
 
                     else:
 
@@ -56,7 +57,7 @@ def secured(function):
                         und die google_user_id.
                         """
 
-                        account = adm.create_user(email, name, None, None, google_user_id)
+                        account = adm.create_user(email, name, None, None, google_user_id, None)
 
                     print(request.method, request.path, "angefragt durch:", name, email)
 

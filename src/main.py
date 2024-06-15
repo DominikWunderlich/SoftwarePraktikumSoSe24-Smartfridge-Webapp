@@ -40,7 +40,6 @@ bo = api.model('BusinessObject', {
 
 wg = api.inherit('WG', bo, {
     'wgName': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
-    'wgBewohner': fields.String(attribute='wg_bewohner', description='Teilnehmerliste einer WG'),
     'wgAdmin': fields.String(attribute='wg_ersteller', description='Admin einer WG')
 })
 
@@ -49,7 +48,8 @@ person = api.inherit('Person', bo, {
     'userName': fields.String(attribute='benutzername', description='Username eines Users'),
     'firstName': fields.String(attribute='vorname', description='Vorname eines Users'),
     'lastName': fields.String(attribute='nachname', description='Nachname eines Users'),
-    'googleId': fields.String(attribute='google_id', description='Google-ID eines Users')
+    'googleId': fields.String(attribute='google_id', description='Google-ID eines Users'),
+    'wgId': fields.Integer(attribute='wg_id', description='WgId')
 })
 
 rezept = api.inherit('Rezept', bo, {
@@ -250,12 +250,13 @@ class UserOperations(Resource):
     def post(self):
         """ Anlegen eines neuen User-Objekts. """
         adm = Administration()
-        print(api.payload)
+        print("payload main", api.payload)
         proposal = Person.from_dict(api.payload)
 
 
         if proposal is not None:
             result = adm.save_person(proposal)
+            print("Result main", result)
             return result, 200
         else:
             return 'Fehler in User-Operations post methode', 500

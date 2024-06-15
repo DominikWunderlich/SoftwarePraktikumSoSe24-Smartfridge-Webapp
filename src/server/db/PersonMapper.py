@@ -14,7 +14,7 @@ class PersonMapper(mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (person_id, email, benutzername, vorname, nachname, google_id) in tuples:
+        for (person_id, email, benutzername, vorname, nachname, google_id, wg_id) in tuples:
             user = Person()
             user.set_id(person_id)
             user.set_email(email)
@@ -22,6 +22,7 @@ class PersonMapper(mapper):
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_google_id(google_id)
+            user.set_wg_id(wg_id)
             result.append(user)
 
         self._connector.commit()
@@ -37,7 +38,7 @@ class PersonMapper(mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (person_id, email, benutzername, vorname, nachname, google_id) in tuples:
+        for (person_id, email, benutzername, vorname, nachname, google_id, wg_id) in tuples:
             user = Person()
             user.set_id(person_id)
             user.set_email(email)
@@ -45,6 +46,7 @@ class PersonMapper(mapper):
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_google_id(google_id)
+            user.set_wg_id(wg_id)
             result.append(user)
 
         self._connector.commit()
@@ -60,7 +62,7 @@ class PersonMapper(mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (person_id, email, benutzername, vorname, nachname, google_id) in tuples:
+        for (person_id, email, benutzername, vorname, nachname, google_id, wg_id) in tuples:
             user = Person()
             user.set_id(person_id)
             user.set_email(email)
@@ -68,6 +70,7 @@ class PersonMapper(mapper):
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_google_id(google_id)
+            user.set_wg_id(wg_id)
             result.append(user)
 
         self._connector.commit()
@@ -82,7 +85,7 @@ class PersonMapper(mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (email, benutzername, nachname, vorname, person_id, google_id) in tuples:
+        for (email, benutzername, nachname, vorname, person_id, google_id, wg_id) in tuples:
             user = Person()
             user.set_email(email)
             user.set_benutzername(benutzername)
@@ -90,6 +93,7 @@ class PersonMapper(mapper):
             user.set_vorname(vorname)
             user.set_id(person_id)
             user.set_google_id(google_id)
+            user.set_wg_id(wg_id)
             result.append(user)
 
         self._connector.commit()
@@ -102,7 +106,7 @@ class PersonMapper(mapper):
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (email, benutzername, nachname, vorname, id, google_id) in tuples:
+        for (email, benutzername, nachname, vorname, id, google_id, wg_id) in tuples:
             user = Person()
             user.set_id(id)
             user.set_email(email)
@@ -110,6 +114,7 @@ class PersonMapper(mapper):
             user.set_vorname(vorname)
             user.set_nachname(nachname)
             user.set_google_id(google_id)
+            user.set_wg_id(wg_id)
             return user
 
         self._connector.commit()
@@ -129,10 +134,10 @@ class PersonMapper(mapper):
             else:
                 person.set_id(1)
 
-        command = "INSERT INTO datenbank.person (id, email, benutzername, vorname, nachname, google_id) VALUES (%s,%s,%s,%s,%s,%s)"
+        command = "INSERT INTO datenbank.person (id, email, benutzername, vorname, nachname, google_id, wg_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         data = (
             person.get_id(), person.get_email(), person.get_benutzername(), person.get_vorname(), person.get_nachname(),
-            person.get_google_id())
+            person.get_google_id(), person.get_wg_id())
         cursor.execute(command, data)
 
         self._connector.commit()
@@ -142,22 +147,24 @@ class PersonMapper(mapper):
 
     def update(self, person):
         cursor = self._connector.cursor()
-
         cursor.execute('SELECT id FROM datenbank.person WHERE google_id=%s', (person.get_google_id(),))
         current_id = cursor.fetchone()
+
 
         if current_id is None:
             print(f"Im Person-Mapper Update. Keine Person mit der  {person.get_google_id()} gefunden.")
             cursor.close()
 
-        command = 'UPDATE datenbank.person SET email=%s, benutzername=%s, nachname=%s, vorname=%s WHERE google_id=%s'
+        command = 'UPDATE datenbank.person SET email=%s, benutzername=%s, nachname=%s, vorname=%s, wg_id=%s WHERE google_id=%s'
         data = (
             person.get_email(), person.get_benutzername(), person.get_nachname(), person.get_vorname(),
-            person.get_google_id())
+            person.get_wg_id(),person.get_google_id())
+
         cursor.execute(command, data)
 
         self._connector.commit()
         cursor.close()
+
 
     def delete(self, person):
 
@@ -182,7 +189,7 @@ class PersonMapper(mapper):
         cursor.execute(command, data)
         tuples = cursor.fetchall()
 
-        for (email, benutzername, nachname, vorname, person_id, google_id) in tuples:
+        for (email, benutzername, nachname, vorname, person_id, google_id, wg_id) in tuples:
             user = Person()
             user.set_email(email)
             user.set_benutzername(benutzername)
@@ -190,6 +197,7 @@ class PersonMapper(mapper):
             user.set_vorname(vorname)
             user.set_id(person_id)
             user.set_google_id(google_id)
+            user.set_wg_id(wg_id)
             result.append(user)
 
         self._connector.commit()

@@ -13,6 +13,7 @@ function LoginPerson(props) {
         firstName: "",
         lastName: "",
         googleId: props.user.uid,
+        wgId: null
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
@@ -26,7 +27,8 @@ function LoginPerson(props) {
                 TrimAndLowerCase(props.user.displayName),
                 TrimAndLowerCase(formData.firstName),
                 TrimAndLowerCase(formData.lastName),
-                props.user.uid
+                props.user.uid,
+                formData.wgId
             );
             await EatSmarterAPI.getAPI()
                 .addUser(newPerson)

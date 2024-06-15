@@ -16,6 +16,7 @@ class Person(bo):
         self.nachname = ""  # Der Name des Benutzers.
         self.email = ""  # Die E-Mail-Adresse des Benutzers.
         self.google_id = ""
+        self.wg_id = None
 
     def get_benutzername(self):
         """Auslesen des Benutzernamens."""
@@ -55,10 +56,16 @@ class Person(bo):
     def set_google_id(self, google_id):
         self.google_id = google_id
 
+    def set_wg_id(self, wg_id):
+        self.wg_id = wg_id
+
+    def get_wg_id(self):
+        return self.wg_id
+
     def __str__(self):
         """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-        return "User: {}, {}, {}, {}, {}, {}".format(self.get_id(), self.benutzername, self.vorname, self.nachname,
-                                                 self.email, self.google_id)
+        return "User: {}, {}, {}, {}, {}, {}, {}".format(self.get_id(), self.benutzername, self.vorname, self.nachname,
+                                                 self.email, self.google_id, self.wg_id)
 
     @staticmethod
     def from_dict(dictionary=dict()):
@@ -70,4 +77,5 @@ class Person(bo):
         pe.set_nachname(dictionary["lastName"])
         pe.set_email(dictionary["email"])
         pe.set_google_id(dictionary["googleId"])
+        pe.set_wg_id(dictionary["wgId"])
         return pe
