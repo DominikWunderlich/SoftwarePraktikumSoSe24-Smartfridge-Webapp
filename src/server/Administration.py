@@ -179,6 +179,47 @@ class Administration(object):
             return mapper.find_by_rezept_id(rezept_id)
 
     """Rezept löschen"""
+  # Diese Methode überprüft, ob die aktuelle user der Wg_ersteller ist
+    # Sie wird in der Updatewg methode und deletewgMethode verwendet
+    def is_current_user_rezept_admin(self, email):
+        with RezeptMapper() as mapper:
+            # print("Email:", email)d
+            rzt = mapper.find_by_email(email)
+            # print("rzt", rzt)
+
+
+
+        for rz in rzt:
+            # print(wg)
+            if rz.get_rezept_ersteller() == email:
+                return True
+
+            return False
+
+    def check_if_current_user_is_rerzept_admin(self, email, rezept_id):
+        with RezeptMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_rezept_admin_using_email_and_wg_id(email, rezept_id)
+
+            if is_admin:
+                return True
+
+            else:
+                return False
+            
+    def delete_rezept_by_email(self, current_user, rezept_id):
+            with RezeptMapper() as mapper:
+                is_admin = mapper.check_if_current_user_is_rezept_admin_using_email_and_wg_id(current_user, rezept_id)
+
+                if is_admin:
+                    with RezeptMapper():
+                        mapper.delete_rezept(rezept_id)
+                        print("Rezept enfernt")
+                        return True
+
+                else:
+                    print("Rezept wurde nicht entfernt, da keine Adminrechte")
+                    return False
+
     def delete_rezept_by_id(self, rezept_id):
         with RezeptMapper() as mapper:
             return mapper.delete(rezept_id)

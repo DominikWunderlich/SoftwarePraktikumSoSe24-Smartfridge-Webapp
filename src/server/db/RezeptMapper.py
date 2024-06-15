@@ -224,3 +224,38 @@ class RezeptMapper(mapper):
         self._connector.commit()
         cursor.close()
         return l
+
+    def check_if_current_user_is_rezept_admin_using_email_and_wg_id(self, current_user, rezept_id):
+
+        cursor = self._connector.cursor()
+        command = f"SELECT rezept_id FROM datenbank.rezept WHERE rezept_ersteller =%s AND wg_id =%s "
+        data =(current_user, rezept_id)
+        cursor.execute(command, data)
+        rezept = cursor.fetchone()
+
+        if rezept:
+            result = True
+
+        else:
+            result = False
+
+        self._connector.commit()
+        cursor.close()
+        #print("Mapper result: result", result)
+        return result
+
+
+
+    def delete_rezept(self, rezept_id):
+        cursor = self._connector.cursor()
+        command = """
+        UPDATE datenbank.rezept
+        SET rezept_ersteller = REPLACE(REPLACE(TRIM(BOTH ',' FROM REPLACE(rezept_ersteller, %s, '')), ',,', ','), ',,', ',')
+        WHERE rezept_id = %s
+        """
+        data = (rezept_id)
+
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()

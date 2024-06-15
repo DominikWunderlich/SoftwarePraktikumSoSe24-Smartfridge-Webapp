@@ -140,19 +140,37 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
 
-    /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
+    // /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
+    // const handleDelete = async () => {
+    //     const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser);
+    //     console.log("Frontend", isAdmin);
+    //     console.log(currentUser)
+
+    //     if(isAdmin){
+    //         await EatSmarterAPI.getAPI().deleteRezept(rezeptId)
+    //             .then(() => {
+    //                 navigate("/RezeptAnzeigen");
+    //             })
+    //     }
+    //     else{
+    //         alert("Nur der Ersteller kann das Rezept löschen");
+    //     }
+    // };
     const handleDelete = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser);
         console.log("Frontend", isAdmin);
-        console.log(currentUser)
+        console.log(currentUser);
 
-        if(isAdmin){
-            await EatSmarterAPI.getAPI().deleteRezept(rezeptId)
-                .then(() => {
-                    navigate("/RezeptAnzeigen");
-                })
-        }
-        else{
+        if (isAdmin) {
+            const response = await EatSmarterAPI.getAPI().deleteRezept(rezeptId);
+            console.log("Rezept Lösch-Response", response);
+            if (response) {
+                navigate("/RezeptAnzeigen");
+                alert("Das Rezept wurde erfolgreich gelöscht.");
+            } else {
+                alert("Fehler beim Löschen des Rezepts. Bitte versuchen Sie es erneut.");
+            }
+        } else {
             alert("Nur der Ersteller kann das Rezept löschen");
         }
     };
