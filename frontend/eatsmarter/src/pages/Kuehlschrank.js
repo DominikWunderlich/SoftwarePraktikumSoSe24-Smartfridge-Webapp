@@ -8,10 +8,20 @@ import MasseinheitBO from "../api/MasseinheitBO";
 
 function Kuehlschrankinhalt(props) {
 
+    // fürs Lebensmittelobjekt
     const [formData, setFormData] = useState({
         lebensmittelName: "",
         mengenanzahl: 0,
         masseinheit: ""
+    });
+
+    // fürs Bearbeiten des Lebensmittelobjekts
+    const [editFormData, setEditFormData] = useState({
+        lebensmittelName: "",
+        mengenanzahl: 0,
+        masseinheit: "",
+        kuehlschrankId: 0,
+        rezeptId: 0
     });
 
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
@@ -20,13 +30,86 @@ function Kuehlschrankinhalt(props) {
     const [wgId, setWgId] = useState(null);
     const [customMasseinheit, setCustomMasseinheit] = useState("");
     const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
-    const [editFormData, setEditFormData] = useState({
-        lebensmittelName: "",
-        mengenanzahl: 0,
-        masseinheit: "",
-        kuehlschrankId: 0,
-        rezeptId: 0
-    });
+    
+    /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
+    const handleChange = (event) => {
+        setFormData({
+            ...formData,
+            [event.target.name]: event.target.value
+        });
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (formData.lebensmittelName.trim() === "" || formData.masseinheit.trim() === "" || isNaN(formData.mengenanzahl)) {
+            setErrors({ message: "Bitte füllen Sie alle Felder aus." });
+            return;
+        }
+
+        const newLebensmittel = new LebensmittelBO(
+            TrimAndLowerCase(formData.lebensmittelName),
+            formData.mengenanzahl,
+            TrimAndLowerCase(formData.masseinheit),
+            wgId,
+            null
+        );
+
+        try {
+            await EatSmarterAPI.getAPI().addFoodToFridge(newLebensmittel, wgId);
+            const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
+            
+            // Zurücksetzen des Formulars nach dem Hinzufügen
+            setFormData({
+                lebensmittelName: "",
+                mengenanzahl: 0,
+                masseinheit: ""
+            });
+            setErrors({});
+
+            // Aktualisieren der Lebensmittelliste
+            await setLebensmittelliste(lebensmittelListe);
+        } catch (error) {
+            console.error("Fehler beim Hinzufügen des Lebensmittels:", error);
+        }
+    };
+
+    /* Funktionen für Daten die, geladen werden müssen */
+    async function fetchLebensmittel() {
+        try {
+            if (wgId !== null) {
+                const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
+                console.log("lebensmittelliste in kuehlschrank.js ", lebensmittelListe);
+                setLebensmittelliste(lebensmittelListe);
+            }
+        } catch (error) {
+            console.error("Fehler beim Laden der Lebensmittel:", error);
+        }
+    }
+
+    const fetchMasseinheiten = async () => {
+        try {
+            const masseinheiten = await EatSmarterAPI.getAPI().getMasseinheitAll();
+            setMasseinheitenListe(masseinheiten);
+        } catch (error) {
+            console.error("Fehler beim Laden der Maßeinheiten:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchLebensmittel();
+        fetchMasseinheiten();
+    }, [wgId]);
+
+   /* Funktionen für das Laden der aktuellen WG des Benutzers */
+   async function renderCurrentUsersWg() {
+        try {
+            const response = await EatSmarterAPI.getAPI().getWgByUser(props.user.email);
+            setWgId(response.id);
+        } catch (error) {
+            console.error("Fehler beim Laden der aktuellen WG des Benutzers:", error);
+        }
+    }
 
     useEffect(() => {
         async function fetchData() {
@@ -39,38 +122,13 @@ function Kuehlschrankinhalt(props) {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        async function fetchLebensmittel() {
-            try {
-                if (wgId !== null) {
-                    const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
-                    console.log("lebensmittelliste in kuehlschrank.js ", lebensmittelListe);
-                    setLebensmittelliste(lebensmittelListe);
-                }
-            } catch (error) {
-                console.error("Fehler beim Laden der Lebensmittel:", error);
-            }
-        }
-        fetchLebensmittel();
-        const fetchMasseinheiten = async () => {
-            try {
-                const masseinheiten = await EatSmarterAPI.getAPI().getMasseinheitAll();
-                setMasseinheitenListe(masseinheiten);
-            } catch (error) {
-                console.error("Fehler beim Laden der Maßeinheiten:", error);
-            }
-        };
-        fetchMasseinheiten();
-    }, [wgId]);
-
-    async function renderCurrentUsersWg() {
-        try {
-            const response = await EatSmarterAPI.getAPI().getWgByUser(props.user.email);
-            setWgId(response.id);
-        } catch (error) {
-            console.error("Fehler beim Laden der aktuellen WG des Benutzers:", error);
-        }
-    }
+    /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
+    const handleEditChange = (event) => {
+        setEditFormData({
+            ...editFormData,
+            [event.target.name]: event.target.value
+        });
+    };
 
     const handleCustomMasseinheit = () => {
         const customMasseinheit = prompt("Geben Sie Ihre eigene Maßeinheit ein:");
@@ -84,20 +142,6 @@ function Kuehlschrankinhalt(props) {
                 });
             }
         }
-    };
-
-    const handleChange = (event) => {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
-        });
-    };
-
-    const handleEditChange = (event) => {
-        setEditFormData({
-            ...editFormData,
-            [event.target.name]: event.target.value
-        });
     };
 
     const handleEditMasseinheit = (lebensmittel) => {
@@ -130,52 +174,17 @@ function Kuehlschrankinhalt(props) {
                 )
             );
             setEditMode(null);
+
+            await fetchLebensmittel();
         } catch (error) {
             console.error("Fehler beim Aktualisieren:", error);
             setErrors({ message: "Fehler beim Aktualisieren der Lebensmittel." });
         }
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (formData.lebensmittelName.trim() === "" || formData.masseinheit.trim() === "" || isNaN(formData.mengenanzahl)) {
-            setErrors({ message: "Bitte füllen Sie alle Felder aus." });
-            return;
-        }
-
-        const newLebensmittel = new LebensmittelBO(
-            TrimAndLowerCase(formData.lebensmittelName),
-            formData.mengenanzahl,
-            TrimAndLowerCase(formData.masseinheit),
-            wgId,
-            null
-        );
-
-        try {
-            await EatSmarterAPI.getAPI().addFoodToFridge(newLebensmittel, wgId);
-
-            // Kurze Verzögerung einfügen, um sicherzustellen, dass die Datenbankoperation abgeschlossen ist
-            setTimeout(async () => {
-                const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
-                setLebensmittelliste(lebensmittelListe);
-            }, 500); // 500 ms Verzögerung
-
-            // Zurücksetzen des Formulars nach dem Hinzufügen
-            setFormData({
-                lebensmittelName: "",
-                mengenanzahl: 0,
-                masseinheit: ""
-            });
-            setErrors({});
-        } catch (error) {
-            console.error("Fehler beim Hinzufügen des Lebensmittels:", error);
-        }
-    };
-
-     async function deleteLebensmittel (event){
+    /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
+    async function deleteLebensmittel (event){
         event.preventDefault()
-        // LebensmittelId ist der Value aus dem button Klick event
         let lebensmittelId = event.target.value
         try {
             await EatSmarterAPI.getAPI().deleteFoodFromFridge(wgId, lebensmittelId);
@@ -185,6 +194,7 @@ function Kuehlschrankinhalt(props) {
         }
     }
 
+     /* Darstellung der Komponente */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>

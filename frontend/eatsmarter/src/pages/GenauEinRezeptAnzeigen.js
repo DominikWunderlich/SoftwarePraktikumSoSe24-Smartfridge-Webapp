@@ -169,7 +169,6 @@ function GenauEinRezeptAnzeigen(props) {
         }
     }
 
-    
     /* Darstellung der Komponente */
     return (
         <div>
