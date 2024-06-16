@@ -223,11 +223,15 @@ class KuelschrankLebensmittelOperations(Resource):
         """
         Aktualisiert ein Lebensmittel.
         """
+
         adm = Administration()
         data = Lebensmittel.from_dict(api.payload)
+        old_name = adm.find_foodobj(lebensmittel_id)
+
         if data is not None:
-            result = adm.update_lebensmittel(data.get_lebensmittelname(), data.get_masseinheit(),
-                                             data.get_mengenanzahl(),data.get_kuehlschrank_id(), data.get_rezept_id())
+            result = adm.update_lebensmittel_obj(data.get_lebensmittelname(), data.get_masseinheit(),
+                                             data.get_mengenanzahl(),data.get_kuehlschrank_id(),
+                                             data.get_rezept_id(), old_name)
             return result, 200
         else:
             return 'Fehler in User-Operations post methode', 500
