@@ -4,7 +4,10 @@ import LebensmittelBO from "../api/LebensmittelBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
 import TrimAndLowerCase from "../functions";
-import MasseinheitBO from "../api/MasseinheitBO";
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import Button from '@mui/material/Button';
 
 function Kuehlschrankinhalt(props) {
 
@@ -183,9 +186,7 @@ function Kuehlschrankinhalt(props) {
     };
 
     /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
-    async function deleteLebensmittel (event){
-        event.preventDefault()
-        let lebensmittelId = event.target.value
+    async function deleteLebensmittel (lebensmittelId){
         try {
             await EatSmarterAPI.getAPI().deleteFoodFromFridge(wgId, lebensmittelId);
             setLebensmittelliste(prevLebensmittelliste => prevLebensmittelliste.filter(item => item.id !== parseInt(lebensmittelId, 10)));
@@ -243,7 +244,7 @@ function Kuehlschrankinhalt(props) {
                                                     />
                                                 </td>
                                                 <td>
-                                                    <button onClick={() => handleSaveEdit(lebensmittel.id)}>Speichern</button>
+                                                    <TaskAltIcon onClick={() => handleSaveEdit(lebensmittel.id)}/>
                                                 </td>
                                             </>
                                         ) : (
@@ -252,12 +253,12 @@ function Kuehlschrankinhalt(props) {
                                                 <td>{lebensmittel.mengenanzahl}</td>
                                                 <td>{lebensmittel.masseinheit}</td>
                                                 <td>
-                                                    <button onClick={() => handleEditMasseinheit(lebensmittel)}>Bearbeiten</button>
+                                                    <ModeEditIcon onClick={() => handleEditMasseinheit(lebensmittel)} />
                                                 </td>
                                             </>
                                         )}
                                         <td>
-                                            <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
+                                            <DeleteIcon onClick={() => deleteLebensmittel(lebensmittel.id)} />
                                         </td>
                                     </tr>
                                 ))}
@@ -292,23 +293,28 @@ function Kuehlschrankinhalt(props) {
                             onChange={handleChange}
                             className="eingabe"
                         />
-
                         <label>Maßeinheit</label>
-                        <input
-                            type="text"
-                            name="masseinheit"
-                            list="masseinheiten"
-                            value={formData.masseinheit}
-                            onChange={handleChange}
-                            className="eingabe"
-                        />
+                        <div className="input-with-button">
+                            <div className="inner-input-with-button">
+                                <input
+                                    type="text"
+                                    name="masseinheit"
+                                    list="masseinheiten"
+                                    value={formData.masseinheit}
+                                    onChange={handleChange}
+                                    className="eingabe"
+                                />
+                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<ModeEditIcon />}>
+                                    eigene Maßeinheit
+                                </Button>
+                            </div>
+                        </div>
                         <datalist id="masseinheiten">
                             {masseinheitenListe.map((masseinheit, index) => (
                                 <option key={index} value={masseinheit.masseinheitsname} />
                             ))}
                         </datalist>
                         <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
-                        <button className="button" type="button" onClick={handleCustomMasseinheit}>Eigene neue Maßeinheit eingeben</button>
                     </div>
                 </div>
             </div>

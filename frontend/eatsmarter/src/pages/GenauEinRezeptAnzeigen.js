@@ -8,6 +8,9 @@ import mengenanzahlBO from "../api/mengenanzahlBO";
 import { useParams } from "react-router-dom"; 
 import {useNavigate} from "react-router-dom";
 import TrimAndLowerCase from "../functions";
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
 
 
 function GenauEinRezeptAnzeigen(props) {
@@ -157,13 +160,10 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
-    async function deleteLebensmittel (event){
-        event.preventDefault()
-        // LebensmittelId ist der Value aus dem button Klick event
-        let lebensmittelId = event.target.value
+    async function deleteLebensmittel (lebensmittelId){
         try {
             await EatSmarterAPI.getAPI().deleteFoodFromRezept(rezeptId, lebensmittelId);
-            setRezeptLebensmittel(prevRezeptLebensmittel => prevRezeptLebensmittel.filter(item => item.id !== parseInt(lebensmittelId, 10)));
+            setRezeptLebensmittel(prevRezeptLebensmittel => prevRezeptLebensmittel.filter(item => item.id !== lebensmittelId));
         } catch (error) {
             console.error("Fehler beim Löschen des Lebensmittels:", error);
         }
@@ -200,7 +200,7 @@ function GenauEinRezeptAnzeigen(props) {
                                         <td>{lebensmittel.mengenanzahl}</td>
                                         <td>{lebensmittel.masseinheit}</td>
                                         <td>
-                                            <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
+                                            <DeleteIcon onClick={() => deleteLebensmittel(lebensmittel.id)} aria-label="delete" size="small" />
                                         </td>
                                     </tr>
                                 ))}
