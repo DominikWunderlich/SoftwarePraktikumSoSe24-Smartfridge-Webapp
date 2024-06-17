@@ -217,6 +217,45 @@ class Administration(object):
         with MasseinheitMapper() as mapper:
             return mapper.insert(m)
 
+    def initialize_units(self):
+        conversion_factors = {
+            'liter': 1000,
+            'kilogramm': 1000,
+            'gramm': 1,
+            'l': 1000,
+            'ml': 1,
+            'kg': 1000,
+            'gr': 1,
+            'unzen': 28.3495,
+            'oz': 3495,
+            'pfund': 453.592,
+            'lb': 453.592
+        }
+
+        for key, value in conversion_factors.items():
+            m = Masseinheit()
+            m.set_id(1)
+            m.set_masseinheit(key)
+            m.set_umrechnungsfaktor(value)
+            print(f"Objekt das dem Mapper übergeben wird = {m}")
+
+            with MasseinheitMapper() as mapper:
+                mapper.insert(m)
+
+    def build_unit_dict(self):
+        # Zuerst holen wir uns alle vorhandenen Maßeinheiten
+        with MasseinheitMapper() as mapper:
+            objs = mapper.find_all() # Liste mit Maßeinheiten
+            print(objs)
+
+        conversion_factors = {}
+        for unit in objs:
+            u = unit.get_masseinheit()
+            factor = unit.get_umrechnungsfaktor()
+            conversion_factors[u] = float(factor)
+
+        return conversion_factors  # Dict mit Key-Value paaren aus DB
+
 
     """Auslesen aller Masseinheiten """
 
@@ -576,9 +615,10 @@ class Administration(object):
         :param kuehlschrank_id: Ist die ID der WG / des dazugehörigen Kühlschranks.
         :param lebensmittel: Ist das Lebensmittel das hinzugefügt werden soll.
         """
+        # Auslesen der vorhanden Maßeinheiten inklusive ihrer Umrechnungsfaktoren.
+        measurements = self.build_unit_dict()
         # Zuerst werden die zugehörigen Lebensmittel des Kühlschranks geholt.
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)  # Output: [(k_id/l_obj), (k_id2/l_obj2)]
-        print(f"DEBUG add_food_to_fridge -- Das ist der fridge mit den Lebensmittel: {fridge}")
 
         # Als nächstes prüfen wir ob der gesuchte Lebensmittelname bereits im Vorratsschrank ist.
         lebenmittel_name = lebensmittel.get_lebensmittelname()
@@ -612,7 +652,7 @@ class Administration(object):
             unit = unit_obj.get_masseinheit()
 
             # 3. Lebensmittel updaten bzw. neu erstellen
-            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
+            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit, measurements)
             new_food_obj = self.update_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
                                                     updated_food.get_mengenanzahl(), kuehlschrank_id, None)
             # a = self.update_lebensmittel(new_food_obj)
@@ -620,6 +660,8 @@ class Administration(object):
             return new_food_obj
 
     def remove_food_from_fridge_with_recipe(self, kuehlschrank_id, rezept_id):
+        # Auslesen der vorhanden Maßeinheiten inklusive ihrer Umrechnungsfaktoren.
+        measurements = self.build_unit_dict()
         # Zugehörige Lebensmittel des Kühlschranks finden
         print(f"...starting remove_food_from_fridge")
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -647,7 +689,7 @@ class Administration(object):
                 print("Lebensmittelname im Rezept", elem.get_lebensmittelname())
                 print("Lebensmittelname im Kühlschrank", x.get_lebensmittelname())
                 if elem.get_lebensmittelname() == x.get_lebensmittelname():
-                    new_amount = x.decrease_food_quantity(required_amount, required_unit)
+                    new_amount = x.decrease_food_quantity(required_amount, required_unit, measurements)
                     print(f"Das ist das Lebensmittel nach dem, die decrease-Methode angewandt wurde {new_amount}")
 
                     if new_amount.get_mengenanzahl() > 0:
