@@ -139,23 +139,7 @@ function GenauEinRezeptAnzeigen(props) {
         setIsPopupOpen(false);
     };
 
-
-    // /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
-    // const handleDelete = async () => {
-    //     const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser);
-    //     console.log("Frontend", isAdmin);
-    //     console.log(currentUser)
-
-    //     if(isAdmin){
-    //         await EatSmarterAPI.getAPI().deleteRezept(rezeptId)
-    //             .then(() => {
-    //                 navigate("/RezeptAnzeigen");
-    //             })
-    //     }
-    //     else{
-    //         alert("Nur der Ersteller kann das Rezept löschen");
-    //     }
-    // };
+    
     const handleDelete = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser);
         console.log("Frontend", isAdmin);
