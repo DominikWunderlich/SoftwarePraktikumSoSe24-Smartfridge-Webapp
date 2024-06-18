@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restx import Api, Resource, fields
 from flask_cors import CORS, cross_origin
+
 from server.Administration import Administration
 from server.bo.BusinessObject import BusinessObject
 from server.bo.WG import WG
@@ -76,8 +77,6 @@ masseinheit = api.inherit('Masseinheit', bo, {
     'masseinheitsname': fields.String(attribute='masseinheitsname', description='Name einer Maßeinheit'),
     'umrechnungsfaktor': fields.Float(attribute='umrechnungsfaktor', description='Umrechnungsfaktor einer Maßeinheit')
 })
-
-
 
 @smartapi.route('/wg')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -216,6 +215,36 @@ class KuelschrankLebensmittelOperations(Resource):
         # print(f"main.py lebensmittel id {lebensmittel_id}")
         # print(f"main.py kuehlschrank id {kuehlschrank_id}")
         adm.remove_food_from_fridge(kuehlschrank_id, lebensmittel_id)
+
+    @smartapi.expect(lebensmittel)
+    @smartapi.marshal_with(lebensmittel)
+    @secured
+    def put(self, wg_id, lebensmittel_id):
+        """
+        Aktualisiert ein Lebensmittel.
+        """
+
+        adm = Administration()
+        data = Lebensmittel.from_dict(api.payload)
+        old_name = adm.find_foodobj(lebensmittel_id)
+
+        if data is not None:
+            result = adm.update_lebensmittel_obj(data.get_lebensmittelname(), data.get_masseinheit(),
+                                             data.get_mengenanzahl(),data.get_kuehlschrank_id(),
+                                             data.get_rezept_id(), old_name)
+            return result, 200
+        else:
+            return 'Fehler in User-Operations post methode', 500
+
+
+@smartapi.route("/rezeptinhalt/<rezept_id>/<lebensmittel_id>")
+@smartapi.response(500, 'Serverseitiger Fehler')
+class RezeptLebensmittelOperations(Resource):
+    def delete(self, rezept_id, lebensmittel_id):
+
+        adm = Administration()
+        adm.remove_food_from_rezept(rezept_id, lebensmittel_id)
+
 
 """ User related API Endpoints """
 @smartapi.route('/login')
@@ -437,14 +466,18 @@ class DeleteEinRezeptOperations(Resource):
             return '', 500
 
 
-@smartapi.route('/rezept/user/<email>')
+@smartapi.route('/rezept/user/<email>/<rezept_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('email', 'Die E-mail der aktuellen person')
+@smartapi.param('rezept_id', 'ID des Rezepts')
 class GetRezeptAdminWgOperations(Resource):
-    def get(self, email):
+    def get(self, email, rezept_id):
+        print(email)
+        print(rezept_id)
         adm = Administration()
-        print("True in der Main.py?", adm.is_current_user_rezept_admin(email))
-        return adm.is_current_user_rezept_admin(email)
+        #print("True in der Main.py?", adm.is_current_user_rezept_admin(email, rezept_id))
+        a = adm.is_current_user_rezept_admin(email, rezept_id)
+        return a
 
 """ Lebensmittel Calls """
 
@@ -536,6 +569,29 @@ class MasseinheitOperation(Resource):
         else:
             return "Fehler in MengenOperationen Post Methode", 500
         
+
+    @smartapi.expect(masseinheit)
+    @smartapi.marshal_with(masseinheit)
+    @secured
+    def put(self):
+        """
+        Aktualisiert den Namen einer Maßeinheit.
+        """
+        adm = Administration()
+        data = api.payload  # Zugriff auf die Daten aus der PUT-Anforderung
+        id = data.get('id')
+        new_name = data.get('new_name')
+
+        if not id or not new_name:
+            return {'message': "Fehlende ID oder neuer Maßeinheitsname."}, 400
+
+        success = adm.update_measurement_name(id, new_name)
+        if success:
+            # Erfolgreiche Antwort im JSON-Format zurückgeben
+            return {'message': f"Masseinheit mit ID '{id}' erfolgreich in '{new_name}' aktualisiert."}, 200
+        else:
+            return {'message': f"Aktualisierung des Maßeinheitsnamens mit ID '{id}' fehlgeschlagen."}, 500
+
 
     @smartapi.marshal_with(masseinheit)
     @secured

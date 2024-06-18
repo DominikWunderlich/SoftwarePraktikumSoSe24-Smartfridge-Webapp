@@ -21,7 +21,7 @@ class Administration(object):
 
     def create_wg(self, wg_name, wg_bewohner, wg_ersteller):
         """ Erstellen einer WG-Instanz. """
-        print(f"DEBUG IN create_wg in admin.py wg_name = {wg_name}, wg_bewohner={wg_bewohner}, wg_ersteller={wg_ersteller}")
+        self.initialize_units()
         w = WG()
         w.set_wg_name(wg_name)
         w.set_wg_bewohner(wg_bewohner)
@@ -302,23 +302,51 @@ class Administration(object):
             return mapper.find_by_rezept_id(rezept_id)
 
     """Rezept löschen"""
-    def delete_rezept_by_id(self, rezept_id):
-        with RezeptMapper() as mapper:
-            return mapper.delete(rezept_id)
-        
-    def is_current_user_rezept_admin(self, email):
+  # Diese Methode überprüft, ob die aktuelle user der Wg_ersteller ist
+    # Sie wird in der Updatewg methode und deletewgMethode verwendet
+    def is_current_user_rezept_admin(self, email, rezept_id):
         with RezeptMapper() as mapper:
             print("Email:", email)
-            rzt = mapper.find_rezept_admin_by_email(email)
-            print("rzt", rzt)
+            rzt = mapper.find_rezept_admin_by_email(email, rezept_id)
+            # print("rzt", rzt)
+
+
 
         for rz in rzt:
-            print(rz)
+            # print(wg)
             if rz.get_rezept_ersteller() == email:
                 return True
 
             return False
-       
+
+    def check_if_current_user_is_rerzept_admin(self, email, rezept_id):
+        with RezeptMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_rezept_admin_using_email_and_wg_id(email, rezept_id)
+
+            if is_admin:
+                return True
+
+            else:
+                return False
+            
+    def delete_rezept_by_email(self, current_user, rezept_id):
+            with RezeptMapper() as mapper:
+                is_admin = mapper.check_if_current_user_is_rezept_admin_using_email_and_wg_id(current_user, rezept_id)
+
+                if is_admin:
+                    with RezeptMapper():
+                        mapper.delete_rezept(rezept_id)
+                        print("Rezept enfernt")
+                        return True
+
+                else:
+                    print("Rezept wurde nicht entfernt, da keine Adminrechte")
+                    return False
+
+    def delete_rezept_by_id(self, rezept_id):
+        with RezeptMapper() as mapper:
+            return mapper.delete(rezept_id)
+        
     """ Lebensmittel-spezifische Methoden """
 
     def create_menge(self, menge):
@@ -359,6 +387,49 @@ class Administration(object):
 
         with MasseinheitMapper() as mapper:
             return mapper.insert(m)
+
+    def initialize_units(self):
+        with MasseinheitMapper() as mapper:
+            is_dict = mapper.find_all()
+            if is_dict:
+                return is_dict
+
+            conversion_factors = {
+                'liter': 1000,
+                'kilogramm': 1000,
+                'gramm': 1,
+                'l': 1000,
+                'ml': 1,
+                'kg': 1000,
+                'gr': 1,
+                'unzen': 28.3495,
+                'oz': 3495,
+                'pfund': 453.592,
+                'lb': 453.592
+            }
+
+            for key, value in conversion_factors.items():
+                m = Masseinheit()
+                m.set_id(1)
+                m.set_masseinheit(key)
+                m.set_umrechnungsfaktor(value)
+
+                with MasseinheitMapper() as mmapper:
+                    mmapper.insert(m)
+
+    def build_unit_dict(self):
+        # Zuerst holen wir uns alle vorhandenen Maßeinheiten
+        with MasseinheitMapper() as mapper:
+            objs = mapper.find_all() # Liste mit Maßeinheiten
+            print(objs)
+
+        conversion_factors = {}
+        for unit in objs:
+            u = unit.get_masseinheit()
+            factor = unit.get_umrechnungsfaktor()
+            conversion_factors[u] = float(factor)
+
+        return conversion_factors  # Dict mit Key-Value paaren aus DB
 
 
     """Auslesen aller Masseinheiten """
@@ -409,10 +480,9 @@ class Administration(object):
         time.sleep(1)
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
-
+        
     """ Diese Methode updated vorhandene Lebensmittel im Kuehlschrank, wenn die Menge geändert wird """
     def update_lebensmittel(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
-        """ Erstellen eines Lebensmittels, das noch nicht im System existiert. """
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
         # des Users dar (gr, kg, l, ...).
         print(f"name = {name}")
@@ -495,6 +565,64 @@ class Administration(object):
         time.sleep(1)
         with LebensmittelMapper() as lmapper:
             return lmapper.update3(food)
+
+    def find_foodobj(self, lebensmittel_id):
+        with LebensmittelMapper() as mapper:
+            obj = mapper.find_by_id(lebensmittel_id)
+            obj_name = obj.get_lebensmittelname()
+            return obj_name
+
+    def update_lebensmittel_obj(self, name, meinheit, menge, kuehlschrank_id, rezept_id, old_food_id):
+
+        with MasseinheitMapper() as mapper:
+            m_id = mapper.find_by_name(meinheit)
+
+            if m_id is None:
+                masseinheit_id = self.create_measurement(meinheit, 0)
+            else:
+                masseinheit_id = m_id.get_id()
+
+        # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
+        with MengenanzahlMapper() as mmapper:
+            mengen_id = mmapper.find_by_menge(menge)
+            if mengen_id is None:
+                mengen_id = self.create_menge(menge)
+            else:
+                mengen_id = mengen_id.get_id()
+
+
+        # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
+        food = Lebensmittel()
+        # Hier wird die Lebensmittel_id auf 1 gesetzt
+        food.set_id(1)
+        food.set_lebensmittelname(name)
+        food.set_masseinheit(masseinheit_id)
+        food.set_mengenanzahl(mengen_id)
+        food.set_kuelschrank_id(kuehlschrank_id)
+        food.set_rezept_id(rezept_id)
+
+        time.sleep(1)
+        with LebensmittelMapper() as lmapper:
+            return lmapper.update_foodobj(food, old_food_id)
+
+
+    def update_food_in_fridge(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
+        """ Diese Methode aktualisiert vorhandene Lebensmittel im Kühlschrank, wenn sich die Lebensmittelname, Menge, Masseinheit ändert. """
+        # Zuerst suchen wir das Lebensmittel im Kühlschrank
+        with LebensmittelMapper() as lmapper:
+            existing_food = lmapper.find_by_name_and_fridge_id(name, kuehlschrank_id)
+
+        if existing_food:
+            # Das Lebensmittel existiert bereits im Kühlschrank, daher aktualisieren wir nur die Menge
+            existing_food.set_mengenanzahl(menge)
+            print(f"Die Menge von {name} im Kühlschrank wurde auf {menge} aktualisiert.")
+            time.sleep(1)
+            with LebensmittelMapper() as lmapper:
+                return lmapper.update(existing_food)
+        else:
+            # Wenn das Lebensmittel nicht gefunden wurde, geben wir eine entsprechende Meldung aus
+            print(f"{name} wurde nicht im Kühlschrank gefunden.")
+            return None
 
 
     def create_lebensmittel_from_fridge(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
@@ -662,9 +790,10 @@ class Administration(object):
         :param kuehlschrank_id: Ist die ID der WG / des dazugehörigen Kühlschranks.
         :param lebensmittel: Ist das Lebensmittel das hinzugefügt werden soll.
         """
+        # Auslesen der vorhanden Maßeinheiten inklusive ihrer Umrechnungsfaktoren.
+        measurements = self.build_unit_dict()
         # Zuerst werden die zugehörigen Lebensmittel des Kühlschranks geholt.
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)  # Output: [(k_id/l_obj), (k_id2/l_obj2)]
-        print(f"DEBUG add_food_to_fridge -- Das ist der fridge mit den Lebensmittel: {fridge}")
 
         # Als nächstes prüfen wir ob der gesuchte Lebensmittelname bereits im Vorratsschrank ist.
         lebenmittel_name = lebensmittel.get_lebensmittelname()
@@ -698,7 +827,7 @@ class Administration(object):
             unit = unit_obj.get_masseinheit()
 
             # 3. Lebensmittel updaten bzw. neu erstellen
-            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
+            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit, measurements)
             new_food_obj = self.update_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
                                                     updated_food.get_mengenanzahl(), kuehlschrank_id, None)
             # a = self.update_lebensmittel(new_food_obj)
@@ -706,6 +835,8 @@ class Administration(object):
             return new_food_obj
 
     def remove_food_from_fridge_with_recipe(self, kuehlschrank_id, rezept_id):
+        # Auslesen der vorhanden Maßeinheiten inklusive ihrer Umrechnungsfaktoren.
+        measurements = self.build_unit_dict()
         # Zugehörige Lebensmittel des Kühlschranks finden
         print(f"...starting remove_food_from_fridge")
         fridge = self.get_lebensmittel_by_kuehlschrank_id(kuehlschrank_id)
@@ -733,7 +864,7 @@ class Administration(object):
                 print("Lebensmittelname im Rezept", elem.get_lebensmittelname())
                 print("Lebensmittelname im Kühlschrank", x.get_lebensmittelname())
                 if elem.get_lebensmittelname() == x.get_lebensmittelname():
-                    new_amount = x.decrease_food_quantity(required_amount, required_unit)
+                    new_amount = x.decrease_food_quantity(required_amount, required_unit, measurements)
                     print(f"Das ist das Lebensmittel nach dem, die decrease-Methode angewandt wurde {new_amount}")
 
                     if new_amount.get_mengenanzahl() > 0:
@@ -805,6 +936,10 @@ class Administration(object):
     def remove_food_from_fridge(self, kuehlschrank_id, lebensmittel_id):
         with KuehlschrankMapper() as mapper:
             mapper.delete(kuehlschrank_id, lebensmittel_id)
+
+    def remove_food_from_rezept(self, rezept_id, lebensmittel_id):
+        with KuehlschrankMapper() as mapper:
+            mapper.delete_with_rezept_id(rezept_id, lebensmittel_id)
 
     def get_lebensmittel_by_rezept_id2(self, rezept):
         with LebensmittelMapper() as mapper:

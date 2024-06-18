@@ -212,9 +212,10 @@ td {
     box-sizing: border-box;
 }
 
+/* Styling für die Eingabefelder */
 input[type="text"], input[type="email"], input[type="password"], input[type="number"]{
     width: 93.5%;
-    padding: 14px 3%;
+    padding: 13px 3%;
     font-size: medium;
     margin: 8px 0 10px 0;
     display: inline-block;
@@ -222,13 +223,58 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
     background: #ffffff;
 }
 
+.input-container{
+    width: 93.5%;
+    padding: 6px;
+    font-size: medium;
+    display: inline-block;
+    border-radius: 10px;
+    background: #ffffff;
+  }
+
+  .input-with-button {
+    width: 92%;
+    background-color: white; 
+    font-size: medium;
+    padding: 0px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: auto; 
+    margin-right: auto; 
+  }
+
+.inner-input-with-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .inner-input-with-button input {
+    flex: 1;
+    border: none;
+    margin: 0;
+  }
+  
+  .inner-input-with-button .edit-icon {
+    cursor: pointer;
+    border: none;
+    margin: 6px;
+    padding: 8px; /* Verringerung der Größe des Buttons */
+    font-size: 0.75rem; /* Kleinere Schriftgröße */
+    max-width: 200px; /* Entfernen der minimalen Breite */
+    height: auto; /* Entfernen der minimalen Höhe */
+  }
+
 
 /* Styling für die Buttons */
 button[type="submit"], button[type="button"] {
     background-color: #031544; 
     color: white;
     font-size: medium;
-    padding: 15px 3%;
+    padding: 13px 3%;
     border: 2px solid white;
     border-radius: 10px;
     cursor: pointer;
@@ -277,6 +323,7 @@ button[type="submit"], button[type="button"]:hover {
 
 .inner-popup {
     background: white;
+    max-width: 500px;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -300,7 +347,11 @@ button[type="submit"], button[type="button"]:hover {
     margin-top: 20px;
 }
 
+.large-emoji {
+    font-size: 5em;
+}
 
+  
 
 
 

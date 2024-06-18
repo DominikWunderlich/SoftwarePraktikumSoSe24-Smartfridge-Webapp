@@ -71,13 +71,7 @@ export default class RezeptBO extends BusinessObject{
 
         return result;
     }
-        // Methode zum Löschen des RezeptBO aus einer Liste
-//     static delete(rezepte, RezeptBO){
-//         let index = rezepte.indexOf(RezeptBO);
-//         if(index > -1){
-//             rezepte.splice(index, 1);
-//         }
-//     }
+
 
     static fromJSON(rzt){
         let result = [];
@@ -98,5 +92,4 @@ export default class RezeptBO extends BusinessObject{
         return result;
     }
     
- }    
-
+ }   
