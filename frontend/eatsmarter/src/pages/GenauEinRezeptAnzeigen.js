@@ -188,23 +188,22 @@ function GenauEinRezeptAnzeigen(props) {
             }
         }
 
-        async function deleteLebensmittel(event) {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
-        if (isAdmin){
+        async function deleteLebensmittel(event, lebensmittelId) {
             event.preventDefault()
-            // LebensmittelId ist der Value aus dem button Klick event
-            let lebensmittelId = event.target.value
-            try {
-                await EatSmarterAPI.getAPI().deleteFoodFromRezept(rezeptId, lebensmittelId);
-                setRezeptLebensmittel(prevRezeptLebensmittel => prevRezeptLebensmittel.filter(item => item.id !== parseInt(lebensmittelId, 10)));
-            } catch (error) {
-                console.error("Fehler beim Löschen des Lebensmittels:", error);
+            const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
+            if (isAdmin){
+                // LebensmittelId ist der Value aus dem button Klick event
+                try {
+                    await EatSmarterAPI.getAPI().deleteFoodFromRezept(rezeptId, lebensmittelId);
+                    setRezeptLebensmittel(prevRezeptLebensmittel => prevRezeptLebensmittel.filter(item => item.id !== parseInt(lebensmittelId, 10)));
+                } catch (error) {
+                    console.error("Fehler beim Löschen des Lebensmittels:", error);
+                }
             }
-        }
-        else{
-            alert("Nur der Rezept Ersteller kann Lebensmittel löschen")
-        }
-        }
+            else{
+                alert("Nur der Rezept Ersteller kann Lebensmittel löschen")
+            }
+            }
 
     /* Darstellung der Komponente */
     return (
@@ -248,7 +247,7 @@ function GenauEinRezeptAnzeigen(props) {
                                         <td>{lebensmittel.mengenanzahl}</td>
                                         <td>{lebensmittel.masseinheit}</td>
                                         <td>
-                                            <DeleteIcon onClick={() => deleteLebensmittel(lebensmittel.id)} aria-label="delete" size="small" />
+                                            <DeleteIcon onClick={(event) => deleteLebensmittel(event, lebensmittel.id)} aria-label="delete" size="small" />
                                         </td>
                                     </tr>
                                 ))}
