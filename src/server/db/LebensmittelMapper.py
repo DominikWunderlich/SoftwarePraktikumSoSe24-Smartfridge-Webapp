@@ -127,6 +127,24 @@ class LebensmittelMapper(mapper):
         self._connector.commit()
         cursor.close()
 
+
+    def update_menge(self, lebensmittel, neue_menge):
+        print("jetzt bin ich in der update_menge Methode")
+        print(lebensmittel)
+        lebensmittel_id = lebensmittel.get_id()
+        print(lebensmittel_id) #das ist die lebensmittel_id deren Datensatz aktualisiert werden soll
+        print("juhu")
+        print(neue_menge) #Das ist die mengen_id von der neuen menge
+        cursor = self._connector.cursor()
+        print("bin ich im try?")
+        command = f"UPDATE datenbank.lebensmittel SET mengenanzahl_id=%s WHERE lebensmittel_id=%s"
+        data = (neue_menge, lebensmittel_id)
+        cursor.execute(command, data)
+        self._connector.commit()
+        print(f"Menge in Lebensmittel mit ID {lebensmittel.get_id()} aktualisiert.")
+        cursor.close()
+        return
+
     def update3(self, lebensmittel):
         cursor = self._connector.cursor()
 

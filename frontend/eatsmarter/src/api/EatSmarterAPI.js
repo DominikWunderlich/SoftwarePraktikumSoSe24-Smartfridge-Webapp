@@ -50,7 +50,22 @@ export default class EatSmarterAPI{
     #getRezeptByIdURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
 
     #lebensmittelZuRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezeptt/${rezept_id}/lebensmittel`;
-
+    #changeAnzahlPortionenInRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/anzahlPortionen/updateundget/${rezept_id}`;
+    changePortionenInRezept(rezept_id, neueAnzahlPortionen){
+        return this.#fetchAdvanced(this.#changeAnzahlPortionenInRezeptURL(rezept_id),{
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(neueAnzahlPortionen)
+        }).then((responseJSON) => {
+            return responseJSON;
+        }).catch((error) => {
+            console.error("Fehler", error);
+            throw error;
+        });
+    }
     lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
         return this.#fetchAdvanced(this.#lebensmittelZuRezeptURL(rezept_id),{
             method: "POST",

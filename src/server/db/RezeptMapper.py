@@ -102,6 +102,13 @@ class RezeptMapper(mapper):
         # Implementierung der Methode update
         pass
 
+    def update_anzahl_portionen(self, rezept_id, new_portionen):
+        cursor = self._connector.cursor()
+        command = f"UPDATE datenbank.rezept SET anzahl_portionen='{new_portionen}' WHERE rezept_id='{rezept_id}'"
+        cursor.execute(command)
+        self._connector.commit()
+        cursor.close()
+
     def delete(self, rezept_id):
         cursor = self._connector.cursor()
 
@@ -173,6 +180,18 @@ class RezeptMapper(mapper):
         cursor.close()
 
         return rezept
+
+    def find_anzahl_portionen_by_rezept_id(self, rezept_id):
+        cursor = self._connector.cursor()
+        command = f"SELECT anzahl_portionen FROM datenbank.rezept WHERE rezept_id='{rezept_id}'"
+        cursor.execute(command)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result:
+            return result[0]
+        else:
+            return None
 
     def find_lebensmittel_by_rezept_id(self, rezept):
         result = []

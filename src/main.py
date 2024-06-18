@@ -300,6 +300,31 @@ class RezeptOperations(Resource):
         else:
             return '', 500
 
+@smartapi.route('/rezept/einrezept/anzahlPortionen/updateundget/<rezept_id>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('rezept_id', 'ID des Rezepts')
+@smartapi.param('new_portionen', 'Neue Anzahl Portionen')
+class UpdateUndGetAnzahlPortionenInRezept(Resource):
+    """@smartapi.expect(smartapi.model('Portionen', {
+       'new_portionen': fields.Integer(required=True, description='Neue Anzahl der Portionen')
+    }))"""
+    def post(self, rezept_id):
+        print(api.payload) #hier ist nur die neue anzahl portionen drin
+        #new_portionen = api.payload.get('new_portionen')
+        new_portionen = api.payload
+        #new_portionen = request.args.get('new_portionen')
+        new_portionen = int(new_portionen)
+        adm = Administration()
+        alte_anzahl, neue_anzahl = adm.berechne_neuen_mengen_wert(rezept_id, new_portionen)
+
+        if alte_anzahl is not None and neue_anzahl is not None:
+            return {
+                'alte_anzahl_portionen': alte_anzahl,
+                'neue_anzahl_portionen': neue_anzahl
+            }, 200
+        else:
+            return "Fehler beim Aktualisieren der Anzahl Portionen", 500
+
 @smartapi.route('/rezeptt/<rezept_id>/lebensmittel')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
