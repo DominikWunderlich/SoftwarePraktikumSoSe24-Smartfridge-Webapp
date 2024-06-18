@@ -159,6 +159,7 @@ function GenauEinRezeptAnzeigen(props) {
         try{
             const api = new EatSmarterAPI();
             await api.changePortionenInRezept(rezeptId, neueAnzahlPortionen);
+            await fetchRezeptLebensmittel()
         } catch (error) {
             console.error("Fehler beim ändern der Anzahl", error);
             alert("Fehler beim senden der Anzahl");
