@@ -123,16 +123,17 @@ class WGMapper(mapper):
         self._connector.commit()
         cursor.close()
 
-    def find_wg_admin_by_email(self, email):
+    def find_wg_admin_by_email(self, wg_id):
         result = []
         cursor = self._connector.cursor()
-        command = f"SELECT wg_ersteller FROM datenbank.wg WHERE wg_ersteller LIKE '%{email}%'"
+        command = f"SELECT * FROM datenbank.wg WHERE wg_id = '{wg_id}'"
         cursor.execute(command)
-
         tuples = cursor.fetchall()
 
-        for (wg_ersteller) in tuples:
+        for (wg_id, wg_name, wg_ersteller) in tuples:
             wg = WG()
+            wg.set_id(wg_id)
+            wg.set_wg_name(wg_name)
             wg.set_wg_ersteller(wg_ersteller)
             result.append(wg)
 

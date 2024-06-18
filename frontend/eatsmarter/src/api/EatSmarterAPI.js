@@ -476,6 +476,8 @@ export default class EatSmarterAPI{
 
     #getPersonByWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wg_bewohner/${email}`
 
+    #getWgAdminByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wgadmin/${email}`
+
      addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
             method: "POST",
@@ -586,6 +588,23 @@ export default class EatSmarterAPI{
                 resolve(responseJSON);
             })
         })
+    }
+
+    getWgAdminByEmail(email){
+        return this.#fetchAdvanced(this.#getWgAdminByEmailURL(email), {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+        }).then((responseJSON) => {
+            let responsePersonBO = PersonBO.fromJSON(responseJSON);
+            console.log("EatSmarterAPI responsePersonBO", responsePersonBO)
+            return new Promise(function(resolve){
+                resolve(responsePersonBO);
+            });
+        });
+
     }
 
     // Wg-attribute related

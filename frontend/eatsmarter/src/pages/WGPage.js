@@ -15,6 +15,7 @@ function WGPage(props) {
     const [deleteNewMemberEmail, setDeleteNewMemberEmail] = useState("");
     const [personList, setPersonList] = useState([])
     const navigate = useNavigate()
+    const [wgAdmin, setWgAdmin] = useState([])
 
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
@@ -27,13 +28,21 @@ function WGPage(props) {
 
     }
 
-
     async function renderPersonList(){
         await EatSmarterAPI.getAPI().getPersonByWg(props.user.email)
             .then(response => {
-                console.log("Response 31", response)
                 setPersonList(response);
         })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    async function renderWgAdmin(){
+        await EatSmarterAPI.getAPI().getWgAdminByEmail(props.user.email)
+            .then(response => {
+                setWgAdmin(response)
+            })
             .catch(error => {
                 console.error(error);
             });
@@ -42,6 +51,7 @@ function WGPage(props) {
     useEffect(() => {
         renderCurrentUsersWg();
         renderPersonList();
+        renderWgAdmin();
 }, []);
 
     // Funktion zum Überprüfen der E-Mail-Validität
@@ -71,6 +81,7 @@ function WGPage(props) {
                     if (response) {
                         renderCurrentUsersWg();
                         renderPersonList();
+                        renderWgAdmin();
                     }
                 }
                 setAddNewMemberEmail("");
@@ -93,6 +104,7 @@ function WGPage(props) {
         if(response){
             renderCurrentUsersWg();
             renderPersonList();
+            renderWgAdmin();
         }
         else{
             alert("Nur der Ersteller kann Mitglieder entfernen");
@@ -146,13 +158,33 @@ function WGPage(props) {
                                 ))}
                                 </tbody>
                             </table>
+                        </div>
+                        <br></br>
+                            <h2>Ersteller der WG</h2>
+                            <div className="mini-container">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>Nutzername</th>
+                                        <th>Nachname</th>
+                                        <th>Vorname</th>
+                                        <th>Email</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {wgAdmin.map((person, index) => (
+                                    <tr key={index}>
+                                        <td>{person.userName}</td>
+                                        <td>{person.lastName}</td>
+                                        <td>{person.firstName}</td>
+                                        <td>{person.email}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
 
                         </div>
                         <br></br>
-                        <div className="formitem">
-                            <label>Ersteller der WG: </label>
-                            <p className="mini-info-container">{wg.wgAdmin}</p>
-                        </div>
                     </div>
                 )}
                 <br></br>

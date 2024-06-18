@@ -128,9 +128,13 @@ class Administration(object):
         with WGMapper() as mapper:
             mapper.delete_wg_and_kuehlschrank(wg_id)
 
-    def get_wg_admin(self, email):
+    def get_wg_admin(self, wg_id):
         with WGMapper() as mapper:
-            return mapper.find_wg_admin_by_email(email)
+            wg_admin = mapper.find_wg_admin_by_email(wg_id)
+
+        with PersonMapper() as mapper:
+            person = mapper.find_by_email(wg_admin[0].get_wg_ersteller())
+            return person
 
     """ User Methoden """
     def create_user(self, email, username, firstname, lastname, googleid, wg_id):
@@ -157,6 +161,7 @@ class Administration(object):
         p_email = p.get_email()
 
         """ Check ob die Person bereits in einer WG ist. """
+        #TODO: anpassen an Person tabelle
         with WGMapper() as wgmapper:
             res = wgmapper.find_by_email(p_email)
             if res is not None:
@@ -748,9 +753,5 @@ class Administration(object):
 
 
     def find_person_by_wg_bewohner(self, wg_id):
-        with WGMapper() as mapper:
-            wg_bewohner = mapper.find_wg_bewohner_by_wg_id(wg_id)
-            print("725 admin", wg_bewohner)
-
         with PersonMapper() as mapper:
-            return mapper.find_all_by_wg_bewohner(wg_bewohner)
+            return mapper.find_all_by_wg_id(wg_id)

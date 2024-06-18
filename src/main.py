@@ -107,10 +107,7 @@ class WgGetBewohnerOperations(Resource):
     def get(self, email):
         adm = Administration()
         wg_id = adm.get_wg_id_by_email(email)
-        print("main wg_id", wg_id)
         wg_b = adm.find_person_by_wg_bewohner(wg_id)
-
-        print("main wg_b", wg_b)
 
         if wg_b is not None:
             return wg_b
@@ -127,14 +124,10 @@ class WgGetWgOperations(Resource):
     @secured
     def get(self, email):
         adm = Administration()
-        print(email)
-
         wg_id = adm.get_wg_id_by_email(email)
-        print(wg_id)
         wg_p = adm.get_wg_by_wg_id(wg_id)
 
         if wg_p is not None:
-            print(wg_p, "main")
             return wg_p
         else:
             return '', 500
@@ -200,6 +193,17 @@ class WgUpdateOperations(Resource):
         i = adm.delete_wg_bewohner_by_email(current_user, wg_id, new_user)
 
         return i
+
+@smartapi.route('/wg/wgadmin/<email>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('email')
+class GetWgAdminOperations(Resource):
+    @smartapi.marshal_with(person)
+    def get(self, email):
+        adm = Administration()
+        wg_id = adm.get_wg_id_by_email(email)
+        wg_admin = adm.get_wg_admin(wg_id)
+        return wg_admin
 
 
 @smartapi.route('/kuehlschrankinhalt/<wg_id>')
