@@ -21,7 +21,7 @@ class Administration(object):
 
     def create_wg(self, wg_name, wg_bewohner, wg_ersteller):
         """ Erstellen einer WG-Instanz. """
-        print(f"DEBUG IN create_wg in admin.py wg_name = {wg_name}, wg_bewohner={wg_bewohner}, wg_ersteller={wg_ersteller}")
+        self.initialize_units()
         w = WG()
         w.set_wg_name(wg_name)
         w.set_wg_bewohner(wg_bewohner)
@@ -218,29 +218,33 @@ class Administration(object):
             return mapper.insert(m)
 
     def initialize_units(self):
-        conversion_factors = {
-            'liter': 1000,
-            'kilogramm': 1000,
-            'gramm': 1,
-            'l': 1000,
-            'ml': 1,
-            'kg': 1000,
-            'gr': 1,
-            'unzen': 28.3495,
-            'oz': 3495,
-            'pfund': 453.592,
-            'lb': 453.592
-        }
+        with MasseinheitMapper() as mapper:
+            is_dict = mapper.find_all()
+            if is_dict:
+                return is_dict
 
-        for key, value in conversion_factors.items():
-            m = Masseinheit()
-            m.set_id(1)
-            m.set_masseinheit(key)
-            m.set_umrechnungsfaktor(value)
-            print(f"Objekt das dem Mapper übergeben wird = {m}")
+            conversion_factors = {
+                'liter': 1000,
+                'kilogramm': 1000,
+                'gramm': 1,
+                'l': 1000,
+                'ml': 1,
+                'kg': 1000,
+                'gr': 1,
+                'unzen': 28.3495,
+                'oz': 3495,
+                'pfund': 453.592,
+                'lb': 453.592
+            }
 
-            with MasseinheitMapper() as mapper:
-                mapper.insert(m)
+            for key, value in conversion_factors.items():
+                m = Masseinheit()
+                m.set_id(1)
+                m.set_masseinheit(key)
+                m.set_umrechnungsfaktor(value)
+
+                with MasseinheitMapper() as mmapper:
+                    mmapper.insert(m)
 
     def build_unit_dict(self):
         # Zuerst holen wir uns alle vorhandenen Maßeinheiten
