@@ -135,11 +135,11 @@ export default class EatSmarterAPI{
     }
     
      // Rezept als admin löschen-attribute related
-     #getRezeptAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}`;
+     #getRezeptAdminURL = (email, rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}/${rezept_id}`;
 
-     checkIfUserIsRezeptAdmin(currentUser){
+     checkIfUserIsRezeptAdmin(currentUser, rezept_id){
          console.log("api", currentUser)
-         return this.#fetchAdvanced(this.#getRezeptAdminURL(currentUser), {
+         return this.#fetchAdvanced(this.#getRezeptAdminURL(currentUser, rezept_id), {
              method: "GET",
              headers: {
                  "Accept": "application/json",
@@ -423,21 +423,6 @@ export default class EatSmarterAPI{
     }
     #updateMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit`;
 
-    // updateMasseinheit(MasseinheitBO){
-    //     return this.#fetchAdvanced(this.#updateMasseinheitURL(MasseinheitBO), {
-    //         method: "PUT",
-    //         headers: {
-    //             "Accept": "application/json, text/plain",
-    //             "Content-type": "application/json",
-    //         },
-    //         body: JSON.stringify(MasseinheitBO)
-    //     }).then((responseJSON) => {
-    //         let responseMasseinheitBO = MasseinheitBO.fromJSON(responseJSON)[0];
-    //         return new Promise(function(resolve){
-    //             resolve(responseMasseinheitBO);
-    //         })
-    //     })
-    // }
 
     #updateFoodInFridgeURL = (kid, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${kid}/${lebensmittel_id}`
     updateFoodInFridge(updatedLebensmittel) {
