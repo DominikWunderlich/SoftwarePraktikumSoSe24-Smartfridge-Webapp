@@ -114,7 +114,7 @@ export default class EatSmarterAPI{
     }
 
     //Rezept löschen deleteRezept
-    #deleteRezeptURL = (rezeptId) => `${this.#EatSmarterServerBaseURL}/rezept/user/${rezeptId}`;
+    #deleteRezeptURL = (rezeptId) => `${this.#EatSmarterServerBaseURL}/rezept/${rezeptId}`;
 
 
     deleteRezept(rezeptId) {

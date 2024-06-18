@@ -21,14 +21,14 @@ function GenauEinRezeptAnzeigen(props) {
     const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
-    const [shoppingListElem, setShoppingListElem]  = useState([]);
-    const [rezept, setRezept] = useState(null); 
+    const [shoppingListElem, setShoppingListElem] = useState([]);
+    const [rezept, setRezept] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [errors, setErrors] = useState({});
-    const {rezeptId } = useParams();
+    const {rezeptId} = useParams();
     const navigate = useNavigate()
     const currentUser = props.user.email;
-    
+
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
     const handleChange = (event) => {
         setFormData({
@@ -41,7 +41,7 @@ function GenauEinRezeptAnzeigen(props) {
         event.preventDefault();
 
         if (formData.lebensmittelname.trim() === "" || formData.masseinheit.trim() === "") {
-            setErrors({ message: "Bitte füllen Sie alle Felder aus." });
+            setErrors({message: "Bitte füllen Sie alle Felder aus."});
             return;
         }
 
@@ -67,7 +67,7 @@ function GenauEinRezeptAnzeigen(props) {
                 masseinheit: ""
             });
             setErrors({});
-            
+
             // Aktualisiert die Lebensmittel/Maßeinheitenliste nach dem Hinzufügen
             await fetchRezeptLebensmittel();
             await fetchMasseinheiten();
@@ -94,7 +94,7 @@ function GenauEinRezeptAnzeigen(props) {
             console.error("Fehler beim Laden der Maßeinheiten:", error);
         }
     };
-    
+
     const fetchRezeptById = async () => {
         try {
             const api = new EatSmarterAPI();
@@ -104,7 +104,7 @@ function GenauEinRezeptAnzeigen(props) {
             console.error("Fehler beim Abrufen des Rezepts:", error);
         }
     };
-    
+
     const fetchRezeptLebensmittel = async () => {
         try {
             const api = new EatSmarterAPI();
@@ -121,7 +121,7 @@ function GenauEinRezeptAnzeigen(props) {
         fetchRezeptById();
         fetchRezeptLebensmittel();
     }, [rezeptId]);
-   
+
     /* Funktionen zum Kochen -> für eine Einkaufsliste oder Verbrauch von Lebensmittel */
     const handleJetztKochen = async () => {
         try {
@@ -164,90 +164,87 @@ function GenauEinRezeptAnzeigen(props) {
         if (isAdmin) {
             const response = await EatSmarterAPI.getAPI().deleteRezept(rezeptId);
             console.log("Rezept Lösch-Response", response);
-            if (response) {
-                navigate("/RezeptAnzeigen");
-                alert("Das Rezept wurde erfolgreich gelöscht.");
-            } else {
-                alert("Fehler beim Löschen des Rezepts. Bitte versuchen Sie es erneut.");
+            navigate("/RezeptAnzeigen");
+            alert("Das Rezept wurde erfolgreich gelöscht.");
             }
-        } else {
-            alert("Nur der Ersteller kann das Rezept löschen");
+        else {
+                alert("Nur der Ersteller kann das Rezept löschen");
+            }
         }
-    };
 
-    async function deleteLebensmittel (event){
-        event.preventDefault()
-        // LebensmittelId ist der Value aus dem button Klick event
-        let lebensmittelId = event.target.value
-        try {
-            await EatSmarterAPI.getAPI().deleteFoodFromRezept(rezeptId, lebensmittelId);
-            setRezeptLebensmittel(prevRezeptLebensmittel => prevRezeptLebensmittel.filter(item => item.id !== parseInt(lebensmittelId, 10)));
-        } catch (error) {
-            console.error("Fehler beim Löschen des Lebensmittels:", error);
+        async function deleteLebensmittel(event) {
+            event.preventDefault()
+            // LebensmittelId ist der Value aus dem button Klick event
+            let lebensmittelId = event.target.value
+            try {
+                await EatSmarterAPI.getAPI().deleteFoodFromRezept(rezeptId, lebensmittelId);
+                setRezeptLebensmittel(prevRezeptLebensmittel => prevRezeptLebensmittel.filter(item => item.id !== parseInt(lebensmittelId, 10)));
+            } catch (error) {
+                console.error("Fehler beim Löschen des Lebensmittels:", error);
+            }
         }
-    }
 
-    
-    /* Darstellung der Komponente */
-    return (
-        <div>
-            <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
-            <div className='container'>
-                {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
-                    <div className='inner-container'>
-                        <h2>Dein Rezept</h2>
-                        <div className="mini-container">
-                            <p className="blue-mini-container"> {rezept.rezeptName}</p>
-                            <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
-                            <p>Ersteller: {rezept.rezeptAdmin}</p>
-                            <p>WG: {rezept.wgName}</p>
-                            <p>Zubereitung: {rezept.rezeptAnleitung}</p>
-                            {errors.message && <p>{errors.message}</p>}
-                            <table>
-                                <thead>
-                                <tr>
-                                    <th>Lebensmittelname</th>
-                                    <th>Mengenanzahl</th>
-                                    <th>Maßeinheit</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {rezeptLebensmittel.map((lebensmittel, index) => (
-                                    <tr key={index}>
-                                        <td>{lebensmittel.lebensmittelName}</td>
-                                        <td>{lebensmittel.mengenanzahl}</td>
-                                        <td>{lebensmittel.masseinheit}</td>
-                                        <td>
-                                            <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
-                                        </td>
+
+        /* Darstellung der Komponente */
+        return (
+            <div>
+                <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
+                <div className='container'>
+                    {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
+                        <div className='inner-container'>
+                            <h2>Dein Rezept</h2>
+                            <div className="mini-container">
+                                <p className="blue-mini-container"> {rezept.rezeptName}</p>
+                                <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                                <p>Ersteller: {rezept.rezeptAdmin}</p>
+                                <p>WG: {rezept.wgName}</p>
+                                <p>Zubereitung: {rezept.rezeptAnleitung}</p>
+                                {errors.message && <p>{errors.message}</p>}
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>Lebensmittelname</th>
+                                        <th>Mengenanzahl</th>
+                                        <th>Maßeinheit</th>
+                                        <th></th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
+                                    {rezeptLebensmittel.map((lebensmittel, index) => (
+                                        <tr key={index}>
+                                            <td>{lebensmittel.lebensmittelName}</td>
+                                            <td>{lebensmittel.mengenanzahl}</td>
+                                            <td>{lebensmittel.masseinheit}</td>
+                                            <td>
+                                                <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
+                        </div>)}
+                    <br></br>
+                    <div className="inner-container">
+                        <div className='formitem'>
+                            <h2>Lebensmittel hinzufügen</h2>
+                            {errors.message && <p>{errors.message}</p>}
+                            <label>Lebensmittelname</label>
+                            <input
+                                type="text"
+                                name="lebensmittelname"
+                                list="lebensmittel"
+                                value={formData.lebensmittelname}
+                                onChange={handleChange}
+                                className="eingabe"
+                            />
+                            <datalist id="lebensmittel">
+                                {lebensmittelliste.map((lebensmittel, index) => (
+                                    <option key={index} value={lebensmittel.lebensmittelname}/>
                                 ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
-                    </div>)}
-                <br></br>
-                <div className="inner-container">
-                    <div className='formitem'>
-                        <h2>Lebensmittel hinzufügen</h2>
-                        {errors.message && <p>{errors.message}</p>}
-                        <label>Lebensmittelname</label>
-                        <input
-                            type="text"
-                            name="lebensmittelname"
-                            list="lebensmittel"
-                            value={formData.lebensmittelname}
-                            onChange={handleChange}
-                            className="eingabe"
-                        />
-                          <datalist id="lebensmittel">
-                            {lebensmittelliste.map((lebensmittel, index) => (
-                                <option key={index} value={lebensmittel.lebensmittelname} />
-                            ))}
-                        </datalist>
-                        <label>Menge</label>
+                            </datalist>
+                            <label>Menge</label>
                             <input
                                 type="number"
                                 name="mengenanzahl"
@@ -255,7 +252,7 @@ function GenauEinRezeptAnzeigen(props) {
                                 onChange={handleChange}
                                 className="eingabe"
                             />
-                        <label>Maßeinheit</label>
+                            <label>Maßeinheit</label>
                             <input
                                 type="text"
                                 name="masseinheit"
@@ -263,36 +260,38 @@ function GenauEinRezeptAnzeigen(props) {
                                 value={formData.masseinheit}
                                 onChange={handleChange}
                                 className="eingabe"
-                        />
-                         <datalist id="masseinheiten">
-                            {masseinheitenListe.map((masseinheit, index) => (
-                                <option key={index} value={masseinheit.masseinheitsname} />
-                            ))}
-                        </datalist>
+                            />
+                            <datalist id="masseinheiten">
+                                {masseinheitenListe.map((masseinheit, index) => (
+                                    <option key={index} value={masseinheit.masseinheitsname}/>
+                                ))}
+                            </datalist>
+                        </div>
+                        <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                     </div>
-                    <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
+                    <br></br>
+                    <br></br>
+                    <button className="button-uebersicht" type="button" onClick={() => handleDelete(rezept.id)}>Rezept
+                        löschen
+                    </button>
                 </div>
-                <br></br>
-                <br></br>
-                <button className="button-uebersicht" type="button" onClick={() => handleDelete(rezept.id)}>Rezept löschen</button>
-            </div>
-            {isPopupOpen && (
-                <div className="popup">
-                    <div className="inner-popup">
-                        {shoppingListElem.length === 0 ? (
-                            <h3 className="h2-black">Kochen erfolgreich</h3>
-                        ) : (
-                            <>
-                                <h3 className="h2-black">Fehlende Lebensmittel</h3>
-                                <table>
-                                    <thead>
+                {isPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            {shoppingListElem.length === 0 ? (
+                                <h3 className="h2-black">Kochen erfolgreich</h3>
+                            ) : (
+                                <>
+                                    <h3 className="h2-black">Fehlende Lebensmittel</h3>
+                                    <table>
+                                        <thead>
                                         <tr>
                                             <th>Lebensmittelname</th>
                                             <th>Mengenanzahl</th>
                                             <th>Maßeinheit</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
+                                        </thead>
+                                        <tbody>
                                         {shoppingListElem.map((shoppingList, index) => (
                                             <tr key={index}>
                                                 <td>{shoppingList.lebensmittelName}</td>
@@ -300,16 +299,16 @@ function GenauEinRezeptAnzeigen(props) {
                                                 <td>{shoppingList.masseinheit}</td>
                                             </tr>
                                         ))}
-                                    </tbody>
-                                </table>
-                            </>
-                        )}
-                        <button type="button" onClick={handleClosePopup}>Schließen</button>
+                                        </tbody>
+                                    </table>
+                                </>
+                            )}
+                            <button type="button" onClick={handleClosePopup}>Schließen</button>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
-    );
-}
+                )}
+            </div>
+        );
+    }
 
 export default GenauEinRezeptAnzeigen;

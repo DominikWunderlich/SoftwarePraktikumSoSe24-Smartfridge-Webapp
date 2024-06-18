@@ -184,7 +184,7 @@ class Administration(object):
     def is_current_user_rezept_admin(self, email):
         with RezeptMapper() as mapper:
             # print("Email:", email)d
-            rzt = mapper.find_by_email(email)
+            rzt = mapper.find_rezept_admin_by_email(email)
             # print("rzt", rzt)
 
 
