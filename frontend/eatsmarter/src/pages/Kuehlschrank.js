@@ -27,12 +27,18 @@ function Kuehlschrankinhalt(props) {
         rezeptId: 0
     });
 
+    const [customMasseinheitData, setCustomMasseinheitData] = useState({
+        masseinheit: "",
+        grammMenge: ""
+    });
+
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [errors, setErrors] = useState({});
     const [wgId, setWgId] = useState(null);
     const [customMasseinheit, setCustomMasseinheit] = useState("");
     const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
     const handleChange = (event) => {
@@ -133,20 +139,6 @@ function Kuehlschrankinhalt(props) {
         });
     };
 
-    const handleCustomMasseinheit = () => {
-        const customMasseinheit = prompt("Geben Sie Ihre eigene Maßeinheit ein:");
-        if (customMasseinheit) {
-            const grammMenge = prompt(`Geben Sie die Menge in Gramm für 1 ${customMasseinheit} ein:`);
-            if (grammMenge) {
-                setCustomMasseinheit(customMasseinheit);
-                setFormData({
-                    ...formData,
-                    masseinheit: customMasseinheit
-                });
-            }
-        }
-    };
-
     const handleEditMasseinheit = (lebensmittel) => {
         setEditMode(lebensmittel.id);
 
@@ -182,6 +174,38 @@ function Kuehlschrankinhalt(props) {
         } catch (error) {
             console.error("Fehler beim Aktualisieren:", error);
             setErrors({ message: "Fehler beim Aktualisieren der Lebensmittel." });
+        }
+    };
+
+    /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
+    const handleCustomMasseinheit = () => {
+        setIsPopupOpen(true);
+    };
+
+    const handlePopupInputChange = (event) => {
+        const { name, value } = event.target;
+        setCustomMasseinheitData({
+            ...customMasseinheitData,
+            [name]: value
+        });
+    };
+
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
+
+    const handleSaveCustomMasseinheit = () => {
+        const { masseinheit, grammMenge } = customMasseinheitData;
+
+        if (masseinheit && grammMenge) {
+            setCustomMasseinheit(masseinheit);
+            setFormData({
+                ...formData,
+                masseinheit: masseinheit
+            });
+            setIsPopupOpen(false);
+        } else {
+            alert("Bitte füllen Sie beide Felder aus.");
         }
     };
 
@@ -318,6 +342,35 @@ function Kuehlschrankinhalt(props) {
                     </div>
                 </div>
             </div>
+            {isPopupOpen && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
+                        <div className="blue-mini-container">
+                            <div className="formitem">
+                                <label>Name der Maßeinheit</label>
+                                <input
+                                    type="text"
+                                    name="masseinheit"
+                                    list="masseinheiten"
+                                    value={formData.masseinheit}
+                                    onChange={handleChange}
+                                    className="eingabe"
+                                />
+                                <label>Umrechnungsfaktor in Gramm</label>
+                                <input
+                                type="number"
+                                name="mengenanzahl"
+                                value={formData.mengenanzahl}
+                                onChange={handleChange}
+                                className="eingabe"
+                            />
+                            </div>
+                        </div>
+                        <button type="button" onClick={handleClosePopup}>Speichern</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
