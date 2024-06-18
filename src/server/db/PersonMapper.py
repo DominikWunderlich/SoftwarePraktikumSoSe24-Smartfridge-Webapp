@@ -204,3 +204,14 @@ class PersonMapper(mapper):
         cursor.close()
         print("199", result)
         return result
+
+    def insert_wg_id_to_wg_ersteller(self, wg_id, wg_ersteller):
+        cursor = self._connector.cursor()
+
+        command = f"UPDATE datenbank.person SET wg_id= {wg_id} WHERE email= '{wg_ersteller}'"
+        cursor.execute(command)
+
+        self._connector.commit()
+        cursor.close()
+
+

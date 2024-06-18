@@ -93,7 +93,6 @@ class WgOperations(Resource):
         if proposal is not None:
             result = adm.create_wg(
                 proposal.get_wg_name(),
-                proposal.get_wg_bewohner(),
                 proposal.get_wg_ersteller())
             return result, 200
         else:
@@ -250,13 +249,11 @@ class UserOperations(Resource):
     def post(self):
         """ Anlegen eines neuen User-Objekts. """
         adm = Administration()
-        print("payload main", api.payload)
         proposal = Person.from_dict(api.payload)
 
 
         if proposal is not None:
             result = adm.save_person(proposal)
-            print("Result main", result)
             return result, 200
         else:
             return 'Fehler in User-Operations post methode', 500

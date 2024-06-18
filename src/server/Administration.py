@@ -19,12 +19,11 @@ class Administration(object):
 
     """ WG-spezifische Methoden """
 
-    def create_wg(self, wg_name, wg_bewohner, wg_ersteller):
+    def create_wg(self, wg_name, wg_ersteller):
         """ Erstellen einer WG-Instanz. """
-        print(f"DEBUG IN create_wg in admin.py wg_name = {wg_name}, wg_bewohner={wg_bewohner}, wg_ersteller={wg_ersteller}")
+        print(f"DEBUG IN create_wg in admin.py wg_name = {wg_name}, wg_ersteller={wg_ersteller}")
         w = WG()
         w.set_wg_name(wg_name)
-        w.set_wg_bewohner(wg_bewohner)
         w.set_wg_ersteller(wg_ersteller)
         w.set_id(1)
 
@@ -36,7 +35,10 @@ class Administration(object):
         with KuehlschrankMapper() as mapper:
             mapper.create_kuehlschrank(wg_id)
 
-        return self
+        with PersonMapper() as mapper:
+            wg_ersteller = w.get_wg_ersteller()
+            mapper.insert_wg_id_to_wg_ersteller(wg_id, wg_ersteller)
+
 
     def get_wg_by_name(self, key):
         """ Auslesen einer WG Instanz nach Name """

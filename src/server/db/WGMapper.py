@@ -8,14 +8,13 @@ class WGMapper(mapper):
     def find_all(self):
         result = []
         cursor = self._connector.cursor()
-        cursor.execute("SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg")
+        cursor.execute("SELECT wg_id, wg_name, wg_ersteller FROM datenbank.wg")
         tuples = cursor.fetchall()
 
-        for (wg_id, wg_name, wg_bewohner, wg_ersteller) in tuples:
+        for (wg_id, wg_name, wg_ersteller) in tuples:
             wg = WG()
             wg.set_id(wg_id)
             wg.set_wg_name(wg_name)
-            wg.set_wg_bewohner(wg_bewohner)
             wg.set_wg_ersteller(wg_ersteller)
             result.append(wg)
 
@@ -28,15 +27,14 @@ class WGMapper(mapper):
         result =[]
 
         cursor = self._connector.cursor()
-        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_name='{key}' "
+        command = f"SELECT wg_id, wg_name, wg_ersteller FROM datenbank.wg WHERE wg_name='{key}' "
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (wg_id, wg_name, wg_bewohner, wg_ersteller) in tuples:
+        for (wg_id, wg_name, wg_ersteller) in tuples:
             wg = WG()
             wg.set_id(wg_id)
             wg.set_wg_name(wg_name)
-            wg.set_wg_bewohner(wg_bewohner)
             wg.set_wg_ersteller(wg_ersteller)
             result.append(wg)
 
@@ -50,16 +48,15 @@ class WGMapper(mapper):
         result = []
 
         cursor = self._connector.cursor()
-        # TODO: passt das LIKE auch für den Gebrauch von Domi? Wenn nicht Funktion 2mal (WHERE wg_bewohner LIKE '%{email}%'"" & (WHERE wg_bewohner='{email}')
-        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_bewohner LIKE '%{email}%' OR wg_ersteller LIKE '%{email}%' "
+
+        command = f"SELECT wg_id, wg_name, wg_ersteller FROM datenbank.wg WHERE wg_ersteller LIKE '%{email}%' "
         cursor.execute(command)
         tuples = cursor.fetchall()
 
-        for (wg_id, wg_name, wg_bewohner, wg_ersteller) in tuples:
+        for (wg_id, wg_name, wg_ersteller) in tuples:
             wg = WG()
             wg.set_id(wg_id)
             wg.set_wg_name(wg_name)
-            wg.set_wg_bewohner(wg_bewohner)
             wg.set_wg_ersteller(wg_ersteller)
             result.append(wg)
 
@@ -80,8 +77,8 @@ class WGMapper(mapper):
             else:
                 wg.set_id(1)
 
-        command = "INSERT INTO datenbank.wg (wg_name, wg_bewohner, wg_ersteller, wg_id) VALUES (%s, %s, %s, %s)"
-        data = (wg.get_wg_name(), wg.get_wg_bewohner(), wg.get_wg_ersteller(), wg.get_id())
+        command = "INSERT INTO datenbank.wg (wg_name, wg_ersteller, wg_id) VALUES (%s, %s, %s)"
+        data = (wg.get_wg_name(), wg.get_wg_ersteller(), wg.get_id())
         cursor.execute(command, data)
 
         self._connector.commit()
@@ -93,8 +90,8 @@ class WGMapper(mapper):
     def update(self, wg):
         cursor = self._connector.cursor()
 
-        command = "UPDATE datenbank.wg SET wg_id=%s, wg_name=%s, wg_bewohner=%s, wg_ersteller=%s WHERE wg_id=%s"
-        data = (wg.get_id(), wg.get_wg_name(), wg.get_wg_bewohner(), wg.get_wg_ersteller(), wg.get_id())
+        command = "UPDATE datenbank.wg SET wg_id=%s, wg_name=%s, wg_ersteller=%s WHERE wg_id=%s"
+        data = (wg.get_id(), wg.get_wg_name(), wg.get_wg_ersteller(), wg.get_id())
 
         cursor.execute(command, data)
         self._connector.commit()
@@ -129,7 +126,7 @@ class WGMapper(mapper):
     def find_wg_admin_by_email(self, email):
         result = []
         cursor = self._connector.cursor()
-        command = f"SELECT wg_ersteller FROM datenbank.wg WHERE wg_bewohner LIKE '%{email}%' OR wg_ersteller LIKE '%{email}%'"
+        command = f"SELECT wg_ersteller FROM datenbank.wg WHERE wg_ersteller LIKE '%{email}%'"
         cursor.execute(command)
 
         tuples = cursor.fetchall()
@@ -146,7 +143,7 @@ class WGMapper(mapper):
     def check_if_current_user_is_wg_admin_using_email_and_wg_id(self, current_user, wg_id):
 
         cursor = self._connector.cursor()
-        command = f"SELECT wg_id, wg_name, wg_bewohner, wg_ersteller FROM datenbank.wg WHERE wg_ersteller =%s AND wg_id =%s "
+        command = f"SELECT wg_id, wg_name, wg_ersteller FROM datenbank.wg WHERE wg_ersteller =%s AND wg_id =%s "
         data =(current_user, wg_id)
         cursor.execute(command, data)
         wg = cursor.fetchone()
@@ -190,7 +187,7 @@ class WGMapper(mapper):
         print(email)
         e = f"%{email}%"
         cursor = self._connector.cursor()
-        command = "SELECT wg_id FROM datenbank.wg WHERE wg_bewohner LIKE %s OR wg_ersteller LIKE %s"
+        command = "SELECT wg_id FROM datenbank.wg WHERE wg_ersteller LIKE %s"
         cursor.execute(command, (e, e))
 
         wg_id = cursor.fetchone()
@@ -200,19 +197,30 @@ class WGMapper(mapper):
 
         return None
 
-    def find_wg_bewohner_by_wg_id(self, wg_id):
+    # def find_wg_bewohner_by_wg_id(self, wg_id):
+    #     cursor = self._connector.cursor()
+    #     command = f"SELECT wg_bewohner FROM datenbank.wg WHERE wg_id='{wg_id}' "
+    #     cursor.execute(command)
+    #     wg_bewohner_row = cursor.fetchone()
+    #
+    #     self._connector.commit()
+    #     cursor.close()
+    #
+    #     if wg_bewohner_row:
+    #         wg_bewohner_list = wg_bewohner_row[0].split(", ")
+    #         return wg_bewohner_list
+    #     else:
+    #         return []
+
+    def find_wg_admin_by_wg_id(self, wg_id):
         cursor = self._connector.cursor()
-        command = f"SELECT wg_bewohner FROM datenbank.wg WHERE wg_id='{wg_id}' "
-        cursor.execute(command)
-        wg_bewohner_row = cursor.fetchone()
+        command = "SELECT wg_ersteller FROM datenbank.wg WHERE wg_id LIKE %s"
+        cursor.execute(command, wg_id)
 
-        self._connector.commit()
-        cursor.close()
+        wg_ersteller= cursor.fetchone()
+        if wg_ersteller:
+            return wg_ersteller
 
-        if wg_bewohner_row:
-            wg_bewohner_list = wg_bewohner_row[0].split(", ")
-            return wg_bewohner_list
-        else:
-            return []
+        return None
 
 
