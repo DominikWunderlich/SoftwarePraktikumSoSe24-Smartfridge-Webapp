@@ -135,11 +135,11 @@ export default class EatSmarterAPI{
     }
     
      // Rezept als admin löschen-attribute related
-     #getRezeptAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}`;   
+     #getRezeptAdminURL = (email, rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}/${rezept_id}`;
 
-     checkIfUserIsRezeptAdmin(currentUser){
+     checkIfUserIsRezeptAdmin(currentUser, rezept_id){
          console.log("api", currentUser)
-         return this.#fetchAdvanced(this.#getRezeptAdminURL(currentUser), {
+         return this.#fetchAdvanced(this.#getRezeptAdminURL(currentUser, rezept_id), {
              method: "GET",
              headers: {
                  "Accept": "application/json",

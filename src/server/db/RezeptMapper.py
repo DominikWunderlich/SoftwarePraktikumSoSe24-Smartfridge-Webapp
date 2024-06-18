@@ -131,10 +131,10 @@ class RezeptMapper(mapper):
         return result
 
 
-    def find_rezept_admin_by_email(self, email):
+    def find_rezept_admin_by_email(self, email, rezept_id):
         result = []
         cursor = self._connector.cursor()
-        command = f"SELECT rezept_name, anzahl_portionen, rezept_ersteller, rezept_id, wg_name FROM datenbank.rezept WHERE rezept_ersteller LIKE '%{email}%'"
+        command = f"SELECT rezept_name, anzahl_portionen, rezept_ersteller, rezept_id, wg_name FROM datenbank.rezept WHERE rezept_ersteller LIKE '%{email}%' AND rezept_id = '{rezept_id}'"
         cursor.execute(command)
 
 

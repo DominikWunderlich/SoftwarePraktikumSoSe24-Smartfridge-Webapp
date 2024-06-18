@@ -141,7 +141,7 @@ function GenauEinRezeptAnzeigen(props) {
 
     
     const handleDelete = async () => {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser);
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         console.log("Frontend", isAdmin);
         console.log(currentUser);
 

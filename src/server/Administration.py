@@ -181,10 +181,10 @@ class Administration(object):
     """Rezept löschen"""
   # Diese Methode überprüft, ob die aktuelle user der Wg_ersteller ist
     # Sie wird in der Updatewg methode und deletewgMethode verwendet
-    def is_current_user_rezept_admin(self, email):
+    def is_current_user_rezept_admin(self, email, rezept_id):
         with RezeptMapper() as mapper:
-            # print("Email:", email)d
-            rzt = mapper.find_rezept_admin_by_email(email)
+            print("Email:", email)
+            rzt = mapper.find_rezept_admin_by_email(email, rezept_id)
             # print("rzt", rzt)
 
 
@@ -224,19 +224,6 @@ class Administration(object):
         with RezeptMapper() as mapper:
             return mapper.delete(rezept_id)
         
-    def is_current_user_rezept_admin(self, email):
-        with RezeptMapper() as mapper:
-            print("Email:", email)
-            rzt = mapper.find_rezept_admin_by_email(email)
-            print("rzt", rzt)
-
-        for rz in rzt:
-            print(rz)
-            if rz.get_rezept_ersteller() == email:
-                return True
-
-            return False
-       
     """ Lebensmittel-spezifische Methoden """
 
     def create_menge(self, menge):
