@@ -127,9 +127,14 @@ class WgGetWgOperations(Resource):
     @secured
     def get(self, email):
         adm = Administration()
-        wg_p = adm.getWGByEmail(email)
+        print(email)
+
+        wg_id = adm.get_wg_id_by_email(email)
+        print(wg_id)
+        wg_p = adm.get_wg_by_wg_id(wg_id)
 
         if wg_p is not None:
+            print(wg_p, "main")
             return wg_p
         else:
             return '', 500

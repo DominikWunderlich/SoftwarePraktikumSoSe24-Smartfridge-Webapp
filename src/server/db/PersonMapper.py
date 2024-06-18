@@ -214,4 +214,19 @@ class PersonMapper(mapper):
         self._connector.commit()
         cursor.close()
 
+    def find_wg_id_by_email(self, email):
+        cursor = self._connector.cursor()
+
+        command = f"SELECT wg_id FROM datenbank.person WHERE email = '{email}'"
+        cursor.execute(command)
+
+        result = cursor.fetchone()
+
+        self._connector.commit()
+        cursor.close()
+
+        if result:
+            return result[0]
+        else:
+            return None
 

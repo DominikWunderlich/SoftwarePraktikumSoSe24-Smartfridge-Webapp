@@ -36,7 +36,7 @@ function WGLandingpage(props) {
             );
             console.log(newWG)
             await EatSmarterAPI.getAPI().addWg(newWG)
-            navigate("/wg/:wgName")
+            navigate("/wg")
 
         }
     };

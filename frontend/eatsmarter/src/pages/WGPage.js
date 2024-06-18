@@ -27,6 +27,7 @@ function WGPage(props) {
 
     }
 
+
     async function renderPersonList(){
         await EatSmarterAPI.getAPI().getPersonByWg(props.user.email)
             .then(response => {

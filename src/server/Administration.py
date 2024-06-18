@@ -87,8 +87,13 @@ class Administration(object):
             mapper.delete(key)
 
     def get_wg_id_by_email(self, email):
+        with PersonMapper() as mapper:
+            wg_id = mapper.find_wg_id_by_email(email)
+            return wg_id
+
+    def get_wg_by_wg_id(self, wg_id):
         with WGMapper() as mapper:
-            return mapper.find_wg_id_by_email(email)
+            return mapper.find_wg_by_wg_id(wg_id)
 
     def add_new_wg_bewohner_by_email(self, current_user, wg_id, new_user):
         with WGMapper() as mapper:

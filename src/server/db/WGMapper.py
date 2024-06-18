@@ -223,4 +223,23 @@ class WGMapper(mapper):
 
         return None
 
+    def find_wg_by_wg_id(self, wg_id):
+        result = []
+        cursor = self._connector.cursor()
+        command = f"SELECT wg_id, wg_name, wg_ersteller  FROM datenbank.wg WHERE wg_id = '{wg_id}'"
+        cursor.execute(command)
+        tuples = cursor.fetchall()
+
+        for (wg_id, wg_name, wg_ersteller) in tuples:
+            wg = WG()
+            wg.set_id(wg_id)
+            wg.set_wg_name(wg_name)
+            wg.set_wg_ersteller(wg_ersteller)
+            result.append(wg)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
+
 
