@@ -8,6 +8,9 @@ import mengenanzahlBO from "../api/mengenanzahlBO";
 import { useParams } from "react-router-dom"; 
 import {useNavigate} from "react-router-dom";
 import TrimAndLowerCase from "../functions";
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
 
 
 function GenauEinRezeptAnzeigen(props) {
@@ -148,10 +151,11 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
 
+    /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
     const handleDelete = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         console.log("Frontend", isAdmin);
-        console.log(currentUser);
+        console.log(currentUser)
 
         if (isAdmin) {
             const response = await EatSmarterAPI.getAPI().deleteRezept(rezeptId);
@@ -182,67 +186,66 @@ function GenauEinRezeptAnzeigen(props) {
         }
         }
 
-
-        /* Darstellung der Komponente */
-        return (
-            <div>
-                <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
-                <div className='container'>
-                    {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
-                        <div className='inner-container'>
-                            <h2>Dein Rezept</h2>
-                            <div className="mini-container">
-                                <p className="blue-mini-container"> {rezept.rezeptName}</p>
-                                <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
-                                <p>Ersteller: {rezept.rezeptAdmin}</p>
-                                <p>WG: {rezept.wgName}</p>
-                                <p>Zubereitung: {rezept.rezeptAnleitung}</p>
-                                {errors.message && <p>{errors.message}</p>}
-                                <table>
-                                    <thead>
-                                    <tr>
-                                        <th>Lebensmittelname</th>
-                                        <th>Mengenanzahl</th>
-                                        <th>Maßeinheit</th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {rezeptLebensmittel.map((lebensmittel, index) => (
-                                        <tr key={index}>
-                                            <td>{lebensmittel.lebensmittelName}</td>
-                                            <td>{lebensmittel.mengenanzahl}</td>
-                                            <td>{lebensmittel.masseinheit}</td>
-                                            <td>
-                                                <button value={lebensmittel.id} onClick={deleteLebensmittel}>-</button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
-                        </div>)}
-                    <br></br>
-                    <div className="inner-container">
-                        <div className='formitem'>
-                            <h2>Lebensmittel hinzufügen</h2>
+    /* Darstellung der Komponente */
+    return (
+        <div>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
+            <div className='container'>
+                {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
+                    <div className='inner-container'>
+                        <h2>Dein Rezept</h2>
+                        <div className="mini-container">
+                            <p className="blue-mini-container"> {rezept.rezeptName}</p>
+                            <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                            <p>Ersteller: {rezept.rezeptAdmin}</p>
+                            <p>WG: {rezept.wgName}</p>
+                            <p>Zubereitung: {rezept.rezeptAnleitung}</p>
                             {errors.message && <p>{errors.message}</p>}
-                            <label>Lebensmittelname</label>
-                            <input
-                                type="text"
-                                name="lebensmittelname"
-                                list="lebensmittel"
-                                value={formData.lebensmittelname}
-                                onChange={handleChange}
-                                className="eingabe"
-                            />
-                            <datalist id="lebensmittel">
-                                {lebensmittelliste.map((lebensmittel, index) => (
-                                    <option key={index} value={lebensmittel.lebensmittelname}/>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Lebensmittelname</th>
+                                    <th>Mengenanzahl</th>
+                                    <th>Maßeinheit</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {rezeptLebensmittel.map((lebensmittel, index) => (
+                                    <tr key={index}>
+                                        <td>{lebensmittel.lebensmittelName}</td>
+                                        <td>{lebensmittel.mengenanzahl}</td>
+                                        <td>{lebensmittel.masseinheit}</td>
+                                        <td>
+                                            <DeleteIcon onClick={() => deleteLebensmittel(lebensmittel.id)} aria-label="delete" size="small" />
+                                        </td>
+                                    </tr>
                                 ))}
-                            </datalist>
-                            <label>Menge</label>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
+                    </div>)}
+                <br></br>
+                <div className="inner-container">
+                    <div className='formitem'>
+                        <h2>Lebensmittel hinzufügen</h2>
+                        {errors.message && <p>{errors.message}</p>}
+                        <label>Lebensmittelname</label>
+                        <input
+                            type="text"
+                            name="lebensmittelname"
+                            list="lebensmittel"
+                            value={formData.lebensmittelname}
+                            onChange={handleChange}
+                            className="eingabe"
+                        />
+                          <datalist id="lebensmittel">
+                            {lebensmittelliste.map((lebensmittel, index) => (
+                                <option key={index} value={lebensmittel.lebensmittelname} />
+                            ))}
+                        </datalist>
+                        <label>Menge</label>
                             <input
                                 type="number"
                                 name="mengenanzahl"
