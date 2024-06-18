@@ -38,7 +38,9 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
+        if (isAdmin) {
+            event.preventDefault();
 
         if (formData.lebensmittelname.trim() === "" || formData.masseinheit.trim() === "") {
             setErrors({message: "Bitte füllen Sie alle Felder aus."});
@@ -74,7 +76,13 @@ function GenauEinRezeptAnzeigen(props) {
         } catch (error) {
             console.error("Fehler beim Hinzufügen von Lebensmittel zum Rezept:", error);
         }
-    };
+    }
+        else{
+                alert("Nur der Ersteller kann ein Lebensmittel hinzufügen");
+
+        }
+        }
+
 
     /* Funktionen für Daten die, geladen werden müssen */
     const fetchMasseinheiten = async () => {
@@ -139,7 +147,7 @@ function GenauEinRezeptAnzeigen(props) {
         setIsPopupOpen(false);
     };
 
-    
+
     const handleDelete = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         console.log("Frontend", isAdmin);
@@ -157,6 +165,8 @@ function GenauEinRezeptAnzeigen(props) {
         }
 
         async function deleteLebensmittel(event) {
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
+        if (isAdmin){
             event.preventDefault()
             // LebensmittelId ist der Value aus dem button Klick event
             let lebensmittelId = event.target.value
@@ -166,6 +176,10 @@ function GenauEinRezeptAnzeigen(props) {
             } catch (error) {
                 console.error("Fehler beim Löschen des Lebensmittels:", error);
             }
+        }
+        else{
+            alert("Nur der Rezept Ersteller kann Lebensmittel löschen")
+        }
         }
 
 
