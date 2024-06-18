@@ -9,6 +9,7 @@ class Lebensmittel(bo):
         self.mengenanzahl = 0
         self.kuehlschrank_id = None
         self.rezept_id = None
+        # self.conversion_factors = None
 
     def get_lebensmittelname(self):
         """Auslesen des Lebensmittelnamens."""
@@ -44,26 +45,15 @@ class Lebensmittel(bo):
     def set_rezept_id(self, rezept_id):
         self.rezept_id = rezept_id
 
-    def decrease_food_quantity(self, required_amount, required_unit):
-        """ Diese Methode repräsentiert den Verbrauch von Lebensmittel.
-         @:param new_quantity: verbrauchte Menge des Lebensmittels.
-         @:param new_unit: neue Maßeinheit des Lebensmittels.
-         """
+    # def set_conversion_factors_dict(self, dictionary):
+    #     self.conversion_factors = dictionary
 
-        conversion_factors = {
-            'liter': 1000,
-            'kilogramm': 1000,
-            'gramm': 1,
-            'l': 1000,
-            'ml': 1,
-            'kg': 1000,
-            'gr': 1,
-            'unzen': 28.3495,
-            'oz': 3495,
-            'pfund': 453.592,
-            'lb': 453.592,
-            # Hier weitere Faktoren anlegen.
-        }
+    def decrease_food_quantity(self, required_amount, required_unit, conversion_factors):
+        """ Diese Methode repräsentiert den Verbrauch von Lebensmittel.
+         @:param required_amount: benötigte Menge des Lebensmittels.
+         @:param required_unit: benötigte Maßeinheit des Lebensmittels.
+         @:param conversion_factors: Dict mit allen Maßeinheiten aus der DB.
+         """
 
         # Umrechnen der "neuen" Menge.
         new_calculated_qnty = required_amount * conversion_factors[required_unit]
@@ -82,45 +72,23 @@ class Lebensmittel(bo):
         current_unit = self.masseinheit
         self.mengenanzahl = updated_quantity
         self.masseinheit = current_unit
-
-        # if updated_quantity >= 0:
-        #     ## TODO: test ob das so klappt
-        #     self.masseinheit = self.masseinheit
-        # else:
-        #     self.masseinheit = required_unit
-
         return self
 
-    def increase_food_quantity(self, add_quantity, add_unit, curr_quantity, curr_unit):
-        # 13 , Gramm
+    def increase_food_quantity(self, add_quantity, add_unit, curr_quantity, curr_unit, conversion_factors):
         """ Diese Methode repräsentiert das Hinzufügen von Lebensmittel.
                  @:param add_quantity: neue Menge des Lebensmittels.
                  @:param add_unit: neue Maßeinheit des Lebensmittels.
+                 @:param curr_quantity: Ausgangsmenge des Referenzobjekts.
+                 @:param curr_unit: Ausgangsmaßeinheit des Referenzobjekts.
+                 @:param conversion_factors: Dict mit allen Maßeinheiten aus der DB.
                  """
 
-        conversion_factors = {
-            'liter': 1000,
-            'kilogramm': 1000,
-            'gramm': 1,
-            'l': 1000,
-            'ml': 1,
-            'kg': 1000,
-            'gr': 1,
-            'unzen': 28.3495,
-            'oz': 3495,
-            'pfund': 453.592,  
-            'lb': 453.592,
-            # Hier weitere Faktoren anlegen.
-        }
-
-        #print(f"Das ist meine add_quantity {add_quantity} & conversion_factors: {conversion_factors[add_unit]}]")
         new_calculated_qnty = add_quantity * conversion_factors[add_unit]
         current_quantity = curr_quantity * conversion_factors[curr_unit]
         total_quantity = current_quantity + new_calculated_qnty
         total_qnty = total_quantity / conversion_factors[curr_unit]
         self.mengenanzahl = total_qnty
         self.masseinheit = curr_unit
-        # Das Objekt gibt als Maßeinheit die id zurück, das führt zu Problemen bei der erstellung des lebensmittels
 
         return self
 
