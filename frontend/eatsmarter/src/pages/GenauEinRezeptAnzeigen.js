@@ -34,10 +34,17 @@ function GenauEinRezeptAnzeigen(props) {
 
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
     const handleChange = (event) => {
+        const {name, value} = event.target;
         setFormData({
             ...formData,
             [event.target.name]: event.target.value
         });
+        if (name==="anzahlPortionen") {
+            setRezept(prevRezept => ({
+                ...prevRezept,
+                anzahlPortionen: value
+            }));
+        }
     };
 
     const handleSubmit = async (event) => {
@@ -146,6 +153,18 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    const handleChangePortionenInRezept = async(neueAnzahlPortionen) => {
+        console.log(rezeptId)
+        console.log(neueAnzahlPortionen)
+        try{
+            const api = new EatSmarterAPI();
+            await api.changePortionenInRezept(rezeptId, neueAnzahlPortionen);
+        } catch (error) {
+            console.error("Fehler beim ändern der Anzahl", error);
+            alert("Fehler beim senden der Anzahl");
+        }
+    }
+
     const handleClosePopup = () => {
         setIsPopupOpen(false);
     };
@@ -195,7 +214,18 @@ function GenauEinRezeptAnzeigen(props) {
                         <h2>Dein Rezept</h2>
                         <div className="mini-container">
                             <p className="blue-mini-container"> {rezept.rezeptName}</p>
-                            <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                            <div>
+                                <p>Anzahl Portionen:</p>
+                                <input
+                                    type="text"
+                                    name="anzahlPortionen"
+                                    value={rezept.anzahlPortionen}
+                                    onChange={handleChange}
+                                />
+                                <button type="button"
+                                        onClick={() => handleChangePortionenInRezept(rezept.anzahlPortionen)}>ändern
+                                </button>
+                            </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
                             <p>WG: {rezept.wgName}</p>
                             <p>Zubereitung: {rezept.rezeptAnleitung}</p>
