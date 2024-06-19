@@ -5,44 +5,60 @@ import NavBar from "../components/NavBar";
 import LebensmittelBO from "../api/LebensmittelBO";
 import MasseinheitBO from "../api/MasseinheitBO";
 import mengenanzahlBO from "../api/mengenanzahlBO";
-import { useParams } from "react-router-dom"; // Importing useParams
+import { useParams } from "react-router-dom"; 
 import {useNavigate} from "react-router-dom";
 import TrimAndLowerCase from "../functions";
-import kuehlschrank from "./Kuehlschrank";
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import Stack from '@mui/material/Stack';
+
 
 function GenauEinRezeptAnzeigen(props) {
+
     const [formData, setFormData] = useState({
         lebensmittelname: "",
         mengenanzahl: "",
         masseinheit: ""
     });
 
+    const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
-    const [errors, setErrors] = useState({});
-    const [rezept, setRezept] = useState(null); // Nur ein Rezept anstelle einer Liste von Rezepten
-    const [rezepte, setRezepte] = useState([]);
+    const [shoppingListElem, setShoppingListElem] = useState([]);
+    const [rezept, setRezept] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [shoppingListElem, setShoppingListElem]  = useState([]);
+    const [errors, setErrors] = useState({});
+    const {rezeptId} = useParams();
     const navigate = useNavigate()
     const currentUser = props.user.email;
 
-    const {rezeptId } = useParams(); // Holen der rezeptId aus den Routenparametern
+    /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
     const handleChange = (event) => {
+        const {name, value} = event.target;
         setFormData({
             ...formData,
             [event.target.name]: event.target.value
         });
+        if (name==="anzahlPortionen") {
+            setRezept(prevRezept => ({
+                ...prevRezept,
+                anzahlPortionen: value
+            }));
+        }
     };
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
+        if (isAdmin) {
+            event.preventDefault();
 
         if (formData.lebensmittelname.trim() === "" || formData.masseinheit.trim() === "") {
-            setErrors({ message: "Bitte füllen Sie alle Felder aus." });
+            setErrors({message: "Bitte füllen Sie alle Felder aus."});
             return;
         }
 
+        const newMengenanzahl = new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl));
+        const newMasseinheit = new MasseinheitBO(TrimAndLowerCase(formData.masseinheit));
         const newLebensmittel = new LebensmittelBO(
             TrimAndLowerCase(formData.lebensmittelname),
             TrimAndLowerCase(formData.mengenanzahl),
@@ -50,44 +66,43 @@ function GenauEinRezeptAnzeigen(props) {
             null,
             rezeptId
         );
-        const newMengenanzahl = new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl));
-        const newMasseinheit = new MasseinheitBO(TrimAndLowerCase(formData.masseinheit));
 
         try {
-        const api = new EatSmarterAPI();
-        await api.lebensmittelZuRezeptHinzufuegen(rezeptId, newLebensmittel);
-    } catch (error) {
-        console.error("Fehler beim Hinzufügen von Lebensmittel zum Rezept:", error);
-        // Handle error
+            const api = new EatSmarterAPI();
+            await api.lebensmittelZuRezeptHinzufuegen(rezeptId, newLebensmittel);
+            await api.addMasseinheit(newMasseinheit);
+            await api.addMenge(newMengenanzahl);
+
+            setFormData({
+                lebensmittelname: "",
+                mengenanzahl: "",
+                masseinheit: ""
+            });
+            setErrors({});
+
+            // Aktualisiert die Lebensmittel/Maßeinheitenliste nach dem Hinzufügen
+            await fetchRezeptLebensmittel();
+            await fetchMasseinheiten();
+        } catch (error) {
+            console.error("Fehler beim Hinzufügen von Lebensmittel zum Rezept:", error);
+        }
     }
+        else{
+                alert("Nur der Ersteller kann ein Lebensmittel hinzufügen");
 
-        EatSmarterAPI.getAPI().addMasseinheit(newMasseinheit);
-        EatSmarterAPI.getAPI().addMenge(newMengenanzahl);
+        }
+        }
 
 
-        setFormData({
-            lebensmittelname: "",
-            mengenanzahl: "",
-            masseinheit: ""
-        });
-        setErrors({});
-
-        setLebensmittelliste(prevList => [...prevList, newLebensmittel]);
-        setMasseinheitenListe(prevList => [...prevList, formData.masseinheit]);
+    /* Funktionen für Daten die, geladen werden müssen */
+    const fetchMasseinheiten = async () => {
+        try {
+            const masseinheiten = await EatSmarterAPI.getAPI().getMasseinheitAll();
+            setMasseinheitenListe(masseinheiten);
+        } catch (error) {
+            console.error("Fehler beim Laden der Maßeinheiten:", error);
+        }
     };
-
-    useEffect(() => {
-        const fetchMasseinheiten = async () => {
-            try {
-                const masseinheiten = await EatSmarterAPI.getAPI().getMasseinheitAll();
-                setMasseinheitenListe(masseinheiten);
-            } catch (error) {
-                console.error("Fehler beim Laden der Maßeinheiten:", error);
-            }
-        };
-
-        fetchMasseinheiten();
-
 
     const fetchLebensmittel = async () => {
         try {
@@ -98,37 +113,34 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    const fetchRezeptById = async () => {
+        try {
+            const api = new EatSmarterAPI();
+            const [rezept] = await api.getRezeptById(rezeptId);
+            setRezept(rezept);
+        } catch (error) {
+            console.error("Fehler beim Abrufen des Rezepts:", error);
+        }
+    };
+
+    const fetchRezeptLebensmittel = async () => {
+        try {
+            const api = new EatSmarterAPI();
+            const lebensmittel = await api.getAllLebensmittelByRezeptId(rezeptId);
+            setRezeptLebensmittel(lebensmittel);
+        } catch (error) {
+            console.error("Fehler beim Abrufen der Lebensmittel:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchMasseinheiten();
         fetchLebensmittel();
-}, []);
-
-    useEffect(() => {
-        const fetchRezeptById = async () => {
-            try {
-                const api = new EatSmarterAPI();
-                const [rezept] = await api.getRezeptById(rezeptId); // Verwenden der dynamischen rezeptId
-                setRezept(rezept);
-            } catch (error) {
-                console.error("Fehler beim Abrufen des Rezepts:", error);
-            }
-        };
-
         fetchRezeptById();
-    }, [rezeptId]); // Beachte die Abhängigkeit von rezeptId
-
-    const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
-    useEffect(() => {
-        const fetchRezeptLebensmittel = async () => {
-            try {
-                const api = new EatSmarterAPI();
-                const lebensmittel = await api.getAllLebensmittelByRezeptId(rezeptId);
-                setRezeptLebensmittel(lebensmittel);
-            } catch (error) {
-                console.error("Fehler beim Abrufen der Lebensmittel:", error);
-            }
-        };
         fetchRezeptLebensmittel();
     }, [rezeptId]);
 
+    /* Funktionen zum Kochen -> für eine Einkaufsliste oder Verbrauch von Lebensmittel */
     const handleJetztKochen = async () => {
         try {
             const api = new EatSmarterAPI();
@@ -141,27 +153,59 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    const handleChangePortionenInRezept = async(neueAnzahlPortionen) => {
+        console.log(rezeptId)
+        console.log(neueAnzahlPortionen)
+        try{
+            const api = new EatSmarterAPI();
+            await api.changePortionenInRezept(rezeptId, neueAnzahlPortionen);
+            await fetchRezeptLebensmittel()
+        } catch (error) {
+            console.error("Fehler beim ändern der Anzahl", error);
+            alert("Fehler beim senden der Anzahl");
+        }
+    }
+
     const handleClosePopup = () => {
         setIsPopupOpen(false);
     };
 
+
+    /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
     const handleDelete = async () => {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser);
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         console.log("Frontend", isAdmin);
         console.log(currentUser)
 
-        if(isAdmin){
-            await EatSmarterAPI.getAPI().deleteRezept(rezeptId)
-                .then(() => {
-                    navigate("/RezeptAnzeigen");
-                })
+        if (isAdmin) {
+            const response = await EatSmarterAPI.getAPI().deleteRezept(rezeptId);
+            console.log("Rezept Lösch-Response", response);
+            navigate("/RezeptAnzeigen");
+            alert("Das Rezept wurde erfolgreich gelöscht.");
+            }
+        else {
+                alert("Nur der Ersteller kann das Rezept löschen");
+            }
         }
-        else{
-            alert("Nur der Ersteller kann das Rezept löschen");
-        }
-    };
 
-    
+        async function deleteLebensmittel(event, lebensmittelId) {
+            event.preventDefault()
+            const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
+            if (isAdmin){
+                // LebensmittelId ist der Value aus dem button Klick event
+                try {
+                    await EatSmarterAPI.getAPI().deleteFoodFromRezept(rezeptId, lebensmittelId);
+                    setRezeptLebensmittel(prevRezeptLebensmittel => prevRezeptLebensmittel.filter(item => item.id !== parseInt(lebensmittelId, 10)));
+                } catch (error) {
+                    console.error("Fehler beim Löschen des Lebensmittels:", error);
+                }
+            }
+            else{
+                alert("Nur der Rezept Ersteller kann Lebensmittel löschen")
+            }
+            }
+
+    /* Darstellung der Komponente */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
@@ -171,7 +215,18 @@ function GenauEinRezeptAnzeigen(props) {
                         <h2>Dein Rezept</h2>
                         <div className="mini-container">
                             <p className="blue-mini-container"> {rezept.rezeptName}</p>
-                            <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                            <div>
+                                <p>Anzahl Portionen:</p>
+                                <input
+                                    type="text"
+                                    name="anzahlPortionen"
+                                    value={rezept.anzahlPortionen}
+                                    onChange={handleChange}
+                                />
+                                <button type="button"
+                                        onClick={() => handleChangePortionenInRezept(rezept.anzahlPortionen)}>ändern
+                                </button>
+                            </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
                             <p>WG: {rezept.wgName}</p>
                             <p>Zubereitung: {rezept.rezeptAnleitung}</p>
@@ -182,6 +237,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     <th>Lebensmittelname</th>
                                     <th>Mengenanzahl</th>
                                     <th>Maßeinheit</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -190,6 +246,9 @@ function GenauEinRezeptAnzeigen(props) {
                                         <td>{lebensmittel.lebensmittelName}</td>
                                         <td>{lebensmittel.mengenanzahl}</td>
                                         <td>{lebensmittel.masseinheit}</td>
+                                        <td>
+                                            <DeleteIcon onClick={(event) => deleteLebensmittel(event, lebensmittel.id)} aria-label="delete" size="small" />
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -224,7 +283,7 @@ function GenauEinRezeptAnzeigen(props) {
                                 onChange={handleChange}
                                 className="eingabe"
                             />
-                        <label>Maßeinheit</label>
+                            <label>Maßeinheit</label>
                             <input
                                 type="text"
                                 name="masseinheit"
@@ -232,36 +291,38 @@ function GenauEinRezeptAnzeigen(props) {
                                 value={formData.masseinheit}
                                 onChange={handleChange}
                                 className="eingabe"
-                        />
-                         <datalist id="masseinheiten">
-                            {masseinheitenListe.map((masseinheit, index) => (
-                                <option key={index} value={masseinheit.masseinheitsname} />
-                            ))}
-                        </datalist>
+                            />
+                            <datalist id="masseinheiten">
+                                {masseinheitenListe.map((masseinheit, index) => (
+                                    <option key={index} value={masseinheit.masseinheitsname}/>
+                                ))}
+                            </datalist>
+                        </div>
+                        <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                     </div>
-                    <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
+                    <br></br>
+                    <br></br>
+                    <button className="button-uebersicht" type="button" onClick={() => handleDelete(rezept.id)}>Rezept
+                        löschen
+                    </button>
                 </div>
-                <br></br>
-                <br></br>
-                <button className="button-uebersicht" type="button" onClick={() => handleDelete(rezept.id)}>Rezept löschen</button>
-            </div>
-            {isPopupOpen && (
-                <div className="popup">
-                    <div className="inner-popup">
-                        {shoppingListElem.length === 0 ? (
-                            <h3 className="h2-black">Kochen erfolgreich</h3>
-                        ) : (
-                            <>
-                                <h3 className="h2-black">Fehlende Lebensmittel</h3>
-                                <table>
-                                    <thead>
+                {isPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            {shoppingListElem.length === 0 ? (
+                                <h3 className="h2-black">Kochen erfolgreich</h3>
+                            ) : (
+                                <>
+                                    <h3 className="h2-black">Fehlende Lebensmittel</h3>
+                                    <table>
+                                        <thead>
                                         <tr>
                                             <th>Lebensmittelname</th>
                                             <th>Mengenanzahl</th>
                                             <th>Maßeinheit</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
+                                        </thead>
+                                        <tbody>
                                         {shoppingListElem.map((shoppingList, index) => (
                                             <tr key={index}>
                                                 <td>{shoppingList.lebensmittelName}</td>
@@ -269,16 +330,16 @@ function GenauEinRezeptAnzeigen(props) {
                                                 <td>{shoppingList.masseinheit}</td>
                                             </tr>
                                         ))}
-                                    </tbody>
-                                </table>
-                            </>
-                        )}
-                        <button type="button" onClick={handleClosePopup}>Schließen</button>
+                                        </tbody>
+                                    </table>
+                                </>
+                            )}
+                            <button type="button" onClick={handleClosePopup}>Schließen</button>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
-    );
-}
+                )}
+            </div>
+        );
+    }
 
 export default GenauEinRezeptAnzeigen;

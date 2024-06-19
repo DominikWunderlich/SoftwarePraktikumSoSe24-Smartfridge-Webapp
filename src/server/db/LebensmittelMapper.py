@@ -28,6 +28,26 @@ class LebensmittelMapper(mapper):
 
         return result
 
+    def find_by_id(self, lid):
+        cursor = self._connector.cursor()
+        command = f"SELECT lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id " \
+                  "FROM datenbank.lebensmittel " \
+                  "WHERE lebensmittel_id =%s"
+        cursor.execute(command, (lid, ))
+        obj = cursor.fetchall()
+
+        for (lebensmittel_id, lebensmittel_name, masseinheit_id, mengenanzahl_id, kuehlschrank_id, rezept_id) in obj:
+            l = Lebensmittel()
+            l.set_id(lebensmittel_id)
+            l.set_lebensmittelname(lebensmittel_name)
+            l.set_masseinheit(masseinheit_id)
+            l.set_mengenanzahl(mengenanzahl_id)
+            l.set_kuelschrank_id(kuehlschrank_id)
+            l.set_rezept_id(rezept_id)
+
+        return l
+
+
     def find_by_lebensmittelname(self, lebensmittelname, kid):
         result = []
         cursor = self._connector.cursor()
@@ -127,6 +147,24 @@ class LebensmittelMapper(mapper):
         self._connector.commit()
         cursor.close()
 
+
+    def update_menge(self, lebensmittel, neue_menge):
+        print("jetzt bin ich in der update_menge Methode")
+        print(lebensmittel)
+        lebensmittel_id = lebensmittel.get_id()
+        print(lebensmittel_id) #das ist die lebensmittel_id deren Datensatz aktualisiert werden soll
+        print("juhu")
+        print(neue_menge) #Das ist die mengen_id von der neuen menge
+        cursor = self._connector.cursor()
+        print("bin ich im try?")
+        command = f"UPDATE datenbank.lebensmittel SET mengenanzahl_id=%s WHERE lebensmittel_id=%s"
+        data = (neue_menge, lebensmittel_id)
+        cursor.execute(command, data)
+        self._connector.commit()
+        print(f"Menge in Lebensmittel mit ID {lebensmittel.get_id()} aktualisiert.")
+        cursor.close()
+        return
+
     def update3(self, lebensmittel):
         cursor = self._connector.cursor()
 
@@ -136,6 +174,19 @@ class LebensmittelMapper(mapper):
             lebensmittel.get_lebensmittelname(), lebensmittel.get_masseinheit(), lebensmittel.get_mengenanzahl(),
             lebensmittel.get_kuehlschrank_id(), lebensmittel.get_rezept_id(), lebensmittel.get_lebensmittelname(),
             lebensmittel.get_rezept_id())
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
+
+    def update_foodobj(self, lebensmittel, old_name):
+        cursor = self._connector.cursor()
+        command = "UPDATE datenbank.lebensmittel SET lebensmittel_name=%s, masseinheit_id=%s, mengenanzahl_id=%s," \
+                  "kuehlschrank_id=%s, rezept_id=%s  WHERE lebensmittel_name=%s AND kuehlschrank_id=%s"
+        data = (
+        lebensmittel.get_lebensmittelname(), lebensmittel.get_masseinheit(), lebensmittel.get_mengenanzahl(),
+        lebensmittel.get_kuehlschrank_id(), lebensmittel.get_rezept_id(), old_name,
+        lebensmittel.get_kuehlschrank_id())
         cursor.execute(command, data)
 
         self._connector.commit()

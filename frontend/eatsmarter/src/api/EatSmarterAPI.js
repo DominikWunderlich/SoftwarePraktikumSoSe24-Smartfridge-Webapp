@@ -50,7 +50,22 @@ export default class EatSmarterAPI{
     #getRezeptByIdURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
 
     #lebensmittelZuRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezeptt/${rezept_id}/lebensmittel`;
-
+    #changeAnzahlPortionenInRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/anzahlPortionen/updateundget/${rezept_id}`;
+    changePortionenInRezept(rezept_id, neueAnzahlPortionen){
+        return this.#fetchAdvanced(this.#changeAnzahlPortionenInRezeptURL(rezept_id),{
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(neueAnzahlPortionen)
+        }).then((responseJSON) => {
+            return responseJSON;
+        }).catch((error) => {
+            console.error("Fehler", error);
+            throw error;
+        });
+    }
     lebensmittelZuRezeptHinzufuegen(rezept_id, newLebensmittel){
         return this.#fetchAdvanced(this.#lebensmittelZuRezeptURL(rezept_id),{
             method: "POST",
@@ -135,11 +150,11 @@ export default class EatSmarterAPI{
     }
     
      // Rezept als admin löschen-attribute related
-     #getRezeptAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}`;
+     #getRezeptAdminURL = (email, rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}/${rezept_id}`;
 
-     checkIfUserIsRezeptAdmin(currentUser){
+     checkIfUserIsRezeptAdmin(currentUser, rezept_id){
          console.log("api", currentUser)
-         return this.#fetchAdvanced(this.#getRezeptAdminURL(currentUser), {
+         return this.#fetchAdvanced(this.#getRezeptAdminURL(currentUser, rezept_id), {
              method: "GET",
              headers: {
                  "Accept": "application/json",
@@ -213,6 +228,9 @@ export default class EatSmarterAPI{
 
     // Lebensmittel direkt aus dem Kuehlschrank löschen
     #deleteFoodFromFridgeURL = (wg_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}//kuehlschrankinhalt/${wg_id}/${lebensmittel_id}`
+
+    #deleteFoodFromRezeptURL = (rezept_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/rezeptinhalt/${rezept_id}/${lebensmittel_id}`
+
     deleteFoodFromFridge(wg_id, lebensmittel_id){
         return this.#fetchAdvanced(this.#deleteFoodFromFridgeURL(wg_id, lebensmittel_id),{
             method: "DELETE",
@@ -221,6 +239,23 @@ export default class EatSmarterAPI{
                 "Content-type": "application/json",
             },
             body: JSON.stringify(wg_id, lebensmittel_id)
+        }).then((responseJSON) => {
+             // console.log("RespinseJSON", responseJSON)
+            return new Promise( function(resolve) {
+                resolve(responseJSON);
+            })
+        })
+
+    }
+
+    deleteFoodFromRezept(rezept_id, lebensmittel_id){
+        return this.#fetchAdvanced(this.#deleteFoodFromRezeptURL(rezept_id, lebensmittel_id),{
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(rezept_id, lebensmittel_id)
         }).then((responseJSON) => {
              // console.log("RespinseJSON", responseJSON)
             return new Promise( function(resolve) {
@@ -400,6 +435,24 @@ export default class EatSmarterAPI{
                 resolve(responseJSON);
             })
         })
+    }
+    #updateMasseinheitURL = () => `${this.#EatSmarterServerBaseURL}/masseinheit`;
+
+
+    #updateFoodInFridgeURL = (kid, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${kid}/${lebensmittel_id}`
+    updateFoodInFridge(updatedLebensmittel) {
+        return this.#fetchAdvanced(this.#updateFoodInFridgeURL(updatedLebensmittel.kuehlschrankId, updatedLebensmittel.id), {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedLebensmittel)
+        }).then((responseJSON) => {
+            return new Promise(function(resolve) {
+                resolve(responseJSON);
+            })
+        });
     }
 
 
