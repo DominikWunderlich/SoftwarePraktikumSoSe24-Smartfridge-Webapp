@@ -89,24 +89,22 @@ function WGPage(props) {
         }
     }
 
+    const handleDeleteMember = async(event) => {
 
-   const handleDeleteMember = async() => {
-          if (!isValidEmail(deleteNewMemberEmail)) {
-            alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
-            return;
-        }
-        const response = await EatSmarterAPI.getAPI().deleteWgBewohner(currentUser, TrimAndLowerCase(deleteNewMemberEmail));
-        console.log("Repsonse im wgpage", response)
-        if(response){
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email)
+        let personId = event.target.value
+
+        if (isAdmin){
+            await EatSmarterAPI.getAPI().deletePersonFromWg(wg.id, personId)
             renderCurrentUsersWg();
             renderPersonList();
             renderWgAdmin();
         }
         else{
-            alert("Nur der Ersteller kann Mitglieder entfernen");
+             alert("Nur der Ersteller kann Mitglieder entfernen");
         }
-        setDeleteNewMemberEmail("");
-}
+
+    }
 
      // Handler-Function, um die Wg als Admin zu löschen
     const handleDeleteWG = async () => {
@@ -141,6 +139,7 @@ function WGPage(props) {
                                     <th>Nachname</th>
                                     <th>Vorname</th>
                                     <th>Email</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -150,6 +149,9 @@ function WGPage(props) {
                                         <td>{person.lastName}</td>
                                         <td>{person.firstName}</td>
                                         <td>{person.email}</td>
+                                        <td>
+                                            <button value={person.id} onClick={handleDeleteMember}>-</button>
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -185,11 +187,11 @@ function WGPage(props) {
                 )}
                 <br></br>
                 <div className="inner-container">
-                    <h2>WG-Verwaltung</h2>
+                    <h2>Mitglied hinzufügen</h2>
                     <div className="formitem">
                         <form id="addBewohner">
                             <h2></h2>
-                            <label>Mitglied hinzufügen: </label>
+                            <label>Bitte Geben Sie die Google-Mail des neuen Bewohners an: </label>
                             <input
                                 type="email"
                                 value={addNewMemberEmail}
@@ -198,20 +200,6 @@ function WGPage(props) {
                                 }}
                             />
                             <button type="button" onClick={handleAddMember}>hinzufügen</button>
-                            <div className='formitem'>
-                            </div>
-                        </form>
-                        <form id="deleteBewohner">
-                            <h2></h2>
-                            <label>Mitglied entfernen: </label>
-                            <input
-                                type="email"
-                                value={deleteNewMemberEmail}
-                                onChange={(event) => {
-                                    setDeleteNewMemberEmail(event.target.value)
-                                }}
-                            />
-                            <button type="button" onClick={handleDeleteMember}>entfernen</button>
                             <div className='formitem'>
                             </div>
                         </form>

@@ -635,6 +635,8 @@ export default class EatSmarterAPI{
     #checkUserURL = (google_id) => `${this.#EatSmarterServerBaseURL}/login/check/${google_id}`;
     #getUserByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/login/checkemail/${email}`;
     #addPersonToWgURL = (wgId, email) => `${this.#EatSmarterServerBaseURL}/user/person/${wgId}/${email}`;
+    #deletePersonFromWgURL = (wgId, personId) => `${this.#EatSmarterServerBaseURL}/user/person/delete/${wgId}/${personId}`;
+
 
     addUser(personBO){
         return this.#fetchAdvanced(this.#addUserURL(), {
@@ -701,6 +703,22 @@ export default class EatSmarterAPI{
         }).then((responseJSON) => {
             return new Promise(function(resolve){
                 resolve(responseJSON)
+            });
+        });
+    }
+
+    deletePersonFromWg(wgId, personId){
+        return this.#fetchAdvanced(this.#deletePersonFromWgURL(wgId, personId),{
+            method: "PUT",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify(wgId, personId)
+        }).then((responseJSON) => {
+            let response = PersonBO.fromJSON(responseJSON)[0];
+            return new Promise(function(resolve){
+                resolve(response);
             });
         });
     }

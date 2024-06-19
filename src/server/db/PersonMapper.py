@@ -263,4 +263,16 @@ class PersonMapper(mapper):
         cursor.close()
         return
 
+    def delete_wg_id_person(self, wg_id, person_id):
+        cursor = self._connector.cursor()
+        command = f"UPDATE datenbank.person SET wg_id = null WHERE id = '{person_id}' and wg_id='{wg_id}'"
+
+        cursor.execute(command)
+        self._connector.commit()
+        cursor.close()
+        return
+
+
+
+
 

@@ -315,6 +315,18 @@ class ProfileUpdateWgIdOperations(Resource):
         p = adm.add_person_to_wg(wg_id, email)
         return p
 
+@smartapi.route('/user/person/delete/<wg_id>/<person_id>')
+@smartapi.param('wg_id')
+@smartapi.param('person_id')
+
+class ProfileDeletePersonFromWgOperations(Resource):
+
+    @smartapi.marshal_with(person)
+    def put(self, wg_id, person_id):
+        adm = Administration()
+        p = adm.delete_person_from_wg(wg_id, person_id)
+        return p
+
 @smartapi.route('/rezept')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class RezeptOperations(Resource):

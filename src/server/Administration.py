@@ -759,3 +759,7 @@ class Administration(object):
     def add_person_to_wg(self, wg_id, email):
         with PersonMapper() as mapper:
             return mapper.update_wg_id_person(wg_id, email)
+
+    def delete_person_from_wg(self, wg_id, person_id):
+        with PersonMapper() as mapper:
+            return mapper.delete_wg_id_person(wg_id, person_id)
