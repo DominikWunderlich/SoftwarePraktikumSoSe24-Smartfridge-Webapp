@@ -123,10 +123,16 @@ class Administration(object):
                 print("Bewohner nicht entfernt")
                 return False
 
-    """ Diese Methode löscht die wg und den kuehlschrankinhalt"""
+    """ Diese Methode löscht die wg und den kuehlschrank"""
     def delete_wg_and_kuehlschrank(self, wg_id):
+        with PersonMapper() as mapper:
+            mapper.delete_all_wg_id_person(wg_id)
+
         with WGMapper() as mapper:
             mapper.delete_wg_and_kuehlschrank(wg_id)
+
+        # TODO: add Kuhelschrankmapper delete Lebensmittel and recipe where Wg_id = wg_id, wenn Patrik wg_name zu wg_id geändert hat
+
 
     def get_wg_admin(self, wg_id):
         with WGMapper() as mapper:

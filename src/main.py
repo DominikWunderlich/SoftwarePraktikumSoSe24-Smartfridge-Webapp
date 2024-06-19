@@ -134,11 +134,9 @@ class WgGetWgOperations(Resource):
 
     def delete(self, email):
         adm = Administration()
-        wgs = adm.getWGByEmail(email)
-
-        for wg in wgs:
-            wg_id = wg.get_id()
-            adm.delete_wg_and_kuehlschrank(wg_id)
+        wg_id = adm.get_wg_id_by_email(email)
+        print(wg_id)
+        return adm.delete_wg_and_kuehlschrank(wg_id)
             #TODO: Alle Rezepte anhand der Wg id auch löschen?
 
 @smartapi.route('/wg/user/wgadmin/<email>')
