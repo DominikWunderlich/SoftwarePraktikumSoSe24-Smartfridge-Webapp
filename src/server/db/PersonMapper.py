@@ -230,10 +230,10 @@ class PersonMapper(mapper):
         else:
             return None
 
-    def find_all_by_wg_id(self, wg_id):
+    def find_all_by_wg_id(self, wg_id, wg_ersteller):
         result =[]
         cursor = self._connector.cursor()
-        command = f"SELECT * FROM datenbank.person WHERE wg_id='{wg_id}'"
+        command = f"SELECT * FROM datenbank.person WHERE wg_id='{wg_id}' AND email !='{wg_ersteller}' "
         cursor.execute(command)
 
         tuples = cursor.fetchall()

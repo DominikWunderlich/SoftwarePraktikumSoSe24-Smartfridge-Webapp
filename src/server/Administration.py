@@ -758,9 +758,9 @@ class Administration(object):
             return mapper.find_by_rezept_id2(rezept_id)
 
 
-    def find_person_by_wg_bewohner(self, wg_id):
+    def find_person_by_wg_bewohner(self, wg_id, wg_ersteller):
         with PersonMapper() as mapper:
-            return mapper.find_all_by_wg_id(wg_id)
+            return mapper.find_all_by_wg_id(wg_id, wg_ersteller)
 
     def add_person_to_wg(self, wg_id, email):
         with PersonMapper() as mapper:

@@ -107,7 +107,8 @@ class WgGetBewohnerOperations(Resource):
     def get(self, email):
         adm = Administration()
         wg_id = adm.get_wg_id_by_email(email)
-        wg_b = adm.find_person_by_wg_bewohner(wg_id)
+        wg_ersteller = adm.get_wg_admin(wg_id)
+        wg_b = adm.find_person_by_wg_bewohner(wg_id, wg_ersteller[0].email)
 
         if wg_b is not None:
             return wg_b
