@@ -755,3 +755,7 @@ class Administration(object):
     def find_person_by_wg_bewohner(self, wg_id):
         with PersonMapper() as mapper:
             return mapper.find_all_by_wg_id(wg_id)
+
+    def add_person_to_wg(self, wg_id, email):
+        with PersonMapper() as mapper:
+            return mapper.update_wg_id_person(wg_id, email)

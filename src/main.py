@@ -303,6 +303,17 @@ class ProfileCheckEmailOperations(Resource):
         p = adm.get_user_by_email(email)
         return p
 
+@smartapi.route('/user/person/<wg_id>/<email>')
+@smartapi.response(500, 'Serverseitiger-Fehler')
+@smartapi.param("email", 'Die Email des Profil-Objekts')
+@smartapi.param("wg_id")
+class ProfileUpdateWgIdOperations(Resource):
+    @smartapi.marshal_with(person)
+    #@secured
+    def put(self, wg_id, email):
+        adm = Administration()
+        p = adm.add_person_to_wg(wg_id, email)
+        return p
 
 @smartapi.route('/rezept')
 @smartapi.response(500, 'Serverseitiger Fehler')

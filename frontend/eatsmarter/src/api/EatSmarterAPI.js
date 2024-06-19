@@ -552,7 +552,6 @@ export default class EatSmarterAPI{
             },
         }).then((responseJSON) => {
             let responsePersonBO = PersonBO.fromJSON(responseJSON);
-            console.log("EatSmarterAPI responsePersonBO", responsePersonBO)
             return new Promise(function(resolve){
                 resolve(responsePersonBO);
             });
@@ -599,7 +598,6 @@ export default class EatSmarterAPI{
             },
         }).then((responseJSON) => {
             let responsePersonBO = PersonBO.fromJSON(responseJSON);
-            console.log("EatSmarterAPI responsePersonBO", responsePersonBO)
             return new Promise(function(resolve){
                 resolve(responsePersonBO);
             });
@@ -619,7 +617,7 @@ export default class EatSmarterAPI{
                  "Content-Type": "application/json",
              },
          }).then((response) => {
-             console.log("API",response)
+             // console.log("API",response)
              if(response === true){
                  return true;
              }
@@ -636,6 +634,8 @@ export default class EatSmarterAPI{
     #getUserURL = (google_id) => `${this.#EatSmarterServerBaseURL}/login/${google_id}`;
     #checkUserURL = (google_id) => `${this.#EatSmarterServerBaseURL}/login/check/${google_id}`;
     #getUserByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/login/checkemail/${email}`;
+    #addPersonToWgURL = (wgId, email) => `${this.#EatSmarterServerBaseURL}/user/person/${wgId}/${email}`;
+
     addUser(personBO){
         return this.#fetchAdvanced(this.#addUserURL(), {
             method: "POST",
@@ -688,6 +688,21 @@ export default class EatSmarterAPI{
                 resolve(response);
             })
         })
+    }
+
+    addPersonToWg(wgId, email){
+        return this.#fetchAdvanced(this.#addPersonToWgURL(wgId, email), {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(email)
+        }).then((responseJSON) => {
+            return new Promise(function(resolve){
+                resolve(responseJSON)
+            });
+        });
     }
 
     // Kühlschrank related API-Calls:

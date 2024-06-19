@@ -71,18 +71,15 @@ function WGPage(props) {
             }
             else{
                 let userExist = await EatSmarterAPI.getAPI().getUserByEmail(TrimAndLowerCase(addNewMemberEmail));
-                console.log(userExist)
 
                 if (userExist.length === 0) {
                     alert("Diese eingetragene E-Mail Adresse hat noch kein Account angelegt. Um einen Bewohner hinzufügen zu können, muss sich die Person in unserem System anmelden.")
                 } else {
-                    const response = await EatSmarterAPI.getAPI().addWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
-                    console.log("Repsonse im wgpage", response)
-                    if (response) {
-                        renderCurrentUsersWg();
-                        renderPersonList();
-                        renderWgAdmin();
-                    }
+                    // const response = await EatSmarterAPI.getAPI().addWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
+                    await EatSmarterAPI.getAPI().addPersonToWg(wg.id, TrimAndLowerCase(addNewMemberEmail))
+                    renderCurrentUsersWg();
+                    renderPersonList();
+                    renderWgAdmin();
                 }
                 setAddNewMemberEmail("");
             }
@@ -91,7 +88,6 @@ function WGPage(props) {
             alert("Nur der Ersteller kann Mitglieder entfernen")
         }
     }
-
 
 
    const handleDeleteMember = async() => {

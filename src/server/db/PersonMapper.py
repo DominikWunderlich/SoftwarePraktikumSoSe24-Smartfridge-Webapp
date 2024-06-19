@@ -254,4 +254,13 @@ class PersonMapper(mapper):
 
         return result
 
+    def update_wg_id_person(self, wg_id, email):
+        cursor = self._connector.cursor()
+        command = f"UPDATE datenbank.person SET wg_id='{wg_id}' WHERE email ='{email}'"
+
+        cursor.execute(command)
+        self._connector.commit()
+        cursor.close()
+        return
+
 
