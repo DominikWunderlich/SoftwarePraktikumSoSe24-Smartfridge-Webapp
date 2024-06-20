@@ -4,18 +4,20 @@ import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
 import NavBar from "../components/NavBar";
 import TrimAndLowerCase from "../functions";
-import {render} from "@testing-library/react";
-import PersonBO from "../api/PersonBO";
 
 
 function WGPage(props) {
     const currentUser = props.user.email;
     const [wg, setWg] = useState(null)
     const [addNewMemberEmail, setAddNewMemberEmail] = useState("");
-    const [deleteNewMemberEmail, setDeleteNewMemberEmail] = useState("");
     const [personList, setPersonList] = useState([])
     const navigate = useNavigate()
     const [wgAdmin, setWgAdmin] = useState([])
+    const [showAdminAddPopup, setShowAdminAddPopup] = useState(false);
+    const [showAdminDeletePopup, setShowAdminDeletePopup] = useState(false);
+    const [showAdminDeleteWgPopup, setShowAdminDeleteWgPopup] = useState(false);
+    const [showNotExistUserPopup, setNotExistUserPopup] = useState(false);
+    const [showNoValidEmailPopup, setShowNoValidEmailPopup] = useState(false);
 
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
@@ -61,19 +63,22 @@ function WGPage(props) {
     };
 
 
+      /**
+     * Handler-Function, um als Admin Mitglieder zur WG hinzuzufügen
+     */
     const handleAddMember = async() => {
 
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email)
 
         if (isAdmin) {
             if (!isValidEmail(addNewMemberEmail)) {
-                alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
+                setShowNoValidEmailPopup(true)
             }
             else{
                 let userExist = await EatSmarterAPI.getAPI().getUserByEmail(TrimAndLowerCase(addNewMemberEmail));
 
                 if (userExist.length === 0) {
-                    alert("Diese eingetragene E-Mail Adresse hat noch kein Account angelegt. Um einen Bewohner hinzufügen zu können, muss sich die Person in unserem System anmelden.")
+                    setNotExistUserPopup(true)
                 } else {
                     // const response = await EatSmarterAPI.getAPI().addWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
                     await EatSmarterAPI.getAPI().addPersonToWg(wg.id, TrimAndLowerCase(addNewMemberEmail))
@@ -85,10 +90,14 @@ function WGPage(props) {
             }
         }
         else{
-            alert("Nur der Ersteller kann Mitglieder entfernen")
+            setShowAdminAddPopup(true);
         }
+
     }
 
+      /**
+     * Handler-Function, um als Admin Mitglieder aus der Wg zu entfernen
+     */
     const handleDeleteMember = async(event) => {
 
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email)
@@ -101,12 +110,15 @@ function WGPage(props) {
             renderWgAdmin();
         }
         else{
-             alert("Nur der Ersteller kann Mitglieder entfernen");
+            setShowAdminDeletePopup(true);
         }
 
     }
 
-     // Handler-Function, um die Wg als Admin zu löschen
+
+    /**
+     * Handler-Function, um die Wg als Admin zu löschen
+     */
     const handleDeleteWG = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
         // console.log("Frontend", isAdmin);
@@ -118,11 +130,22 @@ function WGPage(props) {
                 })
         }
         else{
-            alert("Nur der Ersteller kann die Wg löschen");
+            setShowAdminDeleteWgPopup(true);
         }
     }
 
-    
+    /**
+     * Diese Funktion ermöglicht es die Popups auf Buttonclick wieder zu schließen.
+     */
+    function closePopup() {
+        setShowAdminAddPopup(false);
+        setShowAdminDeleteWgPopup(false);
+        setShowAdminDeletePopup(false);
+        setNotExistUserPopup(false);
+        setShowNoValidEmailPopup(false);
+    }
+
+
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
@@ -209,6 +232,53 @@ function WGPage(props) {
                 <br></br>
                 <button className="button-uebersicht" type="button" onClick={handleDeleteWG}>WG löschen</button>
             </div>
+             {showAdminAddPopup && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h1 className="h2-black">Nur der Ersteller kann Mitglieder hinzufügen!</h1>
+                        <button onClick={closePopup}>Schließen</button>
+                    </div>
+                </div>
+            )}
+
+            {showAdminDeletePopup && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h1 className="h2-black">Nur der Ersteller kann Mitglieder löschen!</h1>
+                        <button onClick={closePopup}>Schließen</button>
+                    </div>
+                </div>
+            )}
+
+            {showAdminDeleteWgPopup && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h1 className="h2-black">Nur der Ersteller kann die Wg löschen!</h1>
+                        <button onClick={closePopup}>Schließen</button>
+                    </div>
+                </div>
+            )}
+
+            {showNotExistUserPopup && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h1 className="h2-black">Diese eingetragene E-Mail Adresse hat noch keinen Account angelegt.
+                            <br/>
+                            Um einen Bewohner hinzufügen zu können, muss sich die Person zuvor in unserem System anmelden.
+                        </h1>
+                        <button onClick={closePopup}>Schließen</button>
+                    </div>
+                </div>
+            )}
+
+           {showNoValidEmailPopup && (
+            <div className="popup">
+                <div className="inner-popup">
+                    <h1 className="h2-black">Bitte geben Sie eine gültige E-Mail-Adresse ein.</h1>
+                    <button onClick={closePopup}>Schließen</button>
+                </div>
+            </div>
+        )}
         </div>
     );
 }
