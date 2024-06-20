@@ -439,6 +439,7 @@ class Administration(object):
                 'kilogramm': 1000,
                 'gramm': 1,
                 'l': 1000,
+                'milliliter': 1,
                 'ml': 1,
                 'kg': 1000,
                 'gr': 1,
