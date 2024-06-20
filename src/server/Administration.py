@@ -986,6 +986,7 @@ class Administration(object):
             return mapper.find_by_key(rezept)
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
+        measurements = self.build_unit_dict()
         food_id_in_fridge = set()  # Set für die Lebensmittel im Kühlschrank
         rezept_set = set()  # Set für alle Rezepte die gekocht werden können
 
@@ -1009,7 +1010,7 @@ class Administration(object):
 
                 for x in fridge:
                     if elem.get_lebensmittelname() == x.get_lebensmittelname():
-                        new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit)
+                        new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit, measurements)
                         # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
                         if new_amount.get_mengenanzahl() < 0:
