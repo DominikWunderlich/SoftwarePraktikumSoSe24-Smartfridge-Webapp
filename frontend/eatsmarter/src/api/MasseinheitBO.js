@@ -13,6 +13,10 @@ export default class MasseinheitBO extends BusinessObject{
         this.masseinheitsname = ms;
     }
 
+    setumrechnungsfaktor(umrechnungsfaktor){
+        this.umrechnungsfaktor = umrechnungsfaktor;
+    }
+
     getEmail(){
         return this.masseinheitsname;
     }
