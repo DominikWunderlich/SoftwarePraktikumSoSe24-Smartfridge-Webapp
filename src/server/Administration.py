@@ -184,6 +184,7 @@ class Administration(object):
     def save_person(self, account):
         """ Update einer Person-Instanz. """
         with PersonMapper() as mapper:
+            print(account)
             mapper.update(account)
 
     def get_user_by_email(self, email):

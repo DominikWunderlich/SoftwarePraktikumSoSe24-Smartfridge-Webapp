@@ -50,7 +50,7 @@ person = api.inherit('Person', bo, {
     'firstName': fields.String(attribute='vorname', description='Vorname eines Users'),
     'lastName': fields.String(attribute='nachname', description='Nachname eines Users'),
     'googleId': fields.String(attribute='google_id', description='Google-ID eines Users'),
-    'wgId': fields.Integer(attribute='wg_id', description='WgId')
+    'wgId': fields.Integer(attribute='wg_id', description='WgId eines Users')
 })
 
 rezept = api.inherit('Rezept', bo, {
@@ -287,7 +287,6 @@ class UserOperations(Resource):
         """ Anlegen eines neuen User-Objekts. """
         adm = Administration()
         proposal = Person.from_dict(api.payload)
-
 
         if proposal is not None:
             result = adm.save_person(proposal)
