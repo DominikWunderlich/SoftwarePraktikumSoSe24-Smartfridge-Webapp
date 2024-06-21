@@ -161,9 +161,11 @@ function GenauEinRezeptAnzeigen(props) {
         fetchRezeptLebensmittel();
     }, [rezeptId]);
 
+
     const handleSaveEdit = async () => {
         try {
-            // Erstellen des updated-food-Objekts.
+                        // Erstellen des updated-food-Objekts.
+
             const updatedLebensmittelInRezept = new LebensmittelBO(
                 editFormData.lebensmittelName,
                 editFormData.mengenanzahl,
@@ -172,22 +174,20 @@ function GenauEinRezeptAnzeigen(props) {
                 editFormData.rezeptId
             );
             updatedLebensmittelInRezept.id = editLebensmittelId;
-
+    
             await EatSmarterAPI.getAPI().updateFoodInRezept(updatedLebensmittelInRezept);
-            setRezeptLebensmittel(prevList =>
-                prevList.map(item =>
-                    item.id === editLebensmittelId ? updatedLebensmittelInRezept : item
-                )
-            );
+            
             setEditMode(null);
             setEditLebensmittelId(null);
-
-            await fetchLebensmittel();
+    
+            // Rufen Sie die neuesten Lebensmitteldaten ab und aktualisieren Sie den Zustand
+            await fetchRezeptLebensmittel();
         } catch (error) {
             console.error("Fehler beim Aktualisieren:", error);
             setErrors({ message: "Fehler beim Aktualisieren der Lebensmittel." });
         }
     };
+    
 
     /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
     const handleEditChange = (event) => {
