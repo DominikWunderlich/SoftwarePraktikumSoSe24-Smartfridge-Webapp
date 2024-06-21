@@ -531,9 +531,7 @@ class MasseinheitOperation(Resource):
         Menge, Maßeinheit und Lebensmittel). Das ist der call für das Anlegen einer Maßeinheit.
         """
         adm = Administration()
-        print(f"Masseinheit payload im Backend (Flask): {api.payload}")
         proposal = Masseinheit.from_dict(api.payload)
-        print(f"Masseinheit payload im Backend (Flask): {api.payload}")
 
         if proposal is not None:
             res = adm.create_measurement(
