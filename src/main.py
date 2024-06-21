@@ -57,7 +57,7 @@ rezept = api.inherit('Rezept', bo, {
     'rezeptName': fields.String(attribute='rezept_name', description='Name einer Rezeptes'),
     'anzahlPortionen': fields.String(attribute='anzahl_portionen', description='Rezept ist ausgelegt für so viele Personen'),
     'rezeptAdmin': fields.String(attribute='rezept_ersteller', description='Ersteller eines Rezepts'),
-    'wgName': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
+    'wgId': fields.Integer(attribute='wg_id', description='Id einer Wohngemeinschaft'),
     'rezeptAnleitung': fields.String(attribute='rezept_anleitung', description='Anleitung'),
 })
 
@@ -372,7 +372,7 @@ class RezeptOperations(Resource):
                 proposal.get_rezept_name(),
                 proposal.get_anzahl_portionen(),
                 proposal.get_rezept_ersteller(),
-                proposal.get_wg_name(),
+                proposal.get_wg_id(),
                 proposal.get_rezept_anleitung())
             print(result, "hi")
             return result, 200
@@ -452,17 +452,17 @@ class AddLebensmittelToRezept(Resource):
         else:
             return '', 500
 
-@smartapi.route('/rezept/<wg_name>')
+@smartapi.route('/rezept/<wg_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
-@smartapi.param('wg_name', 'Name der WG')
+@smartapi.param('wg_id', 'ID der WG')
 class getRezeptOperations(Resource):
     @smartapi.marshal_with(rezept)
     @secured
-    def get(self, wg_name):
+    def get(self, wg_id):
         """ Auslesen aller Rezepte einer WG """
 
         adm = Administration()
-        wg_page = adm.get_all_rezepte_by_wg_name(wg_name)
+        wg_page = adm.get_all_rezepte_by_wg_id(wg_id)
 
         if wg_page is not None:
             return wg_page
@@ -674,17 +674,17 @@ class MasseinheitOperation(Resource):
             return '', 500
 
     """Generator Calls"""
-    @smartapi.route('/rezept/generator/<wg_name>/<kuehlschrank_id>')
+    @smartapi.route('/rezept/generator/<wg_id>/<kuehlschrank_id>')
     @smartapi.response(500, 'Serverseitiger Fehler')
-    @smartapi.param('wg_name', 'Name der WG')
+    @smartapi.param('wg_id', 'Id der WG')
     class GeneratorOperations(Resource):
         # @secured
         @smartapi.marshal_list_with(rezept)
-        def get(self, wg_name, kuehlschrank_id):
+        def get(self, wg_id, kuehlschrank_id):
             """ Auslesen aller Rezepte durch Generator """
 
             adm = Administration()
-            gen_rezepte = adm.find_verfuegbare_rezepte(wg_name, kuehlschrank_id)
+            gen_rezepte = adm.find_verfuegbare_rezepte(wg_id, kuehlschrank_id)
 
             print(gen_rezepte)
             if gen_rezepte is not None:

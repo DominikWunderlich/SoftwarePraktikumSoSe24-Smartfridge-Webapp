@@ -117,6 +117,8 @@ function GenauEinRezeptAnzeigen(props) {
         try {
             const api = new EatSmarterAPI();
             const [rezept] = await api.getRezeptById(rezeptId);
+            console.log(rezept)
+            console.log("allooo")
             setRezept(rezept);
         } catch (error) {
             console.error("Fehler beim Abrufen des Rezepts:", error);
@@ -228,7 +230,6 @@ function GenauEinRezeptAnzeigen(props) {
                                 </button>
                             </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
-                            <p>WG: {rezept.wgName}</p>
                             <p>Zubereitung: {rezept.rezeptAnleitung}</p>
                             {errors.message && <p>{errors.message}</p>}
                             <table>
