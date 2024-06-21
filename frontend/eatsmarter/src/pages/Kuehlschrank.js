@@ -381,7 +381,7 @@ function Kuehlschrankinhalt(props) {
                                     onChange={handlePopupInputChange}
                                     className="eingabe"
                                 />
-                                <label>Umrechnungsfaktor in Gramm</label>
+                                <label>Referenzmenge zu Gramm oder Milliliter</label>
                                 <input
                                 type="number"
                                 name="umrechnungsfaktor"
