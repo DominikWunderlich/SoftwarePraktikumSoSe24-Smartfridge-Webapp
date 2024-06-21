@@ -244,7 +244,31 @@ class RezeptLebensmittelOperations(Resource):
 
         adm = Administration()
         adm.remove_food_from_rezept(rezept_id, lebensmittel_id)
+        return
 
+    @smartapi.expect(lebensmittel)
+    @smartapi.marshal_with(lebensmittel)
+    @secured
+    def put(self, rezept_id, lebensmittel_id):
+        """
+        Aktualisiert ein Lebensmittel in einem Rezept.
+        """
+        adm = Administration()
+        data = Lebensmittel.from_dict(api.payload)
+        old_name = adm.find_foodobj(lebensmittel_id)
+
+        if data is not None:
+            result = adm.update_lebensmittel_objekt(
+                data.get_lebensmittelname(),
+                data.get_masseinheit(),
+                data.get_mengenanzahl(),
+                data.get_kuehlschrank_id(),
+                data.get_rezept_id(),
+                old_name
+            )
+            return result, 200
+        else:
+            return 'Fehler in der Update-Methode', 500
 
 """ User related API Endpoints """
 @smartapi.route('/login')
@@ -600,7 +624,6 @@ class MasseinheitOperation(Resource):
                 return gen_rezepte
             else:
                 return '', 500
-
 
 if __name__ == '__main__':
     app.run(debug=True)
