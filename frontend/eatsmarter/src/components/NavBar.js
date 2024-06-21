@@ -7,12 +7,14 @@ import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import '../sytles/WG-Landingpage.css';
+import {useNavigate} from "react-router-dom";
 
 function NavBar({ currentUser, onSignOut }) {
 
     const [state, setState] = useState({
         menuAnchor: null,
-    })
+    });
+    const navigate = useNavigate();
 
     // Handle Funktionen, um zu prüfen, ob das Menü geöffnet ist oder nicht
  	const handleOpen = (event) =>{
@@ -21,6 +23,9 @@ function NavBar({ currentUser, onSignOut }) {
 	const handleClose = () => {
 		setState({...state, menuAnchor: null})
 	}
+    const navigateToProfil = () => {
+         navigate("/Profil");
+    }
 
     return (
         <AppBar>
@@ -62,7 +67,7 @@ function NavBar({ currentUser, onSignOut }) {
                                 horizontal: 'right',
                             }}
                         >
-                            <MenuItem>{currentUser.displayName}</MenuItem>
+                            <MenuItem onClick={navigateToProfil}>Mein Profil</MenuItem>
                             <MenuItem onClick={onSignOut}>Abmelden</MenuItem>
                         </Menu>
                     </div>
