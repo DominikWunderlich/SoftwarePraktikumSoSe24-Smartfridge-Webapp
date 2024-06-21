@@ -44,22 +44,6 @@ class Administration(object):
         with WGMapper() as mapper:
             return mapper.find_by_key(key)
 
-    def getWGByEmail(self, email):
-        with WGMapper() as mapper:
-            return mapper.find_by_email(email)
-
-    # Diese Methode überprüft, ob die aktuelle user der Wg_ersteller ist
-    # Sie wird in der Updatewg methode und deletewgMethode verwendet
-    def is_current_user_wg_admin(self, email):
-        with WGMapper() as mapper:
-            wgs = mapper.find_by_email(email)
-
-        for wg in wgs:
-            if wg.get_wg_ersteller() == email:
-                return True
-
-            return False
-
     def check_if_current_user_is_wg_admin(self, email, wg_id):
         with WGMapper() as mapper:
             is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(email, wg_id)
@@ -70,16 +54,6 @@ class Administration(object):
             else:
                 return False
 
-
-
-
-
-    # Die Methode ist überflüssig, wird nicht mehr verwendet
-    def delete_wg_by_name(self, key):
-        with WGMapper() as mapper:
-            mapper.find_wg_admin_by_email(key)
-            mapper.delete(key)
-
     def get_wg_id_by_email(self, email):
         with PersonMapper() as mapper:
             wg_id = mapper.find_wg_id_by_email(email)
@@ -88,34 +62,6 @@ class Administration(object):
     def get_wg_by_wg_id(self, wg_id):
         with WGMapper() as mapper:
             return mapper.find_wg_by_wg_id(wg_id)
-
-    def add_new_wg_bewohner_by_email(self, current_user, wg_id, new_user):
-        with WGMapper() as mapper:
-            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(current_user, wg_id)
-
-            if is_admin:
-                with WGMapper():
-                    mapper.add_wg_bewohner(new_user, wg_id)
-                    #print("Bewohner hinzugefügt")
-                    return True
-
-            else:
-                #print("Bewohner nicht hinzugefügt")
-                return False
-
-    def delete_wg_bewohner_by_email(self, current_user, wg_id, new_user):
-        with WGMapper() as mapper:
-            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(current_user, wg_id)
-
-            if is_admin:
-                with WGMapper():
-                    mapper.delete_wg_bewohner(new_user, wg_id)
-                    #print("Bewohner enfernt")
-                    return True
-
-            else:
-                print("Bewohner nicht entfernt")
-                return False
 
     """ Diese Methode löscht die wg und den kuehlschrank"""
     def delete_wg_and_kuehlschrank(self, wg_id):
@@ -817,10 +763,9 @@ class Administration(object):
     """Kuehlschrank-spezifische Methoden """
 
     def find_kuehlschrank_id(self, email):
-        with WGMapper() as wmapper:
-            obj = wmapper.find_by_email(email)
-            obj_id = obj[0].get_id()
-            return obj_id
+        with PersonMapper() as mapper:
+            obj = mapper.find_wg_id_by_email(email)
+            return obj
 
     def get_lebensmittel_by_kuehlschrank_id(self, kuehlschrank):
         with LebensmittelMapper() as mapper:

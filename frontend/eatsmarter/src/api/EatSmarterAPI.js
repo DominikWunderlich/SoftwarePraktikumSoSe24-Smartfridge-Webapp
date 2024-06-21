@@ -541,11 +541,7 @@ export default class EatSmarterAPI{
     #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/user/${wgName}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
-    #addWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/add/${current_user}/${new_user}`
-    #deleteWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/delete/${current_user}/${new_user}`
-
     #getPersonByWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wg_bewohner/${email}`
-
     #getWgAdminByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wgadmin/${email}`
 
      addWg(wgBO){
@@ -564,40 +560,6 @@ export default class EatSmarterAPI{
         })
     }
 
-    addWgBewohner(currentUser,  new_user){
-        return this.#fetchAdvanced(this.#addWgBewohnerURL(currentUser,  new_user), {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json, text/plain",
-                "Content-type": "application/json",
-            },
-        }).then((response) => {
-            // console.log(response)
-            if (response === true){
-                return true
-            }
-            else{
-                return false
-            }
-        });
-    }
-    deleteWgBewohner(currentUser,  new_user){
-        return this.#fetchAdvanced(this.#deleteWgBewohnerURL(currentUser,  new_user), {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json, text/plain",
-                "Content-type": "application/json",
-            },
-        }).then((response) => {
-            // console.log(response)
-            if (response === true){
-                return true
-            }
-            else{
-                return false
-            }
-        });
-    }
     getWGbyName(wgName) {
         return this.#fetchAdvanced(this.#getWgbyURL(wgName), {
             method: "GET",

@@ -62,7 +62,6 @@ function WGPage(props) {
         return emailRegex.test(email);
     };
 
-
       /**
      * Handler-Function, um als Admin Mitglieder zur WG hinzuzufügen
      */
@@ -115,13 +114,11 @@ function WGPage(props) {
 
     }
 
-
     /**
      * Handler-Function, um die Wg als Admin zu löschen
      */
     const handleDeleteWG = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
-        // console.log("Frontend", isAdmin);
 
         if(isAdmin){
             await EatSmarterAPI.getAPI().deleteWgByName(currentUser)
@@ -144,7 +141,6 @@ function WGPage(props) {
         setNotExistUserPopup(false);
         setShowNoValidEmailPopup(false);
     }
-
 
     return (
         <div>

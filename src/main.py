@@ -103,6 +103,7 @@ class WgOperations(Resource):
 class WgGetBewohnerOperations(Resource):
 
     @smartapi.marshal_list_with(person)
+    @secured
     def get(self, email):
         adm = Administration()
         wg_id = adm.get_wg_id_by_email(email)
@@ -113,8 +114,6 @@ class WgGetBewohnerOperations(Resource):
             return wg_b
         else:
             return "Error "
-
-
 
 @smartapi.route('/wg/user/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -132,6 +131,7 @@ class WgGetWgOperations(Resource):
         else:
             return '', 500
 
+    @secured
     def delete(self, email):
         adm = Administration()
         wg_id = adm.get_wg_id_by_email(email)
@@ -144,6 +144,7 @@ class WgGetWgOperations(Resource):
 @smartapi.param('email', 'Die E-mail der aktuellen person')
 class WgGetWgAdminWgOperations(Resource):
 
+    @secured
     def get(self, email):
         adm = Administration()
         wg_id = adm.get_wg_id_by_email(email)
@@ -170,32 +171,11 @@ class WgGetOperations(Resource):
             return '', 500
 
 
-# Wg bewohner hinzufügen
-@smartapi.route('/wg/add/<current_user>/<new_user>')
-@smartapi.response(500, 'Serverseitiger Fehler')
-class WgUpdateOperations(Resource):
-    def put(self, current_user, new_user):
-        adm = Administration()
-        wg_id = adm.get_wg_id_by_email(current_user)
-        i = adm.add_new_wg_bewohner_by_email(current_user, wg_id, new_user)
-
-        return i
-
-# Wg Bewohner entfernen
-@smartapi.route('/wg/delete/<current_user>/<new_user>')
-@smartapi.response(500, 'Serverseitiger Fehler')
-class WgUpdateOperations(Resource):
-    def put(self, current_user, new_user):
-        adm = Administration()
-        wg_id = adm.get_wg_id_by_email(current_user)
-        i = adm.delete_wg_bewohner_by_email(current_user, wg_id, new_user)
-
-        return i
-
 @smartapi.route('/wg/wgadmin/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('email')
 class GetWgAdminOperations(Resource):
+    @secured
     @smartapi.marshal_with(person)
     def get(self, email):
         adm = Administration()
@@ -347,7 +327,7 @@ class ProfileCheckOperations(Resource):
 @smartapi.param("email", 'Die Email des Profil-Objekts')
 class ProfileCheckEmailOperations(Resource):
     @smartapi.marshal_with(person)
-    #@secured
+    @secured
     def get(self, email):
         """ Auslesen eines bestimmten Profil-Objekts. """
         adm = Administration()
@@ -360,7 +340,7 @@ class ProfileCheckEmailOperations(Resource):
 @smartapi.param("wg_id")
 class ProfileUpdateWgIdOperations(Resource):
     @smartapi.marshal_with(person)
-    #@secured
+    @secured
     def put(self, wg_id, email):
         adm = Administration()
         p = adm.add_person_to_wg(wg_id, email)
@@ -371,7 +351,7 @@ class ProfileUpdateWgIdOperations(Resource):
 @smartapi.param('person_id')
 
 class ProfileDeletePersonFromWgOperations(Resource):
-
+    @secured
     @smartapi.marshal_with(person)
     def put(self, wg_id, person_id):
         adm = Administration()
