@@ -345,24 +345,23 @@ function Kuehlschrankinhalt(props) {
                         <label>Maßeinheit</label>
                         <div className="input-with-button">
                             <div className="inner-input-with-button">
-                                <input
-                                    type="text"
+                            <select
                                     name="masseinheit"
-                                    list="masseinheiten"
                                     value={formData.masseinheit}
                                     onChange={handleChange}
                                     className="eingabe"
-                                />
+                                >
+                                    {masseinheitenListe.map((masseinheit, index) => (
+                                        <option key={index} value={masseinheit.masseinheitsname}>
+                                            {masseinheit.masseinheitsname}
+                                        </option>
+                                    ))}
+                                </select>
                                 <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<ModeEditIcon />}>
                                     eigene Maßeinheit
                                 </Button>
                             </div>
                         </div>
-                        <datalist id="masseinheiten">
-                            {masseinheitenListe.map((masseinheit, index) => (
-                                <option key={index} value={masseinheit.masseinheitsname} />
-                            ))}
-                        </datalist>
                         <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                     </div>
                 </div>
