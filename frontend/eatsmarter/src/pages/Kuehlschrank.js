@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import '../sytles/WG-Landingpage.css';
 import LebensmittelBO from "../api/LebensmittelBO";
+import MasseinheitBO from "../api/MasseinheitBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
 import TrimAndLowerCase from "../functions";
@@ -27,9 +28,10 @@ function Kuehlschrankinhalt(props) {
         rezeptId: 0
     });
 
+    // fürs Hinzufügen einer eigenen Maßeinheit
     const [customMasseinheitData, setCustomMasseinheitData] = useState({
-        masseinheit: "",
-        grammMenge: ""
+        masseinheitsname: "",
+        umrechnungsfaktor: ""
     });
 
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
@@ -154,9 +156,9 @@ function Kuehlschrankinhalt(props) {
         try {
             // Erstellen des updated-food-Objekts.
             const updatedLebensmittel = new LebensmittelBO(
-                editFormData.lebensmittelName,
+                TrimAndLowerCase(editFormData.lebensmittelName),
                 editFormData.mengenanzahl,
-                editFormData.masseinheit,
+                TrimAndLowerCase(editFormData.masseinheit),
                 editFormData.kuehlschrankId,
                 editFormData.rezeptId
             );
@@ -178,6 +180,17 @@ function Kuehlschrankinhalt(props) {
     };
 
     /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
+    const addMasseinheit = async (masseinheitBO) => {
+        try {
+            console.log("neue Maßeinheit: ", masseinheitBO);
+            const newMasseinheit = await EatSmarterAPI.getAPI().addMasseinheit(masseinheitBO);
+            setMasseinheitenListe(prevList => [...prevList, newMasseinheit]);
+            
+        } catch (error) {
+            console.error("Fehler beim Hinzufügen der Maßeinheit:", error);
+        }
+    };
+
     const handleCustomMasseinheit = () => {
         setIsPopupOpen(true);
     };
@@ -190,20 +203,32 @@ function Kuehlschrankinhalt(props) {
         });
     };
 
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-    };
+    const handleSaveCustomMasseinheit = async () => {
+        const { masseinheitsname, umrechnungsfaktor } = customMasseinheitData;
 
-    const handleSaveCustomMasseinheit = () => {
-        const { masseinheit, grammMenge } = customMasseinheitData;
+        if (masseinheitsname && umrechnungsfaktor) {
+            const newMasseinheit = new MasseinheitBO(
+                TrimAndLowerCase(masseinheitsname));
+            newMasseinheit.setumrechnungsfaktor(parseFloat(umrechnungsfaktor));
 
-        if (masseinheit && grammMenge) {
-            setCustomMasseinheit(masseinheit);
-            setFormData({
-                ...formData,
-                masseinheit: masseinheit
-            });
-            setIsPopupOpen(false);
+            try {
+                await addMasseinheit(newMasseinheit);
+
+                setCustomMasseinheit(masseinheitsname);
+                setFormData({
+                    ...formData,
+                    masseinheit: masseinheitsname
+                });
+                setIsPopupOpen(false);
+                setCustomMasseinheitData({
+                    masseinheitsname: "",
+                    umrechnungsfaktor: ""
+                });
+
+                fetchMasseinheiten();
+            } catch (error) {
+                console.error("Fehler beim Hinzufügen der benutzerdefinierten Maßeinheit:", error);
+            }
         } else {
             alert("Bitte füllen Sie beide Felder aus.");
         }
@@ -351,23 +376,22 @@ function Kuehlschrankinhalt(props) {
                                 <label>Name der Maßeinheit</label>
                                 <input
                                     type="text"
-                                    name="masseinheit"
-                                    list="masseinheiten"
-                                    value={formData.masseinheit}
-                                    onChange={handleChange}
+                                    name="masseinheitsname"
+                                    value={customMasseinheitData.masseinheitsname}
+                                    onChange={handlePopupInputChange}
                                     className="eingabe"
                                 />
-                                <label>Umrechnungsfaktor in Gramm</label>
+                                <label>Referenzmenge zu Gramm oder Milliliter</label>
                                 <input
                                 type="number"
-                                name="mengenanzahl"
-                                value={formData.mengenanzahl}
-                                onChange={handleChange}
+                                name="umrechnungsfaktor"
+                                value={customMasseinheitData.umrechnungsfaktor}
+                                onChange={handlePopupInputChange}
                                 className="eingabe"
                             />
                             </div>
                         </div>
-                        <button type="button" onClick={handleClosePopup}>Speichern</button>
+                        <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
                     </div>
                 </div>
             )}

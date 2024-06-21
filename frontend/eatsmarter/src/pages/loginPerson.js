@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import '../sytles/WG-Landingpage.css';
 import PersonBO from "../api/PersonBO";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
 import TrimAndLowerCase from "../functions";
+import InfoIcon from '@mui/icons-material/Info';
+import '../sytles/WG-Landingpage.css';
+import '../sytles/loginPerson.css';
+
 
 function LoginPerson(props) {
     const [formData, setFormData] = useState({
@@ -13,20 +16,23 @@ function LoginPerson(props) {
         firstName: "",
         lastName: "",
         googleId: props.user.uid,
+        wgId: null
     });
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
     const [isRegistered, setIsRegistered] = useState(null);
+    const [PopUpOpen, setPopUpOpen] = useState(false);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!Object.keys(errors).length) {
             const newPerson = new PersonBO(
                 TrimAndLowerCase(props.user.email),
-                TrimAndLowerCase(props.user.displayName),
+                TrimAndLowerCase(formData.userName),
                 TrimAndLowerCase(formData.firstName),
                 TrimAndLowerCase(formData.lastName),
-                props.user.uid
+                props.user.uid,
+                formData.wgId
             );
             await EatSmarterAPI.getAPI()
                 .addUser(newPerson)
@@ -67,6 +73,14 @@ function LoginPerson(props) {
     checkRegistration();
   }, []);
 
+    const openInfoIcon = () => {
+        setPopUpOpen(true);
+    }
+
+    const closeInfoIcon = () => {
+        setPopUpOpen(false);
+    }
+
 
     return (
         <div>
@@ -90,12 +104,30 @@ function LoginPerson(props) {
                                 value={formData.lastName}
                                 onChange={handleChange}
                             />
-                            <button className="button" type="submit" >Bestätigen</button>
+                            <label>Nutzername:</label>
+                            <div className="input-nutzername">
+                                <input
+                                    type="text"
+                                    name={"userName"}
+                                    value={formData.userName}
+                                    onChange={handleChange}
+                                />
+                                <InfoIcon className="info-icon" onClick={openInfoIcon}></InfoIcon>
+                            </div>
+                            <button className="button" type="submit">Bestätigen</button>
                         </div>
-                        
                     </form>
                 </div>
             </div>
+
+            {PopUpOpen && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <p className="h2-black"> Der Nickname wird von Google übernommen. Sie können Ihren Nicknamen über dieses Input Feld ändern.</p>
+                        <button type="button" onClick={closeInfoIcon}>Schließen</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -19,12 +19,12 @@ class Administration(object):
 
     """ WG-spezifische Methoden """
 
-    def create_wg(self, wg_name, wg_bewohner, wg_ersteller):
+    def create_wg(self, wg_name, wg_ersteller):
         """ Erstellen einer WG-Instanz. """
         self.initialize_units()
+        print(f"DEBUG IN create_wg in admin.py wg_name = {wg_name}, wg_ersteller={wg_ersteller}")
         w = WG()
         w.set_wg_name(wg_name)
-        w.set_wg_bewohner(wg_bewohner)
         w.set_wg_ersteller(wg_ersteller)
         w.set_id(1)
 
@@ -36,7 +36,10 @@ class Administration(object):
         with KuehlschrankMapper() as mapper:
             mapper.create_kuehlschrank(wg_id)
 
-        return self
+        with PersonMapper() as mapper:
+            wg_ersteller = w.get_wg_ersteller()
+            mapper.insert_wg_id_to_wg_ersteller(wg_id, wg_ersteller)
+
 
     def get_wg_by_name(self, key):
         """ Auslesen einer WG Instanz nach Name """
@@ -55,12 +58,27 @@ class Administration(object):
             wgs = mapper.find_by_email(email)
             # print("wgs", wgs)
 
+
+
         for wg in wgs:
             # print(wg)
             if wg.get_wg_ersteller() == email:
                 return True
 
             return False
+
+    def check_if_current_user_is_wg_admin(self, email, wg_id):
+        with WGMapper() as mapper:
+            is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(email, wg_id)
+
+            if is_admin:
+                return True
+
+            else:
+                return False
+
+
+
 
 
     # Die Methode ist überflüssig, wird nicht mehr verwendet
@@ -70,8 +88,13 @@ class Administration(object):
             mapper.delete(key)
 
     def get_wg_id_by_email(self, email):
+        with PersonMapper() as mapper:
+            wg_id = mapper.find_wg_id_by_email(email)
+            return wg_id
+
+    def get_wg_by_wg_id(self, wg_id):
         with WGMapper() as mapper:
-            return mapper.find_wg_id_by_email(email)
+            return mapper.find_wg_by_wg_id(wg_id)
 
     def add_new_wg_bewohner_by_email(self, current_user, wg_id, new_user):
         with WGMapper() as mapper:
@@ -101,24 +124,35 @@ class Administration(object):
                 print("Bewohner nicht entfernt")
                 return False
 
-    """ Diese Methode löscht die wg und den kuehlschrankinhalt"""
+    """ Diese Methode löscht die wg und den kuehlschrank"""
     def delete_wg_and_kuehlschrank(self, wg_id):
+        with PersonMapper() as mapper:
+            mapper.delete_all_wg_id_person(wg_id)
+
         with WGMapper() as mapper:
             mapper.delete_wg_and_kuehlschrank(wg_id)
 
-    def get_wg_admin(self, email):
+        # TODO: add Kuhelschrankmapper delete Lebensmittel and recipe where Wg_id = wg_id, wenn Patrik wg_name zu wg_id geändert hat
+
+
+    def get_wg_admin(self, wg_id):
         with WGMapper() as mapper:
-            return mapper.find_wg_admin_by_email(email)
+            wg_admin = mapper.find_wg_admin_by_email(wg_id)
+
+        with PersonMapper() as mapper:
+            person = mapper.find_by_email(wg_admin[0].get_wg_ersteller())
+            return person
 
     """ User Methoden """
-    def create_user(self, email, username, firstname, lastname, googleid):
+    def create_user(self, email, username, firstname, lastname, googleid, wg_id):
         """ Erstellen des Objektes. """
         p = Person()
         p.set_email(email),
         p.set_benutzername(username),
         p.set_vorname(firstname),
         p.set_nachname(lastname),
-        p.set_google_id(googleid)
+        p.set_google_id(googleid),
+        p.set_wg_id(wg_id)
 
         with PersonMapper() as mapper:
             if mapper.find_by_email(email):
@@ -134,6 +168,7 @@ class Administration(object):
         p_email = p.get_email()
 
         """ Check ob die Person bereits in einer WG ist. """
+        #TODO: anpassen an Person tabelle
         with WGMapper() as wgmapper:
             res = wgmapper.find_by_email(p_email)
             if res is not None:
@@ -151,7 +186,135 @@ class Administration(object):
         with PersonMapper() as mapper:
             mapper.update(account)
 
+    def get_user_by_email(self, email):
+        """ Auslesen einer Account-Instanz anhand der Email. """
+        with PersonMapper() as mapper:
+            return mapper.find_by_email(email)
+
     """ Rezept-spezifische Methoden """
+
+    def get_anzahl_portionen_of_recipe_by_rezept_id(self, rezept_id):
+        with RezeptMapper() as mapper:
+            alte_anzahl_portionen = mapper.find_anzahl_portionen_by_rezept_id(rezept_id)
+            #In dieser Variablen wird die alte anzahl portionen des rezepts gespeichert
+            print("Bin ich wiiiii")
+            print(alte_anzahl_portionen)
+            print("Bin ich wirklich hier")
+            return alte_anzahl_portionen
+        #get_anzahl_portionen_of_recipe_by_rezept_id klappt
+    def change_anzahl_portionen_in_rezept_tabelle(self, rezept_id, new_portionen):
+        print("hallo hier in der admin.py in der change_anzahl_portionen_in_rezept_tabelle Methode")
+        print(new_portionen)
+        print(rezept_id)
+        with RezeptMapper() as mapper:
+            mapper.update_anzahl_portionen(rezept_id, new_portionen)
+            return print("Es hat geklappt")
+        #change_anzahl_portionen_in_rezept_tabelle klappt
+
+    #get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen ist überflüssig
+    def get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen(self, rezept_id, new_portionen):
+        # Alte Anzahl Portionen abrufen
+        alte_anzahl_portionen = self.get_anzahl_portionen_of_recipe_by_rezept_id(rezept_id)
+
+        # Anzahl Portionen aktualisieren
+        self.change_anzahl_portionen_in_rezept_tabelle(rezept_id, new_portionen)
+
+        # Neue Anzahl Portionen abrufen
+        neue_anzahl_portionen = self.get_anzahl_portionen_of_recipe_by_rezept_id(rezept_id)
+
+        # Rückgabe der alten und neuen Anzahl Portionen
+        print("in der get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen methode")
+        print(alte_anzahl_portionen)
+        print(neue_anzahl_portionen)
+        print("get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen Methode")
+        return alte_anzahl_portionen, neue_anzahl_portionen
+    #get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen klappt
+
+    def get_alle_lebensmittel_by_rezept_id(self, rezept_id):
+        lebensmittel = self.get_lebensmittel_by_rezept_id(rezept_id)
+        print("wo bin ich hier 14062024")
+        print(lebensmittel)
+        print()
+        return lebensmittel
+    #get_alle_lebensmittel_by_rezept_id klappt
+
+    # Diese Methode macht
+    # 1. sie erhält die rezept_id und die neue anzahl Portionen
+    # 2. Sie speichert den aktuellen anzahl_portionen Wert des rezepts in einer variablen
+    # 3. sie ändert die Tabelle Rezept Spalte anzahl_portionen Wert auf den neuen, mitgegebenen
+    # 4. Sie speichert den neuen anzahl_portionen Wert des rezepts in einer variablen
+    # 5. Sie macht eine DB abfrage und erhält alle Einträge aus der Lebensmittel Tabelle die eine
+    #   bestimmte rezept_id haben als liste
+    # 6. für jedes Listenobjekt wird die mengenanzahl des Lebensmittels ermittelt
+    #   und so der neue mengenwert berechnet: neue_menge = (alte_menge / alte_anzahl_portionen) * neue_anzahl_portionen
+    # 7. dann wird die create_menge Methode benutzt
+    # 8. dann wird die update_menge_in_lebensmittel_in_rezept Methode benutzt um in der Tabelle
+    #   Lebensmittel die Spalte mengenanzahl_id zu updaten
+
+    def berechne_neuen_mengen_wert(self, rezept_id, new_portionen):
+        alte_anzahl_portionen = self.get_anzahl_portionen_of_recipe_by_rezept_id(rezept_id)
+
+        # Konvertiere alte_anzahl_portionen und new_portionen in numerische Typen
+        alte_anzahl_portionen = float(alte_anzahl_portionen)
+        new_portionen = float(new_portionen)
+
+        # Anzahl Portionen aktualisieren
+        self.change_anzahl_portionen_in_rezept_tabelle(rezept_id, new_portionen)
+
+        # Neue Anzahl Portionen abrufen
+        neue_anzahl_portionen = self.get_anzahl_portionen_of_recipe_by_rezept_id(rezept_id)
+
+        # Konvertiere neue_anzahl_portionen in numerischen Typ
+        neue_anzahl_portionen = float(neue_anzahl_portionen)
+
+        # Rückgabe der alten und neuen Anzahl Portionen
+        print("in der get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen methode")
+        print(alte_anzahl_portionen)
+        print(neue_anzahl_portionen)
+        print("get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen Methode")
+
+        # Alle Lebensmittel für das Rezept abrufen
+        lebensmittel_list = self.get_alle_lebensmittel_by_rezept_id(rezept_id)
+
+        for lebensmittel in lebensmittel_list:
+            alte_menge = lebensmittel.get_mengenanzahl()
+            print("blablablabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaallllllllllllllllllllllll")
+            print("alte menge")
+            print(alte_menge)
+            print("alte anzahl port")
+            print(alte_anzahl_portionen)
+            print("neue anzahl port")
+            print(neue_anzahl_portionen)
+            neue_menge = (alte_menge / alte_anzahl_portionen) * neue_anzahl_portionen
+            print("Hier wird die neue menge berechnet")
+            print(neue_menge)
+            neue_menge_obj = self.create_menge2(neue_menge) #Hier kommt ein false das ist das Problem
+            print("Zeile 234")
+            print(neue_menge_obj) #das ist die id von der neuen menge Die id ist jetz also false
+            print("das drüber ist die id von der neuen menge")
+            self.update_menge_in_lebensmittel_in_rezept(lebensmittel, neue_menge_obj)
+
+
+        return alte_anzahl_portionen, neue_anzahl_portionen
+
+    def update_menge_in_lebensmittel_in_rezept(self, lebensmittel, neue_menge):
+        print(neue_menge) #hier steht die id von der neuen menge
+        #mapper_instance = MengenanzahlMapper()  # Instanziierung des Mappers
+        print("Komm ich bis hier her?")
+        #neue_menge_obj = mapper_instance.find_by_key(neue_menge)
+        print("Hier stuck")
+        #print(neue_menge_obj)
+        print(lebensmittel)
+        print("TESTTTT")
+        print(lebensmittel.get_id())
+        #lebensmittel_id = lebensmittel.get_id()
+
+        print("Test zuende")
+        #lebensmittel.set_mengenanzahl(neue_menge.get_menge())
+        #lebensmittel.set_mengenanzahl_id(neue_menge.get_id())
+        with LebensmittelMapper() as mapper:
+            mapper.update_menge(lebensmittel, neue_menge)
+            print(f"Menge in Lebensmittel aktualisiert: {lebensmittel}")
 
     def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung):
         """ Erstellen einer Rezept-Instanz. """
@@ -205,7 +368,7 @@ class Administration(object):
 
             else:
                 return False
-            
+
     def delete_rezept_by_email(self, current_user, rezept_id):
             with RezeptMapper() as mapper:
                 is_admin = mapper.check_if_current_user_is_rezept_admin_using_email_and_wg_id(current_user, rezept_id)
@@ -223,10 +386,30 @@ class Administration(object):
     def delete_rezept_by_id(self, rezept_id):
         with RezeptMapper() as mapper:
             return mapper.delete(rezept_id)
-        
+
     """ Lebensmittel-spezifische Methoden """
 
     def create_menge(self, menge):
+        # Erstellen eines Mengenobjekts. Dieses Objekt wird für die Erstellung eines
+        # Lebensmitels benötigt.
+        amount = Mengenanzahl()
+        amount.set_menge(menge)
+        amount.set_id(1)
+
+        with MengenanzahlMapper() as mapper:
+            return mapper.insert(amount)
+
+    def create_menge2(self, menge):
+        # Erstellen eines Mengenobjekts. Dieses Objekt wird für die Erstellung eines
+        # Lebensmitels benötigt.
+        amount = Mengenanzahl()
+        amount.set_menge(menge)
+        amount.set_id(1)
+
+        with MengenanzahlMapper() as mapper:
+            return mapper.insert2(amount)
+
+    def create_menge_and_return_id(self, menge):
         # Erstellen eines Mengenobjekts. Dieses Objekt wird für die Erstellung eines
         # Lebensmitels benötigt.
         amount = Mengenanzahl()
@@ -256,6 +439,7 @@ class Administration(object):
                 'kilogramm': 1000,
                 'gramm': 1,
                 'l': 1000,
+                'milliliter': 1,
                 'ml': 1,
                 'kg': 1000,
                 'gr': 1,
@@ -337,7 +521,7 @@ class Administration(object):
         time.sleep(1)
         with LebensmittelMapper() as lmapper:
             return lmapper.insert(food)
-        
+
     """ Diese Methode updated vorhandene Lebensmittel im Kuehlschrank, wenn die Menge geändert wird """
     def update_lebensmittel(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
         # Zuerst benötigen wir die zugehörige ID der Maßeinheit. "meinheit" stellt dabei die Eingabe
@@ -836,6 +1020,7 @@ class Administration(object):
             return mapper.find_by_key(rezept)
 
     def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
+        measurements = self.build_unit_dict()
         food_id_in_fridge = set()  # Set für die Lebensmittel im Kühlschrank
         rezept_set = set()  # Set für alle Rezepte die gekocht werden können
 
@@ -859,7 +1044,7 @@ class Administration(object):
 
                 for x in fridge:
                     if elem.get_lebensmittelname() == x.get_lebensmittelname():
-                        new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit)
+                        new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit, measurements)
                         # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
                         if new_amount.get_mengenanzahl() < 0:
@@ -886,3 +1071,16 @@ class Administration(object):
     def get_rezepte_by_rezept_id(self, rezept_id):
         with RezeptMapper() as mapper:
             return mapper.find_by_rezept_id2(rezept_id)
+
+
+    def find_person_by_wg_bewohner(self, wg_id, wg_ersteller):
+        with PersonMapper() as mapper:
+            return mapper.find_all_by_wg_id(wg_id, wg_ersteller)
+
+    def add_person_to_wg(self, wg_id, email):
+        with PersonMapper() as mapper:
+            return mapper.update_wg_id_person(wg_id, email)
+
+    def delete_person_from_wg(self, wg_id, person_id):
+        with PersonMapper() as mapper:
+            return mapper.delete_wg_id_person(wg_id, person_id)

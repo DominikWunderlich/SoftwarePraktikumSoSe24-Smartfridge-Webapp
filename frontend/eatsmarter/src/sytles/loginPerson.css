@@ -1,0 +1,16 @@
+.input-nutzername {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-nutzername input {
+    padding-right: 30px;
+  }
+
+  .info-icon {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #54545a;
+  }

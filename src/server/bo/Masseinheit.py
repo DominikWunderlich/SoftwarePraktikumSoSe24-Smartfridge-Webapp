@@ -33,7 +33,7 @@ class Masseinheit(bo):
         ma = Masseinheit()
         ma.set_id(dictionary["id"])
         ma.set_masseinheit(dictionary["masseinheitsname"])
-        #ma.set_umrechnungsfaktor(dictionary["umrechnungsfaktor"])
+        ma.set_umrechnungsfaktor(dictionary["umrechnungsfaktor"])
         return ma
 
    
