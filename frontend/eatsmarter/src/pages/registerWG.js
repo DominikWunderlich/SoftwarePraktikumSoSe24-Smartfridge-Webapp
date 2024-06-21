@@ -12,7 +12,6 @@ import Homepage from "./Homepage";
 function WGLandingpage(props) {
     const [formData, setFormData] = useState({
         wgname: "",
-        wgbewohner: "",
         wgadmin: props.user.email
     })
 
@@ -27,20 +26,18 @@ function WGLandingpage(props) {
         }
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (!Object.keys(errors).length) {
             const newWG = new WgBO(
-                // TODO: Wg name auch Trim and lowercase?
                 formData.wgname,
-                TrimAndLowerCase(formData.wgbewohner),
                 TrimAndLowerCase(formData.wgadmin),
             );
             console.log(newWG)
-            EatSmarterAPI.getAPI()
-                .addWg(newWG)
-            navigate("/wg/:wgName")
+            await EatSmarterAPI.getAPI().addWg(newWG)
+            navigate("/wg")
+
         }
     };
 
@@ -74,15 +71,6 @@ function WGLandingpage(props) {
                                 type={"text"}
                                 name={"wgname"}
                                 value={formData.wgname}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className='formitem'>
-                            <label>Füge die E-Mail-Adresse deines Mitbewohners hinzu:</label>
-                            <input
-                                type={"text"}
-                                name={"wgbewohner"}
-                                value={formData.wgbewohner}
                                 onChange={handleChange}
                             />
                         </div>

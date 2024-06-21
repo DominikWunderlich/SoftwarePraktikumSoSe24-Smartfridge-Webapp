@@ -3,10 +3,9 @@ import BusinessObject from "./BusinessObject";
 export default class WgBO extends BusinessObject{
 
     // Jedes erstellte WG-BusinessObjekt wird mit folgenden Attributen erstellt
-    constructor(aWgName, aWgBewohner, aWgAdmin){
+    constructor(aWgName, aWgAdmin){
         super();
         this.wgName = aWgName;
-        this.wgBewohner = aWgBewohner;
         this.wgAdmin = aWgAdmin;
     }
 
@@ -17,14 +16,6 @@ export default class WgBO extends BusinessObject{
 
     getWgName(){
         return this.wgName;
-    }
-
-    setWGBewohner(aWgBewohner){
-        this.wgBewohner = aWgBewohner;
-    }
-
-    getWGBewohner(){
-        return this.wgBewohner;
     }
 
     setWgAdmin(aWgAdmin){

@@ -41,7 +41,6 @@ bo = api.model('BusinessObject', {
 
 wg = api.inherit('WG', bo, {
     'wgName': fields.String(attribute='wg_name', description='Name einer Wohngemeinschaft'),
-    'wgBewohner': fields.String(attribute='wg_bewohner', description='Teilnehmerliste einer WG'),
     'wgAdmin': fields.String(attribute='wg_ersteller', description='Admin einer WG')
 })
 
@@ -50,7 +49,8 @@ person = api.inherit('Person', bo, {
     'userName': fields.String(attribute='benutzername', description='Username eines Users'),
     'firstName': fields.String(attribute='vorname', description='Vorname eines Users'),
     'lastName': fields.String(attribute='nachname', description='Nachname eines Users'),
-    'googleId': fields.String(attribute='google_id', description='Google-ID eines Users')
+    'googleId': fields.String(attribute='google_id', description='Google-ID eines Users'),
+    'wgId': fields.Integer(attribute='wg_id', description='WgId')
 })
 
 rezept = api.inherit('Rezept', bo, {
@@ -92,11 +92,28 @@ class WgOperations(Resource):
         if proposal is not None:
             result = adm.create_wg(
                 proposal.get_wg_name(),
-                proposal.get_wg_bewohner(),
                 proposal.get_wg_ersteller())
             return result, 200
         else:
             return 'Fehler in WG-Operations post methode', 500
+
+@smartapi.route("/wg/wg_bewohner/<email>")
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('email', 'Die E-mail der aktuellen person')
+class WgGetBewohnerOperations(Resource):
+
+    @smartapi.marshal_list_with(person)
+    def get(self, email):
+        adm = Administration()
+        wg_id = adm.get_wg_id_by_email(email)
+        wg_ersteller = adm.get_wg_admin(wg_id)
+        wg_b = adm.find_person_by_wg_bewohner(wg_id, wg_ersteller[0].email)
+
+        if wg_b is not None:
+            return wg_b
+        else:
+            return "Error "
+
 
 
 @smartapi.route('/wg/user/<email>')
@@ -107,7 +124,8 @@ class WgGetWgOperations(Resource):
     @secured
     def get(self, email):
         adm = Administration()
-        wg_p = adm.getWGByEmail(email)
+        wg_id = adm.get_wg_id_by_email(email)
+        wg_p = adm.get_wg_by_wg_id(wg_id)
 
         if wg_p is not None:
             return wg_p
@@ -116,21 +134,22 @@ class WgGetWgOperations(Resource):
 
     def delete(self, email):
         adm = Administration()
-        wgs = adm.getWGByEmail(email)
-
-        for wg in wgs:
-            wg_id = wg.get_id()
-            adm.delete_wg_and_kuehlschrank(wg_id)
+        wg_id = adm.get_wg_id_by_email(email)
+        print(wg_id)
+        return adm.delete_wg_and_kuehlschrank(wg_id)
             #TODO: Alle Rezepte anhand der Wg id auch löschen?
 
-@smartapi.route('/wg/user/wgAdmin/<email>')
+@smartapi.route('/wg/user/wgadmin/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('email', 'Die E-mail der aktuellen person')
 class WgGetWgAdminWgOperations(Resource):
+
     def get(self, email):
         adm = Administration()
-        # print("True in der Main.py?", adm.is_current_user_wg_admin(email))
-        return adm.is_current_user_wg_admin(email)
+        wg_id = adm.get_wg_id_by_email(email)
+
+        return adm.check_if_current_user_is_wg_admin(email, wg_id)
+
 
 @smartapi.route('/wg/<wg_name>')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -172,6 +191,17 @@ class WgUpdateOperations(Resource):
         i = adm.delete_wg_bewohner_by_email(current_user, wg_id, new_user)
 
         return i
+
+@smartapi.route('/wg/wgadmin/<email>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('email')
+class GetWgAdminOperations(Resource):
+    @smartapi.marshal_with(person)
+    def get(self, email):
+        adm = Administration()
+        wg_id = adm.get_wg_id_by_email(email)
+        wg_admin = adm.get_wg_admin(wg_id)
+        return wg_admin
 
 
 @smartapi.route('/kuehlschrankinhalt/<wg_id>')
@@ -289,6 +319,42 @@ class ProfileCheckOperations(Resource):
         p = adm.get_user_by_google_id(google_id)
         return p
 
+@smartapi.route('/login/checkemail/<email>')
+@smartapi.response(500, 'Serverseitiger-Fehler')
+@smartapi.param("email", 'Die Email des Profil-Objekts')
+class ProfileCheckEmailOperations(Resource):
+    @smartapi.marshal_with(person)
+    #@secured
+    def get(self, email):
+        """ Auslesen eines bestimmten Profil-Objekts. """
+        adm = Administration()
+        p = adm.get_user_by_email(email)
+        return p
+
+@smartapi.route('/user/person/<wg_id>/<email>')
+@smartapi.response(500, 'Serverseitiger-Fehler')
+@smartapi.param("email", 'Die Email des Profil-Objekts')
+@smartapi.param("wg_id")
+class ProfileUpdateWgIdOperations(Resource):
+    @smartapi.marshal_with(person)
+    #@secured
+    def put(self, wg_id, email):
+        adm = Administration()
+        p = adm.add_person_to_wg(wg_id, email)
+        return p
+
+@smartapi.route('/user/person/delete/<wg_id>/<person_id>')
+@smartapi.param('wg_id')
+@smartapi.param('person_id')
+
+class ProfileDeletePersonFromWgOperations(Resource):
+
+    @smartapi.marshal_with(person)
+    def put(self, wg_id, person_id):
+        adm = Administration()
+        p = adm.delete_person_from_wg(wg_id, person_id)
+        return p
+
 @smartapi.route('/rezept')
 @smartapi.response(500, 'Serverseitiger Fehler')
 class RezeptOperations(Resource):
@@ -328,6 +394,31 @@ class RezeptOperations(Resource):
             return rezepte
         else:
             return '', 500
+
+@smartapi.route('/rezept/einrezept/anzahlPortionen/updateundget/<rezept_id>')
+@smartapi.response(500, 'Serverseitiger Fehler')
+@smartapi.param('rezept_id', 'ID des Rezepts')
+@smartapi.param('new_portionen', 'Neue Anzahl Portionen')
+class UpdateUndGetAnzahlPortionenInRezept(Resource):
+    """@smartapi.expect(smartapi.model('Portionen', {
+       'new_portionen': fields.Integer(required=True, description='Neue Anzahl der Portionen')
+    }))"""
+    def post(self, rezept_id):
+        print(api.payload) #hier ist nur die neue anzahl portionen drin
+        #new_portionen = api.payload.get('new_portionen')
+        new_portionen = api.payload
+        #new_portionen = request.args.get('new_portionen')
+        new_portionen = int(new_portionen)
+        adm = Administration()
+        alte_anzahl, neue_anzahl = adm.berechne_neuen_mengen_wert(rezept_id, new_portionen)
+
+        if alte_anzahl is not None and neue_anzahl is not None:
+            return {
+                'alte_anzahl_portionen': alte_anzahl,
+                'neue_anzahl_portionen': neue_anzahl
+            }, 200
+        else:
+            return "Fehler beim Aktualisieren der Anzahl Portionen", 500
 
 @smartapi.route('/rezeptt/<rezept_id>/lebensmittel')
 @smartapi.response(500, 'Serverseitiger Fehler')
@@ -598,6 +689,7 @@ class MasseinheitOperation(Resource):
                 return gen_rezepte
             else:
                 return '', 500
+
 
 
 if __name__ == '__main__':
