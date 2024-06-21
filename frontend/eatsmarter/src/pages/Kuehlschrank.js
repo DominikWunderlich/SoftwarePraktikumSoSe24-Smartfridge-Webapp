@@ -156,9 +156,9 @@ function Kuehlschrankinhalt(props) {
         try {
             // Erstellen des updated-food-Objekts.
             const updatedLebensmittel = new LebensmittelBO(
-                editFormData.lebensmittelName,
+                TrimAndLowerCase(editFormData.lebensmittelName),
                 editFormData.mengenanzahl,
-                editFormData.masseinheit,
+                TrimAndLowerCase(editFormData.masseinheit),
                 editFormData.kuehlschrankId,
                 editFormData.rezeptId
             );
@@ -207,7 +207,8 @@ function Kuehlschrankinhalt(props) {
         const { masseinheitsname, umrechnungsfaktor } = customMasseinheitData;
 
         if (masseinheitsname && umrechnungsfaktor) {
-            const newMasseinheit = new MasseinheitBO(masseinheitsname); 
+            const newMasseinheit = new MasseinheitBO(
+                TrimAndLowerCase(masseinheitsname));
             newMasseinheit.setumrechnungsfaktor(parseFloat(umrechnungsfaktor));
 
             try {
