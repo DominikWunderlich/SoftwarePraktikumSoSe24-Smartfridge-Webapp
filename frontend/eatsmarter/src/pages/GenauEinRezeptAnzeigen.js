@@ -18,7 +18,9 @@ function GenauEinRezeptAnzeigen(props) {
     const [formData, setFormData] = useState({
         lebensmittelname: "",
         mengenanzahl: "",
-        masseinheit: ""
+        masseinheit: "",
+        kuehlschrankId: 0,
+        rezeptId: 0
     });
 
     const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
@@ -49,7 +51,9 @@ function GenauEinRezeptAnzeigen(props) {
         }
 
         const newMengenanzahl = new mengenanzahlBO(TrimAndLowerCase(formData.mengenanzahl));
-        const newMasseinheit = new MasseinheitBO(TrimAndLowerCase(formData.masseinheit));
+        const newMasseinheit = new MasseinheitBO(
+            TrimAndLowerCase(formData.masseinheit),
+            0); // 0 steht für den Umrechnungsfaktor.
         const newLebensmittel = new LebensmittelBO(
             TrimAndLowerCase(formData.lebensmittelname),
             TrimAndLowerCase(formData.mengenanzahl),

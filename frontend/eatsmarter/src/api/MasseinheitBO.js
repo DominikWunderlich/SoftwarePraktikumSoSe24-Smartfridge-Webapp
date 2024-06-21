@@ -3,9 +3,10 @@ import BusinessObject from "./BusinessObject";
 export default class MasseinheitBO extends BusinessObject{
 
     // Jedes erstellte BusinessObjekt wird mit folgenden Attributen erstellt
-    constructor(masseinheit){
+    constructor(masseinheit, faktor){
         super();
         this.masseinheitsname = masseinheit;
+        this.umrechnungsfaktor = faktor;
     }
 
     // Get- und Setter:
