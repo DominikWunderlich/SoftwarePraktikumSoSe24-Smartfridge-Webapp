@@ -17,14 +17,9 @@ class RezeptMapper(mapper):
             else:
                 rezept.set_id(1)
 
-        #    for (maxid,) in tuples:
-        #if maxid is not None:
-        #    rezept.set_id(int(maxid) + 1)
-        #else:
-        #    rezept.set_id(1)
 
-        command = "INSERT INTO datenbank.rezept (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung) VALUES (%s, %s, %s, %s, %s, %s)"
-        data = (rezept.get_id(), rezept.get_rezept_name(), rezept.get_anzahl_portionen(), rezept.get_rezept_ersteller(), rezept.get_wg_name(), rezept.get_rezept_anleitung())
+        command = "INSERT INTO datenbank.rezept (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung) VALUES (%s, %s, %s, %s, %s, %s)"
+        data = (rezept.get_id(), rezept.get_rezept_name(), rezept.get_anzahl_portionen(), rezept.get_rezept_ersteller(), rezept.get_wg_id(), rezept.get_rezept_anleitung())
         cursor.execute(command, data)
 
         self._connector.commit()
@@ -39,16 +34,16 @@ class RezeptMapper(mapper):
     def find_all(self):
         result = []
         cursor = self._connector.cursor()
-        cursor.execute("SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name FROM datenbank.rezept")
+        cursor.execute("SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id FROM datenbank.rezept")
         tuples = cursor.fetchall()
 
-        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name) in tuples:
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id) in tuples:
             rezept = Rezept()
             rezept.set_id(rezept_id)
             rezept.set_rezept_name(rezept_name)
             rezept.set_anzahl_portionen(anzahl_portionen)
             rezept.set_rezept_ersteller(rezept_ersteller)
-            rezept.set_wg_name(wg_name)
+            rezept.set_wg_id(wg_id)
             result.append(rezept)
 
         self._connector.commit()
@@ -56,19 +51,19 @@ class RezeptMapper(mapper):
 
         return result
 
-    def find_all_by_wg_name(self, wg_name):
+    def find_all_by_wg_id(self, wg_id):
         result = []
         cursor = self._connector.cursor()
-        cursor.execute("SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung FROM datenbank.rezept WHERE wg_name = %s", (wg_name,))
+        cursor.execute("SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung FROM datenbank.rezept WHERE wg_id = %s", (wg_id,))
         tuples = cursor.fetchall()
 
-        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung) in tuples:
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung) in tuples:
             rezept = Rezept()
             rezept.set_id(rezept_id)
             rezept.set_rezept_name(rezept_name)
             rezept.set_anzahl_portionen(anzahl_portionen)
             rezept.set_rezept_ersteller(rezept_ersteller)
-            rezept.set_wg_name(wg_name)
+            rezept.set_wg_id(wg_id)
             rezept.set_rezept_anleitung(rezept_anleitung)
             result.append(rezept)
 
@@ -80,16 +75,16 @@ class RezeptMapper(mapper):
     def find_by_rezept_id(self, rezept_id):
         result = []
         cursor = self._connector.cursor()
-        cursor.execute(f"SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung FROM datenbank.rezept WHERE rezept_id = '{rezept_id}'")
+        cursor.execute(f"SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung FROM datenbank.rezept WHERE rezept_id = '{rezept_id}'")
         tuples = cursor.fetchall()
 
-        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung) in tuples:
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung) in tuples:
             rezept = Rezept()
             rezept.set_id(rezept_id)
             rezept.set_rezept_name(rezept_name)
             rezept.set_anzahl_portionen(anzahl_portionen)
             rezept.set_rezept_ersteller(rezept_ersteller)
-            rezept.set_wg_name(wg_name)
+            rezept.set_wg_id(wg_id)
             rezept.set_rezept_anleitung(rezept_anleitung)
             result.append(rezept)
 
@@ -120,10 +115,10 @@ class RezeptMapper(mapper):
         self._connector.commit()
         cursor.close()
 
-    def find_id_by_wg_name(self, wg_name):
+    def find_id_by_wg_id(self, wg_id):
         result = []
         cursor = self._connector.cursor()
-        command = f"SELECT rezept_id FROM datenbank.rezept WHERE wg_name='{wg_name}'"
+        command = f"SELECT rezept_id FROM datenbank.rezept WHERE wg_id='{wg_id}'"
         cursor.execute(command)
         tuples = cursor.fetchall()
 
@@ -141,13 +136,13 @@ class RezeptMapper(mapper):
     def find_rezept_admin_by_email(self, email, rezept_id):
         result = []
         cursor = self._connector.cursor()
-        command = f"SELECT rezept_name, anzahl_portionen, rezept_ersteller, rezept_id, wg_name FROM datenbank.rezept WHERE rezept_ersteller LIKE '%{email}%' AND rezept_id = '{rezept_id}'"
+        command = f"SELECT rezept_name, anzahl_portionen, rezept_ersteller, rezept_id, wg_id FROM datenbank.rezept WHERE rezept_ersteller LIKE '%{email}%' AND rezept_id = '{rezept_id}'"
         cursor.execute(command)
 
 
         tuples = cursor.fetchall()
 
-        for (rezept_name, anzahl_portionen, rezept_ersteller, rezept_id, wg_name) in tuples:
+        for (rezept_name, anzahl_portionen, rezept_ersteller, rezept_id, wg_id) in tuples:
             rz = Rezept()
             rz.set_rezept_name(rezept_name)
             rz.set_anzahl_portionen(anzahl_portionen)
@@ -163,16 +158,16 @@ class RezeptMapper(mapper):
 
     def find_by_rezept_id2(self, rezept_id):
         cursor = self._connector.cursor()
-        cursor.execute(f"SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung FROM datenbank.rezept WHERE rezept_id = '{rezept_id}'")
+        cursor.execute(f"SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung FROM datenbank.rezept WHERE rezept_id = '{rezept_id}'")
         tuples = cursor.fetchall()
 
-        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung) in tuples:
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung) in tuples:
             rezept = Rezept()
             rezept.set_id(rezept_id)
             rezept.set_rezept_name(rezept_name)
             rezept.set_anzahl_portionen(anzahl_portionen)
             rezept.set_rezept_ersteller(rezept_ersteller)
-            rezept.set_wg_name(wg_name)
+            rezept.set_wg_id(wg_id)
             rezept.set_rezept_anleitung(rezept_anleitung)
 
 
@@ -260,21 +255,4 @@ class RezeptMapper(mapper):
 
         self._connector.commit()
         cursor.close()
-        #print("Mapper result: result", result)
         return result
-
-
-
-    def delete_rezept(self, rezept_id):
-        cursor = self._connector.cursor()
-        command = """
-        UPDATE datenbank.rezept
-        SET rezept_ersteller = REPLACE(REPLACE(TRIM(BOTH ',' FROM REPLACE(rezept_ersteller, %s, '')), ',,', ','), ',,', ',')
-        WHERE rezept_id = %s
-        """
-        data = (rezept_id)
-
-        cursor.execute(command, data)
-
-        self._connector.commit()
-        cursor.close()

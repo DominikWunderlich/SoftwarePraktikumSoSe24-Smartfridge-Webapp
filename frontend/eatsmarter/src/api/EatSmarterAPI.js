@@ -46,7 +46,7 @@ export default class EatSmarterAPI{
 
 
     //Ich glaube die getRezepteByWg Methode stimmt
-    #getRezepteByWgURL = (wg_name) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_name}`;
+    #getRezepteByWgURL = (wg_id) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_id}`;
     #getRezeptByIdURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
 
     #lebensmittelZuRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezeptt/${rezept_id}/lebensmittel`;
@@ -97,8 +97,8 @@ export default class EatSmarterAPI{
         });
     });
     }
-    getRezepteByWg(wg_name){
-    return this.#fetchAdvanced(this.#getRezepteByWgURL(wg_name), {
+    getRezepteByWg(wg_id){
+    return this.#fetchAdvanced(this.#getRezepteByWgURL(wg_id), {
         method: "GET",
         headers: {
             "Accept": "application/json",
@@ -455,6 +455,23 @@ export default class EatSmarterAPI{
         });
     }
 
+    //Lebensmittel bearbeiten in Rezept
+    #updateFoodInRezeptURL = (rezept_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/rezeptinhalt/${rezept_id}/${lebensmittel_id}`;
+
+    updateFoodInRezept(updatedLebensmittelInRezept) {
+        return this.#fetchAdvanced(this.#updateFoodInRezeptURL(updatedLebensmittelInRezept.rezeptId, updatedLebensmittelInRezept.id), {
+            method: "PUT",
+            headers: {
+                "Accept": "application/json, text/plain",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedLebensmittelInRezept)
+        }).then((responseJSON) => {
+            return new Promise(function(resolve) {
+                resolve(responseJSON);
+            })
+        });
+    }
 
     //Ich füge hier jetzt eine getAllRezepte Methode ein, die soll eigentlich genau das gleiche machen
     //wie die getRezept Methode, nämlich alle Rezepte die wir in der DB haben im Frontend anzeigen
@@ -796,9 +813,9 @@ export default class EatSmarterAPI{
     }
 
 
-    #getRezeptByGeneratorURL = (wg_name, kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/rezept/generator/${wg_name}/${kuehlschrank_id}`;
-    getRezeptByGenerator(wg_name, kuehlschrank_id){
-    return this.#fetchAdvanced(this.#getRezeptByGeneratorURL(wg_name, kuehlschrank_id),{
+    #getRezeptByGeneratorURL = (wg_id, kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/rezept/generator/${wg_id}/${kuehlschrank_id}`;
+    getRezeptByGenerator(wg_id, kuehlschrank_id){
+    return this.#fetchAdvanced(this.#getRezeptByGeneratorURL(wg_id, kuehlschrank_id),{
         method: "GET",
         headers: {
             "Accept": "application/json",

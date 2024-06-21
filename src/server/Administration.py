@@ -22,7 +22,6 @@ class Administration(object):
     def create_wg(self, wg_name, wg_ersteller):
         """ Erstellen einer WG-Instanz. """
         self.initialize_units()
-        print(f"DEBUG IN create_wg in admin.py wg_name = {wg_name}, wg_ersteller={wg_ersteller}")
         w = WG()
         w.set_wg_name(wg_name)
         w.set_wg_ersteller(wg_ersteller)
@@ -30,7 +29,6 @@ class Administration(object):
 
         with WGMapper() as mapper:
             mapper.insert(w)
-            print("34", w.get_id())
             wg_id = w.get_id()
 
         with KuehlschrankMapper() as mapper:
@@ -54,14 +52,9 @@ class Administration(object):
     # Sie wird in der Updatewg methode und deletewgMethode verwendet
     def is_current_user_wg_admin(self, email):
         with WGMapper() as mapper:
-            # print("Email:", email)
             wgs = mapper.find_by_email(email)
-            # print("wgs", wgs)
-
-
 
         for wg in wgs:
-            # print(wg)
             if wg.get_wg_ersteller() == email:
                 return True
 
@@ -161,20 +154,16 @@ class Administration(object):
             else:
                 return mapper.insert(p)
 
-    def redirect_user(self, googleid):
-        """ Auslesen einer Person-Instanz anhand der Google ID. """
+    def check_if_user_is_in_wg(self, googleid):
+        """ Überprüfung, ob ein User bereits einer WG zugeordnet ist. """
         with PersonMapper() as mapper:
-            p = mapper.find_by_google_id(googleid)
-        p_email = p.get_email()
+            person = mapper.find_by_google_id(googleid)
 
-        """ Check ob die Person bereits in einer WG ist. """
-        #TODO: anpassen an Person tabelle
-        with WGMapper() as wgmapper:
-            res = wgmapper.find_by_email(p_email)
-            if res is not None:
-                return res
+            if person.get_wg_id() is not None:
+                return person
             else:
-                return
+                return "Person noch keiner WG zugegörig"
+
 
     def get_user_by_google_id(self, id):
         """ Auslesen einer Account-Instanz anhand der GoogleID. """
@@ -317,14 +306,14 @@ class Administration(object):
             mapper.update_menge(lebensmittel, neue_menge)
             print(f"Menge in Lebensmittel aktualisiert: {lebensmittel}")
 
-    def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller, wg_name, rezept_anleitung):
+    def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung):
         """ Erstellen einer Rezept-Instanz. """
         r = Rezept()
         r.set_rezept_name(rezept_name)
         r.set_anzahl_portionen(anzahl_portionen)
         r.set_rezept_ersteller(rezept_ersteller)
         r.set_id(1)
-        r.set_wg_name(wg_name)
+        r.set_wg_id(wg_id)
         r.set_rezept_anleitung(rezept_anleitung)
 
         with RezeptMapper() as mapper:
@@ -334,9 +323,9 @@ class Administration(object):
         with RezeptMapper() as mapper:
             return mapper.find_all()
 
-    def get_all_rezepte_by_wg_name(self, wg_name):
+    def get_all_rezepte_by_wg_id(self, wg_id):
         with RezeptMapper() as mapper:
-            return mapper.find_all_by_wg_name(wg_name)
+            return mapper.find_all_by_wg_id(wg_id)
 
     def get_rezept_by_id(self, rezept_id):
         with RezeptMapper() as mapper:
@@ -347,11 +336,7 @@ class Administration(object):
     # Sie wird in der Updatewg methode und deletewgMethode verwendet
     def is_current_user_rezept_admin(self, email, rezept_id):
         with RezeptMapper() as mapper:
-            print("Email:", email)
             rzt = mapper.find_rezept_admin_by_email(email, rezept_id)
-            # print("rzt", rzt)
-
-
 
         for rz in rzt:
             # print(wg)
@@ -370,19 +355,6 @@ class Administration(object):
             else:
                 return False
 
-    def delete_rezept_by_email(self, current_user, rezept_id):
-            with RezeptMapper() as mapper:
-                is_admin = mapper.check_if_current_user_is_rezept_admin_using_email_and_wg_id(current_user, rezept_id)
-
-                if is_admin:
-                    with RezeptMapper():
-                        mapper.delete_rezept(rezept_id)
-                        print("Rezept enfernt")
-                        return True
-
-                else:
-                    print("Rezept wurde nicht entfernt, da keine Adminrechte")
-                    return False
 
     def delete_rezept_by_id(self, rezept_id):
         with RezeptMapper() as mapper:
@@ -647,6 +619,39 @@ class Administration(object):
         with LebensmittelMapper() as lmapper:
             return lmapper.update_foodobj(food, old_food_id)
 
+    def update_lebensmittel_objekt(self, name, meinheit, menge, kuehlschrank_id, rezept_id, old_food_id):
+
+        with MasseinheitMapper() as mapper:
+            m_id = mapper.find_by_name(meinheit)
+
+            if m_id is None:
+                masseinheit_id = self.create_measurement(meinheit, 0)
+            else:
+                masseinheit_id = m_id.get_id()
+
+        # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
+        with MengenanzahlMapper() as mmapper:
+            mengen_id = mmapper.find_by_menge(menge)
+            if mengen_id is None:
+                mengen_id = self.create_menge(menge)
+            else:
+                mengen_id = mengen_id.get_id()
+
+
+        # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
+        food = Lebensmittel()
+        # Hier wird die Lebensmittel_id auf 1 gesetzt
+        food.set_id(1)
+        food.set_lebensmittelname(name)
+        food.set_masseinheit(masseinheit_id)
+        food.set_mengenanzahl(mengen_id)
+        food.set_kuelschrank_id(kuehlschrank_id)
+        food.set_rezept_id(rezept_id)
+
+        time.sleep(1)
+        with LebensmittelMapper() as lmapper:
+            return lmapper.update_foodobj_rezept(food, old_food_id)
+
 
     def update_food_in_fridge(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
         """ Diese Methode aktualisiert vorhandene Lebensmittel im Kühlschrank, wenn sich die Lebensmittelname, Menge, Masseinheit ändert. """
@@ -821,9 +826,9 @@ class Administration(object):
         with LebensmittelMapper() as mapper:
             return mapper.find_lebensmittel_by_kuehlschrank_id(kuehlschrank)
 
-    def get_rezept_id_by_wg_name(self, wg_name):
+    def get_rezept_id_by_wg_id(self, wg_id):
         with RezeptMapper() as mapper:
-            return mapper.find_all_by_wg_name(wg_name)
+            return mapper.find_all_by_wg_id(wg_id)
 
     def add_food_to_fridge(self, kuehlschrank_id, lebensmittel):  # Input = Karotte, 1, Kilogramm
         """
@@ -987,7 +992,7 @@ class Administration(object):
         with LebensmittelMapper() as mapper:
             return mapper.find_by_key(rezept)
 
-    def find_verfuegbare_rezepte(self, wg_name, kuehlschrank_id):
+    def find_verfuegbare_rezepte(self, wg_id, kuehlschrank_id):
         measurements = self.build_unit_dict()
         food_id_in_fridge = set()  # Set für die Lebensmittel im Kühlschrank
         rezept_set = set()  # Set für alle Rezepte die gekocht werden können
@@ -999,7 +1004,7 @@ class Administration(object):
         print("Kühsclhrank Lebensmittel", food_id_in_fridge)
 
         # Rezept_id aus einer WG in eine Liste speichern
-        recipes_id = self.get_rezept_id_by_wg_name(wg_name)
+        recipes_id = self.get_rezept_id_by_wg_id(wg_id)
 
         # Für jede Rezept_ID die Lebensmittel ausgeben
         for rezept in recipes_id:
