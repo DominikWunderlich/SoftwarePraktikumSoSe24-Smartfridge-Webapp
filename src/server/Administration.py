@@ -642,6 +642,39 @@ class Administration(object):
         with LebensmittelMapper() as lmapper:
             return lmapper.update_foodobj(food, old_food_id)
 
+    def update_lebensmittel_objekt(self, name, meinheit, menge, kuehlschrank_id, rezept_id, old_food_id):
+
+        with MasseinheitMapper() as mapper:
+            m_id = mapper.find_by_name(meinheit)
+
+            if m_id is None:
+                masseinheit_id = self.create_measurement(meinheit, 0)
+            else:
+                masseinheit_id = m_id.get_id()
+
+        # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
+        with MengenanzahlMapper() as mmapper:
+            mengen_id = mmapper.find_by_menge(menge)
+            if mengen_id is None:
+                mengen_id = self.create_menge(menge)
+            else:
+                mengen_id = mengen_id.get_id()
+
+
+        # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
+        food = Lebensmittel()
+        # Hier wird die Lebensmittel_id auf 1 gesetzt
+        food.set_id(1)
+        food.set_lebensmittelname(name)
+        food.set_masseinheit(masseinheit_id)
+        food.set_mengenanzahl(mengen_id)
+        food.set_kuelschrank_id(kuehlschrank_id)
+        food.set_rezept_id(rezept_id)
+
+        time.sleep(1)
+        with LebensmittelMapper() as lmapper:
+            return lmapper.update_foodobj_rezept(food, old_food_id)
+
 
     def update_food_in_fridge(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
         """ Diese Methode aktualisiert vorhandene Lebensmittel im Kühlschrank, wenn sich die Lebensmittelname, Menge, Masseinheit ändert. """
