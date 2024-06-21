@@ -161,20 +161,16 @@ class Administration(object):
             else:
                 return mapper.insert(p)
 
-    def redirect_user(self, googleid):
-        """ Auslesen einer Person-Instanz anhand der Google ID. """
+    def check_if_user_is_in_wg(self, googleid):
+        """ Überprüfung, ob ein User bereits einer WG zugeordnet ist. """
         with PersonMapper() as mapper:
-            p = mapper.find_by_google_id(googleid)
-        p_email = p.get_email()
+            person = mapper.find_by_google_id(googleid)
 
-        """ Check ob die Person bereits in einer WG ist. """
-        #TODO: anpassen an Person tabelle
-        with WGMapper() as wgmapper:
-            res = wgmapper.find_by_email(p_email)
-            if res is not None:
-                return res
+            if person.get_wg_id() is not None:
+                return person
             else:
-                return
+                return "Person noch keiner WG zugegörig"
+
 
     def get_user_by_google_id(self, id):
         """ Auslesen einer Account-Instanz anhand der GoogleID. """

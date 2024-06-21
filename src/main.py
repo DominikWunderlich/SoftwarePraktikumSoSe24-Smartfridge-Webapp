@@ -328,7 +328,7 @@ class ProfileOperations(Resource):
     def get(self, google_id):
         """ Auslesen eines bestimmten Profil-Objekts. """
         adm = Administration()
-        p = adm.redirect_user(google_id)
+        p = adm.check_if_user_is_in_wg(google_id)
         return p
 
 @smartapi.route('/login/check/<string:google_id>')
