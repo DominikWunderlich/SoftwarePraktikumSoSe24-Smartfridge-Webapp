@@ -18,6 +18,7 @@ import Kuehlschrank from './pages/Kuehlschrank';
 import GenauEinRezeptAnzeigen from "./pages/GenauEinRezeptAnzeigen";
 import Generator from "./pages/Generator";
 import EatSmarterAPI from "./api/EatSmarterAPI";
+import Profil from "./pages/Profil";
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -178,6 +179,7 @@ function App(props) {
                           <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut}/>} />
 						  <Route path="/genaueinrezeptAnzeigen/:rezeptId" element={<GenauEinRezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut} />} />
 						  <Route path="/generator" element={<Generator user={state.currentUser} onSignOut={handleSignOut} />} />
+						  <Route path="/profil" element={<Profil user={state.currentUser} onSignOut={handleSignOut}/>}></Route>
 					  </Routes>
 				  </Router>
 			  </div>

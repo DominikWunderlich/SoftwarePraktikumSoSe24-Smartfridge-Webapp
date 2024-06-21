@@ -7,7 +7,9 @@ function Homepage(props) {
     const { wgName } = useParams(); 
     const [wg, setWg] = useState(null)
     const [wgData, setWgData] = useState(null);
-    const [error, setError] = useState(null); 
+    const [wgAdmin, setWgAdmin] = useState([]);
+    const [error, setError] = useState(null);
+    const [personList, setPersonList] = useState([])
 
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
@@ -20,8 +22,30 @@ function Homepage(props) {
 
     }
 
+    async function renderPersonList(){
+        await EatSmarterAPI.getAPI().getPersonByWg(props.user.email)
+            .then(response => {
+                setPersonList(response);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    async function renderWgAdmin(){
+        await EatSmarterAPI.getAPI().getWgAdminByEmail(props.user.email)
+            .then(response => {
+                setWgAdmin(response)
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
     useEffect(() => {
-        renderCurrentUsersWg()
+        renderCurrentUsersWg();
+        renderPersonList();
+        renderWgAdmin();
     }, []);
 
     const getWGbyName = async () => {
@@ -32,7 +56,7 @@ function Homepage(props) {
             setError(e);
         }
     };
-    
+
     useEffect(() => {
         getWGbyName();
     }, [wgName]);
@@ -51,23 +75,57 @@ function Homepage(props) {
                {wg && (
                     <div>
                         <div className="inner-container">
-                        <h2>Du bist Mitglied in der {wg.wgName}</h2>
-                            <div className="formitem">
-                                <label>Bewohner:</label>
-                                <p className="mini-info-container">
-                                    {wg.wgBewohner.split(',').map((bewohner, index) => (
-                                        <li key={index}>{bewohner.trim()}</li>
+                            <h2>Du bist Mitglied in der Wg: {wg.wgName}</h2>
+                            <h2>Bewohner:</h2>
+                            <div className="mini-container">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>Nutzername</th>
+                                        <th>Nachname</th>
+                                        <th>Vorname</th>
+                                        <th>Email</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {personList.map((person, index) => (
+                                        <tr key={index}>
+                                            <td>{person.userName}</td>
+                                            <td>{person.lastName}</td>
+                                            <td>{person.firstName}</td>
+                                            <td>{person.email}</td>
+                                        </tr>
                                     ))}
-                                </p>
+                                    </tbody>
+                                </table>
                             </div>
                             <br></br>
-                            <div className="formitem">
-                                <label>Ersteller der WG:</label>
-                                <p className="mini-info-container"> {wg.wgAdmin}</p>
-                            </div>         
+                            <h2>Ersteller der WG</h2>
+                            <div className="mini-container">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>Nutzername</th>
+                                        <th>Nachname</th>
+                                        <th>Vorname</th>
+                                        <th>Email</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {wgAdmin.map((person, index) => (
+                                        <tr key={index}>
+                                            <td>{person.userName}</td>
+                                            <td>{person.lastName}</td>
+                                            <td>{person.firstName}</td>
+                                            <td>{person.email}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                )}
+               )}
             </div>
         </div>
     );

@@ -154,20 +154,16 @@ class Administration(object):
             else:
                 return mapper.insert(p)
 
-    def redirect_user(self, googleid):
-        """ Auslesen einer Person-Instanz anhand der Google ID. """
+    def check_if_user_is_in_wg(self, googleid):
+        """ Überprüfung, ob ein User bereits einer WG zugeordnet ist. """
         with PersonMapper() as mapper:
-            p = mapper.find_by_google_id(googleid)
-        p_email = p.get_email()
+            person = mapper.find_by_google_id(googleid)
 
-        """ Check ob die Person bereits in einer WG ist. """
-        #TODO: anpassen an Person tabelle
-        with WGMapper() as wgmapper:
-            res = wgmapper.find_by_email(p_email)
-            if res is not None:
-                return res
+            if person.get_wg_id() is not None:
+                return person
             else:
-                return
+                return "Person noch keiner WG zugegörig"
+
 
     def get_user_by_google_id(self, id):
         """ Auslesen einer Account-Instanz anhand der GoogleID. """
@@ -415,6 +411,7 @@ class Administration(object):
                 'kilogramm': 1000,
                 'gramm': 1,
                 'l': 1000,
+                'milliliter': 1,
                 'ml': 1,
                 'kg': 1000,
                 'gr': 1,
@@ -620,6 +617,39 @@ class Administration(object):
         time.sleep(1)
         with LebensmittelMapper() as lmapper:
             return lmapper.update_foodobj(food, old_food_id)
+
+    def update_lebensmittel_objekt(self, name, meinheit, menge, kuehlschrank_id, rezept_id, old_food_id):
+
+        with MasseinheitMapper() as mapper:
+            m_id = mapper.find_by_name(meinheit)
+
+            if m_id is None:
+                masseinheit_id = self.create_measurement(meinheit, 0)
+            else:
+                masseinheit_id = m_id.get_id()
+
+        # Nun benötigen wir die ID der Menge. "menge" steht dabei für die Eingabe des Users (100, 1, 500, ...)
+        with MengenanzahlMapper() as mmapper:
+            mengen_id = mmapper.find_by_menge(menge)
+            if mengen_id is None:
+                mengen_id = self.create_menge(menge)
+            else:
+                mengen_id = mengen_id.get_id()
+
+
+        # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
+        food = Lebensmittel()
+        # Hier wird die Lebensmittel_id auf 1 gesetzt
+        food.set_id(1)
+        food.set_lebensmittelname(name)
+        food.set_masseinheit(masseinheit_id)
+        food.set_mengenanzahl(mengen_id)
+        food.set_kuelschrank_id(kuehlschrank_id)
+        food.set_rezept_id(rezept_id)
+
+        time.sleep(1)
+        with LebensmittelMapper() as lmapper:
+            return lmapper.update_foodobj_rezept(food, old_food_id)
 
 
     def update_food_in_fridge(self, name, meinheit, menge, kuehlschrank_id, rezept_id):
@@ -962,6 +992,7 @@ class Administration(object):
             return mapper.find_by_key(rezept)
 
     def find_verfuegbare_rezepte(self, wg_id, kuehlschrank_id):
+        measurements = self.build_unit_dict()
         food_id_in_fridge = set()  # Set für die Lebensmittel im Kühlschrank
         rezept_set = set()  # Set für alle Rezepte die gekocht werden können
 
@@ -985,7 +1016,7 @@ class Administration(object):
 
                 for x in fridge:
                     if elem.get_lebensmittelname() == x.get_lebensmittelname():
-                        new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit)
+                        new_amount = x.decrease_food_quantity(rezept_required_amount, rezept_required_unit, measurements)
                         # decrease Funktion um Differenz der Menge aus Kühlschrank und Rezept zu berechnen
 
                         if new_amount.get_mengenanzahl() < 0:

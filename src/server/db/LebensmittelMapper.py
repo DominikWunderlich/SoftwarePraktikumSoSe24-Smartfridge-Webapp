@@ -192,6 +192,18 @@ class LebensmittelMapper(mapper):
         self._connector.commit()
         cursor.close()
 
+    def update_foodobj_rezept(self, lebensmittel, old_name):
+        cursor = self._connector.cursor()
+        command = "UPDATE datenbank.lebensmittel SET lebensmittel_name=%s, masseinheit_id=%s, mengenanzahl_id=%s," \
+                  "kuehlschrank_id=%s, rezept_id=%s  WHERE lebensmittel_name=%s AND rezept_id=%s"
+        data = (
+        lebensmittel.get_lebensmittelname(), lebensmittel.get_masseinheit(), lebensmittel.get_mengenanzahl(),
+        lebensmittel.get_kuehlschrank_id(), lebensmittel.get_rezept_id(), old_name,
+        lebensmittel.get_rezept_id())
+        cursor.execute(command, data)
+
+        self._connector.commit()
+        cursor.close()
     def delete(self, lId, kId):
         cursor = self._connector.cursor()
 
