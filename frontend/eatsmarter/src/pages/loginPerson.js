@@ -41,7 +41,7 @@ function LoginPerson(props) {
         EatSmarterAPI.getAPI().getUserByGID(props.user.uid)
             .then((UserInWg) => {
                 // Redirect user based on wether the user is in a wg or not.
-                if (UserInWg.length > 0) {
+                if (UserInWg[0].wgId != null) {
                     // TODO: Pfad von der Homepage umbenennen
                     navigate("/wg/:wgName");
                 } else {
