@@ -153,6 +153,7 @@ function WGPage(props) {
                 {/*Abfrage, ob wg nicht null*/}
                 {wg && (
                     <div className="inner-container">
+                        <h2>Infos der WG {wg.wgName}</h2>
                         <h2>Bewohner der WG</h2>
                         <div className="mini-container">
                             <table>
