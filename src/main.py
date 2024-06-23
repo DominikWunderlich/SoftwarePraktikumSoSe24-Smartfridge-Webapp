@@ -514,15 +514,14 @@ class rezeptIdToBackendOperations(Resource):
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
 class DeleteEinRezeptOperations(Resource):
-    #@secured
+    @secured
     def delete(self, rezept_id):
-            adm = Administration()
-            rezept = adm.get_rezept_by_id(rezept_id)
-            print(adm.get_rezept_by_id(rezept_id))
-            for rz in rezept:
-                # print(wg)
-                rz_id = rz.get_id()
-                adm.delete_rezept_by_id(rz_id)
+        adm = Administration()
+        rezept = adm.get_rezept_by_id(rezept_id)
+
+        for rz in rezept:
+            rz_id = rz.get_id()
+            adm.delete_rezept_by_id(rz_id)
 
     def get(self, rezept_id):
         adm = Administration()

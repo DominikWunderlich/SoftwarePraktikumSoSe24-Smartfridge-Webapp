@@ -68,12 +68,18 @@ class Administration(object):
         with PersonMapper() as mapper:
             mapper.delete_all_wg_id_person(wg_id)
 
-        with RezeptMapper() as mapper:
-            rezepte = mapper.find_all_by_wg_id(wg_id)
+        with RezeptMapper() as rmapper:
+            rezepte = rmapper.find_all_by_wg_id(wg_id)
 
             for rezept in rezepte:
                 rezept.get_id()
-                mapper.delete(rezept.get_id())
+                with LebensmittelMapper() as lmapper:
+                    lmapper.delete_by_rezept_id(rezept.get_id())
+
+                rmapper.delete(rezept.get_id())
+
+        with LebensmittelMapper() as mapper:
+            mapper.delete_by_kuehlschrank_id(wg_id)
 
         with KuehlschrankMapper() as mapper:
             mapper.delete(wg_id)
@@ -310,6 +316,9 @@ class Administration(object):
 
 
     def delete_rezept_by_id(self, rezept_id):
+        with LebensmittelMapper() as mapper:
+            mapper.delete_by_rezept_id(rezept_id)
+
         with RezeptMapper() as mapper:
             return mapper.delete(rezept_id)
 

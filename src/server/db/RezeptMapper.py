@@ -107,10 +107,8 @@ class RezeptMapper(mapper):
     def delete(self, rezept_id):
         cursor = self._connector.cursor()
 
-        command = f"DELETE FROM datenbank.lebensmittel WHERE rezept_id='{rezept_id}'"
-        command1 = f"DELETE FROM datenbank.rezept WHERE rezept_id='{rezept_id}'"
+        command = f"DELETE FROM datenbank.rezept WHERE rezept_id='{rezept_id}'"
         cursor.execute(command)
-        cursor.execute(command1)
 
         self._connector.commit()
         cursor.close()
