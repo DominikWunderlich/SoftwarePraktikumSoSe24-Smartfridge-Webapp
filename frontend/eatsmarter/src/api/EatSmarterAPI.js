@@ -538,7 +538,7 @@ export default class EatSmarterAPI{
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
-    #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/user/${wgName}`;
+    #deleteWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
     #getPersonByWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wg_bewohner/${email}`
@@ -605,14 +605,14 @@ export default class EatSmarterAPI{
         });
     }
 
-    deleteWgByName(wgName){
-        return this.#fetchAdvanced(this.#deleteWgURL(wgName),{
+    deleteWg(email){
+        return this.#fetchAdvanced(this.#deleteWgURL(email),{
             method: "DELETE",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(wgName)
+            body: JSON.stringify(email)
         }).then((responseJSON) => {
             // console.log("Entfernte Wg", responseJSON)
             return new Promise( function(resolve) {

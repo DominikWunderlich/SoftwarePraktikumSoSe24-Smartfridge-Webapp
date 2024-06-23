@@ -135,9 +135,8 @@ class WgGetWgOperations(Resource):
     def delete(self, email):
         adm = Administration()
         wg_id = adm.get_wg_id_by_email(email)
-        print(wg_id)
-        return adm.delete_wg_and_kuehlschrank(wg_id)
-            #TODO: Alle Rezepte anhand der Wg id auch löschen?
+        return adm.delete_wg(wg_id)
+
 
 @smartapi.route('/wg/user/wgadmin/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')

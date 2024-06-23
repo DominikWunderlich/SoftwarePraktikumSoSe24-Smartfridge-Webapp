@@ -64,15 +64,22 @@ class Administration(object):
             return mapper.find_wg_by_wg_id(wg_id)
 
     """ Diese Methode löscht die wg und den kuehlschrank"""
-    def delete_wg_and_kuehlschrank(self, wg_id):
+    def delete_wg(self, wg_id):
         with PersonMapper() as mapper:
             mapper.delete_all_wg_id_person(wg_id)
 
+        with RezeptMapper() as mapper:
+            rezepte = mapper.find_all_by_wg_id(wg_id)
+
+            for rezept in rezepte:
+                rezept.get_id()
+                mapper.delete(rezept.get_id())
+
+        with KuehlschrankMapper() as mapper:
+            mapper.delete(wg_id)
+
         with WGMapper() as mapper:
-            mapper.delete_wg_and_kuehlschrank(wg_id)
-
-        # TODO: add Kuhelschrankmapper delete Lebensmittel and recipe where Wg_id = wg_id, wenn Patrik wg_name zu wg_id geändert hat
-
+            mapper.delete_wg(wg_id)
 
     def get_wg_admin(self, wg_id):
         with WGMapper() as mapper:

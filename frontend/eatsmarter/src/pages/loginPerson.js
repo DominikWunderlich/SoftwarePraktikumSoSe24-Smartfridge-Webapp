@@ -65,7 +65,7 @@ function LoginPerson(props) {
         const user = EatSmarterAPI.getAPI().checkUserByGID(props.currentUser.uid);
         if (user && user.firstName && user.lastName) {
           setIsRegistered(true);
-          navigate("/wg/:wgName");
+          navigate("/homepage");
         }
       }
     };

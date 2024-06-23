@@ -256,3 +256,8 @@ class RezeptMapper(mapper):
         self._connector.commit()
         cursor.close()
         return result
+
+    def delete_all_recipe_by_wg_id(self, wg_id):
+
+        cursor = self._connector.cursor()
+
