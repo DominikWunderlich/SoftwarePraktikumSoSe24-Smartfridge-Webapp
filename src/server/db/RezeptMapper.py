@@ -98,9 +98,16 @@ class RezeptMapper(mapper):
 
         return result
 
-    def update(self, object):
-        # Implementierung der Methode update
-        pass
+    def update(self, obj):
+        cursor = self._connector.cursor()
+
+        command = f"UPDATE datenbank.rezept SET rezept_name=%s, anzahl_portionen=%s, rezept_ersteller=%s," \
+                  f"rezept_id=%s, wg_name=%s, rezept_anleitung=%s WHERE rezept_id=%s"
+        data = (obj.get_rezept_name(), obj.get_anzahl_portionen(), obj.get_rezept_ersteller(),
+                obj.get_id(), obj.get_wg_name(), obj.get_rezept_anleitung(), obj.get_id())
+        cursor.execute(command, data)
+        self._connector.commit()
+        cursor.close()
 
     def update_anzahl_portionen(self, rezept_id, new_portionen):
         cursor = self._connector.cursor()

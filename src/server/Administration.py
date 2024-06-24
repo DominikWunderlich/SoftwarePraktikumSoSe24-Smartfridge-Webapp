@@ -329,6 +329,10 @@ class Administration(object):
         with RezeptMapper() as mapper:
             return mapper.find_all()
 
+    def save_rezept(self, rezept):
+        with RezeptMapper() as mapper:
+            return mapper.update(rezept)
+
     def get_all_rezepte_by_wg_name(self, wg_name):
         with RezeptMapper() as mapper:
             return mapper.find_all_by_wg_name(wg_name)

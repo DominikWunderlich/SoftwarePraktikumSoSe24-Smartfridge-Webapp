@@ -271,7 +271,26 @@ function GenauEinRezeptAnzeigen(props) {
             else{
                 alert("Nur der Rezept Ersteller kann Lebensmittel löschen")
             }
-            }
+            };
+
+    const handleChangeInstructions = () => {
+        const newRecipe = new RezeptBO(
+            rezept.rezeptName,
+            rezept.anzahlPortionen,
+            rezept.rezeptAdmin,
+            rezept.wgName,
+            rezept.rezeptAnleitung
+        )
+        newRecipe.setID(rezept.id);
+        EatSmarterAPI.getAPI().updateRezept(newRecipe);
+    }
+
+    const handleChangeInstruction = (e) => {
+        setRezept({
+            ...rezept,
+            [e.target.name]: e.target.value
+        })
+    }
 
     /* Darstellung der Komponente */
     return (
@@ -297,7 +316,18 @@ function GenauEinRezeptAnzeigen(props) {
                             </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
                             <p>WG: {rezept.wgName}</p>
-                            <p>Zubereitung: {rezept.rezeptAnleitung}</p>
+                            <div>
+                                <p>Kochanleitung:</p>
+                                <input
+                                    type={'text'}
+                                    name={"rezeptAnleitung"}
+                                    value={rezept.rezeptAnleitung}
+                                    onChange={handleChangeInstruction}
+                                />
+                                <button type={"button"} onClick={handleChangeInstructions}>
+                                    bearbeiten
+                                </button>
+                            </div>
                             {errors.message && <p>{errors.message}</p>}
                             <table>
                             <thead>

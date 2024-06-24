@@ -389,7 +389,6 @@ class RezeptOperations(Resource):
         """ Anlegen eines neuen Rezept-Objekts. """
         adm = Administration()
         proposal = Rezept.from_dict(api.payload)
-        print(api.payload)
 
         if proposal is not None:
             result = adm.create_rezept(
@@ -398,13 +397,10 @@ class RezeptOperations(Resource):
                 proposal.get_rezept_ersteller(),
                 proposal.get_wg_name(),
                 proposal.get_rezept_anleitung())
-            print(result, "hi")
             return result, 200
         else:
-            print("Else Pfad")
             return 'Fehler in Rezept-Operations post methode', 500
 
-#Notiz: Hier bin ich mir seeeehr unsicher ob das richtig gecodet ist
     @smartapi.marshal_with(rezept)
     @secured
     def get(self):
@@ -412,7 +408,6 @@ class RezeptOperations(Resource):
 
         adm = Administration()
         rezepte = adm.get_all_rezepte()  # Methode, um alle Rezepte abzurufen
-        print(rezepte)
 
         if rezepte is not None:
             return rezepte
@@ -496,27 +491,33 @@ class getRezeptOperations(Resource):
 @smartapi.route('/rezept/einrezept/<rezept_id>')
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('rezept_id', 'ID des Rezepts')
-class getEinRezeptOperations(Resource):
+class RezeptOperations(Resource):
     @smartapi.marshal_with(rezept)
     @secured
     def get(self, rezept_id):
         """ Auslesen aller Rezepte mit bestimmter id """
-        print("hallo")
-        print(rezept_id)
 
         adm = Administration()
         rezept_page = adm.get_rezept_by_id(rezept_id)
-        print(rezept_id)
-        print(rezept_page)
-        print(rezept)
-        print("halalalalal")
-        print(rezept_page)
-
 
         if rezept_page is not None:
             return rezept_page
         else:
             return '', 500
+
+    @smartapi.marshal_with(rezept)
+    @secured
+    def put(self, rezept_id):
+        """ Update eines Rezepts. """
+        adm = Administration()
+        r = Rezept.from_dict(smartapi.payload)
+
+        if r is not None:
+            r.set_id(rezept_id)
+            adm.save_rezept(r)
+            return 'Rezept Update Anfrage Erfolgreich.', 200
+        else:
+            return 'Rezept Update Anfrage fehlgeschlagen.', 500
 
 @smartapi.route('/rezept/send/<rezept_id>/<email>')
 @smartapi.response(500, 'Serverseitiger Fehler')

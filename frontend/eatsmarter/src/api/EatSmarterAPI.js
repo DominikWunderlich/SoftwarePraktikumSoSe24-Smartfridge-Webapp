@@ -41,16 +41,15 @@ export default class EatSmarterAPI{
 
     // Rezept related URLS
     #addRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
-
     #getRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
-
-
-    //Ich glaube die getRezepteByWg Methode stimmt
     #getRezepteByWgURL = (wg_name) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_name}`;
     #getRezeptByIdURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
-
     #lebensmittelZuRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezeptt/${rezept_id}/lebensmittel`;
     #changeAnzahlPortionenInRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/anzahlPortionen/updateundget/${rezept_id}`;
+    #updateRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
+    #deleteRezeptURL = (rezeptId) => `${this.#EatSmarterServerBaseURL}/rezept/${rezeptId}`;
+    #getRezeptAdminURL = (email, rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}/${rezept_id}`;
+
     changePortionenInRezept(rezept_id, neueAnzahlPortionen){
         return this.#fetchAdvanced(this.#changeAnzahlPortionenInRezeptURL(rezept_id),{
             method: "POST",
@@ -111,7 +110,7 @@ export default class EatSmarterAPI{
         });
     });
     }
-    //also bis hier
+
     addRezept(rezeptBO){
         return this.#fetchAdvanced(this.#addRezeptURL(), {
             method: "POST",
@@ -127,10 +126,6 @@ export default class EatSmarterAPI{
             })
         })
     }
-
-    //Rezept löschen deleteRezept
-    #deleteRezeptURL = (rezeptId) => `${this.#EatSmarterServerBaseURL}/rezept/${rezeptId}`;
-
 
     deleteRezept(rezeptId) {
         console.log(rezeptId)
@@ -148,9 +143,6 @@ export default class EatSmarterAPI{
         })
 
     }
-    
-     // Rezept als admin löschen-attribute related
-     #getRezeptAdminURL = (email, rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/user/${email}/${rezept_id}`;
 
      checkIfUserIsRezeptAdmin(currentUser, rezept_id){
          console.log("api", currentUser)
@@ -169,8 +161,19 @@ export default class EatSmarterAPI{
                  return false;
              }
          });
- 
      }
+
+     /* Update eines Rezepts */
+    updateRezept(rezeptBO){
+        return this.#fetchAdvanced(this.#updateRezeptURL(rezeptBO.getID()), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(rezeptBO)
+        })
+    }
 
     // Lebensmittel related URLS
     #addLebensmittelURL = () => `${this.#EatSmarterServerBaseURL}/lebensmittelverwaltung`;
