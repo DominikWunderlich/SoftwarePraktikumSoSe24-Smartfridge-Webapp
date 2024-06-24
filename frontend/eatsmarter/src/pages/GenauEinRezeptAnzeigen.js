@@ -49,6 +49,7 @@ function GenauEinRezeptAnzeigen(props) {
     const currentUser = props.user.email;
     const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
     const [editLebensmittelId, setEditLebensmittelId] = useState(null); // Zustand für die Lebensmittel-ID im Bearbeitungsmodus
+    const [isEditing, setIsEditing] = useState(false);
 
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
     const handleChange = (event) => {
@@ -292,6 +293,13 @@ function GenauEinRezeptAnzeigen(props) {
         })
     }
 
+    const toggleEditMode = () => {
+         if (isEditing) {
+            handleChangeInstructions();
+        }
+        setIsEditing(!isEditing);
+    }
+
     /* Darstellung der Komponente */
     return (
         <div>
@@ -318,14 +326,17 @@ function GenauEinRezeptAnzeigen(props) {
                             <p>WG: {rezept.wgName}</p>
                             <div>
                                 <p>Kochanleitung:</p>
-                                <input
-                                    type={'text'}
-                                    name={"rezeptAnleitung"}
-                                    value={rezept.rezeptAnleitung}
-                                    onChange={handleChangeInstruction}
-                                />
-                                <button type={"button"} onClick={handleChangeInstructions}>
-                                    bearbeiten
+                                {isEditing ? (
+                                    <textarea className={'input-container'}
+                                        name="rezeptAnleitung"
+                                        value={rezept.rezeptAnleitung}
+                                        onChange={handleChangeInstruction}
+                                    />
+                                ) : (
+                                    <p>{rezept.rezeptAnleitung}</p>
+                                )}
+                                <button type={"button"} onClick={toggleEditMode}>
+                                     {isEditing ? 'Speichern' : 'Bearbeiten'}
                                 </button>
                             </div>
                             {errors.message && <p>{errors.message}</p>}
