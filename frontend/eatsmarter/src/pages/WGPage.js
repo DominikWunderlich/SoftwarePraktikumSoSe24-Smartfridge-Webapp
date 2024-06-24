@@ -62,7 +62,6 @@ function WGPage(props) {
         return emailRegex.test(email);
     };
 
-
       /**
      * Handler-Function, um als Admin Mitglieder zur WG hinzuzufügen
      */
@@ -115,16 +114,14 @@ function WGPage(props) {
 
     }
 
-
     /**
      * Handler-Function, um die Wg als Admin zu löschen
      */
     const handleDeleteWG = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
-        // console.log("Frontend", isAdmin);
 
         if(isAdmin){
-            await EatSmarterAPI.getAPI().deleteWgByName(currentUser)
+            await EatSmarterAPI.getAPI().deleteWg(currentUser)
                 .then(() => {
                     navigate("/registerWg");
                 })
@@ -144,7 +141,6 @@ function WGPage(props) {
         setNotExistUserPopup(false);
         setShowNoValidEmailPopup(false);
     }
-
 
     return (
         <div>
@@ -236,8 +232,8 @@ function WGPage(props) {
              {showAdminAddPopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h1 className="h2-black">Nur der Ersteller kann Mitglieder hinzufügen!</h1>
-                        <button onClick={closePopup}>Schließen</button>
+                        <h2 className="h2-black">Nur der Ersteller kann Mitglieder hinzufügen!</h2>
+                        <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
             )}
@@ -245,8 +241,8 @@ function WGPage(props) {
             {showAdminDeletePopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h1 className="h2-black">Nur der Ersteller kann Mitglieder löschen!</h1>
-                        <button onClick={closePopup}>Schließen</button>
+                        <h2 className="h2-black">Nur der Ersteller kann Mitglieder löschen!</h2>
+                        <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
             )}
@@ -254,8 +250,8 @@ function WGPage(props) {
             {showAdminDeleteWgPopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h1 className="h2-black">Nur der Ersteller kann die Wg löschen!</h1>
-                        <button onClick={closePopup}>Schließen</button>
+                        <h2 className="h2-black">Nur der Ersteller kann die Wg löschen!</h2>
+                        <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
             )}
@@ -263,11 +259,11 @@ function WGPage(props) {
             {showNotExistUserPopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h1 className="h2-black">Diese eingetragene E-Mail Adresse hat noch keinen Account angelegt.
+                        <h2 className="h2-black">Diese eingetragene E-Mail Adresse hat noch keinen Account angelegt.
                             <br/>
                             Um einen Bewohner hinzufügen zu können, muss sich die Person zuvor in unserem System anmelden.
-                        </h1>
-                        <button onClick={closePopup}>Schließen</button>
+                        </h2>
+                        <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
             )}
@@ -275,8 +271,8 @@ function WGPage(props) {
            {showNoValidEmailPopup && (
             <div className="popup">
                 <div className="inner-popup">
-                    <h1 className="h2-black">Bitte geben Sie eine gültige E-Mail-Adresse ein.</h1>
-                    <button onClick={closePopup}>Schließen</button>
+                    <h2 className="h2-black">Bitte geben Sie eine gültige E-Mail-Adresse ein.</h2>
+                    <button type="button" onClick={closePopup}>Schließen</button>
                 </div>
             </div>
         )}

@@ -11,7 +11,7 @@ function RezeptErstellen(props){
         rezeptname: "",
         anzahlportionen: "",
         rezeptadmin: props.user.email,
-        wgname: "",
+        wgid: null,
         rezeptanleitung: ""
     })
 
@@ -50,12 +50,12 @@ function RezeptErstellen(props){
         event.preventDefault();
 
         if (!Object.keys(errors).length) {
-            const updatedFormData = {...formData, wgname: wg.wgName};
+            const updatedFormData = {...formData, wgid: wg.id};
             const newRezept = new RezeptBO(
                 updatedFormData.rezeptname,
                 updatedFormData.anzahlportionen,
                 updatedFormData.rezeptadmin,
-                updatedFormData.wgname,
+                updatedFormData.wgid,
                 updatedFormData.rezeptanleitung,
         );
             console.log(newRezept)
@@ -79,10 +79,6 @@ function RezeptErstellen(props){
                         <div className='formitem'>
                             <label>Ersteller:</label>
                             <p className="mini-info-container" >{formData.rezeptadmin}</p>
-                        </div>
-                        <div className='formitem'>
-                            <label>WG:</label>
-                            <p className="mini-info-container" >{wg ? wg.wgName : 'Lade WG...'}</p>
                         </div>
                     </div>
                     <br></br>

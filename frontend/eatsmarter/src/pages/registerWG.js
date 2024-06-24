@@ -34,9 +34,8 @@ function WGLandingpage(props) {
                 formData.wgname,
                 TrimAndLowerCase(formData.wgadmin),
             );
-            console.log(newWG)
             await EatSmarterAPI.getAPI().addWg(newWG)
-            navigate("/wg")
+            navigate("/homepage")
 
         }
     };
@@ -46,9 +45,8 @@ function WGLandingpage(props) {
         EatSmarterAPI.getAPI().getUserByGID(props.user.uid)
             .then((UserInWg) => {
                 // Redirect user based on wether the user is in a wg or not.
-                if (UserInWg.length > 0) {
-                    // TODO: Pfad von der Homepage umbenennen
-                    navigate("/wg/:wgName");
+                if (UserInWg[0].wgId != null) {
+                    navigate("/homepage");
                 } else {
                     navigate("/registerWg")
                 }
@@ -59,7 +57,6 @@ function WGLandingpage(props) {
     
     return (
         <div>
-            {/*TODO: neue Navbar einfügen, in welcher nur die registerWg Seite anklickbar ist*/}
             <NavBarRegisterWg currentUser={props.user} onSignOut={props.onSignOut}/> <br/> <br/>
             <div className='container'>
                 <div className="inner-container">

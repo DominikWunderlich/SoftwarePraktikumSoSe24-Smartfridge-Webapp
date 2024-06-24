@@ -8,7 +8,7 @@ import {func} from "prop-types";
 
 function Generator(props) {
     const [kuehlschrankId, setKuehlschrankId] = useState()
-    const [wgName, setWgName] = useState()
+    const [wgId, setWgId] = useState()
     const [rezepte, setRezepte] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
 
@@ -17,7 +17,11 @@ function Generator(props) {
     async function renderCurrentKuehlschrank() {
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
             .then(response => {
-                setWgName(response.wgName);
+                console.log("hi")
+                console.log(response)
+                console.log(response.id)
+                console.log(response.wgName)
+                setWgId(response.id);
                 setKuehlschrankId(response.id)
             })
             .catch(error => {
@@ -30,7 +34,7 @@ function Generator(props) {
     }, []);
 
     async function showRezepte() {
-        const rezeptListe = await EatSmarterAPI.getAPI().getRezeptByGenerator(wgName, kuehlschrankId);
+        const rezeptListe = await EatSmarterAPI.getAPI().getRezeptByGenerator(wgId, kuehlschrankId);
         console.log("Rezept IDs:", rezeptListe);
         setRezepte(rezeptListe)
         if (rezeptListe.length === 0) {
@@ -58,7 +62,7 @@ function Generator(props) {
                                 <p className="blue-mini-container">{rezepte.rezeptName}</p>
                                 <p>Anzahl Portionen: {rezepte.anzahlPortionen}</p>
                                 <p>Ersteller: {rezepte.rezeptAdmin}</p>
-                                <p>WG: {rezepte.wgName}</p>
+                                <p>WG: {rezepte.wgId}</p>
                             </div>
                         </Link>
                     </div>

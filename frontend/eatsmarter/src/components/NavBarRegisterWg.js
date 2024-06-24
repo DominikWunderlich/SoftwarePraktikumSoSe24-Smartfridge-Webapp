@@ -7,12 +7,13 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import '../sytles/WG-Landingpage.css';
-
+import {useNavigate} from "react-router-dom";
 
 function NavBarRegisterWg({currentUser, onSignOut}){
     const [state, setState] = useState({
         menuAnchor: null,
-    })
+    });
+    const navigate = useNavigate();
 
     // Handle Funktionen, um zu prüfen, ob das Menü geöffnet ist oder nicht
  	const handleOpen = (event) =>{
@@ -22,12 +23,19 @@ function NavBarRegisterWg({currentUser, onSignOut}){
 		setState({...state, menuAnchor: null})
 	}
 
+    const navigateToProfil = () => {
+         navigate("/Profil")
+    }
+
     return (
         <AppBar>
             <Toolbar className="navbar">
                 <Button className='bold-button' color="inherit" component={Link} >
                     EatSmarter
                 </Button>
+                 <Button className='navbar-button' color="inherit" component={Link} to ="/registerWg">
+                     Wg Erstellen
+                 </Button>
                 {/*Wenn CurrentUser existiert, wird der Avatar und das Menü gerendert*/}
                 {currentUser && (
                     <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
@@ -50,7 +58,7 @@ function NavBarRegisterWg({currentUser, onSignOut}){
                                 horizontal: 'right',
                             }}
                         >
-                            <MenuItem>{currentUser.displayName}</MenuItem>
+                            <MenuItem onClick={navigateToProfil}>Mein Profil</MenuItem>
                             <MenuItem onClick={onSignOut}>Abmelden</MenuItem>
                         </Menu>
                     </div>

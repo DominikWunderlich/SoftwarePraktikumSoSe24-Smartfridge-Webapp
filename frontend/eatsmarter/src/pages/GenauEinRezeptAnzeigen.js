@@ -11,6 +11,9 @@ import TrimAndLowerCase from "../functions";
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import RezeptBO from "../api/RezeptBO";
 
 
 function GenauEinRezeptAnzeigen(props) {
@@ -21,6 +24,17 @@ function GenauEinRezeptAnzeigen(props) {
         masseinheit: "",
         kuehlschrankId: 0,
         rezeptId: 0
+    });
+     // fürs Bearbeiten des Lebensmittelobjekts
+    const [editFormData, setEditFormData] = useState({
+        lebensmittelName: "",
+        mengenanzahl: 0,
+        masseinheit: "",
+        rezeptId: 0
+    });
+    const [customMasseinheitData, setCustomMasseinheitData] = useState({
+        masseinheit: "",
+        grammMenge: ""
     });
 
     const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
@@ -33,6 +47,9 @@ function GenauEinRezeptAnzeigen(props) {
     const {rezeptId} = useParams();
     const navigate = useNavigate()
     const currentUser = props.user.email;
+    const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
+    const [editLebensmittelId, setEditLebensmittelId] = useState(null); // Zustand für die Lebensmittel-ID im Bearbeitungsmodus
+    const [isEditing, setIsEditing] = useState(false);
 
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
     const handleChange = (event) => {
@@ -49,6 +66,7 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    
     const handleSubmit = async (event) => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         if (isAdmin) {
@@ -144,6 +162,50 @@ function GenauEinRezeptAnzeigen(props) {
         fetchRezeptLebensmittel();
     }, [rezeptId]);
 
+    const handleSaveEdit = async () => {
+        try {
+            // Erstellen des updated-food-Objekts.
+            const updatedLebensmittelInRezept = new LebensmittelBO(
+                editFormData.lebensmittelName,
+                editFormData.mengenanzahl,
+                editFormData.masseinheit,
+                null,
+                editFormData.rezeptId
+            );
+            updatedLebensmittelInRezept.id = editLebensmittelId;
+
+            await EatSmarterAPI.getAPI().updateFoodInRezept(updatedLebensmittelInRezept);
+
+            setEditMode(null);
+            setEditLebensmittelId(null);
+
+            // Rufen Sie die neuesten Lebensmitteldaten ab und aktualisieren Sie den Zustand
+            await fetchRezeptLebensmittel();
+        } catch (error) {
+            console.error("Fehler beim Aktualisieren:", error);
+            setErrors({ message: "Fehler beim Aktualisieren der Lebensmittel." });
+        }
+    };
+
+    /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
+    const handleEditChange = (event) => {
+        setEditFormData({
+            ...editFormData,
+            [event.target.name]: event.target.value
+        });
+    };
+
+    const handleEditMasseinheit = (lebensmittel) => {
+        setEditMode(lebensmittel.id);
+        setEditLebensmittelId(lebensmittel.id);
+
+        setEditFormData({
+            lebensmittelName: lebensmittel.lebensmittelName,
+            mengenanzahl: lebensmittel.mengenanzahl,
+            masseinheit: lebensmittel.masseinheit,
+            rezeptId: lebensmittel.rezeptId
+        });
+    };
     /* Funktionen zum Kochen -> für eine Einkaufsliste oder Verbrauch von Lebensmittel */
     const handleJetztKochen = async () => {
         try {
@@ -207,7 +269,34 @@ function GenauEinRezeptAnzeigen(props) {
             else{
                 alert("Nur der Rezept Ersteller kann Lebensmittel löschen")
             }
-            }
+            };
+
+    const handleChangeInstructions = () => {
+        const newRecipe = new RezeptBO(
+            rezept.rezeptName,
+            rezept.anzahlPortionen,
+            rezept.rezeptAdmin,
+            rezept.wgId,
+            rezept.rezeptAnleitung
+        )
+        newRecipe.setID(rezept.id);
+        newRecipe.setWgId(rezept.wgId);
+        EatSmarterAPI.getAPI().updateRezept(newRecipe);
+    }
+
+    const handleChangeInstruction = (e) => {
+        setRezept({
+            ...rezept,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const toggleEditMode = () => {
+         if (isEditing) {
+            handleChangeInstructions();
+        }
+        setIsEditing(!isEditing);
+    }
 
     /* Darstellung der Komponente */
     return (
@@ -232,31 +321,82 @@ function GenauEinRezeptAnzeigen(props) {
                                 </button>
                             </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
-                            <p>WG: {rezept.wgName}</p>
-                            <p>Zubereitung: {rezept.rezeptAnleitung}</p>
+                            <div>
+                                <p>Kochanleitung:</p>
+                                {isEditing ? (
+                                    <textarea className={'input-container'}
+                                        name="rezeptAnleitung"
+                                        value={rezept.rezeptAnleitung}
+                                        onChange={handleChangeInstruction}
+                                    />
+                                ) : (
+                                    <p>{rezept.rezeptAnleitung}</p>
+                                )}
+                                <button type={"button"} onClick={toggleEditMode}>
+                                     {isEditing ? 'Speichern' : 'Bearbeiten'}
+                                </button>
+                            </div>
                             {errors.message && <p>{errors.message}</p>}
                             <table>
-                                <thead>
+                            <thead>
                                 <tr>
                                     <th>Lebensmittelname</th>
                                     <th>Mengenanzahl</th>
                                     <th>Maßeinheit</th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
-                                </thead>
-                                <tbody>
+                            </thead>
+                            <tbody>
                                 {rezeptLebensmittel.map((lebensmittel, index) => (
                                     <tr key={index}>
-                                        <td>{lebensmittel.lebensmittelName}</td>
-                                        <td>{lebensmittel.mengenanzahl}</td>
-                                        <td>{lebensmittel.masseinheit}</td>
+                                        {editMode === lebensmittel.id ? (
+                                            <>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        name="lebensmittelName"
+                                                        value={editFormData.lebensmittelName}
+                                                        onChange={handleEditChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        name="mengenanzahl"
+                                                        value={editFormData.mengenanzahl}
+                                                        onChange={handleEditChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        name="masseinheit"
+                                                        value={editFormData.masseinheit}
+                                                        onChange={handleEditChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <TaskAltIcon onClick={() => handleSaveEdit()} />
+                                                </td>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <td>{lebensmittel.lebensmittelName}</td>
+                                                <td>{lebensmittel.mengenanzahl}</td>
+                                                <td>{lebensmittel.masseinheit}</td>
+                                                <td>
+                                                    <ModeEditIcon onClick={() => handleEditMasseinheit(lebensmittel)} />
+                                                </td>
+                                            </>
+                                        )}
                                         <td>
                                             <DeleteIcon onClick={(event) => deleteLebensmittel(event, lebensmittel.id)} aria-label="delete" size="small" />
                                         </td>
                                     </tr>
                                 ))}
-                                </tbody>
-                            </table>
+                            </tbody>
+                        </table>
                         </div>
                         <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
                     </div>)}
