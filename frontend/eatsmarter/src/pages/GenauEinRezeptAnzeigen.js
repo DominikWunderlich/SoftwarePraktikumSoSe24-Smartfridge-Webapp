@@ -14,6 +14,7 @@ import Stack from '@mui/material/Stack';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import RezeptBO from "../api/RezeptBO";
+import Button from '@mui/material/Button';
 
 
 function GenauEinRezeptAnzeigen(props) {
@@ -32,15 +33,18 @@ function GenauEinRezeptAnzeigen(props) {
         masseinheit: "",
         rezeptId: 0
     });
-    const [customMasseinheitData, setCustomMasseinheitData] = useState({
-        masseinheit: "",
-        grammMenge: ""
+
+     // fürs Hinzufügen einer eigenen Maßeinheit
+     const [customMasseinheitData, setCustomMasseinheitData] = useState({
+        masseinheitsname: "",
+        umrechnungsfaktor: ""
     });
 
     const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [shoppingListElem, setShoppingListElem] = useState([]);
+    const [customMasseinheit, setCustomMasseinheit] = useState("");
     const [rezept, setRezept] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [errors, setErrors] = useState({});
@@ -66,7 +70,6 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
-    
     const handleSubmit = async (event) => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         if (isAdmin) {
@@ -113,8 +116,7 @@ function GenauEinRezeptAnzeigen(props) {
                 alert("Nur der Ersteller kann ein Lebensmittel hinzufügen");
 
         }
-        }
-
+    }
 
     /* Funktionen für Daten die, geladen werden müssen */
     const fetchMasseinheiten = async () => {
@@ -236,6 +238,60 @@ function GenauEinRezeptAnzeigen(props) {
         setIsPopupOpen(false);
     };
 
+    /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
+    const addMasseinheit = async (masseinheitBO) => {
+        try {
+            console.log("neue Maßeinheit: ", masseinheitBO);
+            const newMasseinheit = await EatSmarterAPI.getAPI().addMasseinheit(masseinheitBO);
+            setMasseinheitenListe(prevList => [...prevList, newMasseinheit]);
+            
+        } catch (error) {
+            console.error("Fehler beim Hinzufügen der Maßeinheit:", error);
+        }
+    };
+
+    const handleCustomMasseinheit = () => {
+        setIsPopupOpen(true);
+    };
+
+    const handlePopupInputChange = (event) => {
+        const { name, value } = event.target;
+        setCustomMasseinheitData({
+            ...customMasseinheitData,
+            [name]: value
+        });
+    };
+
+    const handleSaveCustomMasseinheit = async () => {
+        const { masseinheitsname, umrechnungsfaktor } = customMasseinheitData;
+
+        if (masseinheitsname && umrechnungsfaktor) {
+            const newMasseinheit = new MasseinheitBO(
+                TrimAndLowerCase(masseinheitsname));
+            newMasseinheit.setumrechnungsfaktor(parseFloat(umrechnungsfaktor));
+
+            try {
+                await addMasseinheit(newMasseinheit);
+
+                setCustomMasseinheit(masseinheitsname);
+                setFormData({
+                    ...formData,
+                    masseinheit: masseinheitsname
+                });
+                setIsPopupOpen(false);
+                setCustomMasseinheitData({
+                    masseinheitsname: "",
+                    umrechnungsfaktor: ""
+                });
+
+                fetchMasseinheiten();
+            } catch (error) {
+                console.error("Fehler beim Hinzufügen der benutzerdefinierten Maßeinheit:", error);
+            }
+        } else {
+            alert("Bitte füllen Sie beide Felder aus.");
+        }
+    };
 
     /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
     const handleDelete = async () => {
@@ -427,21 +483,27 @@ function GenauEinRezeptAnzeigen(props) {
                                 onChange={handleChange}
                                 className="eingabe"
                             />
-                            <label>Maßeinheit</label>
-                            <input
-                                type="text"
-                                name="masseinheit"
-                                list="masseinheiten"
-                                value={formData.masseinheit}
-                                onChange={handleChange}
-                                className="eingabe"
-                            />
-                            <datalist id="masseinheiten">
-                                {masseinheitenListe.map((masseinheit, index) => (
-                                    <option key={index} value={masseinheit.masseinheitsname}/>
-                                ))}
-                            </datalist>
+                        <label>Maßeinheit</label>
+                            <div className="input-with-button">
+                            <div className="inner-input-with-button">
+                                <select
+                                    name="masseinheit"
+                                    value={formData.masseinheit}
+                                    onChange={handleChange}
+                                    className="eingabe"
+                                >
+                                    {masseinheitenListe.map((masseinheit, index) => (
+                                        <option key={index} value={masseinheit.masseinheitsname}>
+                                            {masseinheit.masseinheitsname}
+                                        </option>
+                                    ))}
+                                </select>
+                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<ModeEditIcon />}>
+                                    eigene Maßeinheit
+                                </Button>
+                            </div>
                         </div>
+                    </div>
                         <button className="button" type="button" onClick={handleSubmit}>hinzufügen</button>
                     </div>
                     <br></br>
@@ -482,6 +544,34 @@ function GenauEinRezeptAnzeigen(props) {
                         </div>
                     </div>
                 )}
+                {isPopupOpen && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
+                        <div className="blue-mini-container">
+                            <div className="formitem">
+                                <label>Name der Maßeinheit</label>
+                                <input
+                                    type="text"
+                                    name="masseinheitsname"
+                                    value={customMasseinheitData.masseinheitsname}
+                                    onChange={handlePopupInputChange}
+                                    className="eingabe"
+                                />
+                                <label>Referenzmenge zu Gramm oder Milliliter</label>
+                                <input
+                                type="number"
+                                name="umrechnungsfaktor"
+                                value={customMasseinheitData.umrechnungsfaktor}
+                                onChange={handlePopupInputChange}
+                                className="eingabe"
+                            />
+                            </div>
+                        </div>
+                        <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
+                    </div>
+                </div>
+            )}
             </div>
         );
     }
