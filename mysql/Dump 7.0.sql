@@ -120,10 +120,11 @@ CREATE TABLE `rezept` (
   `anzahl_portionen` varchar(45) DEFAULT NULL,
   `rezept_ersteller` varchar(45) DEFAULT NULL,
   `rezept_id` int NOT NULL,
-  `wg_name` varchar(255) DEFAULT NULL,
+  `wg_id` int DEFAULT NULL,
   `rezept_anleitung` text,
   PRIMARY KEY (`rezept_id`),
-  KEY `rezeptowner_idx` (`anzahl_portionen`)
+  KEY `rezeptowner_idx` (`anzahl_portionen`),
+  CONSTRAINT `fk_rezept_wg` FOREIGN KEY (`wg_id`) REFERENCES `wg`(`wg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

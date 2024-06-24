@@ -17,15 +17,18 @@ import NavBar from "../components/NavBar";
 function RezepteAnzeigen(props) {
     const [rezepte, setRezepte] = useState([]);
     const emailDerEingeloggtenPerson = props.user.email;
-    const [wgName, setWgName] = useState(""); //brauche ich diese Zeile?
+    const [wgId, setWgId] = useState(""); //brauche ich diese Zeile?
 
     useEffect(() => {
         const fetchRezepte = async () => {
             try {
                 const api = new EatSmarterAPI();
                 const userWg = await api.getWgByUser(props.user.email); // Ruf die WG des Benutzers ab
-                const rezeptList = await api.getRezepteByWg(userWg.wgName); // Ruf die neuen Rezept-Methode auf
+                console.log("Huhu")
+                console.log(userWg)
+                const rezeptList = await api.getRezepteByWg(userWg.id); // Ruf die neuen Rezept-Methode auf
                 setRezepte(rezeptList);
+                console.log("hier die liste")
                 console.log(rezeptList)
             } catch (error) {
                 console.error("Fehler beim Abrufen der Rezepte:", error);
@@ -52,7 +55,6 @@ function RezepteAnzeigen(props) {
                                 <p className="blue-mini-container">{rezept.rezeptName}</p>
                                 <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
                                 <p>Ersteller: {rezept.rezeptAdmin}</p>
-                                <p>WG: {rezept.wgName}</p>
                             </div>
                         </Link>
                     </div>

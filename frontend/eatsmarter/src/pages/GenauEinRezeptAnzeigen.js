@@ -175,15 +175,12 @@ function GenauEinRezeptAnzeigen(props) {
             updatedLebensmittelInRezept.id = editLebensmittelId;
 
             await EatSmarterAPI.getAPI().updateFoodInRezept(updatedLebensmittelInRezept);
-            setRezeptLebensmittel(prevList =>
-                prevList.map(item =>
-                    item.id === editLebensmittelId ? updatedLebensmittelInRezept : item
-                )
-            );
+
             setEditMode(null);
             setEditLebensmittelId(null);
 
-            await fetchLebensmittel();
+            // Rufen Sie die neuesten Lebensmitteldaten ab und aktualisieren Sie den Zustand
+            await fetchRezeptLebensmittel();
         } catch (error) {
             console.error("Fehler beim Aktualisieren:", error);
             setErrors({ message: "Fehler beim Aktualisieren der Lebensmittel." });
@@ -323,7 +320,6 @@ function GenauEinRezeptAnzeigen(props) {
                                 </button>
                             </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
-                            <p>WG: {rezept.wgName}</p>
                             <div>
                                 <p>Kochanleitung:</p>
                                 {isEditing ? (

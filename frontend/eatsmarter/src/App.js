@@ -170,7 +170,7 @@ function App(props) {
 						  <Route path="/registerWg" element={<RegisterWG user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/wg" element={<WGPage user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  // TODO: Pfad von der Homepage (/wg/:wgName) umbenennen
-						  <Route path="/wg/:wgName" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
+						  <Route path="/homepage" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/kuehlschrankinhalt/:wg_id" element={<Kuehlschrank user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  {/*Lebensmittelverwaltung: Path kann gelöscht werden, wird nicht genutzt? */}
 						  {/*<Route path="/lebensmittelverwaltung" element={<Lebensmittelverwaltung user={state.currentUser} onSignOut={handleSignOut}/>}/>*/}

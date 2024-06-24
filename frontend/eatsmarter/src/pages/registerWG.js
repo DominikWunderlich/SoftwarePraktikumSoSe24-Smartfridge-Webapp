@@ -34,9 +34,8 @@ function WGLandingpage(props) {
                 formData.wgname,
                 TrimAndLowerCase(formData.wgadmin),
             );
-            console.log(newWG)
             await EatSmarterAPI.getAPI().addWg(newWG)
-            navigate("/wg")
+            navigate("/homepage")
 
         }
     };
@@ -47,7 +46,7 @@ function WGLandingpage(props) {
             .then((UserInWg) => {
                 // Redirect user based on wether the user is in a wg or not.
                 if (UserInWg[0].wgId != null) {
-                    navigate("/wg/:wgName");
+                    navigate("/homepage");
                 } else {
                     navigate("/registerWg")
                 }

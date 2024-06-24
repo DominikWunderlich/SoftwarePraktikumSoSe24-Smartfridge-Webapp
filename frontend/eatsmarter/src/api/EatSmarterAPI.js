@@ -42,7 +42,7 @@ export default class EatSmarterAPI{
     // Rezept related URLS
     #addRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
     #getRezeptURL = () => `${this.#EatSmarterServerBaseURL}/rezept`;
-    #getRezepteByWgURL = (wg_name) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_name}`;
+    #getRezepteByWgURL = (wg_id) => `${this.#EatSmarterServerBaseURL}/rezept/${wg_id}`;
     #getRezeptByIdURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/${rezept_id}`;
     #lebensmittelZuRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezeptt/${rezept_id}/lebensmittel`;
     #changeAnzahlPortionenInRezeptURL = (rezept_id) => `${this.#EatSmarterServerBaseURL}/rezept/einrezept/anzahlPortionen/updateundget/${rezept_id}`;
@@ -96,8 +96,8 @@ export default class EatSmarterAPI{
         });
     });
     }
-    getRezepteByWg(wg_name){
-    return this.#fetchAdvanced(this.#getRezepteByWgURL(wg_name), {
+    getRezepteByWg(wg_id){
+    return this.#fetchAdvanced(this.#getRezepteByWgURL(wg_id), {
         method: "GET",
         headers: {
             "Accept": "application/json",
@@ -541,14 +541,10 @@ export default class EatSmarterAPI{
 
     // Wg related URLS
     #addWgURL = () => `${this.#EatSmarterServerBaseURL}/wg`;
-    #deleteWgURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/user/${wgName}`;
+    #deleteWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
-    #addWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/add/${current_user}/${new_user}`
-    #deleteWgBewohnerURL = (current_user, new_user) => `${this.#EatSmarterServerBaseURL}/wg/delete/${current_user}/${new_user}`
-
     #getPersonByWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wg_bewohner/${email}`
-
     #getWgAdminByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wgadmin/${email}`
 
      addWg(wgBO){
@@ -567,40 +563,6 @@ export default class EatSmarterAPI{
         })
     }
 
-    addWgBewohner(currentUser,  new_user){
-        return this.#fetchAdvanced(this.#addWgBewohnerURL(currentUser,  new_user), {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json, text/plain",
-                "Content-type": "application/json",
-            },
-        }).then((response) => {
-            // console.log(response)
-            if (response === true){
-                return true
-            }
-            else{
-                return false
-            }
-        });
-    }
-    deleteWgBewohner(currentUser,  new_user){
-        return this.#fetchAdvanced(this.#deleteWgBewohnerURL(currentUser,  new_user), {
-            method: "PUT",
-            headers: {
-                "Accept": "application/json, text/plain",
-                "Content-type": "application/json",
-            },
-        }).then((response) => {
-            // console.log(response)
-            if (response === true){
-                return true
-            }
-            else{
-                return false
-            }
-        });
-    }
     getWGbyName(wgName) {
         return this.#fetchAdvanced(this.#getWgbyURL(wgName), {
             method: "GET",
@@ -646,14 +608,14 @@ export default class EatSmarterAPI{
         });
     }
 
-    deleteWgByName(wgName){
-        return this.#fetchAdvanced(this.#deleteWgURL(wgName),{
+    deleteWg(email){
+        return this.#fetchAdvanced(this.#deleteWgURL(email),{
             method: "DELETE",
             headers: {
                 "Accept": "application/json, text/plain",
                 "Content-type": "application/json",
             },
-            body: JSON.stringify(wgName)
+            body: JSON.stringify(email)
         }).then((responseJSON) => {
             // console.log("Entfernte Wg", responseJSON)
             return new Promise( function(resolve) {
@@ -816,9 +778,9 @@ export default class EatSmarterAPI{
     }
 
 
-    #getRezeptByGeneratorURL = (wg_name, kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/rezept/generator/${wg_name}/${kuehlschrank_id}`;
-    getRezeptByGenerator(wg_name, kuehlschrank_id){
-    return this.#fetchAdvanced(this.#getRezeptByGeneratorURL(wg_name, kuehlschrank_id),{
+    #getRezeptByGeneratorURL = (wg_id, kuehlschrank_id) => `${this.#EatSmarterServerBaseURL}/rezept/generator/${wg_id}/${kuehlschrank_id}`;
+    getRezeptByGenerator(wg_id, kuehlschrank_id){
+    return this.#fetchAdvanced(this.#getRezeptByGeneratorURL(wg_id, kuehlschrank_id),{
         method: "GET",
         headers: {
             "Accept": "application/json",

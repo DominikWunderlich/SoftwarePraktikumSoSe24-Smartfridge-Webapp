@@ -109,16 +109,12 @@ class WGMapper(mapper):
         cursor.close()
 
 
-    def delete_wg_and_kuehlschrank(self, wg_id):
+    def delete_wg(self, wg_id):
         cursor = self._connector.cursor()
         data = wg_id
 
-        command_1 = "DELETE FROM datenbank.lebensmittel WHERE kuehlschrank_id=%s"
-        command_2 = "DELETE FROM datenbank.kuehlschrank WHERE kuehlschrank_id=%s"
-        command_3 = "DELETE FROM datenbank.wg WHERE wg_id =%s"
-        cursor.execute(command_1, (data,))
-        cursor.execute(command_2, (data,))
-        cursor.execute(command_3, (data,))
+        command = "DELETE FROM datenbank.wg WHERE wg_id =%s"
+        cursor.execute(command, (data,))
 
         self._connector.commit()
         cursor.close()
@@ -157,72 +153,7 @@ class WGMapper(mapper):
 
         self._connector.commit()
         cursor.close()
-        #print("Mapper result: result", result)
         return result
-
-    def add_wg_bewohner(self, new_email, wg_id):
-        cursor = self._connector.cursor()
-        command = "UPDATE datenbank.wg SET wg_bewohner = CONCAT(wg_bewohner, ', ', %s) WHERE wg_id = %s"
-        data =(new_email, wg_id)
-
-        cursor.execute(command, data)
-
-        self._connector.commit()
-        cursor.close()
-
-    def delete_wg_bewohner(self, new_email, wg_id):
-        cursor = self._connector.cursor()
-        command = """
-        UPDATE datenbank.wg 
-        SET wg_bewohner = REPLACE(REPLACE(TRIM(BOTH ',' FROM REPLACE(wg_bewohner, %s, '')), ',,', ','), ',,', ',')
-        WHERE wg_id = %s
-        """
-        data = (new_email, wg_id)
-
-        cursor.execute(command, data)
-
-        self._connector.commit()
-        cursor.close()
-
-    def find_wg_id_by_email(self, email):
-        print(email)
-        e = f"%{email}%"
-        cursor = self._connector.cursor()
-        command = "SELECT wg_id FROM datenbank.wg WHERE wg_ersteller LIKE %s"
-        cursor.execute(command, (e, e))
-
-        wg_id = cursor.fetchone()
-        if wg_id:
-            # print(wg_id[0])
-            return wg_id[0]  # Nur die wg_id zurückgeben
-
-        return None
-
-    # def find_wg_bewohner_by_wg_id(self, wg_id):
-    #     cursor = self._connector.cursor()
-    #     command = f"SELECT wg_bewohner FROM datenbank.wg WHERE wg_id='{wg_id}' "
-    #     cursor.execute(command)
-    #     wg_bewohner_row = cursor.fetchone()
-    #
-    #     self._connector.commit()
-    #     cursor.close()
-    #
-    #     if wg_bewohner_row:
-    #         wg_bewohner_list = wg_bewohner_row[0].split(", ")
-    #         return wg_bewohner_list
-    #     else:
-    #         return []
-
-    def find_wg_admin_by_wg_id(self, wg_id):
-        cursor = self._connector.cursor()
-        command = "SELECT wg_ersteller FROM datenbank.wg WHERE wg_id LIKE %s"
-        cursor.execute(command, wg_id)
-
-        wg_ersteller= cursor.fetchone()
-        if wg_ersteller:
-            return wg_ersteller
-
-        return None
 
     def find_wg_by_wg_id(self, wg_id):
         result = []
