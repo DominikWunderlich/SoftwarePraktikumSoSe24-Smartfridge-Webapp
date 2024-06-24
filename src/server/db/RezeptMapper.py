@@ -97,9 +97,9 @@ class RezeptMapper(mapper):
         cursor = self._connector.cursor()
 
         command = f"UPDATE datenbank.rezept SET rezept_name=%s, anzahl_portionen=%s, rezept_ersteller=%s," \
-                  f"rezept_id=%s, wg_name=%s, rezept_anleitung=%s WHERE rezept_id=%s"
+                  f"rezept_id=%s, wg_id=%s, rezept_anleitung=%s WHERE rezept_id=%s"
         data = (obj.get_rezept_name(), obj.get_anzahl_portionen(), obj.get_rezept_ersteller(),
-                obj.get_id(), obj.get_wg_name(), obj.get_rezept_anleitung(), obj.get_id())
+                obj.get_id(), obj.get_wg_id(), obj.get_rezept_anleitung(), obj.get_id())
         cursor.execute(command, data)
         self._connector.commit()
         cursor.close()

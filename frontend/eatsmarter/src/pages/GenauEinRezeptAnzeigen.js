@@ -276,10 +276,11 @@ function GenauEinRezeptAnzeigen(props) {
             rezept.rezeptName,
             rezept.anzahlPortionen,
             rezept.rezeptAdmin,
-            rezept.wgName,
+            rezept.wgId,
             rezept.rezeptAnleitung
         )
         newRecipe.setID(rezept.id);
+        newRecipe.setWgId(rezept.wgId);
         EatSmarterAPI.getAPI().updateRezept(newRecipe);
     }
 
