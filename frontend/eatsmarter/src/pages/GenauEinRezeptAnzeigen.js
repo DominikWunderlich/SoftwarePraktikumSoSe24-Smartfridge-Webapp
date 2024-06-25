@@ -329,17 +329,23 @@ function GenauEinRezeptAnzeigen(props) {
             }
             };
 
-    const handleChangeInstructions = () => {
-        const newRecipe = new RezeptBO(
-            rezept.rezeptName,
-            rezept.anzahlPortionen,
-            rezept.rezeptAdmin,
-            rezept.wgId,
-            rezept.rezeptAnleitung
-        )
-        newRecipe.setID(rezept.id);
-        newRecipe.setWgId(rezept.wgId);
-        EatSmarterAPI.getAPI().updateRezept(newRecipe);
+    const handleChangeInstructions = async () => {
+        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
+        if (isAdmin) {
+            const newRecipe = new RezeptBO(
+                rezept.rezeptName,
+                rezept.anzahlPortionen,
+                rezept.rezeptAdmin,
+                rezept.wgId,
+                rezept.rezeptAnleitung
+            )
+            newRecipe.setID(rezept.id);
+            newRecipe.setWgId(rezept.wgId);
+            await EatSmarterAPI.getAPI().updateRezept(newRecipe);
+        }
+        else {
+            alert("Nur der Admin kann ein Rezept bearbeiten!")
+        }
     }
 
     const handleChangeInstruction = (e) => {
