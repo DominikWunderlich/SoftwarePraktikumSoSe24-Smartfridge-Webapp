@@ -55,8 +55,16 @@ function GenauEinRezeptAnzeigen(props) {
     const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
     const [editLebensmittelId, setEditLebensmittelId] = useState(null); // Zustand für die Lebensmittel-ID im Bearbeitungsmodus
     const [isEditing, setIsEditing] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
+    const fetchAdmin = async () => {
+        const admin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
+        if (admin) {
+            setIsAdmin(true)
+        }
+    }
+
     const handleChange = (event) => {
         const {name, value} = event.target;
         setFormData({
@@ -72,7 +80,6 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleSubmit = async (event) => {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         if (isAdmin) {
             event.preventDefault();
 
@@ -163,6 +170,7 @@ function GenauEinRezeptAnzeigen(props) {
         fetchLebensmittel();
         fetchRezeptById();
         fetchRezeptLebensmittel();
+        fetchAdmin();
     }, [rezeptId]);
 
     /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
@@ -224,8 +232,6 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleChangePortionenInRezept = async(neueAnzahlPortionen) => {
-        console.log(rezeptId)
-        console.log(neueAnzahlPortionen)
         try{
             const api = new EatSmarterAPI();
             await api.changePortionenInRezept(rezeptId, neueAnzahlPortionen);
@@ -247,7 +253,6 @@ function GenauEinRezeptAnzeigen(props) {
     /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
     const addMasseinheit = async (masseinheitBO) => {
         try {
-            console.log("neue Maßeinheit: ", masseinheitBO);
             const newMasseinheit = await EatSmarterAPI.getAPI().addMasseinheit(masseinheitBO);
             setMasseinheitenListe(prevList => [...prevList, newMasseinheit]);
             
@@ -301,10 +306,6 @@ function GenauEinRezeptAnzeigen(props) {
 
     /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
     const handleDelete = async () => {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
-        console.log("Frontend", isAdmin);
-        console.log(currentUser)
-
         if (isAdmin) {
             const response = await EatSmarterAPI.getAPI().deleteRezept(rezeptId);
             console.log("Rezept Lösch-Response", response);
@@ -318,7 +319,6 @@ function GenauEinRezeptAnzeigen(props) {
 
         async function deleteLebensmittel(event, lebensmittelId) {
             event.preventDefault()
-            const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
             if (isAdmin){
                 // LebensmittelId ist der Value aus dem button Klick event
                 try {
@@ -334,7 +334,6 @@ function GenauEinRezeptAnzeigen(props) {
             };
 
     const handleChangeInstructions = async () => {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         if (isAdmin) {
             const newRecipe = new RezeptBO(
                 rezept.rezeptName,
