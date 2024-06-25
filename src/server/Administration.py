@@ -139,6 +139,11 @@ class Administration(object):
         with PersonMapper() as mapper:
             return mapper.find_by_email(email)
 
+    def delete_user(self, p):
+        """ Löschen einer Person. """
+        with PersonMapper() as mapper:
+            mapper.delete(p)
+
     """ Rezept-spezifische Methoden """
 
     def get_anzahl_portionen_of_recipe_by_rezept_id(self, rezept_id):

@@ -1,15 +1,19 @@
 import React, {useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
 import PersonBO from "../api/PersonBO";
 import TrimAndLowerCase from "../functions";
+import DeleteIcon from "@mui/icons-material/Delete";
+import "../sytles/WG-Landingpage.css";
 function Profil(props){
     const googleId = props.user.uid;
     const [profil, setProfil] = useState(null);
     const [wg, setWg] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [editFormData, setEditFormData] = useState({});
+    const navigate = useNavigate();
 
     const renderProfile = async () => {
         await EatSmarterAPI.getAPI().checkUserByGID(googleId)
@@ -72,6 +76,20 @@ function Profil(props){
        renderCurrentUsersWg();
    }, []);
 
+    const deletePerson = () => {
+        const newPerson = new PersonBO(
+            props.user.email,
+            profil.userName,
+            profil.firstName,
+            profil.lastName,
+            props.user.uid,
+            profil.wgId
+        )
+        alert("Account gelöscht!")
+        EatSmarterAPI.getAPI().deletePerson(newPerson);
+        navigate("/login");
+    }
+
     return(
         <div>
             <div>
@@ -87,13 +105,15 @@ function Profil(props){
                     <div className="inner-container">
                         <h2>Dein Profil</h2>
                         <div className="mini-container">
-                            <table>
+                            <div className="table-profil">
+                                <table>
                                 <thead>
                                 <tr>
                                     <th>Nutzername</th>
                                     <th>Nachname</th>
                                     <th>Vorname</th>
                                     <th>E-Mail</th>
+                                    <th></th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -134,6 +154,9 @@ function Profil(props){
                                             <td>
                                                 <button onClick={handleSaveEdit}>Speichern</button>
                                             </td>
+                                            <td>
+                                            <DeleteIcon onClick={() => deletePerson()} />
+                                            </td>
                                         </>
                                     ) : (
                                         <>
@@ -144,11 +167,16 @@ function Profil(props){
                                             <td>
                                                 <button onClick={handleEditButton}>Bearbeiten</button>
                                             </td>
+                                            <td>
+                                            <DeleteIcon onClick={() => deletePerson()} />
+                                            </td>
                                         </>
                                     )}
                                 </tr>
                                 </tbody>
                             </table>
+
+                            </div>
                         </div>
                     </div>
                 )}

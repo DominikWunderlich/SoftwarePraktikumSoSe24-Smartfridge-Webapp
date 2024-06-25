@@ -309,6 +309,14 @@ class ProfileOperations(Resource):
         p = adm.check_if_user_is_in_wg(google_id)
         return p
 
+    @secured
+    def delete(self, google_id):
+        """ Löschen eines bestimmten Profil-Objekts. """
+        adm = Administration()
+        proposal = Person.from_dict(api.payload)
+        p = adm.delete_user(proposal)
+        return p
+
 @smartapi.route('/login/check/<string:google_id>')
 @smartapi.response(500, 'Serverseitiger-Fehler')
 @smartapi.param("google_id", 'Die Google-ID des Profil-Objekts')
