@@ -230,7 +230,7 @@ export default class EatSmarterAPI{
     }
 
     // Lebensmittel direkt aus dem Kuehlschrank löschen
-    #deleteFoodFromFridgeURL = (wg_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}//kuehlschrankinhalt/${wg_id}/${lebensmittel_id}`
+    #deleteFoodFromFridgeURL = (wg_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${wg_id}/${lebensmittel_id}`
 
     #deleteFoodFromRezeptURL = (rezept_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/rezeptinhalt/${rezept_id}/${lebensmittel_id}`
 
