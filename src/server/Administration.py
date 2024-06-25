@@ -1020,8 +1020,16 @@ class Administration(object):
             return mapper.find_all_by_wg_id(wg_id, wg_ersteller)
 
     def add_person_to_wg(self, wg_id, email):
+        # Es wird geprüft, ob die Person bereits in einer WG ist.
+        # Falls nicht, kann die Person einer anderen WG hinzugefügt werden.
         with PersonMapper() as mapper:
-            return mapper.update_wg_id_person(wg_id, email)
+            WgId = mapper.find_wg_id_by_email(email)
+
+            if not WgId:
+                with PersonMapper() as mapper2:
+                    return mapper2.update_wg_id_person(wg_id, email)
+            else:
+                pass
 
     def delete_person_from_wg(self, wg_id, person_id):
         with PersonMapper() as mapper:

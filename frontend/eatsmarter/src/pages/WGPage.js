@@ -17,6 +17,7 @@ function WGPage(props) {
     const [showAdminDeletePopup, setShowAdminDeletePopup] = useState(false);
     const [showAdminDeleteWgPopup, setShowAdminDeleteWgPopup] = useState(false);
     const [showNotExistUserPopup, setNotExistUserPopup] = useState(false);
+    const [showUserAlreadyInWgPopup, setUserAlreadyInWgPopup] = useState(false);
     const [showNoValidEmailPopup, setShowNoValidEmailPopup] = useState(false);
 
     async function renderCurrentUsersWg(){
@@ -79,13 +80,17 @@ function WGPage(props) {
                 if (userExist.length === 0) {
                     setNotExistUserPopup(true)
                 } else {
-                    // const response = await EatSmarterAPI.getAPI().addWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
+                    if (userExist.wgId !== 0) {
+                        setUserAlreadyInWgPopup(true)
+                    }else {
+                        // const response = await EatSmarterAPI.getAPI().addWgBewohner(currentUser, TrimAndLowerCase(addNewMemberEmail));
                     await EatSmarterAPI.getAPI().addPersonToWg(wg.id, TrimAndLowerCase(addNewMemberEmail))
                     renderCurrentUsersWg();
                     renderPersonList();
                     renderWgAdmin();
                 }
                 setAddNewMemberEmail("");
+                    }
             }
         }
         else{
@@ -140,6 +145,7 @@ function WGPage(props) {
         setShowAdminDeletePopup(false);
         setNotExistUserPopup(false);
         setShowNoValidEmailPopup(false);
+        setUserAlreadyInWgPopup(false);
     }
 
     return (
@@ -229,6 +235,14 @@ function WGPage(props) {
                 <br></br>
                 <button className="button-uebersicht" type="button" onClick={handleDeleteWG}>WG löschen</button>
             </div>
+            {showUserAlreadyInWgPopup && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h2 className="h2-black">Die Person ist bereits einer WG beigetreten!</h2>
+                        <button type="button" onClick={closePopup}>Schließen</button>
+                    </div>
+                </div>
+            )}
              {showAdminAddPopup && (
                 <div className="popup">
                     <div className="inner-popup">
