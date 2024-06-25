@@ -16,7 +16,6 @@ import RezeptBO from "../api/RezeptBO";
 import Button from '@mui/material/Button';
 import ResponsiveAppBar from "../components/NavBar";
 
-
 function GenauEinRezeptAnzeigen(props) {
 
     const [formData, setFormData] = useState({
@@ -48,6 +47,7 @@ function GenauEinRezeptAnzeigen(props) {
     const [customMasseinheit, setCustomMasseinheit] = useState("");
     const [rezept, setRezept] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isCustomMasseinheitPopupOpen, setIsCustomMasseinheitPopupOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const {rezeptId} = useParams();
     const navigate = useNavigate()
@@ -240,6 +240,10 @@ function GenauEinRezeptAnzeigen(props) {
         setIsPopupOpen(false);
     };
 
+    const handleCloseCustomMasseinheitPopup = () => {
+        setIsCustomMasseinheitPopupOpen(false);
+    };
+
     /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
     const addMasseinheit = async (masseinheitBO) => {
         try {
@@ -253,7 +257,7 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleCustomMasseinheit = () => {
-        setIsPopupOpen(true);
+        setIsCustomMasseinheitPopupOpen(true);
     };
 
     const handlePopupInputChange = (event) => {
@@ -280,7 +284,7 @@ function GenauEinRezeptAnzeigen(props) {
                     ...formData,
                     masseinheit: masseinheitsname
                 });
-                setIsPopupOpen(false);
+                setIsCustomMasseinheitPopupOpen(false);
                 setCustomMasseinheitData({
                     masseinheitsname: "",
                     umrechnungsfaktor: ""
@@ -545,7 +549,7 @@ function GenauEinRezeptAnzeigen(props) {
                         </div>
                     </div>
                 )}
-                {isPopupOpen && (
+                {isCustomMasseinheitPopupOpen && (
                 <div className="popup">
                     <div className="inner-popup">
                         <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
@@ -570,6 +574,7 @@ function GenauEinRezeptAnzeigen(props) {
                             </div>
                         </div>
                         <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
+                        <button type="button" onClick={handleCloseCustomMasseinheitPopup}>Abbrechen</button>
                     </div>
                 </div>
             )}
