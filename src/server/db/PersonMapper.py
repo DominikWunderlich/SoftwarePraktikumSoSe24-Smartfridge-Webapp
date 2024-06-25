@@ -167,12 +167,10 @@ class PersonMapper(mapper):
 
 
     def delete(self, person):
-
         cursor = self._connector.cursor()
-
-        command = f'DELETE FROM datenbank.person WHERE person_id={person.get_id()}'
-        cursor.execute(command)
-
+        command = f'DELETE FROM datenbank.person WHERE google_id=%s'
+        data = (person.get_google_id())
+        cursor.execute(command, (data, ))
         self._connector.commit()
         cursor.close()
 
