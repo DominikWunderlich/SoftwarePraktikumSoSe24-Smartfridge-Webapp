@@ -9,12 +9,12 @@ import { useParams } from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 import TrimAndLowerCase from "../functions";
 import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import RezeptBO from "../api/RezeptBO";
 import Button from '@mui/material/Button';
+import ResponsiveAppBar from "../components/NavBar";
 
 
 function GenauEinRezeptAnzeigen(props) {
@@ -26,6 +26,7 @@ function GenauEinRezeptAnzeigen(props) {
         kuehlschrankId: 0,
         rezeptId: 0
     });
+
      // fürs Bearbeiten des Lebensmittelobjekts
     const [editFormData, setEditFormData] = useState({
         lebensmittelName: "",
@@ -164,6 +165,7 @@ function GenauEinRezeptAnzeigen(props) {
         fetchRezeptLebensmittel();
     }, [rezeptId]);
 
+    /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
     const handleSaveEdit = async () => {
         try {
             // Erstellen des updated-food-Objekts.
@@ -189,7 +191,6 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
-    /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
     const handleEditChange = (event) => {
         setEditFormData({
             ...editFormData,
@@ -208,6 +209,7 @@ function GenauEinRezeptAnzeigen(props) {
             rezeptId: lebensmittel.rezeptId
         });
     };
+
     /* Funktionen zum Kochen -> für eine Einkaufsliste oder Verbrauch von Lebensmittel */
     const handleJetztKochen = async () => {
         try {
@@ -364,20 +366,18 @@ function GenauEinRezeptAnzeigen(props) {
                         <h2>Dein Rezept</h2>
                         <div className="mini-container">
                             <p className="blue-mini-container"> {rezept.rezeptName}</p>
-                            <div>
+                            <div className="in-a-row">
                                 <p>Anzahl Portionen:</p>
                                 <input
+                                    className="mini-input"
                                     type="text"
                                     name="anzahlPortionen"
                                     value={rezept.anzahlPortionen}
                                     onChange={handleChange}
                                 />
-                                <button type="button"
-                                        onClick={() => handleChangePortionenInRezept(rezept.anzahlPortionen)}>ändern
-                                </button>
+                                <ChangeCircleIcon onClick={() => handleChangePortionenInRezept(rezept.anzahlPortionen)}/>
                             </div>
-                            <p>Ersteller: {rezept.rezeptAdmin}</p>
-                            <div>
+                            <div className="in-a-row">
                                 <p>Kochanleitung:</p>
                                 {isEditing ? (
                                     <textarea className={'input-container'}
@@ -388,10 +388,11 @@ function GenauEinRezeptAnzeigen(props) {
                                 ) : (
                                     <p>{rezept.rezeptAnleitung}</p>
                                 )}
-                                <button type={"button"} onClick={toggleEditMode}>
-                                     {isEditing ? 'Speichern' : 'Bearbeiten'}
+                                <button className="mini-input" onClick={toggleEditMode}>
+                                     {isEditing ? <TaskAltIcon/> : <ModeEditIcon/>}
                                 </button>
                             </div>
+                            <p>Ersteller: {rezept.rezeptAdmin}</p>
                             {errors.message && <p>{errors.message}</p>}
                             <table>
                             <thead>
@@ -508,8 +509,8 @@ function GenauEinRezeptAnzeigen(props) {
                     </div>
                     <br></br>
                     <br></br>
-                    <button className="button-uebersicht" type="button" onClick={() => handleDelete(rezept.id)}>Rezept
-                        löschen
+                    <button className="button-uebersicht" type="button" onClick={() => handleDelete(rezept.id)}>
+                        Rezept löschen
                     </button>
                 </div>
                 {isPopupOpen && (

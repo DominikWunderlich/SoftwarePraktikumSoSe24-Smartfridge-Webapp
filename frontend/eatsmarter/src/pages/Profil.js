@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
+import '../sytles/WG-Landingpage.css';
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
 import PersonBO from "../api/PersonBO";
 import TrimAndLowerCase from "../functions";
