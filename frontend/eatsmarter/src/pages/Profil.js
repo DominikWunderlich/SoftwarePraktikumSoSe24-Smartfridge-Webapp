@@ -169,15 +169,15 @@ function Profil(props){
                             </tbody>
                         </table>
                         </div>
-                        <br></br>
-                        <br></br>
-                        <div className="formitem">
-                            <button
-                                className="button-uebersicht" type="button" onClick={deletePerson}>Account löschen
-                            </button>
-                        </div>
                     </div>
                 )}
+                <br></br>
+                <br></br>
+                <div className="formitem">
+                    <button
+                        className="button-uebersicht" type="button" onClick={deletePerson}>Account löschen
+                    </button>
+                </div>
             </div>
         </div>
     );
