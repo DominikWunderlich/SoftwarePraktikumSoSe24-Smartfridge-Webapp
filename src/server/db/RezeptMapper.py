@@ -6,6 +6,21 @@ class RezeptMapper(mapper):
     def __init__(self):
         super().__init__()
 
+    def find_rezept_id_by_ersteller(self, ersteller):
+        cursor = self._connector.cursor()
+        command = f"SELECT rezept_id from datenbank.rezept WHERE rezept_ersteller='{ersteller}'"
+        cursor.execute(command)
+
+        result = cursor.fetchone()
+
+        self._connector.commit()
+        cursor.close()
+
+        if result:
+            return result[0]
+        else:
+            return None
+
     def insert(self, rezept):
         cursor = self._connector.cursor()
         cursor.execute("SELECT MAX(rezept_id) AS maxid FROM datenbank.rezept")
