@@ -150,7 +150,7 @@ function WGPage(props) {
                 {wg && (
                     <div className="inner-container">
                         <h2>Infos der WG {wg.wgName}</h2>
-                        <h2>Bewohner der WG</h2>
+                        <h3>Bewohner der WG</h3>
                         <div className="mini-container">
                             <table>
                                 <thead>
@@ -178,7 +178,7 @@ function WGPage(props) {
                             </table>
                         </div>
                         <br></br>
-                            <h2>Ersteller der WG</h2>
+                            <h3>Ersteller der WG</h3>
                             <div className="mini-container">
                                 <table>
                                     <thead>
