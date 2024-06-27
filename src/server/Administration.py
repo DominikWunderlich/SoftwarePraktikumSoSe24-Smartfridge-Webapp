@@ -1071,4 +1071,16 @@ class Administration(object):
 
     def delete_person_from_wg(self, wg_id, person_id):
         with PersonMapper() as mapper:
+            ersteller_mail = mapper.find_email_by_person_id(person_id)
+
+        with RezeptMapper() as mapper:
+            rezept_id = mapper.find_rezept_id_by_ersteller(ersteller_mail)
+
+        with LebensmittelMapper() as mapper:
+            mapper.delete_by_rezept_id(rezept_id)
+
+        with RezeptMapper() as mapper:
+            mapper.delete(rezept_id)
+
+        with PersonMapper() as mapper:
             return mapper.delete_wg_id_person(wg_id, person_id)

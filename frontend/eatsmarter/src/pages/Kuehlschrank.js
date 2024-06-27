@@ -162,6 +162,7 @@ function Kuehlschrankinhalt(props) {
                 editFormData.kuehlschrankId,
                 editFormData.rezeptId
             );
+            console.log(updatedLebensmittel)
             updatedLebensmittel.id = lebensmittelId;
 
             await EatSmarterAPI.getAPI().updateFoodInFridge(updatedLebensmittel);
@@ -290,12 +291,21 @@ function Kuehlschrankinhalt(props) {
                                                     />
                                                 </td>
                                                 <td>
-                                                    <input
-                                                        type="text"
+                                                    <select
                                                         name="masseinheit"
                                                         value={editFormData.masseinheit}
                                                         onChange={handleEditChange}
-                                                    />
+                                                        className="eingabe"
+                                                    >
+                                                        <option value="" disabled>Bitte wählen Sie eine Masseinheit
+                                                            aus
+                                                        </option>
+                                                        {masseinheitenListe.map((masseinheit, index) => (
+                                                            <option key={index} value={masseinheit.masseinheitsname}>
+                                                                {masseinheit.masseinheitsname}
+                                                            </option>
+                                                        ))}
+                                                    </select>
                                                 </td>
                                                 <td>
                                                     <TaskAltIcon onClick={() => handleSaveEdit(lebensmittel.id)}/>
@@ -356,6 +366,7 @@ function Kuehlschrankinhalt(props) {
                                     onChange={handleChange}
                                     className="eingabe"
                                 >
+                                <option value="" disabled>Bitte wählen Sie eine Masseinheit aus</option>
                                     {masseinheitenListe.map((masseinheit, index) => (
                                         <option key={index} value={masseinheit.masseinheitsname}>
                                             {masseinheit.masseinheitsname}

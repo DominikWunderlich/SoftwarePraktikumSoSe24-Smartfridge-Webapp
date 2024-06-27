@@ -435,15 +435,24 @@ function GenauEinRezeptAnzeigen(props) {
                                                     />
                                                 </td>
                                                 <td>
-                                                    <input
-                                                        type="text"
+                                                    <select
                                                         name="masseinheit"
                                                         value={editFormData.masseinheit}
                                                         onChange={handleEditChange}
-                                                    />
+                                                        className="eingabe"
+                                                    >
+                                                        <option value="" disabled>Bitte wählen Sie eine Masseinheit
+                                                            aus
+                                                        </option>
+                                                        {masseinheitenListe.map((masseinheit, index) => (
+                                                            <option key={index} value={masseinheit.masseinheitsname}>
+                                                                {masseinheit.masseinheitsname}
+                                                            </option>
+                                                        ))}
+                                                    </select>
                                                 </td>
                                                 <td>
-                                                    <TaskAltIcon onClick={() => handleSaveEdit()} />
+                                                    <TaskAltIcon onClick={() => handleSaveEdit()}/>
                                                 </td>
                                             </>
                                         ) : (
@@ -452,12 +461,13 @@ function GenauEinRezeptAnzeigen(props) {
                                                 <td>{lebensmittel.mengenanzahl}</td>
                                                 <td>{lebensmittel.masseinheit}</td>
                                                 <td>
-                                                    <ModeEditIcon onClick={() => handleEditMasseinheit(lebensmittel)} />
+                                                    <ModeEditIcon onClick={() => handleEditMasseinheit(lebensmittel)}/>
                                                 </td>
                                             </>
                                         )}
                                         <td>
-                                            <DeleteIcon onClick={(event) => deleteLebensmittel(event, lebensmittel.id)} aria-label="delete" size="small" />
+                                            <DeleteIcon onClick={(event) => deleteLebensmittel(event, lebensmittel.id)}
+                                                        aria-label="delete" size="small"/>
                                         </td>
                                     </tr>
                                 ))}
@@ -502,6 +512,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     onChange={handleChange}
                                     className="eingabe"
                                 >
+                                    <option value="" disabled>Bitte wählen Sie eine Masseinheit aus</option>
                                     {masseinheitenListe.map((masseinheit, index) => (
                                         <option key={index} value={masseinheit.masseinheitsname}>
                                             {masseinheit.masseinheitsname}
