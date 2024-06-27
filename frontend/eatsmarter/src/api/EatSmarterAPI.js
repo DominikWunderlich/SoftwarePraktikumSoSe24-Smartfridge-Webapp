@@ -671,7 +671,7 @@ export default class EatSmarterAPI{
     #getUserByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/login/checkemail/${email}`;
     #addPersonToWgURL = (wgId, email) => `${this.#EatSmarterServerBaseURL}/user/person/${wgId}/${email}`;
     #deletePersonFromWgURL = (wgId, personId) => `${this.#EatSmarterServerBaseURL}/user/person/delete/${wgId}/${personId}`;
-    #deletePerson = (gid) => `${this.#EatSmarterServerBaseURL}/login/${gid}`;
+    #deletePersonURL = (gid) => `${this.#EatSmarterServerBaseURL}/login/${gid}`;
 
 
     addUser(personBO){
@@ -760,7 +760,7 @@ export default class EatSmarterAPI{
     }
 
     deletePerson(personBO){
-        return this.#fetchAdvanced(this.#deletePerson(personBO.getgoogleId()), {
+        return this.#fetchAdvanced(this.#deletePersonURL(personBO.getgoogleId()), {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json, text/plain',
