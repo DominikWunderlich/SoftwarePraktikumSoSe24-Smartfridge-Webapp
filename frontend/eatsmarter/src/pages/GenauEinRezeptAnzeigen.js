@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
-import NavBar from "../components/NavBar";
 import LebensmittelBO from "../api/LebensmittelBO";
 import MasseinheitBO from "../api/MasseinheitBO";
 import mengenanzahlBO from "../api/mengenanzahlBO";
@@ -14,6 +13,7 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import RezeptBO from "../api/RezeptBO";
 import Button from '@mui/material/Button';
+import NavBar from "../components/NavBar";
 import ResponsiveAppBar from "../components/NavBar";
 
 
@@ -48,6 +48,7 @@ function GenauEinRezeptAnzeigen(props) {
     const [customMasseinheit, setCustomMasseinheit] = useState("");
     const [rezept, setRezept] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isMasseinheitPopupOpen, setIsMasseinheitPopupOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const {rezeptId} = useParams();
     const navigate = useNavigate()
@@ -238,6 +239,7 @@ function GenauEinRezeptAnzeigen(props) {
 
     const handleClosePopup = () => {
         setIsPopupOpen(false);
+        setIsMasseinheitPopupOpen(false);
     };
 
     /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
@@ -253,7 +255,7 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleCustomMasseinheit = () => {
-        setIsPopupOpen(true);
+        setIsMasseinheitPopupOpen(true);
     };
 
     const handlePopupInputChange = (event) => {
@@ -280,7 +282,7 @@ function GenauEinRezeptAnzeigen(props) {
                     ...formData,
                     masseinheit: masseinheitsname
                 });
-                setIsPopupOpen(false);
+                setIsMasseinheitPopupOpen(false);
                 setCustomMasseinheitData({
                     masseinheitsname: "",
                     umrechnungsfaktor: ""
@@ -359,7 +361,7 @@ function GenauEinRezeptAnzeigen(props) {
     /* Darstellung der Komponente */
     return (
         <div>
-            <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
+            <ResponsiveAppBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <div className='container'>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
                     <div className='inner-container'>
@@ -397,8 +399,8 @@ function GenauEinRezeptAnzeigen(props) {
                             <table>
                             <thead>
                                 <tr>
-                                    <th>Lebensmittelname</th>
-                                    <th>Mengenanzahl</th>
+                                    <th>Lebensmittel</th>
+                                    <th>Menge</th>
                                     <th>Maßeinheit</th>
                                     <th></th>
                                     <th></th>
@@ -524,8 +526,8 @@ function GenauEinRezeptAnzeigen(props) {
                                     <table>
                                         <thead>
                                         <tr>
-                                            <th>Lebensmittelname</th>
-                                            <th>Mengenanzahl</th>
+                                            <th>Lebensmittel</th>
+                                            <th>Menge</th>
                                             <th>Maßeinheit</th>
                                         </tr>
                                         </thead>

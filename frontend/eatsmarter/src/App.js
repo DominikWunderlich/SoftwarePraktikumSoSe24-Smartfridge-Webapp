@@ -20,6 +20,7 @@ import Generator from "./pages/Generator";
 import EatSmarterAPI from "./api/EatSmarterAPI";
 import Profil from "./pages/Profil";
 
+
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
      * inital empty state. */

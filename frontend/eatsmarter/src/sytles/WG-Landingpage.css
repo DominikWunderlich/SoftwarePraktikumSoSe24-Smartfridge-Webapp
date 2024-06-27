@@ -10,18 +10,18 @@ body {
 }
 
 .navbar {
-    margin: 'auto';
     display: 'flex';
     align-items: 'center';
     background-image: linear-gradient(70deg, #000000 0%, #010121 100%); 
 }
 
-.navbar .bold-button {
+.navbar .logo-button {
     font-weight: 700;
     font-size: medium;
     border: 2px solid white;
     border-radius: 15px;
-    margin-right: 10px;
+    margin-left: 5px;
+    margin-right: 6px;
 }
 
 .navbar-button:hover {
@@ -67,7 +67,7 @@ label {
 /* Styling für Tabellen */
 table {
     width: 100%;
-    padding: 4px;
+    padding: 0px;
     ;
 }
 
@@ -119,7 +119,7 @@ td {
 
 /* Styling für Container-Elemente */
 .container {
-    padding: 15px; /* Inneres Padding */
+    padding: 10px; /* Inneres Padding */
     background-color: white; ; /* Hintergrundfarbe */
     border-radius: 30px; /* Abgerundete Ecken */
     box-shadow: #000000; /* Optionaler Schatten für etwas Tiefe */
@@ -127,7 +127,7 @@ td {
     max-width: 700px; /* Maximale Breite für bessere Darstellung */
     margin-left: auto; /* Zentriert das div */
     margin-right: auto; /* Zentriert das div */
-    margin-bottom: 50px;
+    margin-bottom: 50px; /* Abstand von unten */
 }
 
 .inner-container {
@@ -136,8 +136,8 @@ td {
     border-radius: 20px; 
     border: 2px solid white;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-    margin-left: auto; /* Zentriert das div */
-    margin-right: auto; /* Zentriert das div */
+    margin-left: auto; 
+    margin-right: auto; 
 }
 
 .list-container {
@@ -188,7 +188,7 @@ td {
     border: 2px solid #031544;
     border-radius: 10px;
     cursor: pointer;
-    width: 93%;
+    width: auto;
     margin-left: auto; 
     margin-right: auto; 
     margin-top: 2px;
@@ -261,10 +261,10 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
     cursor: pointer;
     border: none;
     margin: 6px;
-    padding: 8px; /* Verringerung der Größe des Buttons */
-    font-size: 0.75rem; /* Kleinere Schriftgröße */
-    max-width: 200px; /* Entfernen der minimalen Breite */
-    height: auto; /* Entfernen der minimalen Höhe */
+    padding: 8px; 
+    font-size: 0.75rem; 
+    max-width: 200px; 
+    height: auto; 
   }
 
   select {
@@ -276,7 +276,7 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
     display: inline-block;
     border-radius: 10px;
     background-color: #ffffff;
-    background-image: none; /* Kein Hintergrundbild oder Verlauf */
+    background-image: none; 
   }
 
   .mini-input {
@@ -288,8 +288,8 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
     display: inline-block;
     border-radius: 1px;
     background-color: #ffffff;
-    background-image: none; /* Kein Hintergrundbild oder Verlauf */
-    font-size: small; /* Verkleinern Sie die Schriftgröße */
+    background-image: none; 
+    font-size: small; 
   }
 
   .in-a-row {
@@ -335,12 +335,11 @@ button[type="submit"], button[type="button"] {
 }
 
 button[type="submit"], button[type="button"]:hover {
-    background-color: #ffffff; /* Dunklere Farbe beim Hover */
+    background-color: #ffffff; 
     color: #031544;
     font-weight: 700;
     border: 2px solid #031544;
 }
-
 
 /* Popop Styling */
 .popup {
@@ -386,21 +385,76 @@ button[type="submit"], button[type="button"]:hover {
     font-size: 5em;
 }
 
+/* Styling für kleinere Geräte */
 @media (max-width: 600px){
 
-    na
+    body {
+        font-size: small;
+    }
 
+    /* Styling für Container-Elemente */
+    .container {
+        padding: 6px;
+        margin-top: 32px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .inner-container {
+        padding: 10px; 
+        border-radius: 24px;
+    }
+
+    .blue-mini-container {
+        padding: 5px;
+        font-size: small;
+    }
+
+    /* Styling für Tabellen */
     table {
         width: justify;
-        padding: 4px;
+        padding: 0px;
     }
     
-    table th, table td {
+    table th{
         padding: 5px;
         text-align: left;
         font-size: small;
     }
+
+    table td {
+        padding: 5px;
+        font-size: small;
+    }
+
+    /* Styling für die Eingabefelder */
+    input[type="text"], input[type="email"], input[type="password"], input[type="number"]{
+        width: 93.5%;
+        padding: 8px 3%;
+        font-size: small;
+    }
     
+    select {
+        font-size: small;
+    }
+
+    .input-with-button {
+        width: auto;
+        font-size: small;
+    }
+
+    /* Styling für die Buttons */
+    .button-uebersicht[type="button"] {
+        padding: 10px;
+        font-size: medium;
+        border-radius: 25px;
+    }
+    
+    button[type="submit"], button[type="button"]{
+        padding: 10px;
+        font-size: small;
+        border-radius: 15px;
+    }
 }
   
 

@@ -256,8 +256,8 @@ function Kuehlschrankinhalt(props) {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Lebensmittelname</th>
-                                    <th>Mengenanzahl</th>
+                                    <th>Lebensmittel</th>
+                                    <th>Menge</th>
                                     <th>Maßeinheit</th>
                                     <th></th>
                                     <th></th>
