@@ -40,7 +40,7 @@ function RezepteAnzeigen(props) {
                         <Link className="links" to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
                             <div className="list-container">
                                 <p className="blue-mini-container">{rezept.rezeptName}</p>
-                                <p>Anzahl Portionen: {rezept.anzahlPortionen}</p>
+                                <p>Anzahl Portionen: {parseInt(rezept.anzahlPortionen)}</p>
                                 <p>Ersteller: {rezept.rezeptAdmin}</p>
                             </div>
                         </Link>

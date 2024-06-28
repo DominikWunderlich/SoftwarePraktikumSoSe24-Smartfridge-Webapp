@@ -60,7 +60,7 @@ function Generator(props) {
                         <Link className="links" to={`/genaueinrezeptAnzeigen/${rezepte.id}`}>
                             <div className="list-container">
                                 <p className="blue-mini-container">{rezepte.rezeptName}</p>
-                                <p>Anzahl Portionen: {rezepte.anzahlPortionen}</p>
+                                <p>Anzahl Portionen: {parseInt(rezepte.anzahlPortionen)}</p>
                                 <p>Ersteller: {rezepte.rezeptAdmin}</p>
                                 <p>WG: {rezepte.wgId}</p>
                             </div>
