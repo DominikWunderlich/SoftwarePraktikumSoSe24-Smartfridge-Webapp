@@ -740,6 +740,10 @@ class Administration(object):
         # Zuerst werden die zugehörigen Lebensmittel des Kühlschranks geholt.
         fridge = self.get_lebensmittel_by_rezept_id(rezept_id)  # Output: [(k_id/l_obj), (k_id2/l_obj2)]
         # Als nächstes prüfen wir ob der gesuchte Lebensmittelname bereits im rezept ist.
+
+        # Auslesen der vorhanden Maßeinheiten inklusive ihrer Umrechnungsfaktoren.
+        measurements = self.build_unit_dict()
+
         lebenmittel_name = lebensmittel.get_lebensmittelname()
         print("LName: ", lebenmittel_name)
         print("LName2: ", lebensmittel.get_lebensmittelname())
@@ -770,7 +774,7 @@ class Administration(object):
             unit = unit_obj.get_masseinheit()
 
             # 3. Lebensmittel updaten bzw. neu erstellen
-            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
+            updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit, measurements)
             new_food_obj = self.update_lebensmittel2(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
                                                     updated_food.get_mengenanzahl(), None, rezept_id)
 

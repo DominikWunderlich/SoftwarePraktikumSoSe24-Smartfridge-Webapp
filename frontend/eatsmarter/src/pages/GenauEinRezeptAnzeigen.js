@@ -58,6 +58,8 @@ function GenauEinRezeptAnzeigen(props) {
     const [editLebensmittelId, setEditLebensmittelId] = useState(null); // Zustand für die Lebensmittel-ID im Bearbeitungsmodus
     const [isEditing, setIsEditing] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [showNotAdminPopup, setShowNotAdminPopup] = useState(false);
+    const [showNotAdminDeletePopup, setShowNotAdminDeletePopup] = useState(false);
 
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
     const fetchAdmin = async () => {
@@ -123,8 +125,7 @@ function GenauEinRezeptAnzeigen(props) {
         }
     }
         else{
-                alert("Nur der Ersteller kann ein Lebensmittel hinzufügen");
-
+            setShowNotAdminPopup(true);
         }
     }
 
@@ -209,15 +210,20 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleEditMasseinheit = (lebensmittel) => {
-        setEditMode(lebensmittel.id);
-        setEditLebensmittelId(lebensmittel.id);
+        if (isAdmin){
+            setEditMode(lebensmittel.id);
+            setEditLebensmittelId(lebensmittel.id);
 
-        setEditFormData({
-            lebensmittelName: lebensmittel.lebensmittelName,
-            mengenanzahl: lebensmittel.mengenanzahl,
-            masseinheit: lebensmittel.masseinheit,
-            rezeptId: lebensmittel.rezeptId
-        });
+            setEditFormData({
+                lebensmittelName: lebensmittel.lebensmittelName,
+                mengenanzahl: lebensmittel.mengenanzahl,
+                masseinheit: lebensmittel.masseinheit,
+                rezeptId: lebensmittel.rezeptId
+            });
+        }
+        else{
+            setShowNotAdminPopup(true);
+        }
     };
 
     /* Funktionen zum Kochen -> für eine Einkaufsliste oder Verbrauch von Lebensmittel */
@@ -247,6 +253,8 @@ function GenauEinRezeptAnzeigen(props) {
     const handleClosePopup = () => {
         setIsPopupOpen(false);
         setIsMasseinheitPopupOpen(false);
+        setShowNotAdminPopup(false);
+        setShowNotAdminDeletePopup(false);
     };
 
     /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
@@ -312,7 +320,7 @@ function GenauEinRezeptAnzeigen(props) {
             alert("Das Rezept wurde erfolgreich gelöscht.");
             }
         else {
-                alert("Nur der Ersteller kann das Rezept löschen");
+            setShowNotAdminDeletePopup(true);
             }
         }
 
@@ -328,7 +336,7 @@ function GenauEinRezeptAnzeigen(props) {
                 }
             }
             else{
-                alert("Nur der Rezept Ersteller kann Lebensmittel löschen")
+                setShowNotAdminPopup(true);
             }
             };
 
@@ -346,7 +354,7 @@ function GenauEinRezeptAnzeigen(props) {
             await EatSmarterAPI.getAPI().updateRezept(newRecipe);
         }
         else {
-            alert("Nur der Admin kann ein Rezept bearbeiten!")
+            setShowNotAdminPopup(true);
         }
     }
 
@@ -358,10 +366,15 @@ function GenauEinRezeptAnzeigen(props) {
     }
 
     const toggleEditMode = () => {
-         if (isEditing) {
-            handleChangeInstructions();
+        if(isAdmin){
+            if (isEditing) {
+                handleChangeInstructions();
+            }
+            setIsEditing(!isEditing);
         }
-        setIsEditing(!isEditing);
+        else{
+            setShowNotAdminPopup(true);
+        }
     }
 
     /* Darstellung der Komponente */
@@ -595,6 +608,25 @@ function GenauEinRezeptAnzeigen(props) {
                     </div>
                 </div>
             )}
+            {showNotAdminPopup && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h2 className="h2-black">Nur der Rezeptersteller kann das Rezept verändern.</h2>
+                        <button type="button" onClick={handleClosePopup}>Schließen</button>
+                    </div>
+                </div>
+            )
+            }
+
+            {showNotAdminDeletePopup && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <h2 className="h2-black">Nur der Rezeptersteller kann das Rezept löschen.</h2>
+                        <button type="button" onClick={handleClosePopup}>Schließen</button>
+                    </div>
+                </div>
+            )
+            }
             </div>
         );
     }
