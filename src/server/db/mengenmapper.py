@@ -47,7 +47,7 @@ class MengenanzahlMapper(mapper):
         cursor.execute(command_check, (data_check,))
         existing_id = cursor.fetchone()
         print(existing_id)
-        print("drüber steht die existing_id was ist das?")
+   
 
         # Wenn die Menge bereits existiert, geben wir ein False zurück.
         if existing_id:
@@ -71,7 +71,6 @@ class MengenanzahlMapper(mapper):
         cursor.execute(command, data)
 
         self._connector.commit()
-       # cursor.close()
         print("Das ist Object im mengenmapper", obj.get_id())
         return obj.get_id()
 

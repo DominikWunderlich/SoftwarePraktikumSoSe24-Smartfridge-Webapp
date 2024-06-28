@@ -12,11 +12,6 @@ class Mengenanzahl(bo):
     def get_menge(self):
         return self.menge
 
-    # def __str__(self):
-    #     """Erzeugen einer einfachen textuellen Darstellung der jeweiligen Instanz."""
-    #     return f"MengenanzahlObjekt: menge={self.get_menge()}"
-
-
     @staticmethod
     def from_dict(dictionary=dict()):
         """Umwandeln eines Python dict()."""

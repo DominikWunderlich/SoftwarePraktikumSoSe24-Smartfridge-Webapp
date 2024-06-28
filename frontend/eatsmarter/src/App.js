@@ -169,7 +169,6 @@ function App(props) {
 						  <Route path="/login" element={<LoginPerson user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/registerWg" element={<RegisterWG user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/wg" element={<WGPage user={state.currentUser} onSignOut={handleSignOut}/>}/>
-						  // TODO: Pfad von der Homepage (/wg/:wgName) umbenennen
 						  <Route path="/homepage" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/kuehlschrankinhalt/:wg_id" element={<Kuehlschrank user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser} onSignOut={handleSignOut}/>}/>

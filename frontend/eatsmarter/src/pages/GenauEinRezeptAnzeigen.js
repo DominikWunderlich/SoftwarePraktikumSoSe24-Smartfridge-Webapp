@@ -380,7 +380,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     className="mini-input"
                                     type="text"
                                     name="anzahlPortionen"
-                                    value={rezept.anzahlPortionen}
+                                    value={parseInt(rezept.anzahlPortionen) || ""}
                                     onChange={handleChange}
                                 />
                                 <ChangeCircleIcon onClick={() => handleChangePortionenInRezept(rezept.anzahlPortionen)}/>

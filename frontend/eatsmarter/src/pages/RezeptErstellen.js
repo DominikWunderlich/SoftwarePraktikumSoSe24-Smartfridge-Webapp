@@ -17,10 +17,6 @@ function RezeptErstellen(props){
 
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
-    //Die folgenden 13 Zeilen sind 1:1 aus WGPage übernommen. Da dort auch schon implementiert wurde
-    //dass der WG Name anhand der Email der eingeloggten Person angezeigt wird
-    //in der renderCurrentUsersWg Funktion wird die WG Methode getWgByUser Methode aus der EatSmarterAPI
-    //benutzt
     const [wg, setWg] = useState(null)
     const navigate = useNavigate();
 

@@ -74,7 +74,6 @@ export default class EatSmarterAPI{
             },
             body: JSON.stringify(newLebensmittel)
         }).then((responseJSON) => {
-            // Hier könntest du die Antwort verarbeiten, falls benötigt
             return responseJSON;
         }).catch((error) => {
             console.error("Fehler beim Hinzufügen von Lebensmittel zum Rezept:", error);
@@ -243,7 +242,6 @@ export default class EatSmarterAPI{
             },
             body: JSON.stringify(wg_id, lebensmittel_id)
         }).then((responseJSON) => {
-             // console.log("RespinseJSON", responseJSON)
             return new Promise( function(resolve) {
                 resolve(responseJSON);
             })
@@ -260,7 +258,6 @@ export default class EatSmarterAPI{
             },
             body: JSON.stringify(rezept_id, lebensmittel_id)
         }).then((responseJSON) => {
-             // console.log("RespinseJSON", responseJSON)
             return new Promise( function(resolve) {
                 resolve(responseJSON);
             })
@@ -476,14 +473,8 @@ export default class EatSmarterAPI{
         });
     }
 
-    //Ich füge hier jetzt eine getAllRezepte Methode ein, die soll eigentlich genau das gleiche machen
-    //wie die getRezept Methode, nämlich alle Rezepte die wir in der DB haben im Frontend anzeigen
-    //die getRezept Methode funktioniert nur leider nicht und mit der getAllRezepte Methode geht es
-    //seltsamerweise. Eine von beiden muss noch rausgelöscht werden
-    //Ich verstehe nicht ganz wie die getAllRezepte Methode und die getRezept Methode sich
-    //unterscheiden und wieso die eine funktioniert und die andere nicht.
-    //Ich habe mich beim erstellen an einem älteren Projekt inspirieren lassen und das einfach ein bisschen
-    //umgebaut.
+    //alle Rezepte die wir in der DB haben im Frontend anzeigen
+    
 
     async getAllRezepte() {
         try {
@@ -528,9 +519,7 @@ export default class EatSmarterAPI{
             "Content-Type": "application/json",
         }
     }).then((responseJSON) => {
-        // TODO: Error-Handling wenn alle Lebensmittel eines Rezepts verfügbar sind. Siehe Notion
         console.log("Eatsmarter 421 responseJSON:", responseJSON)
-        // https://www.notion.so/b3d6e4807e684ff3a68df0da32a4704d?v=151fa08464574a0592e2126cf6399ae9&p=25f590eba1204f288536d5b9a9e35e96&pm=s
         let shoppingList = responseJSON.map(data => LebensmittelBO.fromJSON(data));
         return shoppingList;
     }).catch((error) => {
@@ -617,7 +606,6 @@ export default class EatSmarterAPI{
             },
             body: JSON.stringify(email)
         }).then((responseJSON) => {
-            // console.log("Entfernte Wg", responseJSON)
             return new Promise( function(resolve) {
                 resolve(responseJSON);
             })
@@ -644,7 +632,6 @@ export default class EatSmarterAPI{
     #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgadmin/${email}`;
 
     checkIfUserIsWgAdmin(currentUser){
-        // console.log("api", currentUser)
          return this.#fetchAdvanced(this.#getWgAdminURL(currentUser), {
              method: "GET",
              headers: {
@@ -652,7 +639,6 @@ export default class EatSmarterAPI{
                  "Content-Type": "application/json",
              },
          }).then((response) => {
-             // console.log("API",response)
              if(response === true){
                  return true;
              }

@@ -1,5 +1,4 @@
 from server.bo.BusinessObject import BusinessObject as bo
-#Frage: ohne server.bo. sind 2 probleme weg??!!
 
 class Rezept(bo):
     def __init__(self):
