@@ -204,11 +204,11 @@ class LebensmittelMapper(mapper):
 
         self._connector.commit()
         cursor.close()
-    def delete(self, lId, kId):
+    def delete_from_fridge(self, kId, lId):
         cursor = self._connector.cursor()
 
-        command = "DELETE FROM datenbank.lebensmittel WHERE lebensmittel_id=%s AND kuehlschrank_id=%s"
-        data = (lId, kId)
+        command = "DELETE FROM datenbank.lebensmittel WHERE kuehlschrank_id=%s AND lebensmittel_id=%s"
+        data = (kId, lId)
         cursor.execute(command, data)
 
         self._connector.commit()
@@ -303,6 +303,9 @@ class LebensmittelMapper(mapper):
 
         self._connector.commit()
         cursor.close()
+
+    def delete(self):
+        pass
 
 
 if (__name__ == "__main__"):

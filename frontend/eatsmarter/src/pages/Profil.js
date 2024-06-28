@@ -106,81 +106,78 @@ function Profil(props){
                     <div className="inner-container">
                         <h2>Dein Profil</h2>
                         <div className="mini-container">
-                            <div className="table-profil">
-                                <table>
-                                <thead>
-                                <tr>
-                                    <th>Nutzername</th>
-                                    <th>Nachname</th>
-                                    <th>Vorname</th>
-                                    <th>E-Mail</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    {editMode ? (
-                                        <>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="userName"
-                                                    value={editFormData.userName}
-                                                    onChange={handleEditChange}
-                                                    className="eingabe"
-                                                />
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="lastName"
-                                                    value={editFormData.lastName}
-                                                    onChange={handleEditChange}
-                                                    className="eingabe"
-                                                />
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    name="firstName"
-                                                    value={editFormData.firstName}
-                                                    onChange={handleEditChange}
-                                                    className="eingabe"
-                                                />
-                                            </td>
-                                            <td>
-                                                {props.user.email}
-                                            </td>
-                                            <td>
-                                                <button onClick={handleSaveEdit}>Speichern</button>
-                                            </td>
-                                            <td>
-                                            <DeleteIcon onClick={() => deletePerson()} />
-                                            </td>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <td>{profil.userName}</td>
-                                            <td>{profil.lastName}</td>
-                                            <td>{profil.firstName}</td>
-                                            <td>{profil.email}</td>
-                                            <td>
-                                                <button onClick={handleEditButton}>Bearbeiten</button>
-                                            </td>
-                                            <td>
-                                            <DeleteIcon onClick={() => deletePerson()} />
-                                            </td>
-                                        </>
-                                    )}
-                                </tr>
-                                </tbody>
-                            </table>
-
-                            </div>
+                            <table>
+                            <thead>
+                            <tr>
+                                <th>Nutzername</th>
+                                <th>Nachname</th>
+                                <th>Vorname</th>
+                                <th>E-Mail</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {editMode ? (
+                                    <>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                name="userName"
+                                                value={editFormData.userName}
+                                                onChange={handleEditChange}
+                                                className="eingabe"
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                name="lastName"
+                                                value={editFormData.lastName}
+                                                onChange={handleEditChange}
+                                                className="eingabe"
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                name="firstName"
+                                                value={editFormData.firstName}
+                                                onChange={handleEditChange}
+                                                className="eingabe"
+                                            />
+                                        </td>
+                                        <td>
+                                            {props.user.email}
+                                        </td>
+                                        <td>
+                                            <button onClick={handleSaveEdit}>Speichern</button>
+                                        </td>
+                                    </>
+                                ) : (
+                                    <>
+                                        <td>{profil.userName}</td>
+                                        <td>{profil.lastName}</td>
+                                        <td>{profil.firstName}</td>
+                                        <td>{profil.email}</td>
+                                        <td>
+                                            <button onClick={handleEditButton}>Bearbeiten</button>
+                                        </td>
+                                    </>
+                                )}
+                            </tr>
+                            </tbody>
+                        </table>
                         </div>
                     </div>
                 )}
+                <br></br>
+                <br></br>
+                <div className="formitem">
+                    <button
+                        className="button-uebersicht" type="button" onClick={deletePerson}>Account löschen
+                    </button>
+                </div>
             </div>
         </div>
     );

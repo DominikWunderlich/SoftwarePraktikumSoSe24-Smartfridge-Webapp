@@ -144,6 +144,29 @@ class Administration(object):
         with PersonMapper() as mapper:
             mapper.delete(p)
 
+    def delete_user_from_system(self, p):
+        """
+        Löschen einer Person und alle erstellten Rezepte. Wenn der User auch Admin einer WG ist,
+        so wird auch diese gelöscht.
+        """
+
+        # Zuerst suchen wir alle Rezepte, welche die Person erstellt hat.
+        recipe_list = self.find_all_rezepte_by_user(p)
+        for recipe in recipe_list:
+            self.delete_lebensmittel_by_recipe_id(recipe.get_id())
+
+        # Alle angelegten Rezepte der Person löschen
+        self.delete_rezepte(p.get_email())
+
+        # Jetzt prüfen wir, ob die Person Admin einer WG ist.
+        isadmin = self.check_if_current_user_is_wg_admin(p.get_email(), p.get_wg_id())
+        if isadmin:
+            # Wenn die Person ein Admin ist, wird die gesamte WG gelöscht.
+            self.delete_wg(p.get_wg_id())
+
+        # Zuletzt löschen wir auch noch die Person aus unserem System
+        self.delete_user(p)
+
     """ Rezept-spezifische Methoden """
 
     def get_anzahl_portionen_of_recipe_by_rezept_id(self, rezept_id):
@@ -298,6 +321,16 @@ class Administration(object):
         with RezeptMapper() as mapper:
             return mapper.find_by_rezept_id(rezept_id)
 
+    def find_all_rezepte_by_user(self, p):
+        """ Auslesen aller Rezepte, die eine Person erstellt hat. """
+        with RezeptMapper() as mapper:
+            return mapper.find_by_key(p)
+
+    def delete_rezepte(self, email):
+        """ Löschen von Rezepten basierend auf der E-Mail des Erstellers. """
+        with RezeptMapper() as mapper:
+            return mapper.delete_by_email(email)
+
     """Rezept löschen"""
   # Diese Methode überprüft, ob die aktuelle user der Wg_ersteller ist
     # Sie wird in der Updatewg methode und deletewgMethode verwendet
@@ -321,6 +354,11 @@ class Administration(object):
 
             else:
                 return False
+
+    def delete_lebensmittel_by_recipe_id(self, recipe_id):
+        """ Löschen eines Lebensmittels anhand der Rezept-ID. """
+        with LebensmittelMapper() as mapper:
+            mapper.delete_by_rezept_id(recipe_id)
 
 
     def delete_rezept_by_id(self, rezept_id):
@@ -950,8 +988,8 @@ class Administration(object):
 
     """ Diese Methode ermöglicht das direkte Löschen eines Lebensmittels aus dem Kuehlschrank"""
     def remove_food_from_fridge(self, kuehlschrank_id, lebensmittel_id):
-        with KuehlschrankMapper() as mapper:
-            mapper.delete(kuehlschrank_id, lebensmittel_id)
+        with LebensmittelMapper() as mapper:
+            mapper.delete_from_fridge(kuehlschrank_id, lebensmittel_id)
 
     def remove_food_from_rezept(self, rezept_id, lebensmittel_id):
         with KuehlschrankMapper() as mapper:
@@ -1020,9 +1058,29 @@ class Administration(object):
             return mapper.find_all_by_wg_id(wg_id, wg_ersteller)
 
     def add_person_to_wg(self, wg_id, email):
+        # Es wird geprüft, ob die Person bereits in einer WG ist.
+        # Falls nicht, kann die Person einer anderen WG hinzugefügt werden.
         with PersonMapper() as mapper:
-            return mapper.update_wg_id_person(wg_id, email)
+            WgId = mapper.find_wg_id_by_email(email)
+
+            if not WgId:
+                with PersonMapper() as mapper2:
+                    return mapper2.update_wg_id_person(wg_id, email)
+            else:
+                pass
 
     def delete_person_from_wg(self, wg_id, person_id):
+        with PersonMapper() as mapper:
+            ersteller_mail = mapper.find_email_by_person_id(person_id)
+
+        with RezeptMapper() as mapper:
+            rezept_id = mapper.find_rezept_id_by_ersteller(ersteller_mail)
+
+        with LebensmittelMapper() as mapper:
+            mapper.delete_by_rezept_id(rezept_id)
+
+        with RezeptMapper() as mapper:
+            mapper.delete(rezept_id)
+
         with PersonMapper() as mapper:
             return mapper.delete_wg_id_person(wg_id, person_id)

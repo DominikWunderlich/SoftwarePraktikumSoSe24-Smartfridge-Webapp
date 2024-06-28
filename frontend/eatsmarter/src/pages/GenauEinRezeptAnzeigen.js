@@ -18,7 +18,6 @@ import NavBar from "../components/NavBar";
 import ResponsiveAppBar from "../components/NavBar";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-
 function GenauEinRezeptAnzeigen(props) {
 
     const [formData, setFormData] = useState({
@@ -58,8 +57,16 @@ function GenauEinRezeptAnzeigen(props) {
     const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
     const [editLebensmittelId, setEditLebensmittelId] = useState(null); // Zustand für die Lebensmittel-ID im Bearbeitungsmodus
     const [isEditing, setIsEditing] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
+    const fetchAdmin = async () => {
+        const admin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
+        if (admin) {
+            setIsAdmin(true)
+        }
+    }
+
     const handleChange = (event) => {
         const {name, value} = event.target;
         setFormData({
@@ -75,7 +82,6 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleSubmit = async (event) => {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         if (isAdmin) {
             event.preventDefault();
 
@@ -166,6 +172,7 @@ function GenauEinRezeptAnzeigen(props) {
         fetchLebensmittel();
         fetchRezeptById();
         fetchRezeptLebensmittel();
+        fetchAdmin();
     }, [rezeptId]);
 
     /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
@@ -227,8 +234,6 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleChangePortionenInRezept = async(neueAnzahlPortionen) => {
-        console.log(rezeptId)
-        console.log(neueAnzahlPortionen)
         try{
             const api = new EatSmarterAPI();
             await api.changePortionenInRezept(rezeptId, neueAnzahlPortionen);
@@ -247,7 +252,6 @@ function GenauEinRezeptAnzeigen(props) {
     /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
     const addMasseinheit = async (masseinheitBO) => {
         try {
-            console.log("neue Maßeinheit: ", masseinheitBO);
             const newMasseinheit = await EatSmarterAPI.getAPI().addMasseinheit(masseinheitBO);
             setMasseinheitenListe(prevList => [...prevList, newMasseinheit]);
             
@@ -301,10 +305,6 @@ function GenauEinRezeptAnzeigen(props) {
 
     /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
     const handleDelete = async () => {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
-        console.log("Frontend", isAdmin);
-        console.log(currentUser)
-
         if (isAdmin) {
             const response = await EatSmarterAPI.getAPI().deleteRezept(rezeptId);
             console.log("Rezept Lösch-Response", response);
@@ -318,7 +318,6 @@ function GenauEinRezeptAnzeigen(props) {
 
         async function deleteLebensmittel(event, lebensmittelId) {
             event.preventDefault()
-            const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
             if (isAdmin){
                 // LebensmittelId ist der Value aus dem button Klick event
                 try {
@@ -333,17 +332,22 @@ function GenauEinRezeptAnzeigen(props) {
             }
             };
 
-    const handleChangeInstructions = () => {
-        const newRecipe = new RezeptBO(
-            rezept.rezeptName,
-            rezept.anzahlPortionen,
-            rezept.rezeptAdmin,
-            rezept.wgId,
-            rezept.rezeptAnleitung
-        )
-        newRecipe.setID(rezept.id);
-        newRecipe.setWgId(rezept.wgId);
-        EatSmarterAPI.getAPI().updateRezept(newRecipe);
+    const handleChangeInstructions = async () => {
+        if (isAdmin) {
+            const newRecipe = new RezeptBO(
+                rezept.rezeptName,
+                rezept.anzahlPortionen,
+                rezept.rezeptAdmin,
+                rezept.wgId,
+                rezept.rezeptAnleitung
+            )
+            newRecipe.setID(rezept.id);
+            newRecipe.setWgId(rezept.wgId);
+            await EatSmarterAPI.getAPI().updateRezept(newRecipe);
+        }
+        else {
+            alert("Nur der Admin kann ein Rezept bearbeiten!")
+        }
     }
 
     const handleChangeInstruction = (e) => {
@@ -430,15 +434,24 @@ function GenauEinRezeptAnzeigen(props) {
                                                     />
                                                 </td>
                                                 <td>
-                                                    <input
-                                                        type="text"
+                                                    <select
                                                         name="masseinheit"
                                                         value={editFormData.masseinheit}
                                                         onChange={handleEditChange}
-                                                    />
+                                                        className="eingabe"
+                                                    >
+                                                        <option value="" disabled>Bitte wählen Sie eine Masseinheit
+                                                            aus
+                                                        </option>
+                                                        {masseinheitenListe.map((masseinheit, index) => (
+                                                            <option key={index} value={masseinheit.masseinheitsname}>
+                                                                {masseinheit.masseinheitsname}
+                                                            </option>
+                                                        ))}
+                                                    </select>
                                                 </td>
                                                 <td>
-                                                    <TaskAltIcon onClick={() => handleSaveEdit()} />
+                                                    <TaskAltIcon onClick={() => handleSaveEdit()}/>
                                                 </td>
                                             </>
                                         ) : (
@@ -447,12 +460,13 @@ function GenauEinRezeptAnzeigen(props) {
                                                 <td>{lebensmittel.mengenanzahl}</td>
                                                 <td>{lebensmittel.masseinheit}</td>
                                                 <td>
-                                                    <ModeEditIcon onClick={() => handleEditMasseinheit(lebensmittel)} />
+                                                    <ModeEditIcon onClick={() => handleEditMasseinheit(lebensmittel)}/>
                                                 </td>
                                             </>
                                         )}
                                         <td>
-                                            <DeleteIcon onClick={(event) => deleteLebensmittel(event, lebensmittel.id)} aria-label="delete" size="small" />
+                                            <DeleteIcon onClick={(event) => deleteLebensmittel(event, lebensmittel.id)}
+                                                        aria-label="delete" size="small"/>
                                         </td>
                                     </tr>
                                 ))}
@@ -497,6 +511,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     onChange={handleChange}
                                     className="eingabe"
                                 >
+                                    <option value="" disabled>Bitte wählen Sie eine Masseinheit aus</option>
                                     {masseinheitenListe.map((masseinheit, index) => (
                                         <option key={index} value={masseinheit.masseinheitsname}>
                                             {masseinheit.masseinheitsname}
@@ -577,6 +592,7 @@ function GenauEinRezeptAnzeigen(props) {
                             </div>
                         </div>
                         <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
+                        <button type="button" onClick={handleCloseCustomMasseinheitPopup}>Abbrechen</button>
                     </div>
                 </div>
             )}

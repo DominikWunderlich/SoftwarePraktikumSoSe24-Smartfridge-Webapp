@@ -230,7 +230,7 @@ export default class EatSmarterAPI{
     }
 
     // Lebensmittel direkt aus dem Kuehlschrank löschen
-    #deleteFoodFromFridgeURL = (wg_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}//kuehlschrankinhalt/${wg_id}/${lebensmittel_id}`
+    #deleteFoodFromFridgeURL = (wg_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/kuehlschrankinhalt/${wg_id}/${lebensmittel_id}`
 
     #deleteFoodFromRezeptURL = (rezept_id, lebensmittel_id) => `${this.#EatSmarterServerBaseURL}/rezeptinhalt/${rezept_id}/${lebensmittel_id}`
 
@@ -671,7 +671,7 @@ export default class EatSmarterAPI{
     #getUserByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/login/checkemail/${email}`;
     #addPersonToWgURL = (wgId, email) => `${this.#EatSmarterServerBaseURL}/user/person/${wgId}/${email}`;
     #deletePersonFromWgURL = (wgId, personId) => `${this.#EatSmarterServerBaseURL}/user/person/delete/${wgId}/${personId}`;
-    #deletePerson = (gid) => `${this.#EatSmarterServerBaseURL}/login/${gid}`;
+    #deletePersonURL = (gid) => `${this.#EatSmarterServerBaseURL}/login/${gid}`;
 
 
     addUser(personBO){
@@ -760,7 +760,7 @@ export default class EatSmarterAPI{
     }
 
     deletePerson(personBO){
-        return this.#fetchAdvanced(this.#deletePerson(personBO.getgoogleId()), {
+        return this.#fetchAdvanced(this.#deletePersonURL(personBO.getgoogleId()), {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json, text/plain',

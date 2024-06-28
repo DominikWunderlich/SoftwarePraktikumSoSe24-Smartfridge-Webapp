@@ -78,6 +78,21 @@ class PersonMapper(mapper):
 
         return result
 
+    def find_email_by_person_id(self, person_id):
+        cursor = self._connector.cursor()
+        command = f"SELECT email FROM datenbank.person where id='{person_id}'"
+        cursor.execute(command)
+
+        result = cursor.fetchone()
+
+        self._connector.commit()
+        cursor.close()
+
+        if result:
+            return result[0]
+        else:
+            return None
+
     def find_by_email(self, email):
         result = []
         cursor = self._connector.cursor()
