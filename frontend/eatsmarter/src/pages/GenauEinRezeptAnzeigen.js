@@ -592,7 +592,6 @@ function GenauEinRezeptAnzeigen(props) {
                             </div>
                         </div>
                         <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
-                        <button type="button" onClick={handleCloseCustomMasseinheitPopup}>Abbrechen</button>
                     </div>
                 </div>
             )}

@@ -241,11 +241,6 @@ function Kuehlschrankinhalt(props) {
         }
     };
 
-    // Funktion zum Schließen des Popups
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-    };
-
     /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
     async function deleteLebensmittel (lebensmittelId){
         try {
@@ -416,7 +411,6 @@ function Kuehlschrankinhalt(props) {
                             </div>
                         </div>
                         <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
-                        <button type="button" onClick={handleClosePopup}>Abbrechen</button> {/* Neue Abbrechen-Schaltfläche */}
                     </div>
                 </div>
             )}
