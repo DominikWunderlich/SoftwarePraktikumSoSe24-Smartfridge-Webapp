@@ -150,7 +150,7 @@ function WGPage(props) {
                 {wg && (
                     <div className="inner-container">
                         <h2>Infos der WG {wg.wgName}</h2>
-                        <h3>Bewohner der WG</h3>
+                        <label>Bewohner der WG</label>
                         <div className="mini-container">
                             <table>
                                 <thead>
@@ -178,7 +178,7 @@ function WGPage(props) {
                             </table>
                         </div>
                         <br></br>
-                            <h3>Ersteller der WG</h3>
+                            <label>Ersteller der WG</label>
                             <div className="mini-container">
                                 <table>
                                     <thead>
@@ -202,7 +202,6 @@ function WGPage(props) {
                             </table>
 
                         </div>
-                        <br></br>
                     </div>
                 )}
                 <br></br>
@@ -211,7 +210,7 @@ function WGPage(props) {
                     <div className="formitem">
                         <form id="addBewohner">
                             <h2></h2>
-                            <label>Bitte Geben Sie die Google-Mail des neuen Bewohners an: </label>
+                            <label>Bitte Google-Mail des neuen Bewohners angeben: </label>
                             <input
                                 type="email"
                                 value={addNewMemberEmail}

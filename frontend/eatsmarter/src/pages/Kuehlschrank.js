@@ -9,6 +9,8 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import Button from '@mui/material/Button';
+import AddBox from "@mui/icons-material/AddBox";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 function Kuehlschrankinhalt(props) {
 
@@ -203,6 +205,10 @@ function Kuehlschrankinhalt(props) {
         });
     };
 
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
+
     const handleSaveCustomMasseinheit = async () => {
         const { masseinheitsname, umrechnungsfaktor } = customMasseinheitData;
 
@@ -357,8 +363,8 @@ function Kuehlschrankinhalt(props) {
                                         </option>
                                     ))}
                                 </select>
-                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<ModeEditIcon />}>
-                                    eigene Maßeinheit
+                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<AddBox />}>
+                                    Maßeinheit
                                 </Button>
                             </div>
                         </div>
@@ -369,6 +375,9 @@ function Kuehlschrankinhalt(props) {
             {isPopupOpen && (
                 <div className="popup">
                     <div className="inner-popup">
+                        <button className="mini-button" onClick={handleClosePopup}>
+                            <ArrowBackIosNewIcon/>
+                        </button>
                         <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
                         <div className="blue-mini-container">
                             <div className="formitem">

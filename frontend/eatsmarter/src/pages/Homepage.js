@@ -76,7 +76,7 @@ function Homepage(props) {
                     <div>
                         <div className="inner-container">
                             <h2>Du bist Mitglied in der Wg: {wg.wgName}</h2>
-                            <h3>Bewohner der WG</h3>
+                            <label>Bewohner der WG</label>
                             <div className="mini-container">
                                 <table>
                                     <thead>
@@ -100,7 +100,7 @@ function Homepage(props) {
                                 </table>
                             </div>
                             <br></br>
-                            <h3>Ersteller der WG</h3>
+                            <label>Ersteller der WG</label>
                             <div className="mini-container">
                                 <table>
                                     <thead>

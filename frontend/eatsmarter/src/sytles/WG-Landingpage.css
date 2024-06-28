@@ -3,29 +3,11 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh; 
+    font-size: 0.85rem;
     font-family: Verdana, sans-serif;
     background-image: linear-gradient(170deg, #000000 0%, #000333 50%, #0000cf 100%); 
     color: #333; 
     
-}
-
-.navbar {
-    display: 'flex';
-    align-items: 'center';
-    background-image: linear-gradient(70deg, #000000 0%, #010121 100%); 
-}
-
-.navbar .logo-button {
-    font-weight: 700;
-    font-size: medium;
-    border: 2px solid white;
-    border-radius: 15px;
-    margin-left: 5px;
-    margin-right: 6px;
-}
-
-.navbar-button:hover {
-    font-weight: 700;
 }
 
 h2 {
@@ -73,59 +55,6 @@ label {
     text-align: left;
 }
 
-/* Styling für Tabellen */
-table {
-    width: 100%;
-    padding: 0px;
-    ;
-}
-
-table tr:last-child td:first-child {
-    border-bottom-left-radius: 13px;
-}
-
-table tr:last-child td:last-child {
-    border-bottom-right-radius: 13px;
-}
-
-thead {
-    background: #031544;
-    color: white;
-}
-
-thead th:first-child {
-    border-top-left-radius: 13px;
-}
-
-thead th:last-child {
-    border-top-right-radius: 13px;
-}
-
-th{
-    padding: 12px;
-    text-align: left;
-    font-weight: lighter;
-}
-
-td {
-    padding: 7px;
-    padding-left: 10px;
-    text-align: left;
-    border-top: 1px solid #ddd;
-    background-color: #ddd;
-}
-
-.logo {
-    margin: 0;
-    padding: 7px;
-    color: white;
-    border: 2px solid white;
-    border-radius: 15px;
-    box-sizing: border-box;
-    background-image: linear-gradient(170deg, #000333 0%, #0000cf 100%);
-    display: inline-block; 
-}
-
 /* Styling für Container-Elemente */
 .container {
     padding: 10px; /* Inneres Padding */
@@ -137,6 +66,8 @@ td {
     margin-left: auto; /* Zentriert das div */
     margin-right: auto; /* Zentriert das div */
     margin-bottom: 50px; /* Abstand von unten */
+    overflow-x: auto; /* Scrollbar bei Überlauf */
+    box-sizing: border-box; /* Innenabstand wird nicht zur Breite hinzugefügt */
 }
 
 .inner-container {
@@ -192,7 +123,6 @@ td {
 .blue-mini-container {
     background-color: #031544; 
     color: white;
-    font-size: medium;
     padding: 10px 3%;
     border: 2px solid #031544;
     border-radius: 10px;
@@ -201,12 +131,12 @@ td {
     margin-left: auto; 
     margin-right: auto; 
     margin-top: 2px;
+    margin-bottom: 2px;
 }
 
 .info {
     width: 93%;
     padding: 10px;
-    font-size: medium;
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -220,11 +150,99 @@ td {
     box-sizing: border-box;
 }
 
-/* Styling für die Eingabefelder */
-input[type="text"], input[type="email"], input[type="password"], input[type="number"]{
-    width: 93.5%;
-    padding: 13px 3%;
+/* Styling für die Navigationsleiste */
+.navbar {
+    display: 'flex';
+    align-items: 'center';
+    background-image: linear-gradient(70deg, #000000 0%, #010121 100%); 
+}
+
+.navbar .logo-button {
+    font-weight: 700;
     font-size: medium;
+    border: 2px solid white;
+    border-radius: 15px;
+    margin-left: 5px;
+    margin-right: 6px;
+}
+
+.navbar-button:hover {
+    font-weight: 700;
+}
+
+/* Styling für Tabellen */
+table {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+    padding: 0px;
+
+}
+
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 13px;
+}
+
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 13px;
+}
+
+thead {
+    background: #031544;
+    color: white;
+}
+
+thead th:first-child {
+    border-top-left-radius: 13px;
+}
+
+thead th:last-child {
+    border-top-right-radius: 13px;
+}
+
+th{
+    padding: 10px;
+    text-align: center;
+    font-weight: lighter;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+td {
+    padding: 7px;
+    padding: 4px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    background-color: #ddd;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.logo {
+    margin: 0;
+    padding: 7px;
+    color: white;
+    border: 2px solid white;
+    border-radius: 15px;
+    box-sizing: border-box;
+    background-image: linear-gradient(170deg, #000333 0%, #0000cf 100%);
+    display: inline-block; 
+}
+
+/* Styling für die Eingabefelder */
+input[type="text"], input[type="email"], input[type="password"]{
+    width: 93.5%;
+    padding: 10px 3%;
+    margin: 8px 0 10px 0;
+    display: inline-block;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+input[type="number"]{
+    width: 93.5%;
+    padding: 10px 3%;
     margin: 8px 0 10px 0;
     display: inline-block;
     border-radius: 10px;
@@ -234,74 +252,80 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
 .input-container{
     max-width: 40%;
     padding: 6px;
-    font-size: medium;
     display: inline-block;
     border-radius: 10px;
     background: #ffffff;
   }
 
-  .input-with-button {
+.input-with-button {
     width: 92%;
+    max-height: fit-content;
     background-color: white; 
-    font-size: medium;
     padding: 0px;
     border-radius: 10px;
     cursor: pointer;
     width: 100%;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     margin-left: auto; 
     margin-right: auto; 
-  }
+}
 
+/* Styling für die Eingabefelder mit Button */
 .inner-input-with-button {
     position: relative;
+    max-height: fit-content;
     display: flex;
     align-items: center;
-  }
-  
-  .inner-input-with-button select {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.inner-input-with-button select {
     flex: 1;
     border: none;
     margin: 0;
-  }
-  
-  .inner-input-with-button .edit-icon {
+    font-size: small;
+}
+
+.inner-input-with-button .edit-icon {
     cursor: pointer;
     border: none;
-    margin: 6px;
-    padding: 8px; 
-    font-size: 0.75rem; 
-    max-width: 200px; 
+    border-radius: 8px;
+    max-width: max-content;
+    font-size: 0.65rem;
+    margin: 4px;
+    padding: 6px; 
     height: auto; 
-  }
+    
+}
 
-  select {
+select {
     width: 93.5%;
     border: none;
-    padding: 13px 3%;
+    padding: 10px 3%;
     font-size: medium;
     margin: 8px 0 10px 0;
     display: inline-block;
     border-radius: 10px;
     background-color: #ffffff;
     background-image: none; 
-  }
+}
 
-  .mini-input {
+.mini-input {
     max-width: 2%;
     border: none;
-    padding: 0px;
+    padding: -5px;
     margin-left: 5px;
-    font-size: medium;
+    margin-bottom: -5px;
     display: inline-block;
     border-radius: 1px;
     background-color: #ffffff;
     background-image: none; 
     font-size: small; 
-  }
+}
 
-  .in-a-row {
+.in-a-row {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -310,14 +334,27 @@ input[type="text"], input[type="email"], input[type="password"], input[type="num
 }
 
 .in-a-row p {
-    margin: 0 10px 0 0;
+    margin: 0 0 0 0;
 }
 
 /* Styling für die Buttons */
+.mini-button {
+    background-color: #031544; 
+    color: white;
+    font-size: small;
+    max-width: max-content;
+    padding: 3px 1%;
+    border: 2px solid white;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
 button[type="submit"], button[type="button"] {
     background-color: #031544; 
     color: white;
-    font-size: medium;
     padding: 13px 3%;
     border: 2px solid white;
     border-radius: 10px;
@@ -350,6 +387,13 @@ button[type="submit"], button[type="button"]:hover {
     border: 2px solid #031544;
 }
 
+.mini-button:hover {
+    background-color: #ffffff; 
+    color: #031544;
+    font-weight: 700;
+    border: 2px solid #031544;
+}
+
 /* Popop Styling */
 .popup {
     position: fixed;
@@ -370,7 +414,7 @@ button[type="submit"], button[type="button"]:hover {
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    text-align: center;
+    text-align: left;
 }
 
 .popup-inner h2 {
@@ -398,7 +442,9 @@ button[type="submit"], button[type="button"]:hover {
 @media (max-width: 600px){
 
     body {
-        font-size: small;
+        font-size: small ;
+        word-break: break-all;
+        word-wrap: break-word;
     }
 
     /* Styling für Container-Elemente */
@@ -422,18 +468,26 @@ button[type="submit"], button[type="button"]:hover {
     /* Styling für Tabellen */
     table {
         width: justify;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        box-sizing: border-box;
         padding: 0px;
     }
     
     table th{
-        padding: 5px;
-        text-align: left;
+        padding: 6px;
         font-size: small;
     }
 
     table td {
-        padding: 5px;
+        padding: 3px;
         font-size: small;
+    }
+
+    .inner-popup {
+        max-width: 300px;
+        margin: 50px;
     }
 
     /* Styling für die Eingabefelder */
@@ -448,8 +502,18 @@ button[type="submit"], button[type="button"]:hover {
     }
 
     .input-with-button {
-        width: auto;
         font-size: small;
+    }
+
+   .inner-input-with-button {
+        font-size: 0.5rem;
+        border-radius: 6px;
+   }
+
+   .inner-input-with-button .edit-icon {
+        font-size: 0.65rem;
+        padding: 4px;
+        border-radius: 6px;
     }
 
     /* Styling für die Buttons */

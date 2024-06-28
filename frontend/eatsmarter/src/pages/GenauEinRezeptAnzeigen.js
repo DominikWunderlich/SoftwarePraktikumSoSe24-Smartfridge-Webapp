@@ -10,11 +10,13 @@ import TrimAndLowerCase from "../functions";
 import DeleteIcon from '@mui/icons-material/Delete';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import RezeptBO from "../api/RezeptBO";
 import Button from '@mui/material/Button';
 import NavBar from "../components/NavBar";
 import ResponsiveAppBar from "../components/NavBar";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 
 function GenauEinRezeptAnzeigen(props) {
@@ -361,7 +363,7 @@ function GenauEinRezeptAnzeigen(props) {
     /* Darstellung der Komponente */
     return (
         <div>
-            <ResponsiveAppBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
+            <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <div className='container'>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
                     <div className='inner-container'>
@@ -391,7 +393,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     <p>{rezept.rezeptAnleitung}</p>
                                 )}
                                 <button className="mini-input" onClick={toggleEditMode}>
-                                     {isEditing ? <TaskAltIcon/> : <ModeEditIcon/>}
+                                     {isEditing ? <TaskAltIcon/> : <ChangeCircleIcon/>}
                                 </button>
                             </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
@@ -487,7 +489,7 @@ function GenauEinRezeptAnzeigen(props) {
                                 className="eingabe"
                             />
                         <label>Maßeinheit</label>
-                            <div className="input-with-button">
+                        <div className="input-with-button">
                             <div className="inner-input-with-button">
                                 <select
                                     name="masseinheit"
@@ -501,8 +503,8 @@ function GenauEinRezeptAnzeigen(props) {
                                         </option>
                                     ))}
                                 </select>
-                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<ModeEditIcon />}>
-                                    eigene Maßeinheit
+                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<AddBoxIcon />}>
+                                    Maßeinheit
                                 </Button>
                             </div>
                         </div>
@@ -547,9 +549,12 @@ function GenauEinRezeptAnzeigen(props) {
                         </div>
                     </div>
                 )}
-                {isPopupOpen && (
+                {isMasseinheitPopupOpen && (
                 <div className="popup">
                     <div className="inner-popup">
+                        <button className="mini-button" onClick={handleClosePopup}>
+                            <ArrowBackIosNewIcon/>
+                        </button>
                         <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
                         <div className="blue-mini-container">
                             <div className="formitem">

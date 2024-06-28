@@ -13,13 +13,14 @@ import { useNavigate } from "react-router-dom";
 
 function NavBar({ currentUser, onSignOut }) {
 
-    /* Funktionen für den State vom Menü -> Mobil oder Desktop*/
     const [state, setState] = useState({
         menuAnchor: null,
         mobileMenuAnchor: null 
     });
+
     const navigate = useNavigate();
 
+    /* Handle Funktionen, um zu prüfen, ob das Menü geöffnet ist oder nicht */
     const handleOpen = (event) => {
         setState({ ...state, menuAnchor: event.currentTarget });
     }
@@ -42,7 +43,7 @@ function NavBar({ currentUser, onSignOut }) {
         <AppBar>
             {/* Menü in der Mobilen Ansicht */}
             <Toolbar className='navbar'>
-                <MenuIcon onClick={handleMobileMenuOpen} sx={{ display: { xs: 'block', sm: 'none' } }}/>
+                <MenuIcon onClick={handleMobileMenuOpen} sx={{ display: { xs: 'block', sm: 'none'} }}/>
                 <Button className='logo-button' color="inherit" component={Link} to='/homepage' sx={{ display: { xs: 'none', sm: 'flex' } }}>
                     EatSmarter
                 </Button>
