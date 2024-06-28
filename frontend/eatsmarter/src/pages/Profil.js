@@ -6,8 +6,11 @@ import '../sytles/WG-Landingpage.css';
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
 import PersonBO from "../api/PersonBO";
 import TrimAndLowerCase from "../functions";
-import DeleteIcon from "@mui/icons-material/Delete";
 import "../sytles/WG-Landingpage.css";
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+
+
 function Profil(props){
     const googleId = props.user.uid;
     const [profil, setProfil] = useState(null);
@@ -151,7 +154,7 @@ function Profil(props){
                                             {props.user.email}
                                         </td>
                                         <td>
-                                            <button onClick={handleSaveEdit}>Speichern</button>
+                                            <TaskAltIcon onClick={handleSaveEdit}/>
                                         </td>
                                     </>
                                 ) : (
@@ -161,7 +164,7 @@ function Profil(props){
                                         <td>{profil.firstName}</td>
                                         <td>{profil.email}</td>
                                         <td>
-                                            <button onClick={handleEditButton}>Bearbeiten</button>
+                                            <ModeEditIcon onClick={handleEditButton}/>
                                         </td>
                                     </>
                                 )}

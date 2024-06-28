@@ -536,7 +536,8 @@ function GenauEinRezeptAnzeigen(props) {
                     <div className="popup">
                         <div className="inner-popup">
                             {shoppingListElem.length === 0 ? (
-                                <h3 className="h2-black">Kochen erfolgreich</h3>
+                                <h3 className="h2-black">
+                                    Kochen war erfolgreich!</h3>
                             ) : (
                                 <>
                                     <h3 className="h2-black">Fehlende Lebensmittel</h3>

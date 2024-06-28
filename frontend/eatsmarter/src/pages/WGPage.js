@@ -238,7 +238,7 @@ function WGPage(props) {
             {showUserAlreadyInWgPopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h2 className="h2-black">Die Person ist bereits einer WG beigetreten!</h2>
+                        <h3 className="h2-black">Die Person ist bereits einer WG beigetreten!</h3>
                         <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
@@ -246,7 +246,7 @@ function WGPage(props) {
              {showAdminAddPopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h2 className="h2-black">Nur der Ersteller kann Mitglieder hinzufügen!</h2>
+                        <h3 className="h2-black">Nur der Ersteller kann Mitglieder hinzufügen!</h3>
                         <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
@@ -255,7 +255,7 @@ function WGPage(props) {
             {showAdminDeletePopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h2 className="h2-black">Nur der Ersteller kann Mitglieder löschen!</h2>
+                        <h3 className="h2-black">Nur der Ersteller kann Mitglieder löschen!</h3>
                         <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
@@ -264,7 +264,7 @@ function WGPage(props) {
             {showAdminDeleteWgPopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h2 className="h2-black">Nur der Ersteller kann die Wg löschen!</h2>
+                        <h3 className="h2-black">Nur der Ersteller kann die Wg löschen!</h3>
                         <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
@@ -273,10 +273,11 @@ function WGPage(props) {
             {showNotExistUserPopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h2 className="h2-black">Diese eingetragene E-Mail Adresse hat noch keinen Account angelegt.
+                        <h3 className="h2-black">Diese eingetragene E-Mail Adresse hat noch keinen Account angelegt.
+                            <br/>
                             <br/>
                             Um einen Bewohner hinzufügen zu können, muss sich die Person zuvor in unserem System anmelden.
-                        </h2>
+                        </h3>
                         <button type="button" onClick={closePopup}>Schließen</button>
                     </div>
                 </div>
@@ -285,7 +286,7 @@ function WGPage(props) {
            {showNoValidEmailPopup && (
             <div className="popup">
                 <div className="inner-popup">
-                    <h2 className="h2-black">Bitte geben Sie eine gültige E-Mail-Adresse ein.</h2>
+                    <h3 className="h2-black">Bitte geben Sie eine gültige E-Mail-Adresse ein.</h3>
                     <button type="button" onClick={closePopup}>Schließen</button>
                 </div>
             </div>
