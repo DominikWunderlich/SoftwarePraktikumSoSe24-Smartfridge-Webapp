@@ -1076,11 +1076,14 @@ class Administration(object):
         with RezeptMapper() as mapper:
             rezept_id = mapper.find_rezept_id_by_ersteller(ersteller_mail)
 
-        with LebensmittelMapper() as mapper:
-            mapper.delete_by_rezept_id(rezept_id)
+        if rezept_id is None:
+            pass
+        else:
+            with LebensmittelMapper() as mapper:
+                mapper.delete_by_rezept_id(rezept_id)
 
-        with RezeptMapper() as mapper:
-            mapper.delete(rezept_id)
+            with RezeptMapper() as mapper:
+                mapper.delete(rezept_id)
 
         with PersonMapper() as mapper:
             return mapper.delete_wg_id_person(wg_id, person_id)
