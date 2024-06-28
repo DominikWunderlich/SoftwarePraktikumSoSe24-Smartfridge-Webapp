@@ -15,6 +15,16 @@ from server.SecurityDecorator import secured
 
 app = Flask(__name__, static_folder="build", static_url_path='/')
 
+# Auskommenteiert, swagger funktioniert wieder -> Benötigen wir das?
+# @app.route("/")
+# def index():
+#     return app.send_static_file("index.html")
+#
+# @app.errorhandler(404)
+# def not_found(e):
+#     return app.send_static_file('index.html')
+
+
 # Calls with /system/* are allowed.
 CORS(app, resources=r'/system/*')
 
