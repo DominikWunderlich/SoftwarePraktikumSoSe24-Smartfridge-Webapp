@@ -15,15 +15,6 @@ from server.SecurityDecorator import secured
 
 app = Flask(__name__, static_folder="build", static_url_path='/')
 
-# Auskommenteiert, swagger funktioniert wieder -> Benötigen wir das?
-# @app.route("/")
-# def index():
-#     return app.send_static_file("index.html")
-#
-# @app.errorhandler(404)
-# def not_found(e):
-#     return app.send_static_file('index.html')
-
 # Calls with /system/* are allowed.
 CORS(app, resources=r'/system/*')
 
@@ -155,7 +146,7 @@ class WgGetWgAdminWgOperations(Resource):
 @smartapi.response(500, 'Serverseitiger Fehler')
 @smartapi.param('wg_name', 'Die Name der WG')
 class WgGetOperations(Resource):
-    #@secured
+    @secured
     @smartapi.marshal_with(wg)
     @secured
     def get(self, wg_name):
@@ -221,8 +212,6 @@ class KuelschrankLebensmittelOperations(Resource):
         kuehlschrank_id = wg_id
 
         adm = Administration()
-        # print(f"main.py lebensmittel id {lebensmittel_id}")
-        # print(f"main.py kuehlschrank id {kuehlschrank_id}")
         adm.remove_food_from_fridge(kuehlschrank_id, lebensmittel_id)
 
     @smartapi.expect(lebensmittel)
@@ -410,9 +399,7 @@ class UpdateUndGetAnzahlPortionenInRezept(Resource):
     }))"""
     def post(self, rezept_id):
         print(api.payload) #hier ist nur die neue anzahl portionen drin
-        #new_portionen = api.payload.get('new_portionen')
         new_portionen = api.payload
-        #new_portionen = request.args.get('new_portionen')
         new_portionen = int(new_portionen)
         adm = Administration()
         alte_anzahl, neue_anzahl = adm.berechne_neuen_mengen_wert(rezept_id, new_portionen)
@@ -431,7 +418,7 @@ class UpdateUndGetAnzahlPortionenInRezept(Resource):
 class AddLebensmittelToRezept(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(rezept)
-    #@secured
+    @secured
     def post(self, rezept_id):
         """
         Das ist der Endpunkt für das hinzufügen von Lebensmitteln in den Kühlschrank.
@@ -551,7 +538,6 @@ class GetRezeptAdminWgOperations(Resource):
         print(email)
         print(rezept_id)
         adm = Administration()
-        #print("True in der Main.py?", adm.is_current_user_rezept_admin(email, rezept_id))
         a = adm.is_current_user_rezept_admin(email, rezept_id)
         return a
 
@@ -562,7 +548,7 @@ class GetRezeptAdminWgOperations(Resource):
 class LebensmittelOperation(Resource):
     @smartapi.expect(lebensmittel)
     @smartapi.marshal_with(lebensmittel)
-    #@secured
+    @secured
     def post(self):
         """ Lebensmittel API Call zum Hinzufügen eines Lebensmittel Objekts. """
         adm = Administration()
@@ -583,7 +569,7 @@ class LebensmittelOperation(Resource):
             return 'Fehler in LebensmittelOperation post methode', 500
 
     @smartapi.marshal_list_with(lebensmittel)
-    #@secured
+    @secured
     def get(self):
         """ Auslesen aller Lebensmittelobjekte-Objekte"""
 
@@ -686,7 +672,7 @@ class MasseinheitOperation(Resource):
     @smartapi.response(500, 'Serverseitiger Fehler')
     @smartapi.param('wg_id', 'Id der WG')
     class GeneratorOperations(Resource):
-        # @secured
+        @secured
         @smartapi.marshal_list_with(rezept)
         def get(self, wg_id, kuehlschrank_id):
             """ Auslesen aller Rezepte durch Generator """

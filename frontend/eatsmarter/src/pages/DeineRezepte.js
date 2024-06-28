@@ -16,7 +16,6 @@ function deineRezepte() {
                 </div>
                 <div>
                     <button type={"submit"}>Rezept erstellen</button>
-                    {/* <!-- Link zur Rezept erstellen Seite muss hier noch hinzugefügt werden --> */}
                 </div>
 
             </div>

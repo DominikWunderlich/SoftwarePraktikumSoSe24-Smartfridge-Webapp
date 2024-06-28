@@ -231,7 +231,7 @@ class RezeptMapper(mapper):
             l.set_mengenanzahl(menge)
             l.set_kuelschrank_id(kuehlschrank_id)
             l.set_rezept_id(rezept_id)
-            print(f" Das ist das gezogene Rezept_enthält_lebensmittel aus der DB {l.__str__()}")
+
             result.append(l)
 
         self._connector.commit()
@@ -240,7 +240,6 @@ class RezeptMapper(mapper):
         return result
 
     def insert_in_lebensmittel(self, l):
-        print("ich bin in der insert Methode des RezeptEnthLebensmMapper")
         cursor = self._connector.cursor()
         cursor.execute("SELECT MAX(lebensmittel_id) AS maxid FROM datenbank.lebensmittel")
         tuples = cursor.fetchall()

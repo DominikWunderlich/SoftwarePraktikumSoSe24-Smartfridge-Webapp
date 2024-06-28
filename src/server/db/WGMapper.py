@@ -97,8 +97,6 @@ class WGMapper(mapper):
         self._connector.commit()
         cursor.close()
 
-
-    # Diese Methode wird nicht mehr verwendet, da aber WGMapper von mapper erbt, bleibt die noch drinnen
     def delete(self, key):
         cursor = self._connector.cursor()
 

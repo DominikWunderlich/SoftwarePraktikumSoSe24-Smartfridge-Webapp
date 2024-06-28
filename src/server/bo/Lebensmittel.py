@@ -9,7 +9,6 @@ class Lebensmittel(bo):
         self.mengenanzahl = 0
         self.kuehlschrank_id = None
         self.rezept_id = None
-        # self.conversion_factors = None
 
     def get_lebensmittelname(self):
         """Auslesen des Lebensmittelnamens."""
@@ -44,9 +43,6 @@ class Lebensmittel(bo):
 
     def set_rezept_id(self, rezept_id):
         self.rezept_id = rezept_id
-
-    # def set_conversion_factors_dict(self, dictionary):
-    #     self.conversion_factors = dictionary
 
     def decrease_food_quantity(self, required_amount, required_unit, conversion_factors):
         """ Diese Methode repräsentiert den Verbrauch von Lebensmittel.
@@ -112,37 +108,6 @@ class Lebensmittel(bo):
         lm.set_kuelschrank_id(dictionary["kuehlschrankId"])
         lm.set_rezept_id(dictionary["rezeptId"])
         return lm
-
-
-# # Beispiel 1 Lebensmittel verbrauchen:
-# print("Beginne mit beispiel 1: Lebensmittel verbrauchen")
-# milch = Lebensmittel()
-# milch.set_lebensmittelname("Milch")
-# milch.set_masseinheit("Liter")
-# milch.set_mengenanzahl(1)
-# print(f"Output: Milch 1 Liter {milch}")
-# milch.decrease_food_quantity(200, "Milliliter")
-# print(f"Output: Milch 800 ml {milch}")
-#
-# # Beispiel 2 Lebensmittel verbrauchen:
-# print("Beginne mit beispiel 2: Lebensmittel verbrauchen")
-# brot = Lebensmittel()
-# brot.set_lebensmittelname("brot")
-# brot.set_masseinheit("Gramm")
-# brot.set_mengenanzahl(500)
-# print(f"Output: Brot 500g {brot}")
-# brot.decrease_food_quantity(600, "Gramm")
-# print(f"Output: Brot 0g {brot}")
-#
-# # Beispiel 3 Lebensmittel hinzufügen:
-# print("Beginne mit beispiel 3: Lebensmittel hinzufügen")
-# apfel = Lebensmittel()
-# apfel.set_lebensmittelname("Äpfel")
-# apfel.set_masseinheit("Gramm")
-# apfel.set_mengenanzahl(500)
-# print(f"Output: Apfel 500g {apfel}")
-# apfel.increase_food_quantity(600, "Gramm")
-# print(f"Output: Apfel 1,1kg {apfel}")
 
 """ 
 Info:  wenn wir Lebensmittel hinzufügen, rufen wir "increase_food..." auf. Bei Verbrauchen rufen wir

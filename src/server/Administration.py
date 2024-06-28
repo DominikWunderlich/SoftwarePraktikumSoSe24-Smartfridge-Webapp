@@ -150,21 +150,17 @@ class Administration(object):
         with RezeptMapper() as mapper:
             alte_anzahl_portionen = mapper.find_anzahl_portionen_by_rezept_id(rezept_id)
             #In dieser Variablen wird die alte anzahl portionen des rezepts gespeichert
-            print("Bin ich wiiiii")
+         
             print(alte_anzahl_portionen)
-            print("Bin ich wirklich hier")
+          
             return alte_anzahl_portionen
-        #get_anzahl_portionen_of_recipe_by_rezept_id klappt
     def change_anzahl_portionen_in_rezept_tabelle(self, rezept_id, new_portionen):
-        print("hallo hier in der admin.py in der change_anzahl_portionen_in_rezept_tabelle Methode")
         print(new_portionen)
         print(rezept_id)
         with RezeptMapper() as mapper:
             mapper.update_anzahl_portionen(rezept_id, new_portionen)
-            return print("Es hat geklappt")
-        #change_anzahl_portionen_in_rezept_tabelle klappt
+            return
 
-    #get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen ist überflüssig
     def get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen(self, rezept_id, new_portionen):
         # Alte Anzahl Portionen abrufen
         alte_anzahl_portionen = self.get_anzahl_portionen_of_recipe_by_rezept_id(rezept_id)
@@ -176,20 +172,14 @@ class Administration(object):
         neue_anzahl_portionen = self.get_anzahl_portionen_of_recipe_by_rezept_id(rezept_id)
 
         # Rückgabe der alten und neuen Anzahl Portionen
-        print("in der get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen methode")
         print(alte_anzahl_portionen)
         print(neue_anzahl_portionen)
-        print("get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen Methode")
         return alte_anzahl_portionen, neue_anzahl_portionen
-    #get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen klappt
 
     def get_alle_lebensmittel_by_rezept_id(self, rezept_id):
         lebensmittel = self.get_lebensmittel_by_rezept_id(rezept_id)
-        print("wo bin ich hier 14062024")
         print(lebensmittel)
-        print()
         return lebensmittel
-    #get_alle_lebensmittel_by_rezept_id klappt
 
     # Diese Methode macht
     # 1. sie erhält die rezept_id und die neue anzahl Portionen
@@ -221,30 +211,21 @@ class Administration(object):
         neue_anzahl_portionen = float(neue_anzahl_portionen)
 
         # Rückgabe der alten und neuen Anzahl Portionen
-        print("in der get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen methode")
         print(alte_anzahl_portionen)
         print(neue_anzahl_portionen)
-        print("get_alte_anzahl_portionen_und_change_to_neue_anzahl_portionen Methode")
 
         # Alle Lebensmittel für das Rezept abrufen
         lebensmittel_list = self.get_alle_lebensmittel_by_rezept_id(rezept_id)
 
         for lebensmittel in lebensmittel_list:
             alte_menge = lebensmittel.get_mengenanzahl()
-            print("blablablabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaallllllllllllllllllllllll")
-            print("alte menge")
             print(alte_menge)
-            print("alte anzahl port")
             print(alte_anzahl_portionen)
-            print("neue anzahl port")
             print(neue_anzahl_portionen)
             neue_menge = (alte_menge / alte_anzahl_portionen) * neue_anzahl_portionen
-            print("Hier wird die neue menge berechnet")
             print(neue_menge)
-            neue_menge_obj = self.create_menge2(neue_menge) #Hier kommt ein false das ist das Problem
-            print("Zeile 234")
-            print(neue_menge_obj) #das ist die id von der neuen menge Die id ist jetz also false
-            print("das drüber ist die id von der neuen menge")
+            neue_menge_obj = self.create_menge2(neue_menge)
+            print(neue_menge_obj) 
             self.update_menge_in_lebensmittel_in_rezept(lebensmittel, neue_menge_obj)
 
 
@@ -252,22 +233,10 @@ class Administration(object):
 
     def update_menge_in_lebensmittel_in_rezept(self, lebensmittel, neue_menge):
         print(neue_menge) #hier steht die id von der neuen menge
-        #mapper_instance = MengenanzahlMapper()  # Instanziierung des Mappers
-        print("Komm ich bis hier her?")
-        #neue_menge_obj = mapper_instance.find_by_key(neue_menge)
-        print("Hier stuck")
-        #print(neue_menge_obj)
         print(lebensmittel)
-        print("TESTTTT")
         print(lebensmittel.get_id())
-        #lebensmittel_id = lebensmittel.get_id()
-
-        print("Test zuende")
-        #lebensmittel.set_mengenanzahl(neue_menge.get_menge())
-        #lebensmittel.set_mengenanzahl_id(neue_menge.get_id())
         with LebensmittelMapper() as mapper:
             mapper.update_menge(lebensmittel, neue_menge)
-            print(f"Menge in Lebensmittel aktualisiert: {lebensmittel}")
 
     def create_rezept(self, rezept_name, anzahl_portionen, rezept_ersteller, wg_id, rezept_anleitung):
         """ Erstellen einer Rezept-Instanz. """
@@ -306,7 +275,6 @@ class Administration(object):
             rzt = mapper.find_rezept_admin_by_email(email, rezept_id)
 
         for rz in rzt:
-            # print(wg)
             if rz.get_rezept_ersteller() == email:
                 return True
 
@@ -668,12 +636,6 @@ class Administration(object):
             else:
                 mengen_id = mengen_id.get_id()
 
-        # with MengenanzahlMapper() as m2mapper:
-        #     amenge = m2mapper.find_by_menge(menge)
-        #     menge_id = amenge.get_id()
-
-            print("Beende mengenmapper")
-
         # Jetzt haben wir alle Informationen im das Lebensmittel-Objekt korrekt zu erzeugen und in die DB zu speichern.
         food = Lebensmittel()
         # Hier wird die Lebensmittel_id auf 1 gesetzt
@@ -773,7 +735,6 @@ class Administration(object):
             updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit)
             new_food_obj = self.update_lebensmittel2(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
                                                     updated_food.get_mengenanzahl(), None, rezept_id)
-            # a = self.update_lebensmittel(new_food_obj)
 
             return new_food_obj
     def getAllLebensmittelangabe(self):
@@ -846,7 +807,6 @@ class Administration(object):
             updated_food = elem[0].increase_food_quantity(lebensmittel.get_mengenanzahl(), lebensmittel.get_masseinheit(), quantity, unit, measurements)
             new_food_obj = self.update_lebensmittel(updated_food.get_lebensmittelname(), updated_food.get_masseinheit(),
                                                     updated_food.get_mengenanzahl(), kuehlschrank_id, None)
-            # a = self.update_lebensmittel(new_food_obj)
 
             return new_food_obj
 
