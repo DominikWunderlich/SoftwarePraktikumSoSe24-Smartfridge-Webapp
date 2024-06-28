@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
 import {func} from "prop-types";
+import InfoIcon from '@mui/icons-material/Info';
 
 
 function Generator(props) {
@@ -11,6 +12,7 @@ function Generator(props) {
     const [wgId, setWgId] = useState()
     const [rezepte, setRezepte] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
+    const [PopUpOpen, setPopUpOpen] = useState(false);
 
 
 
@@ -48,36 +50,57 @@ function Generator(props) {
         setShowPopup(false);
     }
 
+    const openInfoIcon = () => {
+        setPopUpOpen(true);
+    }
+
+    const closeInfoIcon = () => {
+        setPopUpOpen(false);
+    }
+
 
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
-            <div className='inner-container'>
-            <h2>Alle verfügbaren Rezepte</h2>
-                {rezepte.map((rezepte, index) => (
-                    <div key={index}>
-                        <Link className="links" to={`/genaueinrezeptAnzeigen/${rezepte.id}`}>
-                            <div className="list-container">
-                                <p className="blue-mini-container">{rezepte.rezeptName}</p>
-                                <p>Anzahl Portionen: {parseInt(rezepte.anzahlPortionen)}</p>
-                                <p>Ersteller: {rezepte.rezeptAdmin}</p>
-                                <p>WG: {rezepte.wgId}</p>
-                            </div>
-                        </Link>
+                <div className='inner-container'>
+                    <div className="input-nutzername">
+                        <div className="in-a-row">
+                            <h2>Alle verfügbaren Rezepte</h2>
+                            <InfoIcon className="info-icon" onClick={openInfoIcon}></InfoIcon>
+                        </div>
                     </div>
-                ))}
+                    {rezepte.map((rezepte, index) => (
+                        <div key={index}>
+                            <Link className="links" to={`/genaueinrezeptAnzeigen/${rezepte.id}`}>
+                                <div className="list-container">
+                                    <p className="blue-mini-container">{rezepte.rezeptName}</p>
+                                    <p>Anzahl Portionen: {parseInt(rezepte.anzahlPortionen)}</p>
+                                    <p>Ersteller: {rezepte.rezeptAdmin}</p>
+                                    <p>WG: {rezepte.wgId}</p>
+                                </div>
+                            </Link>
+                        </div>
+                    ))}
+                    </div>
+                    <br></br>
+                    <br></br>
+                    <button onClick={showRezepte} className="button-uebersicht" type="button">Generator starten</button>
                 </div>
-                <br></br>
-                <br></br>
-                <button onClick={showRezepte} className="button-uebersicht" type="button">Generator starten</button>
-            </div>
             {showPopup && (
                 <div className="popup">
                     <div className="inner-popup">
-                        <h1 className="h2-black">Keine Rezepte gefunden</h1>
-                        <p>Kaufe etwas ein, um deine Rezepte kochen zu können!<span className="large-emoji">🙊</span></p>
-                        <button onClick={closePopup}>Schließen</button>
+                        <h3 className="h2-black">Keine Rezepte gefunden.</h3>
+                        <p>Kaufe etwas ein, um deine Rezepte kochen zu können!</p>
+                        <button type="Button" onClick={closePopup}>Schließen</button>
+                    </div>
+                </div>
+            )}
+            {PopUpOpen && (
+                <div className="popup">
+                    <div className="inner-popup">
+                        <p className="h2-black"> Der Genrator filtert, welche Rezepte Sie anhand der enthaltenden Lebensmittel im Kühlschrank kochen können.</p>
+                        <button type="button" onClick={closeInfoIcon}>Schließen</button>
                     </div>
                 </div>
             )}

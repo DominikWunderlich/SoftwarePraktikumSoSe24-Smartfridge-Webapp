@@ -17,6 +17,7 @@ import Button from '@mui/material/Button';
 import NavBar from "../components/NavBar";
 import ResponsiveAppBar from "../components/NavBar";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 
 function GenauEinRezeptAnzeigen(props) {
 
@@ -383,10 +384,10 @@ function GenauEinRezeptAnzeigen(props) {
                                     value={parseInt(rezept.anzahlPortionen) || ""}
                                     onChange={handleChange}
                                 />
-                                <ChangeCircleIcon onClick={() => handleChangePortionenInRezept(rezept.anzahlPortionen)}/>
+                                <RotateLeftIcon onClick={() => handleChangePortionenInRezept(rezept.anzahlPortionen)}/>
                             </div>
                             <div className="in-a-row">
-                                <p>Kochanleitung:</p>
+                                <p className="abstand">Kochanleitung:</p>
                                 {isEditing ? (
                                     <textarea className={'input-container'}
                                         name="rezeptAnleitung"
@@ -397,7 +398,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     <p>{rezept.rezeptAnleitung}</p>
                                 )}
                                 <button className="mini-input" onClick={toggleEditMode}>
-                                     {isEditing ? <TaskAltIcon/> : <ChangeCircleIcon/>}
+                                     {isEditing ? <TaskAltIcon/> : <RotateLeftIcon/>}
                                 </button>
                             </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
@@ -511,7 +512,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     onChange={handleChange}
                                     className="eingabe"
                                 >
-                                    <option value="" disabled>Bitte wählen Sie eine Masseinheit aus</option>
+                                    <option value="" disabled>Bitte wählen Sie eine Maßeinheit aus</option>
                                     {masseinheitenListe.map((masseinheit, index) => (
                                         <option key={index} value={masseinheit.masseinheitsname}>
                                             {masseinheit.masseinheitsname}
@@ -571,7 +572,7 @@ function GenauEinRezeptAnzeigen(props) {
                         <button className="mini-button" onClick={handleClosePopup}>
                             <ArrowBackIosNewIcon/>
                         </button>
-                        <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
+                        <h3 className="h2-black">Lege eine neue Maßeinheit an</h3>
                         <div className="blue-mini-container">
                             <div className="formitem">
                                 <label>Name der Maßeinheit</label>

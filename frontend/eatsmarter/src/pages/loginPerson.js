@@ -114,6 +114,7 @@ function LoginPerson(props) {
                                 />
                                 <InfoIcon className="info-icon" onClick={openInfoIcon}></InfoIcon>
                             </div>
+                            <br/>
                             <button className="button" type="submit">Bestätigen</button>
                         </div>
                     </form>
@@ -123,6 +124,7 @@ function LoginPerson(props) {
             {PopUpOpen && (
                 <div className="popup">
                     <div className="inner-popup">
+                        <h3 className="h2-black">Info</h3>
                         <p className="h2-black"> Der Nickname wird von Google übernommen. Sie können Ihren Nicknamen über dieses Input Feld ändern.</p>
                         <button type="button" onClick={closeInfoIcon}>Schließen</button>
                     </div>

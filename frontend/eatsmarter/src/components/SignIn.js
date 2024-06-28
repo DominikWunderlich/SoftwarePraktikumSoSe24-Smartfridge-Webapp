@@ -31,7 +31,7 @@ function SignIn(props) {
 				</div>
 				<br></br>
 				<br></br>
-				<Button className='button-uebersicht' variant='contained' color='primary' onClick={handleSignInButtonClicked}>
+				<Button sx={{fontSize: 'small'}} className='button-uebersicht' variant='contained' color='primary' onClick={handleSignInButtonClicked}>
 					Melde dich mit deinem Google Account an
 				</Button>
 			</div>

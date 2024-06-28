@@ -177,6 +177,7 @@ table {
     overflow-x: auto;
     box-sizing: border-box;
     padding: 0px;
+    margin: 0px;
 
 }
 
@@ -271,6 +272,23 @@ input[type="number"]{
     margin-right: auto; 
 }
 
+.input-nutzername {
+    text-align: center;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: -10px;
+  }
+  
+.inner-container .info-icon {
+    text-align: center;
+    right: 10px;
+    cursor: pointer;
+    color: white;
+    margin-bottom: 5px;
+}
+
 /* Styling für die Eingabefelder mit Button */
 .inner-input-with-button {
     position: relative;
@@ -337,6 +355,27 @@ select {
     margin: 0 0 0 0;
 }
 
+.in-a-row .mini-input {
+    margin: 0 0 0 0;
+    max-width: 7px;
+}
+
+.in-a-row .abstand {
+    margin-right: 10px;
+    margin-bottom: -3px;
+}
+
+textarea {
+    max-width: 200px;
+    min-width: 130px;
+    max-height: 15px;
+    text-align: center;
+    padding: 10px 3%;
+    display: inline-block;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
 /* Styling für die Buttons */
 .mini-button {
     background-color: #031544; 
@@ -348,6 +387,7 @@ select {
     border-radius: 10px;
     cursor: pointer;
     width: 100%;
+    margin-bottom: -5px;
     margin-left: auto; 
     margin-right: auto; 
 }
@@ -368,10 +408,10 @@ button[type="submit"], button[type="button"] {
 .button-uebersicht[type="button"] {
     background-color: #031544; 
     color: white;
-    font-size: medium;
+    font-size: 0.9rem;
     padding: 15px 3%;
     border: 2px solid #031544;
-    border-radius: 15px;
+    border-radius: 17px;
     cursor: pointer;
     width: 100%;
     margin-left: auto; 
@@ -441,11 +481,12 @@ button[type="submit"], button[type="button"]:hover {
 /* Styling für kleinere Geräte */
 @media (max-width: 600px){
 
+    /* Allgemeines styling */
     body {
         font-size: small ;
         word-break: break-all;
         word-wrap: break-word;
-    }
+    }  
 
     /* Styling für Container-Elemente */
     .container {
@@ -485,9 +526,14 @@ button[type="submit"], button[type="button"]:hover {
         font-size: small;
     }
 
+    .popup{
+        font-size: small;
+    }
+
     .inner-popup {
         max-width: 300px;
         margin: 50px;
+        font-size: small;
     }
 
     /* Styling für die Eingabefelder */
