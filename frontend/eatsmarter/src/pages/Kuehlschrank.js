@@ -9,6 +9,8 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import Button from '@mui/material/Button';
+import AddBox from "@mui/icons-material/AddBox";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 function Kuehlschrankinhalt(props) {
 
@@ -204,6 +206,10 @@ function Kuehlschrankinhalt(props) {
         });
     };
 
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
+
     const handleSaveCustomMasseinheit = async () => {
         const { masseinheitsname, umrechnungsfaktor } = customMasseinheitData;
 
@@ -235,11 +241,6 @@ function Kuehlschrankinhalt(props) {
         }
     };
 
-    // Funktion zum Schließen des Popups
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-    };
-
     /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
     async function deleteLebensmittel (lebensmittelId){
         try {
@@ -262,8 +263,8 @@ function Kuehlschrankinhalt(props) {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Lebensmittelname</th>
-                                    <th>Mengenanzahl</th>
+                                    <th>Lebensmittel</th>
+                                    <th>Menge</th>
                                     <th>Maßeinheit</th>
                                     <th></th>
                                     <th></th>
@@ -373,8 +374,8 @@ function Kuehlschrankinhalt(props) {
                                         </option>
                                     ))}
                                 </select>
-                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<ModeEditIcon />}>
-                                    eigene Maßeinheit
+                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<AddBox />}>
+                                    Maßeinheit
                                 </Button>
                             </div>
                         </div>
@@ -385,6 +386,9 @@ function Kuehlschrankinhalt(props) {
             {isPopupOpen && (
                 <div className="popup">
                     <div className="inner-popup">
+                        <button className="mini-button" onClick={handleClosePopup}>
+                            <ArrowBackIosNewIcon/>
+                        </button>
                         <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
                         <div className="blue-mini-container">
                             <div className="formitem">
@@ -407,7 +411,6 @@ function Kuehlschrankinhalt(props) {
                             </div>
                         </div>
                         <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
-                        <button type="button" onClick={handleClosePopup}>Abbrechen</button> {/* Neue Abbrechen-Schaltfläche */}
                     </div>
                 </div>
             )}

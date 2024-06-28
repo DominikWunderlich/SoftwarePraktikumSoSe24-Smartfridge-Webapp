@@ -9,7 +9,6 @@ import RegisterWG from "./pages/registerWG";
 import Homepage from "./pages/Homepage";
 import LoginPerson from "./pages/loginPerson";
 import Lebensmittelverwaltung from "./pages/Lebensmittel-Verwaltung";
-import DeineRezepte from "./pages/DeineRezepte";
 import RezeptErstellen from "./pages/RezeptErstellen";
 import NavBar from "./components/NavBar";
 import RezeptAnzeigen from "./pages/RezepteAnzeigen";
@@ -19,6 +18,7 @@ import GenauEinRezeptAnzeigen from "./pages/GenauEinRezeptAnzeigen";
 import Generator from "./pages/Generator";
 import EatSmarterAPI from "./api/EatSmarterAPI";
 import Profil from "./pages/Profil";
+
 
 function App(props) {
     /** Constructor of the app, which initializes firebase, also settings an
@@ -171,7 +171,6 @@ function App(props) {
 						  <Route path="/wg" element={<WGPage user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/homepage" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
 						  <Route path="/kuehlschrankinhalt/:wg_id" element={<Kuehlschrank user={state.currentUser} onSignOut={handleSignOut}/>}/>
-						  <Route path="/deineRezepte" element={<DeineRezepte/>}/>
 						  <Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser} onSignOut={handleSignOut}/>}/>
                           <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut}/>} />
 						  <Route path="/genaueinrezeptAnzeigen/:rezeptId" element={<GenauEinRezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut} />} />

@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
-import NavBar from "../components/NavBar";
 import LebensmittelBO from "../api/LebensmittelBO";
 import MasseinheitBO from "../api/MasseinheitBO";
 import mengenanzahlBO from "../api/mengenanzahlBO";
@@ -11,10 +10,13 @@ import TrimAndLowerCase from "../functions";
 import DeleteIcon from '@mui/icons-material/Delete';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import RezeptBO from "../api/RezeptBO";
 import Button from '@mui/material/Button';
+import NavBar from "../components/NavBar";
 import ResponsiveAppBar from "../components/NavBar";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 function GenauEinRezeptAnzeigen(props) {
 
@@ -47,7 +49,7 @@ function GenauEinRezeptAnzeigen(props) {
     const [customMasseinheit, setCustomMasseinheit] = useState("");
     const [rezept, setRezept] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [isCustomMasseinheitPopupOpen, setIsCustomMasseinheitPopupOpen] = useState(false);
+    const [isMasseinheitPopupOpen, setIsMasseinheitPopupOpen] = useState(false);
     const [errors, setErrors] = useState({});
     const {rezeptId} = useParams();
     const navigate = useNavigate()
@@ -244,10 +246,7 @@ function GenauEinRezeptAnzeigen(props) {
 
     const handleClosePopup = () => {
         setIsPopupOpen(false);
-    };
-
-    const handleCloseCustomMasseinheitPopup = () => {
-        setIsCustomMasseinheitPopupOpen(false);
+        setIsMasseinheitPopupOpen(false);
     };
 
     /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
@@ -262,7 +261,7 @@ function GenauEinRezeptAnzeigen(props) {
     };
 
     const handleCustomMasseinheit = () => {
-        setIsCustomMasseinheitPopupOpen(true);
+        setIsMasseinheitPopupOpen(true);
     };
 
     const handlePopupInputChange = (event) => {
@@ -289,7 +288,7 @@ function GenauEinRezeptAnzeigen(props) {
                     ...formData,
                     masseinheit: masseinheitsname
                 });
-                setIsCustomMasseinheitPopupOpen(false);
+                setIsMasseinheitPopupOpen(false);
                 setCustomMasseinheitData({
                     masseinheitsname: "",
                     umrechnungsfaktor: ""
@@ -398,7 +397,7 @@ function GenauEinRezeptAnzeigen(props) {
                                     <p>{rezept.rezeptAnleitung}</p>
                                 )}
                                 <button className="mini-input" onClick={toggleEditMode}>
-                                     {isEditing ? <TaskAltIcon/> : <ModeEditIcon/>}
+                                     {isEditing ? <TaskAltIcon/> : <ChangeCircleIcon/>}
                                 </button>
                             </div>
                             <p>Ersteller: {rezept.rezeptAdmin}</p>
@@ -406,8 +405,8 @@ function GenauEinRezeptAnzeigen(props) {
                             <table>
                             <thead>
                                 <tr>
-                                    <th>Lebensmittelname</th>
-                                    <th>Mengenanzahl</th>
+                                    <th>Lebensmittel</th>
+                                    <th>Menge</th>
                                     <th>Maßeinheit</th>
                                     <th></th>
                                     <th></th>
@@ -504,7 +503,7 @@ function GenauEinRezeptAnzeigen(props) {
                                 className="eingabe"
                             />
                         <label>Maßeinheit</label>
-                            <div className="input-with-button">
+                        <div className="input-with-button">
                             <div className="inner-input-with-button">
                                 <select
                                     name="masseinheit"
@@ -519,8 +518,8 @@ function GenauEinRezeptAnzeigen(props) {
                                         </option>
                                     ))}
                                 </select>
-                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<ModeEditIcon />}>
-                                    eigene Maßeinheit
+                                <Button onClick={handleCustomMasseinheit} className="edit-icon"  variant="outlined" startIcon={<AddBoxIcon />}>
+                                    Maßeinheit
                                 </Button>
                             </div>
                         </div>
@@ -544,8 +543,8 @@ function GenauEinRezeptAnzeigen(props) {
                                     <table>
                                         <thead>
                                         <tr>
-                                            <th>Lebensmittelname</th>
-                                            <th>Mengenanzahl</th>
+                                            <th>Lebensmittel</th>
+                                            <th>Menge</th>
                                             <th>Maßeinheit</th>
                                         </tr>
                                         </thead>
@@ -565,9 +564,12 @@ function GenauEinRezeptAnzeigen(props) {
                         </div>
                     </div>
                 )}
-                {isCustomMasseinheitPopupOpen && (
+                {isMasseinheitPopupOpen && (
                 <div className="popup">
                     <div className="inner-popup">
+                        <button className="mini-button" onClick={handleClosePopup}>
+                            <ArrowBackIosNewIcon/>
+                        </button>
                         <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
                         <div className="blue-mini-container">
                             <div className="formitem">
@@ -590,7 +592,6 @@ function GenauEinRezeptAnzeigen(props) {
                             </div>
                         </div>
                         <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
-                        <button type="button" onClick={handleCloseCustomMasseinheitPopup}>Abbrechen</button>
                     </div>
                 </div>
             )}

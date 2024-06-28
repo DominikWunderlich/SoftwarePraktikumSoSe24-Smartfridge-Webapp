@@ -303,7 +303,7 @@ class ProfileOperations(Resource):
         """ Löschen eines bestimmten Profil-Objekts. """
         adm = Administration()
         proposal = Person.from_dict(api.payload)
-        p = adm.delete_user(proposal)
+        p = adm.delete_user_from_system(proposal)
         return p
 
 @smartapi.route('/login/check/<string:google_id>')

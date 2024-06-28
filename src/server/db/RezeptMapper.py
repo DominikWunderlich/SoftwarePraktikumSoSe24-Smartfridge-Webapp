@@ -43,8 +43,29 @@ class RezeptMapper(mapper):
         return rezept
 
     def find_by_key(self, key):
-        # Implementierung der Methode find_by_key
-        pass
+        """ Auslesen anhand der E-Mail. """
+        result = []
+        cursor = self._connector.cursor()
+        command = (f"SELECT rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id FROM datenbank.rezept "
+                   f"WHERE rezept_ersteller = %s")
+        data = key.get_email()
+        cursor.execute(command, (data, ))
+        tuples = cursor.fetchall()
+
+        for (rezept_id, rezept_name, anzahl_portionen, rezept_ersteller, wg_id) in tuples:
+            rezept = Rezept()
+            rezept.set_id(rezept_id)
+            rezept.set_rezept_name(rezept_name)
+            rezept.set_anzahl_portionen(anzahl_portionen)
+            rezept.set_rezept_ersteller(rezept_ersteller)
+            rezept.set_wg_id(wg_id)
+            result.append(rezept)
+
+        self._connector.commit()
+        cursor.close()
+
+        return result
+
 
     def find_all(self):
         result = []
@@ -131,6 +152,15 @@ class RezeptMapper(mapper):
 
         command = f"DELETE FROM datenbank.rezept WHERE rezept_id='{rezept_id}'"
         cursor.execute(command)
+
+        self._connector.commit()
+        cursor.close()
+
+    def delete_by_email(self, creator_email):
+        cursor = self._connector.cursor()
+
+        command = f"DELETE FROM datenbank.rezept WHERE rezept_ersteller=%s"
+        cursor.execute(command, (creator_email, ))
 
         self._connector.commit()
         cursor.close()
