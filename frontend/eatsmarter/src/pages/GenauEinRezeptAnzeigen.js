@@ -42,6 +42,7 @@ function GenauEinRezeptAnzeigen(props) {
         umrechnungsfaktor: ""
     });
 
+    // Zustände für die Lebensmittel, Maßeinheiten, Rezept, Popup, Fehlermeldungen, Bearbeitungsmodus, Admin-Status
     const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
@@ -256,6 +257,10 @@ function GenauEinRezeptAnzeigen(props) {
         setIsMasseinheitPopupOpen(false);
         setShowNotAdminPopup(false);
         setShowNotAdminDeletePopup(false);
+    };
+
+    const handleCloseMiniPopup = () => {
+        setFehlendesFeldPopupOpen(false);
     };
 
     /* -------- Funktionen für das Hinzufügen und Speichern einer eigenen Maßeinheit --------  */
@@ -615,26 +620,36 @@ function GenauEinRezeptAnzeigen(props) {
                         <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
                     </div>
                 </div>
-            )}
-            {showNotAdminPopup && (
-                <div className="popup">
-                    <div className="inner-popup">
-                        <h2 className="h2-black">Nur der Rezeptersteller kann das Rezept verändern.</h2>
-                        <button type="button" onClick={handleClosePopup}>Schließen</button>
+                )}
+                {showNotAdminPopup && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Rechte</h3>
+                            <p>Nur der Rezeptersteller kann das Rezept verändern.</p>
+                            <button type="button" onClick={handleClosePopup}>Schließen</button>
+                        </div>
                     </div>
-                </div>
-            )
-            }
-
-            {showNotAdminDeletePopup && (
-                <div className="popup">
-                    <div className="inner-popup">
-                        <h2 className="h2-black">Nur der Rezeptersteller kann das Rezept löschen.</h2>
-                        <button type="button" onClick={handleClosePopup}>Schließen</button>
+                )
+                }
+                {showNotAdminDeletePopup && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Rechte</h3>
+                            <p>Nur der Rezeptersteller kann das Rezept löschen.</p>
+                            <button type="button" onClick={handleClosePopup}>Schließen</button>
+                        </div>
                     </div>
-                </div>
-            )
-            }
+                )
+                }
+                {fehlendesFeldPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Felder</h3>
+                            <p>Bitte füllen Sie alle Felder aus.</p>
+                            <button type="button" onClick={handleCloseMiniPopup}>Schließen</button>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }

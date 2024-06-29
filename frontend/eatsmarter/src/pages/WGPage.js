@@ -4,6 +4,7 @@ import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
 import NavBar from "../components/NavBar";
 import TrimAndLowerCase from "../functions";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 
 function WGPage(props) {
@@ -253,7 +254,6 @@ function WGPage(props) {
                     </div>
                 </div>
             )}
-
             {showAdminDeletePopup && (
                 <div className="popup">
                     <div className="inner-popup">
@@ -263,7 +263,6 @@ function WGPage(props) {
                     </div>
                 </div>
             )}
-
             {showAdminDeleteWgPopup && (
                 <div className="popup">
                     <div className="inner-popup">
@@ -273,7 +272,6 @@ function WGPage(props) {
                     </div>
                 </div>
             )}
-
             {showNotExistUserPopup && (
                 <div className="popup">
                     <div className="inner-popup">
@@ -283,7 +281,6 @@ function WGPage(props) {
                     </div>
                 </div>
             )}
-
            {showNoValidEmailPopup && (
             <div className="popup">
                 <div className="inner-popup">

@@ -43,6 +43,7 @@ function Kuehlschrankinhalt(props) {
     const [customMasseinheit, setCustomMasseinheit] = useState("");
     const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [fehlendesFeldPopupOpen, setFehlendesFeldPopupOpen] = useState(false);
     
     /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
     const handleChange = (event) => {
@@ -210,6 +211,10 @@ function Kuehlschrankinhalt(props) {
         setIsPopupOpen(false);
     };
 
+    const handleCloseMiniPopup = () => {
+        setFehlendesFeldPopupOpen(false);
+    };
+
     const handleSaveCustomMasseinheit = async () => {
         const { masseinheitsname, umrechnungsfaktor } = customMasseinheitData;
 
@@ -237,7 +242,7 @@ function Kuehlschrankinhalt(props) {
                 console.error("Fehler beim Hinzufügen der benutzerdefinierten Maßeinheit:", error);
             }
         } else {
-            alert("Bitte füllen Sie beide Felder aus.");
+            setFehlendesFeldPopupOpen(true);
         }
     };
 
@@ -414,6 +419,15 @@ function Kuehlschrankinhalt(props) {
                     </div>
                 </div>
             )}
+             {fehlendesFeldPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Felder</h3>
+                            <p>Bitte füllen Sie alle Felder aus.</p>
+                            <button type="button" onClick={handleCloseMiniPopup}>Schließen</button>
+                        </div>
+                    </div>
+                )}
         </div>
     );
 }
