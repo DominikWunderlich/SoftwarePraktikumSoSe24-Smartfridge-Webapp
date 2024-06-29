@@ -67,7 +67,7 @@ function Generator(props) {
                     <div className="input-nutzername">
                         <div className="in-a-row">
                             <h2>Alle verfügbaren Rezepte</h2>
-                            <InfoIcon className="info-icon" onClick={openInfoIcon}></InfoIcon>
+                            <InfoIcon className="info-icon-white" onClick={openInfoIcon}></InfoIcon>
                         </div>
                     </div>
                     {rezepte.map((rezepte, index) => (
@@ -99,6 +99,7 @@ function Generator(props) {
             {PopUpOpen && (
                 <div className="popup">
                     <div className="inner-popup">
+                        <h3 className="h2-black">Info</h3>
                         <p className="h2-black"> Der Genrator filtert, welche Rezepte Sie anhand der enthaltenden Lebensmittel im Kühlschrank kochen können.</p>
                         <button type="button" onClick={closeInfoIcon}>Schließen</button>
                     </div>

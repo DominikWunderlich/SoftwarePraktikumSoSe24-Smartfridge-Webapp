@@ -274,7 +274,6 @@ input[type="number"]{
 
 .input-nutzername {
     text-align: center;
-    color: black;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -450,7 +449,7 @@ button[type="submit"], button[type="button"]:hover {
 
 .inner-popup {
     background: white;
-    max-width: 500px;
+    max-width: 350px;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -529,7 +528,7 @@ button[type="submit"], button[type="button"]:hover {
     .popup{
         font-size: small;
     }
-
+    
     .inner-popup {
         max-width: 300px;
         margin: 50px;

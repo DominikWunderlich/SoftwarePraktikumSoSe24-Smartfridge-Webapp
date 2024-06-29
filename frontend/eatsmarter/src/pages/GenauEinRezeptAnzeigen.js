@@ -11,13 +11,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import RezeptBO from "../api/RezeptBO";
 import Button from '@mui/material/Button';
 import NavBar from "../components/NavBar";
-import ResponsiveAppBar from "../components/NavBar";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
+
 
 function GenauEinRezeptAnzeigen(props) {
 
@@ -43,24 +42,33 @@ function GenauEinRezeptAnzeigen(props) {
         umrechnungsfaktor: ""
     });
 
+    // Zustände für die Lebensmittel/Maßeinheitenliste/Einkaufliste Bearbeiten und die Einkaufsliste sowie Popup-Status
     const [rezeptLebensmittel, setRezeptLebensmittel] = useState([]);
     const [lebensmittelliste, setLebensmittelliste] = useState([]);
     const [masseinheitenListe, setMasseinheitenListe] = useState([]);
     const [shoppingListElem, setShoppingListElem] = useState([]);
     const [customMasseinheit, setCustomMasseinheit] = useState("");
-    const [rezept, setRezept] = useState(null);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [isMasseinheitPopupOpen, setIsMasseinheitPopupOpen] = useState(false);
-    const [errors, setErrors] = useState({});
-    const {rezeptId} = useParams();
-    const navigate = useNavigate()
-    const currentUser = props.user.email;
     const [editMode, setEditMode] = useState(null);  // Zustand für den Bearbeitungsmodus
     const [editLebensmittelId, setEditLebensmittelId] = useState(null); // Zustand für die Lebensmittel-ID im Bearbeitungsmodus
     const [isEditing, setIsEditing] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [rezept, setRezept] = useState(null);
+    const [errors, setErrors] = useState({});
+    const {rezeptId} = useParams();
+    const navigate = useNavigate()
+    const currentUser = props.user.email;
+    
+    // Zustände für die Popups
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [isMasseinheitPopupOpen, setIsMasseinheitPopupOpen] = useState(false);
+    const [ShowAdminDeleteLebensmittelPopupOpen, setShowAdminDeleteLebensmittelPopupOpen] = useState(false);
+    const [ShowAdminAddLebensmittelPopupOpen, setShowAdminAddLebensmittelPopupOpen] = useState(false);  
+    const [ShowAdminEditLebensmittelPopupOpen, setShowAdminEditLebensmittelPopupOpen] = useState(false);
+    const [ShowAdminDeleteRezeptPopupOpen, setShowAdminDeleteRezeptPopupOpen] = useState(false);
+    const [ShowAdmiEditTextPopupOpen, setShowAdmiEditTextPopupOpen] = useState(false);
+    const [fehlendesFeldPopupOpen, setFehlendesFeldPopupOpen] = useState(false);
 
-    /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
+    /* -------- Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste --------  */
     const fetchAdmin = async () => {
         const admin = await EatSmarterAPI.getAPI().checkIfUserIsRezeptAdmin(currentUser, rezeptId);
         if (admin) {
@@ -124,12 +132,11 @@ function GenauEinRezeptAnzeigen(props) {
         }
     }
         else{
-                alert("Nur der Ersteller kann ein Lebensmittel hinzufügen");
-
+                setShowAdminAddLebensmittelPopupOpen(true);
         }
     }
 
-    /* Funktionen für Daten die, geladen werden müssen */
+    /* -------- Funktionen für Daten, die in der Komponente geladen werden müssen --------  */
     const fetchMasseinheiten = async () => {
         try {
             const masseinheiten = await EatSmarterAPI.getAPI().getMasseinheitAll();
@@ -176,30 +183,35 @@ function GenauEinRezeptAnzeigen(props) {
         fetchAdmin();
     }, [rezeptId]);
 
-    /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
+    /* --------  Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe --------  */
     const handleSaveEdit = async () => {
-        try {
-            // Erstellen des updated-food-Objekts.
-            const updatedLebensmittelInRezept = new LebensmittelBO(
-                editFormData.lebensmittelName,
-                editFormData.mengenanzahl,
-                editFormData.masseinheit,
-                null,
-                editFormData.rezeptId
-            );
-            updatedLebensmittelInRezept.id = editLebensmittelId;
+        if (isAdmin) {
+            try {
+                // Erstellen des updated-food-Objekts.
+                const updatedLebensmittelInRezept = new LebensmittelBO(
+                    editFormData.lebensmittelName,
+                    editFormData.mengenanzahl,
+                    editFormData.masseinheit,
+                    null,
+                    editFormData.rezeptId
+                );
+                updatedLebensmittelInRezept.id = editLebensmittelId;
 
-            await EatSmarterAPI.getAPI().updateFoodInRezept(updatedLebensmittelInRezept);
+                await EatSmarterAPI.getAPI().updateFoodInRezept(updatedLebensmittelInRezept);
 
+                setEditMode(null);
+                setEditLebensmittelId(null);
+
+                // Rufen Sie die neuesten Lebensmitteldaten ab und aktualisieren Sie den Zustand
+                await fetchRezeptLebensmittel();
+            } catch (error) {
+                console.error("Fehler beim Aktualisieren:", error);
+                setErrors({ message: "Fehler beim Aktualisieren der Lebensmittel." });
+            }
+        } else {
+            setShowAdminEditLebensmittelPopupOpen(true);
             setEditMode(null);
-            setEditLebensmittelId(null);
-
-            // Rufen Sie die neuesten Lebensmitteldaten ab und aktualisieren Sie den Zustand
-            await fetchRezeptLebensmittel();
-        } catch (error) {
-            console.error("Fehler beim Aktualisieren:", error);
-            setErrors({ message: "Fehler beim Aktualisieren der Lebensmittel." });
-        }
+     }
     };
 
     const handleEditChange = (event) => {
@@ -221,7 +233,7 @@ function GenauEinRezeptAnzeigen(props) {
         });
     };
 
-    /* Funktionen zum Kochen -> für eine Einkaufsliste oder Verbrauch von Lebensmittel */
+    /* --------  Funktionen zum Kochen -> für eine Einkaufsliste oder Verbrauch von Lebensmittel --------  */
     const handleJetztKochen = async () => {
         try {
             const api = new EatSmarterAPI();
@@ -250,7 +262,7 @@ function GenauEinRezeptAnzeigen(props) {
         setIsMasseinheitPopupOpen(false);
     };
 
-    /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
+    /* -------- Funktionen für das Hinzufügen und Speichern einer eigenen Maßeinheit --------  */
     const addMasseinheit = async (masseinheitBO) => {
         try {
             const newMasseinheit = await EatSmarterAPI.getAPI().addMasseinheit(masseinheitBO);
@@ -300,11 +312,11 @@ function GenauEinRezeptAnzeigen(props) {
                 console.error("Fehler beim Hinzufügen der benutzerdefinierten Maßeinheit:", error);
             }
         } else {
-            alert("Bitte füllen Sie beide Felder aus.");
+            setFehlendesFeldPopupOpen(true);
         }
     };
 
-    /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
+    /* --------  Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel -------- */
     const handleDelete = async () => {
         if (isAdmin) {
             const response = await EatSmarterAPI.getAPI().deleteRezept(rezeptId);
@@ -313,7 +325,7 @@ function GenauEinRezeptAnzeigen(props) {
             alert("Das Rezept wurde erfolgreich gelöscht.");
             }
         else {
-                alert("Nur der Ersteller kann das Rezept löschen");
+                setShowAdminDeleteRezeptPopupOpen(true);
             }
         }
 
@@ -329,26 +341,22 @@ function GenauEinRezeptAnzeigen(props) {
                 }
             }
             else{
-                alert("Nur der Rezept Ersteller kann Lebensmittel löschen")
+                setShowAdminDeleteLebensmittelPopupOpen(true);
             }
             };
 
+    /* -------- Funktionen zum Bearbeiten und Speichern der Kochanleitung --------  */
     const handleChangeInstructions = async () => {
-        if (isAdmin) {
-            const newRecipe = new RezeptBO(
-                rezept.rezeptName,
-                rezept.anzahlPortionen,
-                rezept.rezeptAdmin,
-                rezept.wgId,
-                rezept.rezeptAnleitung
-            )
-            newRecipe.setID(rezept.id);
-            newRecipe.setWgId(rezept.wgId);
-            await EatSmarterAPI.getAPI().updateRezept(newRecipe);
-        }
-        else {
-            alert("Nur der Admin kann ein Rezept bearbeiten!")
-        }
+        const newRecipe = new RezeptBO(
+            rezept.rezeptName,
+            rezept.anzahlPortionen,
+            rezept.rezeptAdmin,
+            rezept.wgId,
+            rezept.rezeptAnleitung
+        )
+        newRecipe.setID(rezept.id);
+        newRecipe.setWgId(rezept.wgId);
+        await EatSmarterAPI.getAPI().updateRezept(newRecipe);
     }
 
     const handleChangeInstruction = (e) => {
@@ -359,20 +367,23 @@ function GenauEinRezeptAnzeigen(props) {
     }
 
     const toggleEditMode = () => {
-         if (isEditing) {
+         if (isEditing, isAdmin) {
             handleChangeInstructions();
+            setIsEditing(!isEditing);
         }
-        setIsEditing(!isEditing);
+        else {
+            setShowAdmiEditTextPopupOpen(true);
+        }
     }
 
-    /* Darstellung der Komponente */
+    /* -------- Darstellung der Komponente ink. Editiermouds, Popups etc. --------  */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}/><br/><br/>
             <div className='container'>
                 {rezept && ( // Nur anzeigen, wenn das Rezept geladen wurde
                     <div className='inner-container'>
-                        <h2>Dein Rezept</h2>
+                        <h2>Rezept</h2>
                         <div className="mini-container">
                             <p className="blue-mini-container"> {rezept.rezeptName}</p>
                             <div className="in-a-row">
@@ -414,6 +425,7 @@ function GenauEinRezeptAnzeigen(props) {
                                 </tr>
                             </thead>
                             <tbody>
+                            {/* Editiermodus für die Lebensmittel */}
                                 {rezeptLebensmittel.map((lebensmittel, index) => (
                                     <tr key={index}>
                                         {editMode === lebensmittel.id ? (
@@ -477,6 +489,7 @@ function GenauEinRezeptAnzeigen(props) {
                         <button type="button" onClick={handleJetztKochen}>Jetzt kochen</button>
                     </div>)}
                 <br></br>
+                {/* Lebensmittel hinzufügen Formular */}
                 <div className="inner-container">
                     <div className='formitem'>
                         <h2>Lebensmittel hinzufügen</h2>
@@ -533,12 +546,15 @@ function GenauEinRezeptAnzeigen(props) {
                         Rezept löschen
                     </button>
                 </div>
+                {/* Popups für die Einkaufsliste und das Hinzufügen einer eigenen Maßeinheit sowie Admin Popups */}
                 {isPopupOpen && (
                     <div className="popup">
                         <div className="inner-popup">
                             {shoppingListElem.length === 0 ? (
-                                <h3 className="h2-black">
-                                    Kochen war erfolgreich!</h3>
+                                 <>
+                                    <h3 className="h2-black">Kochen war erfolgreich!</h3>
+                                    <p>Die Lebensmittel wurden vom Bestand im Kühlschrank abgezogen.</p>
+                                </>
                             ) : (
                                 <>
                                     <h3 className="h2-black">Fehlende Lebensmittel</h3>
@@ -596,7 +612,61 @@ function GenauEinRezeptAnzeigen(props) {
                         <button type="button" onClick={handleSaveCustomMasseinheit}>Speichern</button>
                     </div>
                 </div>
-            )}
+                )}
+                {ShowAdminAddLebensmittelPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Rechte</h3>
+                            <p>Nur der Ersteller kann ein Lebensmittel hinzufügen.</p>
+                            <button type="button" onClick={() => setShowAdminAddLebensmittelPopupOpen(false)}>Schließen</button>
+                        </div>
+                    </div>
+                )}
+                {ShowAdminDeleteLebensmittelPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Rechte</h3>
+                            <p>Nur der Ersteller kann Lebensmittel löschen.</p>
+                            <button type="button" onClick={() => setShowAdminDeleteLebensmittelPopupOpen(false)}>Schließen</button>
+                        </div>
+                    </div>
+                )}
+                {ShowAdminDeleteRezeptPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Rechte</h3>
+                            <p>Nur der Ersteller kann ein Rezept löschen.</p>
+                            <button type="button" onClick={() => setShowAdminDeleteRezeptPopupOpen(false)}>Schließen</button>
+                        </div>
+                    </div>
+                )}
+                {ShowAdmiEditTextPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Rechte</h3>
+                            <p>Nur der Ersteller kann die Kochanleitung bearbeiten.</p>
+                            <button type="button" onClick={() => setShowAdmiEditTextPopupOpen(false)}>Schließen</button>
+                        </div>
+                    </div>
+                )}
+                {ShowAdminEditLebensmittelPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlende Rechte</h3>
+                            <p>Nur der Ersteller kann Lebensmittel bearbeiten.</p>
+                            <button type="button" onClick={() => setShowAdminEditLebensmittelPopupOpen(false)}>Schließen</button>
+                        </div>
+                    </div>
+                )}
+                {fehlendesFeldPopupOpen && (
+                    <div className="popup">
+                        <div className="inner-popup">
+                            <h3 className="h2-black">Fehlendes Feld</h3>
+                            <p>Bitte füllen Sie alle Felder aus.</p>
+                            <button type="button" onClick={() => setFehlendesFeldPopupOpen(false)}>Schließen</button>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     }

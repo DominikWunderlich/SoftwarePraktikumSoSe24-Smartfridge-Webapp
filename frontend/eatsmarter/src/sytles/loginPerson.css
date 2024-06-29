@@ -14,3 +14,11 @@
     cursor: pointer;
     color: #54545a;
   }
+
+  .input-nutzername .info-icon-white {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: white;
+    margin-bottom: 5px;
+  }
