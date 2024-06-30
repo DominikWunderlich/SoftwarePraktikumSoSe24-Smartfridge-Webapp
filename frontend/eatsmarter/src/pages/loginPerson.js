@@ -81,7 +81,7 @@ function LoginPerson(props) {
         setPopUpOpen(false);
     }
 
-
+    /* -------- Darstellung der Komponente -------- */
     return (
         <div>
             <NavBarRegisterWg currentUser={props.user} onSignOut={props.onSignOut}/> <br/> <br/>

@@ -3,7 +3,6 @@ import '../sytles/WG-Landingpage.css';
 import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import NavBar from "../components/NavBar";
-import {func} from "prop-types";
 import InfoIcon from '@mui/icons-material/Info';
 
 
@@ -15,7 +14,7 @@ function Generator(props) {
     const [PopUpOpen, setPopUpOpen] = useState(false);
 
 
-
+    /* -------- Funktionen zum Laden des Kuehlschrankinhaltes sowie Anzeigen der Rezepte -------- */
     async function renderCurrentKuehlschrank() {
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
             .then(response => {
@@ -58,7 +57,7 @@ function Generator(props) {
         setPopUpOpen(false);
     }
 
-
+    /* -------- Darstellung der Komponente -------- */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
@@ -87,6 +86,7 @@ function Generator(props) {
                     <br></br>
                     <button onClick={showRezepte} className="button-uebersicht" type="button">Generator starten</button>
                 </div>
+            {/* Popup für den Fall, dass keine Rezepte gefunden wurden, sowie Info Popup */}
             {showPopup && (
                 <div className="popup">
                     <div className="inner-popup">

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import EatSmarterAPI from "../api/EatSmarterAPI";
-import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
+
 function Homepage(props) {
-    const { wgName } = useParams(); 
     const [wg, setWg] = useState(null)
     const [wgData, setWgData] = useState(null);
     const [wgAdmin, setWgAdmin] = useState([]);
     const [error, setError] = useState(null);
     const [personList, setPersonList] = useState([])
 
+    /* -------- Funktionen zum Laden der Wg sowie der Bewohner und Admin der Wg -------- */
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
             .then(response => {
@@ -48,25 +48,7 @@ function Homepage(props) {
         renderWgAdmin();
     }, []);
 
-    const getWGbyName = async () => {
-        try {
-            const wg = await EatSmarterAPI.getAPI().getWGbyName(wgName);
-            setWgData(wg);
-        } catch (e) {
-            setError(e);
-        }
-    };
-
-    useEffect(() => {
-        getWGbyName();
-    }, [wgName]);
-
-
-    if (error) {
-        return <div className='container'>Error loading data: {error.message}</div>;
-    }
-
-
+    /* -------- Darstellung der Komponente -------- */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>

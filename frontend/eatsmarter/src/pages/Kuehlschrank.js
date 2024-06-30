@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import AddBox from "@mui/icons-material/AddBox";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
+
 function Kuehlschrankinhalt(props) {
 
     // fürs Lebensmittelobjekt
@@ -45,7 +46,7 @@ function Kuehlschrankinhalt(props) {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [fehlendesFeldPopupOpen, setFehlendesFeldPopupOpen] = useState(false);
     
-    /* Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste */
+    /* -------- Funktionen für die Formularverarbeitung und aktualisieren der Lebensmittel/Maßeinheitenliste -------- */
     const handleChange = (event) => {
         setFormData({
             ...formData,
@@ -88,7 +89,7 @@ function Kuehlschrankinhalt(props) {
         }
     };
 
-    /* Funktionen für Daten die, geladen werden müssen */
+    /* -------- Funktionen für Daten die, geladen werden müssen -------- */
     async function fetchLebensmittel() {
         try {
             if (wgId !== null) {
@@ -115,7 +116,7 @@ function Kuehlschrankinhalt(props) {
         fetchMasseinheiten();
     }, [wgId]);
 
-   /* Funktionen für das Laden der aktuellen WG des Benutzers */
+   /* -------- Funktionen für das Laden der aktuellen WG des Benutzers -------- */
    async function renderCurrentUsersWg() {
         try {
             const response = await EatSmarterAPI.getAPI().getWgByUser(props.user.email);
@@ -136,7 +137,7 @@ function Kuehlschrankinhalt(props) {
         fetchData();
     }, []);
 
-    /* Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe */
+    /* -------- Funktionen für das Bearbeiten und Speichern Lebensmittel/Maßeinheit/Mengenangabe -------- */
     const handleEditChange = (event) => {
         setEditFormData({
             ...editFormData,
@@ -183,7 +184,7 @@ function Kuehlschrankinhalt(props) {
         }
     };
 
-    /* Funktionen für das Hinzufügen einer eigenen Maßeinheit */
+    /* -------- Funktionen für das Hinzufügen einer eigenen Maßeinheit -------- */
     const addMasseinheit = async (masseinheitBO) => {
         try {
             console.log("neue Maßeinheit: ", masseinheitBO);
@@ -205,14 +206,6 @@ function Kuehlschrankinhalt(props) {
             ...customMasseinheitData,
             [name]: value
         });
-    };
-
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-    };
-
-    const handleCloseMiniPopup = () => {
-        setFehlendesFeldPopupOpen(false);
     };
 
     const handleSaveCustomMasseinheit = async () => {
@@ -246,7 +239,16 @@ function Kuehlschrankinhalt(props) {
         }
     };
 
-    /* Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel */
+    /* -------- Funktionen zum Schließen der Popups -------- */
+    const handleClosePopup = () => {
+        setIsPopupOpen(false);
+    };
+
+    const handleCloseMiniPopup = () => {
+        setFehlendesFeldPopupOpen(false);
+    };
+
+    /* -------- Funktionen zum Löschen des Rezepts und enthaltender Lebensmittel -------- */
     async function deleteLebensmittel (lebensmittelId){
         try {
             await EatSmarterAPI.getAPI().deleteFoodFromFridge(wgId, lebensmittelId);
@@ -256,7 +258,7 @@ function Kuehlschrankinhalt(props) {
         }
     }
 
-     /* Darstellung der Komponente */
+     /* -------- Darstellung der Komponente -------- */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
@@ -388,6 +390,7 @@ function Kuehlschrankinhalt(props) {
                     </div>
                 </div>
             </div>
+            {/* Popups für das Hinzufügen einer eigenen Maßeinheit sowie Wahrnung für unvollständige Angaben */}
             {isPopupOpen && (
                 <div className="popup">
                     <div className="inner-popup">

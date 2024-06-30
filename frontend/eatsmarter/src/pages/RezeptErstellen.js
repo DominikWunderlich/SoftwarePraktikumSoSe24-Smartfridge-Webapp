@@ -5,6 +5,7 @@ import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import NavBar from "../components/NavBar";
 
+
 function RezeptErstellen(props){
 
     const [formData, setFormData] = useState({
@@ -64,7 +65,7 @@ function RezeptErstellen(props){
         }
     };
 
-
+    /* -------- Darstellung der Komponente -------- */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>

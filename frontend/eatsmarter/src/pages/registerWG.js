@@ -5,8 +5,6 @@ import '../sytles/WG-Landingpage.css';
 import {useNavigate} from "react-router-dom";
 import NavBarRegisterWg from "../components/NavBarRegisterWg";
 import TrimAndLowerCase from "../functions";
-import Homepage from "./Homepage";
-
 
 
 function WGLandingpage(props) {
@@ -18,6 +16,7 @@ function WGLandingpage(props) {
     const [errors, setErrors] = useState({});
     const navigate = useNavigate()
 
+    /* -------- Funktionen zum Handeln der Accountdaten -------- */
     const handleChange = (event) => {
         if (event.target.name === 'isAccepted') {
             setFormData({...formData, [event.target.name]: event.target.checked});
@@ -53,8 +52,7 @@ function WGLandingpage(props) {
             })
     }, [])
 
-
-    
+    /* -------- Darstellung der Komponente -------- */
     return (
         <div>
             <NavBarRegisterWg currentUser={props.user} onSignOut={props.onSignOut}/> <br/> <br/>

@@ -19,6 +19,7 @@ function Profil(props){
     const [editFormData, setEditFormData] = useState({});
     const navigate = useNavigate();
 
+    /* -------- Funktionen zum Laden des Profils sowie Anzeigen der Profildaten -------- */
     const renderProfile = async () => {
         await EatSmarterAPI.getAPI().checkUserByGID(googleId)
             .then(response => {
@@ -40,6 +41,7 @@ function Profil(props){
             });
     }
 
+    /* -------- Funktionen zum Ändern der Accountdaten -------- */
     const handleEditChange = (event) => {
         setEditFormData({
             ...editFormData,
@@ -80,6 +82,7 @@ function Profil(props){
        renderCurrentUsersWg();
    }, []);
 
+   /* -------- Funktion zum Löschen des Accounts -------- */
     const deletePerson = () => {
         const newPerson = new PersonBO(
             props.user.email,
@@ -89,11 +92,12 @@ function Profil(props){
             props.user.uid,
             profil.wgId
         )
-        alert("Account gelöscht!")
+        alert("Account erfolgreich gelöscht!")
         EatSmarterAPI.getAPI().deletePerson(newPerson);
         navigate("/login");
     }
 
+    /* -------- Darstellung der Komponente -------- */
     return(
         <div>
             <div>

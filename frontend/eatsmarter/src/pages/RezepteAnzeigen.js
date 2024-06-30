@@ -1,15 +1,16 @@
 import React, {useState, useEffect} from "react";
-import RezeptBO from "../api/RezeptBO";
 import {Link} from "react-router-dom";
 import EatSmarterAPI from "../api/EatSmarterAPI";
 import '../sytles/WG-Landingpage.css';
 import NavBar from "../components/NavBar";
+
 
 function RezepteAnzeigen(props) {
     const [rezepte, setRezepte] = useState([]);
     const emailDerEingeloggtenPerson = props.user.email;
     const [wgId, setWgId] = useState("");
 
+    /* -------- Funktion zum Laden der Rezepte -------- */
     useEffect(() => {
         const fetchRezepte = async () => {
             try {
@@ -29,12 +30,13 @@ function RezepteAnzeigen(props) {
         fetchRezepte();
     }, [props.user.email]);  // Abhängigkeit hinzufügen, um den Effekt bei Änderung der E-Mail-Adresse des Benutzers auszulösen
 
+    /* -------- Darstellung der Komponente -------- */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
             <div className='container'>
-            <div className='inner-container'>
-            <h2>Alle Rezepte der WG</h2>
+                <div className='inner-container'>
+                <h2>Alle Rezepte der WG</h2>
                 {rezepte.map((rezept, index) => (
                     <div key={index}>
                         <Link className="links" to={`/genaueinrezeptAnzeigen/${rezept.id}`}>
