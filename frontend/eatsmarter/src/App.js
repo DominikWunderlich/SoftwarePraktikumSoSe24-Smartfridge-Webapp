@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import {BrowserRouter as Router, Routes, Route, Navigate, useNavigate} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, Navigate} from "react-router-dom";
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import firebaseConfig from "./firebaseconfig";
@@ -8,9 +8,7 @@ import SignIn from "./components/SignIn";
 import RegisterWG from "./pages/registerWG";
 import Homepage from "./pages/Homepage";
 import LoginPerson from "./pages/loginPerson";
-import Lebensmittelverwaltung from "./pages/Lebensmittel-Verwaltung";
 import RezeptErstellen from "./pages/RezeptErstellen";
-import NavBar from "./components/NavBar";
 import RezeptAnzeigen from "./pages/RezepteAnzeigen";
 import WGPage from "./pages/WGPage";
 import Kuehlschrank from './pages/Kuehlschrank';
