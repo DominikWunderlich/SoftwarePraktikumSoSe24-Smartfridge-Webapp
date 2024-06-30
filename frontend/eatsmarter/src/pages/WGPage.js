@@ -21,6 +21,7 @@ function WGPage(props) {
     const [showUserAlreadyInWgPopup, setUserAlreadyInWgPopup] = useState(false);
     const [showNoValidEmailPopup, setShowNoValidEmailPopup] = useState(false);
 
+    /* -------- Funktionen zum Abrufen der Daten aus der Datenbank -------- */
     async function renderCurrentUsersWg(){
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
             .then(response => {
@@ -56,7 +57,7 @@ function WGPage(props) {
         renderCurrentUsersWg();
         renderPersonList();
         renderWgAdmin();
-}, []);
+    }, []);
 
     // Funktion zum Überprüfen der E-Mail-Validität
     const isValidEmail = (email) => {
@@ -64,9 +65,7 @@ function WGPage(props) {
         return emailRegex.test(email);
     };
 
-      /**
-     * Handler-Function, um als Admin Mitglieder zur WG hinzuzufügen
-     */
+      /* -------- Handler-Function, um als Admin Mitglieder zur WG hinzuzufügen -------- */
     const handleAddMember = async() => {
 
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email)
@@ -101,13 +100,10 @@ function WGPage(props) {
 
     }
 
-      /**
-     * Handler-Function, um als Admin Mitglieder aus der Wg zu entfernen
-     */
-    const handleDeleteMember = async(event) => {
+      /* -------- Handler-Function, um als Admin Mitglieder aus der Wg zu entfernen -------- */
+    const handleDeleteMember = async(personId) => {
 
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email)
-        let personId = event.target.value
 
         if (isAdmin){
             await EatSmarterAPI.getAPI().deletePersonFromWg(wg.id, personId)
@@ -121,9 +117,7 @@ function WGPage(props) {
 
     }
 
-    /**
-     * Handler-Function, um die Wg als Admin zu löschen
-     */
+    /* -------- Handler-Function, um die Wg als Admin zu löschen -------- */
     const handleDeleteWG = async () => {
         const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
 
@@ -138,9 +132,7 @@ function WGPage(props) {
         }
     }
 
-    /**
-     * Diese Funktion ermöglicht es die Popups auf Buttonclick wieder zu schließen.
-     */
+    /* -------- Diese Funktion ermöglicht es die Popups auf Buttonclick wieder zu schließen. -------- */
     function closePopup() {
         setShowAdminAddPopup(false);
         setShowAdminDeleteWgPopup(false);
@@ -150,6 +142,7 @@ function WGPage(props) {
         setUserAlreadyInWgPopup(false);
     }
 
+    /* -------- Darstellung der Komponente -------- */
     return (
         <div>
             <NavBar currentUser={props.user} onSignOut={props.onSignOut}></NavBar> <br></br> <br></br>
@@ -178,7 +171,7 @@ function WGPage(props) {
                                         <td>{person.firstName}</td>
                                         <td>{person.email}</td>
                                         <td>
-                                            <button value={person.id} onClick={handleDeleteMember}>-</button>
+                                            <DeleteIcon onClick={() => handleDeleteMember(person.id)} aria-label="delete"/>
                                         </td>
                                     </tr>
                                 ))}
@@ -236,6 +229,7 @@ function WGPage(props) {
                 <br></br>
                 <button className="button-uebersicht" type="button" onClick={handleDeleteWG}>WG löschen</button>
             </div>
+            {/*Popup-Elemente*/}
             {showUserAlreadyInWgPopup && (
                 <div className="popup">
                     <div className="inner-popup">
