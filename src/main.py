@@ -13,12 +13,16 @@ from server.bo.Masseinheit import Masseinheit
 
 from server.SecurityDecorator import secured
 
+# Flask muss gezeigt werden, wo der static_folder liegt.
+# static_url_path legt die URL fest wo die der React files liegen.
+# (Build Ordner wird mit npm build erstellt, um frotnend Dateien
+# um die Dateien zu optimieren
 app = Flask(__name__, static_folder="build", static_url_path='/')
 
-# Auskommenteiert, swagger funktioniert wieder -> Benötigen wir das?
-# @app.route("/")
-# def index():
-#     return app.send_static_file("index.html")
+# Wenn die Route "/" aufgerufen wird, sendet der Server die Inhalte der index.html aus static
+@app.route("/")
+def index():
+    return app.send_static_file("index.html")
 #
 # @app.errorhandler(404)
 # def not_found(e):
