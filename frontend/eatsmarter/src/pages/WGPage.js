@@ -9,11 +9,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 function WGPage(props) {
     const currentUser = props.user.email;
-    const [wg, setWg] = useState(null)
+    const [wg, setWg] = useState(null);
     const [addNewMemberEmail, setAddNewMemberEmail] = useState("");
-    const [personList, setPersonList] = useState([])
-    const navigate = useNavigate()
-    const [wgAdmin, setWgAdmin] = useState([])
+    const [personList, setPersonList] = useState([]);
+    const navigate = useNavigate();
+    const [wgAdmin, setWgAdmin] = useState([]);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [showAdminAddPopup, setShowAdminAddPopup] = useState(false);
     const [showAdminDeletePopup, setShowAdminDeletePopup] = useState(false);
     const [showAdminDeleteWgPopup, setShowAdminDeleteWgPopup] = useState(false);
@@ -30,7 +31,6 @@ function WGPage(props) {
             .catch(error => {
                 console.error(error);
             });
-
     }
 
     async function renderPersonList(){
@@ -53,10 +53,18 @@ function WGPage(props) {
             });
     }
 
+    const fetchAdmin = async () => {
+        const admin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email);
+        if (admin) {
+            setIsAdmin(true)
+        }
+    }
+
     useEffect(() => {
         renderCurrentUsersWg();
         renderPersonList();
         renderWgAdmin();
+        fetchAdmin();
     }, []);
 
     // Funktion zum Überprüfen der E-Mail-Validität
@@ -67,9 +75,6 @@ function WGPage(props) {
 
       /* -------- Handler-Function, um als Admin Mitglieder zur WG hinzuzufügen -------- */
     const handleAddMember = async() => {
-
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email)
-
         if (isAdmin) {
             if (!isValidEmail(addNewMemberEmail)) {
                 setShowNoValidEmailPopup(true);
@@ -80,9 +85,6 @@ function WGPage(props) {
                     setNotExistUserPopup(true);
                 } else {
                     const userObject = userExist[0];
-                    console.log("userExists", userExist)
-                    console.log("userObject", userObject)
-                    console.log("userExist.wgId:", userObject.wgId); // Debugging
                     if (userObject.wgId) {
                         setUserAlreadyInWgPopup(true);
                     } else {
@@ -102,9 +104,6 @@ function WGPage(props) {
 
       /* -------- Handler-Function, um als Admin Mitglieder aus der Wg zu entfernen -------- */
     const handleDeleteMember = async(personId) => {
-
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(props.user.email)
-
         if (isAdmin){
             await EatSmarterAPI.getAPI().deletePersonFromWg(wg.id, personId)
             renderCurrentUsersWg();
@@ -114,18 +113,15 @@ function WGPage(props) {
         else{
             setShowAdminDeletePopup(true);
         }
-
     }
 
     /* -------- Handler-Function, um die Wg als Admin zu löschen -------- */
     const handleDeleteWG = async () => {
-        const isAdmin = await EatSmarterAPI.getAPI().checkIfUserIsWgAdmin(currentUser);
-
         if(isAdmin){
             await EatSmarterAPI.getAPI().deleteWg(currentUser)
                 .then(() => {
                     navigate("/registerWg");
-                })
+                });
         }
         else{
             setShowAdminDeleteWgPopup(true);

@@ -533,9 +533,14 @@ export default class EatSmarterAPI{
     #deleteWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
     #getWgbyURL = (wgName) => `${this.#EatSmarterServerBaseURL}/wg/${wgName}`;
     #getWgByUserURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/${email}`;
-    #getPersonByWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wg_bewohner/${email}`
-    #getWgAdminByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wgadmin/${email}`
+    #getPersonByWgURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wg_bewohner/${email}`;
+    #getWgAdminByEmailURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/wgadmin/${email}`;
+    #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgadmin/${email}`;
 
+       /**
+     * API-Aufruf um eine Wg zu erstellen
+     * @param wgBO = Das im Frontend erstellte Wg BusinessObject.
+     */
      addWg(wgBO){
         return this.#fetchAdvanced(this.#addWgURL(), {
             method: "POST",
@@ -552,6 +557,10 @@ export default class EatSmarterAPI{
         })
     }
 
+       /**
+     * API-Aufruf um eine Wg anhand des WgNames zu finden
+     * @param wgName = Das ist der Name der Wg
+     */
     getWGbyName(wgName) {
         return this.#fetchAdvanced(this.#getWgbyURL(wgName), {
             method: "GET",
@@ -567,6 +576,10 @@ export default class EatSmarterAPI{
         });
     }
 
+    /**
+     * API-Aufruf, um alle Bewohner der Wg anhand der E-Mail des eingeloggten Users zu finden
+     * @param email = E-Mail des eingeloggten Users
+     */
     getPersonByWg(email) {
         return this.#fetchAdvanced(this.#getPersonByWgURL(email), {
             method: "GET",
@@ -582,6 +595,10 @@ export default class EatSmarterAPI{
         });
     }
 
+    /**
+     * API-Aufruf um eine Wg anhand des eingeloggten Users zu finden
+     * @param email = E-Mail des eingeloggten Users
+     */
     getWgByUser(email){
         return this.#fetchAdvanced(this.#getWgByUserURL(email), {
             method: "GET",
@@ -597,6 +614,10 @@ export default class EatSmarterAPI{
         });
     }
 
+    /**
+     * API-Aufruf, um die Wg zu löschen
+     * @param email = E-Mail des eingeloggten Users
+     */
     deleteWg(email){
         return this.#fetchAdvanced(this.#deleteWgURL(email),{
             method: "DELETE",
@@ -612,6 +633,10 @@ export default class EatSmarterAPI{
         })
     }
 
+    /**
+     * API-Aufruf, um das PersonBo des WgAdmins abzurufen
+     * @param email = E-Mail des eingeloggten Users
+     */
     getWgAdminByEmail(email){
         return this.#fetchAdvanced(this.#getWgAdminByEmailURL(email), {
             method: "GET",
@@ -628,9 +653,10 @@ export default class EatSmarterAPI{
 
     }
 
-    // Wg-attribute related
-    #getWgAdminURL = (email) => `${this.#EatSmarterServerBaseURL}/wg/user/wgadmin/${email}`;
-
+    /**
+     * API-Aufruf, um zu prüfen, ob der eingeloggte Nutzer, der WgAdmin ist
+     * @param currentUser = E-Mail des eingeloggten Users
+     */
     checkIfUserIsWgAdmin(currentUser){
          return this.#fetchAdvanced(this.#getWgAdminURL(currentUser), {
              method: "GET",
@@ -646,7 +672,6 @@ export default class EatSmarterAPI{
                  return false;
              }
         });
-
     }
 
 

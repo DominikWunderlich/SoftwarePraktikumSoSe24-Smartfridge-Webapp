@@ -45,6 +45,7 @@ class Administration(object):
             return mapper.find_by_key(key)
 
     def check_if_current_user_is_wg_admin(self, email, wg_id):
+        """ Prüfen, ob die eingeloggte email, der wg_admin der Wg ist"""
         with WGMapper() as mapper:
             is_admin = mapper.check_if_current_user_is_wg_admin_using_email_and_wg_id(email, wg_id)
 
@@ -55,16 +56,18 @@ class Administration(object):
                 return False
 
     def get_wg_id_by_email(self, email):
+        """Auslesen der wg_id anhand der email"""
         with PersonMapper() as mapper:
             wg_id = mapper.find_wg_id_by_email(email)
             return wg_id
 
     def get_wg_by_wg_id(self, wg_id):
+        """"Auslesen der Wg anhand der wg_id"""
         with WGMapper() as mapper:
             return mapper.find_wg_by_wg_id(wg_id)
 
-    """ Diese Methode löscht die wg und den kuehlschrank"""
     def delete_wg(self, wg_id):
+        """ Diese Methode löscht die Wg und alle Beziehungen  anhnand der wg_id"""
         with PersonMapper() as mapper:
             mapper.delete_all_wg_id_person(wg_id)
 
@@ -85,14 +88,15 @@ class Administration(object):
             mapper.delete(wg_id)
 
         with WGMapper() as mapper:
-            mapper.delete_wg(wg_id)
+            mapper.delete(wg_id)
 
     def get_wg_admin(self, wg_id):
+        """ Diese Methode gibt den wg_admin als PersonBo aus"""
         with WGMapper() as mapper:
             wg_admin = mapper.find_wg_admin_by_email(wg_id)
 
         with PersonMapper() as mapper:
-            person = mapper.find_by_email(wg_admin[0].get_wg_ersteller())
+            person = mapper.find_by_email(wg_admin)
             return person
 
     """ User Methoden """
