@@ -20,6 +20,7 @@ import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 
 function GenauEinRezeptAnzeigen(props) {
 
+    // Initialisiert den Zustand für das Formular zum Hinzufügen von Lebensmitteln
     const [formData, setFormData] = useState({
         lebensmittelname: "",
         mengenanzahl: "",
@@ -71,6 +72,7 @@ function GenauEinRezeptAnzeigen(props) {
         }
     }
 
+    // Funktion zum Aktualisieren des Formularzustands bei Änderungen
     const handleChange = (event) => {
         const {name, value} = event.target;
         setFormData({
@@ -85,6 +87,7 @@ function GenauEinRezeptAnzeigen(props) {
         }
     };
 
+    // Funktion zum Hinzufügen eines neuen Lebensmittels
     const handleSubmit = async (event) => {
         if (isAdmin) {
             event.preventDefault();

@@ -16,6 +16,7 @@ import GenauEinRezeptAnzeigen from "./pages/GenauEinRezeptAnzeigen";
 import Generator from "./pages/Generator";
 import EatSmarterAPI from "./api/EatSmarterAPI";
 import Profil from "./pages/Profil";
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 function App(props) {
@@ -28,6 +29,7 @@ function App(props) {
         authLoading: false,
     })
 	const [isRegistered, setIsRegistered] = useState(null);
+	const [isInWG, setIsInWG] = useState(null);
 	const [loading, setLoading] = useState(true); // New state for loading
 
 
@@ -67,8 +69,8 @@ function App(props) {
 	}
 
 
-/** Handler-Funktion, die beim Klicken auf den "Abmelden"-Button aufgerufen wird */
-  	 const handleSignOut = (setState, state) => {
+	/** Handler-Funktion, die beim Klicken auf den "Abmelden"-Button aufgerufen wird */
+  	 const handleSignOut = () => {
 		/** Firebase-App initialisieren und Authentifizierungs-Objekt erstellen */
 		const app = initializeApp(firebaseConfig);
 		const auth = getAuth(app);
@@ -82,7 +84,6 @@ function App(props) {
 			  console.log(error);
 			});
 	  }
-
 
     useEffect(() => {
         // This is equivalent to componentDidMount in class components. Code in this block will run after
@@ -134,46 +135,58 @@ function App(props) {
 		});
     }, []); //Empty dependency array to only run once. Equivalent to componentDidMount
 
-  useEffect(() => {
-    const checkRegistration = async () => {
-      if (state.currentUser) {
-        const usersList = await EatSmarterAPI.getAPI().checkUserByGID(state.currentUser.uid);
-		const user = usersList[0]
-        if (user && user.lastName) {
-          setIsRegistered(true);
-        } else {
-          setIsRegistered(false);
-        }
-      }
-    };
-
-    checkRegistration();
-  } );
+	/** useEffect-Hook, der beim Laden der App ausgeführt wird und überprüft, ob der User bereits registriert ist und in einer WG ist. */
+	useEffect(() => {
+		const checkRegistration = async () => {
+		if (state.currentUser) {
+			const usersList = await EatSmarterAPI.getAPI().checkUserByGID(state.currentUser.uid);
+			const user = usersList[0]
+			if (user && user.lastName) {
+				setIsRegistered(true);
+				const wg = await EatSmarterAPI.getAPI().getWgByUser(state.currentUser.email);
+				if (wg) {
+					setIsInWG(true);
+				} else {
+					setIsInWG(false);
+				}
+			} else {
+			setIsRegistered(false);
+			}
+		}
+		};
+		checkRegistration();
+	}, [state.currentUser]);
 
    if (loading) {
-        return <div>Loading...</div>; // You can replace this with a loading spinner or other indicator
+        return <div><LinearProgress/></div>; // Laden der App
     }
 
+	/* Laden der App */
     return (
       <div className="App">
         {state.currentUser ? (
               <div className="content">
 				  <Router>
 					  <Routes>
-						  <Route path="/" element={
-							  isRegistered ? <Navigate to={"/registerWg"} /> : <Navigate to="/login" />
-						  } />
-						  <Route path="/" element={<Navigate to="/login"/>}/>
-						  <Route path="/login" element={<LoginPerson user={state.currentUser} onSignOut={handleSignOut}/>}/>
-						  <Route path="/registerWg" element={<RegisterWG user={state.currentUser} onSignOut={handleSignOut}/>}/>
-						  <Route path="/wg" element={<WGPage user={state.currentUser} onSignOut={handleSignOut}/>}/>
-						  <Route path="/homepage" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
-						  <Route path="/kuehlschrankinhalt/:wg_id" element={<Kuehlschrank user={state.currentUser} onSignOut={handleSignOut}/>}/>
-						  <Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser} onSignOut={handleSignOut}/>}/>
-                          <Route path="/rezeptAnzeigen" element={<RezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut}/>} />
-						  <Route path="/genaueinrezeptAnzeigen/:rezeptId" element={<GenauEinRezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut} />} />
-						  <Route path="/generator" element={<Generator user={state.currentUser} onSignOut={handleSignOut} />} />
-						  <Route path="/profil" element={<Profil user={state.currentUser} onSignOut={handleSignOut}/>}></Route>
+							{/* Wenn der User angemeldet ist, wird überprüft ob dieser bereits registriert ist und in einer WG ist. */}
+					  		<Route path="/" element={
+								isRegistered === null ? <Navigate to="/login" />:
+								!isRegistered ? <Navigate to="/registerWg" /> :
+								!isInWG ? <Navigate to="/registerWg" /> :
+								<Navigate to="/homepage" />
+							} />
+							{/* Weitere Routen wenn der User angemeledet ist. */}
+							<Route path="/" element={<Navigate to="/login"/>}/>
+							<Route path="/login" element={<LoginPerson user={state.currentUser} onSignOut={handleSignOut}/>}/>
+							<Route path="/registerWg" element={<RegisterWG user={state.currentUser} onSignOut={handleSignOut}/>}/>
+							<Route path="/wg" element={<WGPage user={state.currentUser} onSignOut={handleSignOut}/>}/>
+							<Route path="/homepage" element={<Homepage user={state.currentUser} onSignOut={handleSignOut}/>}/>
+							<Route path="/kuehlschrankinhalt/:wg_id" element={<Kuehlschrank user={state.currentUser} onSignOut={handleSignOut}/>}/>
+							<Route path="/rezeptErstellen" element={<RezeptErstellen user={state.currentUser} onSignOut={handleSignOut}/>}/>
+							<Route path="/rezeptAnzeigen" element={<RezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut}/>} />
+							<Route path="/genaueinrezeptAnzeigen/:rezeptId" element={<GenauEinRezeptAnzeigen user={state.currentUser} onSignOut={handleSignOut} />} />
+							<Route path="/generator" element={<Generator user={state.currentUser} onSignOut={handleSignOut} />} />
+							<Route path="/profil" element={<Profil user={state.currentUser} onSignOut={handleSignOut}/>}></Route>
 					  </Routes>
 				  </Router>
 			  </div>

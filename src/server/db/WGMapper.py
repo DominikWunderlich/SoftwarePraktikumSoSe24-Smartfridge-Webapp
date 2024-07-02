@@ -6,6 +6,7 @@ class WGMapper(mapper):
         super().__init__()
 
     def find_all(self):
+        """ Auslesen aller Wgs"""
         result = []
         cursor = self._connector.cursor()
         cursor.execute("SELECT wg_id, wg_name, wg_ersteller FROM datenbank.wg")
@@ -24,6 +25,7 @@ class WGMapper(mapper):
         return result
 
     def find_by_key(self, key):
+        """Auslesen der Wg anhand des WgNamens"""
         result =[]
 
         cursor = self._connector.cursor()
@@ -43,8 +45,9 @@ class WGMapper(mapper):
 
         return result
 
-    """ Die wg wird anhand der email Adresse des wg_bewohners oder wg_erstellers ausgegeben"""
+
     def find_by_email(self, email):
+        """Auslesen der Wg anhand des wg_erstellers"""
         result = []
 
         cursor = self._connector.cursor()
@@ -66,6 +69,7 @@ class WGMapper(mapper):
         return result
 
     def insert(self, wg):
+        """Erstellen einer Wg"""
         cursor = self._connector.cursor()
         cursor.execute("SELECT MAX(wg_id) AS maxid FROM datenbank.wg")
         tuples = cursor.fetchall()
@@ -86,28 +90,8 @@ class WGMapper(mapper):
 
         return wg
 
-    """ Diese Methode wird nicht mehr verwendet Stand 05.06.24"""
-    def update(self, wg):
-        cursor = self._connector.cursor()
-
-        command = "UPDATE datenbank.wg SET wg_id=%s, wg_name=%s, wg_ersteller=%s WHERE wg_id=%s"
-        data = (wg.get_id(), wg.get_wg_name(), wg.get_wg_ersteller(), wg.get_id())
-
-        cursor.execute(command, data)
-        self._connector.commit()
-        cursor.close()
-
-    def delete(self, key):
-        cursor = self._connector.cursor()
-
-        command = f"DELETE FROM datenbank.wg WHERE wg_name='{key}'"
-        cursor.execute(command)
-
-        self._connector.commit()
-        cursor.close()
-
-
-    def delete_wg(self, wg_id):
+    def delete(self, wg_id):
+        """Löschen einer Wg anhand der wg_id"""
         cursor = self._connector.cursor()
         data = wg_id
 
@@ -118,25 +102,22 @@ class WGMapper(mapper):
         cursor.close()
 
     def find_wg_admin_by_email(self, wg_id):
-        result = []
+        """ Auslesen des wg_erstellers anhand der wg_id"""
         cursor = self._connector.cursor()
-        command = f"SELECT * FROM datenbank.wg WHERE wg_id = '{wg_id}'"
+        command = f"SELECT wg_ersteller FROM datenbank.wg WHERE wg_id = '{wg_id}'"
         cursor.execute(command)
-        tuples = cursor.fetchall()
-
-        for (wg_id, wg_name, wg_ersteller) in tuples:
-            wg = WG()
-            wg.set_id(wg_id)
-            wg.set_wg_name(wg_name)
-            wg.set_wg_ersteller(wg_ersteller)
-            result.append(wg)
+        result = cursor.fetchone()
 
         self._connector.commit()
         cursor.close()
-        return result
+
+        if result:
+            return result[0]
+        else:
+            None
 
     def check_if_current_user_is_wg_admin_using_email_and_wg_id(self, current_user, wg_id):
-
+        """ Prüfen, ob die eingeloggte email der Ersteller der wg ist anhand der wg_id"""
         cursor = self._connector.cursor()
         command = f"SELECT wg_id, wg_name, wg_ersteller FROM datenbank.wg WHERE wg_ersteller =%s AND wg_id =%s "
         data =(current_user, wg_id)
@@ -154,6 +135,7 @@ class WGMapper(mapper):
         return result
 
     def find_wg_by_wg_id(self, wg_id):
+        """Auslesen der Wg anhand der wg_id"""
         result = []
         cursor = self._connector.cursor()
         command = f"SELECT wg_id, wg_name, wg_ersteller  FROM datenbank.wg WHERE wg_id = '{wg_id}'"
@@ -171,5 +153,8 @@ class WGMapper(mapper):
         cursor.close()
 
         return result
+
+    def update(self, object):
+        pass
 
 
