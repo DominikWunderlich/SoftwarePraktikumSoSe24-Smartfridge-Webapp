@@ -20,6 +20,8 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 
 function App(props) {
+	/** Info: Most of this function has been used from the "Bankprojekt"  **/
+
     /** Constructor of the app, which initializes firebase, also settings an
      * inital empty state. */
     const [state, setState] = useState({
