@@ -16,6 +16,7 @@ import GenauEinRezeptAnzeigen from "./pages/GenauEinRezeptAnzeigen";
 import Generator from "./pages/Generator";
 import EatSmarterAPI from "./api/EatSmarterAPI";
 import Profil from "./pages/Profil";
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 function App(props) {
@@ -157,7 +158,7 @@ function App(props) {
 	}, [state.currentUser]);
 
    if (loading) {
-        return <div>Loading...</div>; // You can replace this with a loading spinner or other indicator
+        return <div><LinearProgress/></div>; // Laden der App
     }
 
 	/* Laden der App */
@@ -169,7 +170,7 @@ function App(props) {
 					  <Routes>
 							{/* Wenn der User angemeldet ist, wird überprüft ob dieser bereits registriert ist und in einer WG ist. */}
 					  		<Route path="/" element={
-								isRegistered === null ? <div>Checking registration...</div> :
+								isRegistered === null ? <Navigate to="/login" />:
 								!isRegistered ? <Navigate to="/registerWg" /> :
 								!isInWG ? <Navigate to="/registerWg" /> :
 								<Navigate to="/homepage" />
