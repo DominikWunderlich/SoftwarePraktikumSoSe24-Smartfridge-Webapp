@@ -42,7 +42,6 @@ function LoginPerson(props) {
             .then((UserInWg) => {
                 // Redirect user based on wether the user is in a wg or not.
                 if (UserInWg[0].wgId != null) {
-                    // TODO: Pfad von der Homepage umbenennen
                     navigate("/wg/:wgName");
                 } else {
                     navigate("/registerWg")
