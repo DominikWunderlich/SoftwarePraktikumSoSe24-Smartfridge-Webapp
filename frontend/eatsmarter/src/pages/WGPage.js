@@ -67,7 +67,8 @@ function WGPage(props) {
         fetchAdmin();
     }, []);
 
-    // Funktion zum Überprüfen der E-Mail-Validität
+    // Funktion zum Überprüfen der E-Mail-Validität 
+    //Quelle: https://stackoverflow.com/questions/76843321/prevent-repeating-character-using-regex-for-email/76843396#76843396
     const isValidEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
