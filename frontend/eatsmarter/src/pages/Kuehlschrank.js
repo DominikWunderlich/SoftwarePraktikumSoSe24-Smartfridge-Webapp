@@ -397,7 +397,7 @@ function Kuehlschrankinhalt(props) {
                         <button className="mini-button" onClick={handleClosePopup}>
                             <ArrowBackIosNewIcon/>
                         </button>
-                        <h3 className="h2-black">Lege eine neue Masseinheit an</h3>
+                        <h3 className="h2-black">Lege eine neue Maßeinheit an</h3>
                         <div className="blue-mini-container">
                             <div className="formitem">
                                 <label>Name der Maßeinheit</label>
