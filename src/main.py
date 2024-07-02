@@ -404,9 +404,6 @@ class RezeptOperations(Resource):
 @smartapi.param('rezept_id', 'ID des Rezepts')
 @smartapi.param('new_portionen', 'Neue Anzahl Portionen')
 class UpdateUndGetAnzahlPortionenInRezept(Resource):
-    """@smartapi.expect(smartapi.model('Portionen', {
-       'new_portionen': fields.Integer(required=True, description='Neue Anzahl der Portionen')
-    }))"""
     def post(self, rezept_id):
         print(api.payload) #hier ist nur die neue anzahl portionen drin
         new_portionen = api.payload
