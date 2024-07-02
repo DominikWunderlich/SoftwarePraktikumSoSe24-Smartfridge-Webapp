@@ -1,4 +1,5 @@
 import BusinessObject from "./BusinessObject";
+
 export default class LebensmittelBO extends BusinessObject{
     constructor(lebensmittelName, menge, masseinheit, kuehlschrankId, rezeptId) {
         super();
