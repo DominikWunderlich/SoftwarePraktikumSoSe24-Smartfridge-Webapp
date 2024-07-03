@@ -445,7 +445,7 @@ function GenauEinRezeptAnzeigen(props) {
                                                     <input
                                                         type="text"
                                                         name="lebensmittelName"
-                                                        value={editFormData.lebensmittelName}
+                                                        value={TrimAndLowerCase(editFormData.lebensmittelName)}
                                                         onChange={handleEditChange}
                                                     />
                                                 </td>

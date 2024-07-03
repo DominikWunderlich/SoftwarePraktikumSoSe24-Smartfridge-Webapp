@@ -950,7 +950,7 @@ class Administration(object):
 
                 for kuehlschrank_id, delete_food_id in fridge_deletions:
                     print(f"Deleting: kuehlschrank_id={kuehlschrank_id}, delete_food_id={delete_food_id}")
-                    mapper.delete(delete_food_id, kuehlschrank_id)
+                    mapper.delete_from_fridge(kuehlschrank_id, delete_food_id)
 
         return shopping_list_with_correct_amounts
 
