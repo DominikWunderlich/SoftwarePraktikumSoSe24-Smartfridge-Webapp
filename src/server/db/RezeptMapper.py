@@ -7,17 +7,21 @@ class RezeptMapper(mapper):
         super().__init__()
 
     def find_rezept_id_by_ersteller(self, ersteller):
+        result = []
         cursor = self._connector.cursor()
         command = f"SELECT rezept_id from datenbank.rezept WHERE rezept_ersteller='{ersteller}'"
         cursor.execute(command)
 
-        result = cursor.fetchone()
+        tuples = cursor.fetchall()
+
+        for (rezept_id) in tuples:
+            result.append(rezept_id[0])
 
         self._connector.commit()
         cursor.close()
 
         if result:
-            return result[0]
+            return result
         else:
             return None
 
