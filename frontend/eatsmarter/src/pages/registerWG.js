@@ -14,7 +14,7 @@ function WGLandingpage(props) {
     })
 
     const [errors, setErrors] = useState({});
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     /* -------- Funktionen zum Handeln der Accountdaten -------- */
     const handleChange = (event) => {

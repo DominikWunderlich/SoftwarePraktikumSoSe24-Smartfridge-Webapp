@@ -94,7 +94,6 @@ function Kuehlschrankinhalt(props) {
         try {
             if (wgId !== null) {
                 const lebensmittelListe = await EatSmarterAPI.getAPI().getAllLebensmittelByWgID(wgId);
-                console.log("lebensmittelliste in kuehlschrank.js ", lebensmittelListe);
                 setLebensmittelliste(lebensmittelListe);
             }
         } catch (error) {
@@ -187,7 +186,6 @@ function Kuehlschrankinhalt(props) {
     /* -------- Funktionen für das Hinzufügen einer eigenen Maßeinheit -------- */
     const addMasseinheit = async (masseinheitBO) => {
         try {
-            console.log("neue Maßeinheit: ", masseinheitBO);
             const newMasseinheit = await EatSmarterAPI.getAPI().addMasseinheit(masseinheitBO);
             setMasseinheitenListe(prevList => [...prevList, newMasseinheit]);
             

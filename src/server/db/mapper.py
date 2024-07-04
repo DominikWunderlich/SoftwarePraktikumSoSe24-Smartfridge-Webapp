@@ -1,3 +1,5 @@
+# Info: Der Großteil aus diesem Code wurde aus dem "Bankprojekt" übernommen
+
 import mysql.connector as connector
 from contextlib import AbstractContextManager
 from abc import ABC, abstractmethod

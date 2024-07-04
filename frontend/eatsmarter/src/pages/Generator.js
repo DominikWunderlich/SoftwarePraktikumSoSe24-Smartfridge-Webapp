@@ -7,8 +7,8 @@ import InfoIcon from '@mui/icons-material/Info';
 
 
 function Generator(props) {
-    const [kuehlschrankId, setKuehlschrankId] = useState()
-    const [wgId, setWgId] = useState()
+    const [kuehlschrankId, setKuehlschrankId] = useState();
+    const [wgId, setWgId] = useState();
     const [rezepte, setRezepte] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
     const [PopUpOpen, setPopUpOpen] = useState(false);
@@ -18,10 +18,6 @@ function Generator(props) {
     async function renderCurrentKuehlschrank() {
         await EatSmarterAPI.getAPI().getWgByUser(props.user.email)
             .then(response => {
-                console.log("hi")
-                console.log(response)
-                console.log(response.id)
-                console.log(response.wgName)
                 setWgId(response.id);
                 setKuehlschrankId(response.id)
             })
@@ -36,7 +32,6 @@ function Generator(props) {
 
     async function showRezepte() {
         const rezeptListe = await EatSmarterAPI.getAPI().getRezeptByGenerator(wgId, kuehlschrankId);
-        console.log("Rezept IDs:", rezeptListe);
         setRezepte(rezeptListe)
         if (rezeptListe.length === 0) {
         setShowPopup(true);

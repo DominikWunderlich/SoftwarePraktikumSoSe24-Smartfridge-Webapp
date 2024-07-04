@@ -1,11 +1,13 @@
-import BusinessObject from "./BusinessObject";
+/** Info: Die grundlegende Struktur unserer EatSmarterAPI wurde vom "Bankprojekt" übernommen  **/
+
+
 import WgBO from "./WgBO";
 import PersonBO from "./PersonBO";
 import RezeptBO from "./RezeptBO";
 import LebensmittelBO from "./LebensmittelBO";
 import mengenanzahlBO from "./mengenanzahlBO";
 import MasseinheitBO from "./MasseinheitBO";
-import EinkaufslisteBO from "./EinkaufslisteBO";
+
 
 export default class EatSmarterAPI{
 

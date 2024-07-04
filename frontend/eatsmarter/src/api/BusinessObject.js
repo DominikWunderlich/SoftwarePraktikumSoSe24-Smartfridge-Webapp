@@ -1,3 +1,5 @@
+/** Info: Der Großteil aus diesem Code wurde vom "Bankprojekt" übernommen  **/
+
 /**
  * Basisklasse für alle BusinessObjekte mit Id per default
  */

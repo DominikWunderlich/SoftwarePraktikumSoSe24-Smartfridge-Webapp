@@ -4,9 +4,9 @@ import NavBar from "../components/NavBar";
 
 
 function Homepage(props) {
-    const [wg, setWg] = useState(null)
+    const [wg, setWg] = useState(null);
     const [wgAdmin, setWgAdmin] = useState([]);
-    const [personList, setPersonList] = useState([])
+    const [personList, setPersonList] = useState([]);
 
     /* -------- Funktionen zum Laden der Wg sowie der Bewohner und Admin der Wg -------- */
     async function renderCurrentUsersWg(){

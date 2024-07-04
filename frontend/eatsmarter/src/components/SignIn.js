@@ -1,3 +1,6 @@
+/** Info: Der Großteil aus diesem Code wurde aus dem "Bankprojekt" übernommen  **/
+
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Grid, Typography, Link, Toolbar } from '@mui/material';

@@ -1,3 +1,5 @@
+# Info: Der Großteil aus diesem Code wurde aus dem "Bankprojekt" übernommen
+
 from abc import ABC
 
 
