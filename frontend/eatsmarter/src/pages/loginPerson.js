@@ -18,9 +18,9 @@ function LoginPerson(props) {
         googleId: props.user.uid,
         wgId: null
     });
+
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
-    const [isRegistered, setIsRegistered] = useState(null);
     const [PopUpOpen, setPopUpOpen] = useState(false);
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -37,13 +37,11 @@ function LoginPerson(props) {
             await EatSmarterAPI.getAPI()
                 .addUser(newPerson)
         }
-        // Checking if a user is already in a wg:
+        // Notwenig um die Regstierung für einen Account abzuschließen
         EatSmarterAPI.getAPI().getUserByGID(props.user.uid)
             .then((UserInWg) => {
-                // Redirect user based on wether the user is in a wg or not.
                 if (UserInWg[0].wgId != null) {
-                    // TODO: Pfad von der Homepage umbenennen
-                    navigate("/wg/:wgName");
+                    navigate("/homepage");
                 } else {
                     navigate("/registerWg")
                 }
@@ -59,20 +57,29 @@ function LoginPerson(props) {
         }
     };
 
-    useEffect(() => {
-    const checkRegistration = () => {
-      if (props.currentUser) {
-        const user = EatSmarterAPI.getAPI().checkUserByGID(props.currentUser.uid);
-        if (user && user.firstName && user.lastName) {
-          setIsRegistered(true);
-          navigate("/homepage");
-        }
-      }
-    };
+       /* -------- Überprüfung ob User bereits einen Account hat -------- */
+       useEffect(() => {
+        const checkRegistration = async () => {
+            if (props.user) {
+                try {
+                    const usersList = await EatSmarterAPI.getAPI().checkUserByGID(props.user.uid);
+                    const user = usersList[0];
+                    // Check ob der User bereits registriert ist
+                    if (user && user.firstName && user.lastName) {
+                        navigate("/registerWg");
+                    // User ist nicht registriert
+                    } else {
+                        navigate("/login");
+                    }
+                } catch (error) {
+                    console.error("Fehler beim Check", error);
+                }
+            }
+        };
+        checkRegistration();
+    }, [props.user ,navigate]);
 
-    checkRegistration();
-  }, []);
-
+    /* -------- Info Icon öffnen und schließen -------- */
     const openInfoIcon = () => {
         setPopUpOpen(true);
     }
@@ -120,7 +127,6 @@ function LoginPerson(props) {
                     </form>
                 </div>
             </div>
-
             {PopUpOpen && (
                 <div className="popup">
                     <div className="inner-popup">

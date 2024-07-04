@@ -5,9 +5,7 @@ import NavBar from "../components/NavBar";
 
 function Homepage(props) {
     const [wg, setWg] = useState(null)
-    const [wgData, setWgData] = useState(null);
     const [wgAdmin, setWgAdmin] = useState([]);
-    const [error, setError] = useState(null);
     const [personList, setPersonList] = useState([])
 
     /* -------- Funktionen zum Laden der Wg sowie der Bewohner und Admin der Wg -------- */

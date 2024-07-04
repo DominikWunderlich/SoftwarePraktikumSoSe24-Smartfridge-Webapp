@@ -28,10 +28,8 @@ function App(props) {
         authError: null,
         authLoading: false,
     })
-	const [isRegistered, setIsRegistered] = useState(null);
-	const [isInWG, setIsInWG] = useState(null);
-	const [loading, setLoading] = useState(true); // New state for loading
-
+	const [isRegistered] = useState(null);
+	const [loading, setLoading] = useState(true);
 
     /**
 	 * Create an error boundary for this app and recieve all errors from below the component tree.
@@ -46,11 +44,6 @@ function App(props) {
 
         return () => clearTimeout(timer); // Cleanup timer on component unmount
     }, []);
-
-    const getDerivedStateFromError = (error) => {
-    // Update state so the next render will show the fallback UI.
-    	return { appError: true };
-    };
 
     const handleSignIn = () => {
 		const app = initializeApp(firebaseConfig);
@@ -67,7 +60,6 @@ function App(props) {
           console.log(error);
         });
 	}
-
 
 	/** Handler-Funktion, die beim Klicken auf den "Abmelden"-Button aufgerufen wird */
   	 const handleSignOut = () => {
@@ -135,33 +127,11 @@ function App(props) {
 		});
     }, []); //Empty dependency array to only run once. Equivalent to componentDidMount
 
-	/** useEffect-Hook, der beim Laden der App ausgeführt wird und überprüft, ob der User bereits registriert ist und in einer WG ist. */
-	useEffect(() => {
-		const checkRegistration = async () => {
-		if (state.currentUser) {
-			const usersList = await EatSmarterAPI.getAPI().checkUserByGID(state.currentUser.uid);
-			const user = usersList[0]
-			if (user && user.lastName) {
-				setIsRegistered(true);
-				const wg = await EatSmarterAPI.getAPI().getWgByUser(state.currentUser.email);
-				if (wg) {
-					setIsInWG(true);
-				} else {
-					setIsInWG(false);
-				}
-			} else {
-			setIsRegistered(false);
-			}
-		}
-		};
-		checkRegistration();
-	}, [state.currentUser]);
-
    if (loading) {
-        return <div><LinearProgress/></div>; // Laden der App
+        return <div><LinearProgress/></div>; // Ladebalken wird angezeigt, solange die App lädt
     }
 
-	/* Laden der App */
+	/* -------- Darstellung der App -------- */
     return (
       <div className="App">
         {state.currentUser ? (
@@ -172,7 +142,6 @@ function App(props) {
 					  		<Route path="/" element={
 								isRegistered === null ? <Navigate to="/login" />:
 								!isRegistered ? <Navigate to="/registerWg" /> :
-								!isInWG ? <Navigate to="/registerWg" /> :
 								<Navigate to="/homepage" />
 							} />
 							{/* Weitere Routen wenn der User angemeledet ist. */}

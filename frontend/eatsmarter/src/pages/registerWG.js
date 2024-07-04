@@ -39,11 +39,12 @@ function WGLandingpage(props) {
         }
     };
 
+    /* -------- Überprüfung ob User bereits in einer WG ist -------- */
     useEffect( () => {
-        // Checking if a user is already in a wg:
+        // Check ob der User bereits in einer WG ist:
         EatSmarterAPI.getAPI().getUserByGID(props.user.uid)
             .then((UserInWg) => {
-                // Redirect user based on wether the user is in a wg or not.
+                // Weiterleiten wenn User bereits in einer WG ist oder nicht
                 if (UserInWg[0].wgId != null) {
                     navigate("/homepage");
                 } else {
