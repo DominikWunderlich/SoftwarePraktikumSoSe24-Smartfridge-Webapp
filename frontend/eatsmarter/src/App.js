@@ -14,7 +14,6 @@ import WGPage from "./pages/WGPage";
 import Kuehlschrank from './pages/Kuehlschrank';
 import GenauEinRezeptAnzeigen from "./pages/GenauEinRezeptAnzeigen";
 import Generator from "./pages/Generator";
-import EatSmarterAPI from "./api/EatSmarterAPI";
 import Profil from "./pages/Profil";
 import LinearProgress from '@mui/material/LinearProgress';
 
@@ -73,6 +72,7 @@ function App(props) {
 		auth.signOut()
 			.then(() => {
 				setState({ ...state, currentUser: null, menuAnchor: null});
+				window.location.replace("/");
 			})
 			.catch((error) => {
 			  console.log(error);
